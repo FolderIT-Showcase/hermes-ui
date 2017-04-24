@@ -33,7 +33,7 @@ export class ApiService {
 
   useJwt() {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
-    this.headers.append('token', user.token);
+    this.headers.append('authorization', user.token);
   }
 
   private checkForError(response: Response): Response | Observable<any> {
