@@ -32,7 +32,16 @@ export class RegisterComponent {
           this.router.navigate(['/login']);
         },
         error => {
-          this.alertService.error(error);
+          let mensaje = '';
+          const json = error.json()['error'];
+          for (const key in json) {
+            if (json.hasOwnProperty(key)) {
+              console.log(key + ' -> ' + json[key]);
+              mensaje = mensaje === '' ? json[key] : mensaje + '\n' + json[key];
+            }
+          }
+
+          this.alertService.error(mensaje);
           this.loading = false;
         }
       );

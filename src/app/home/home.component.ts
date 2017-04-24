@@ -33,7 +33,7 @@ export class HomeComponent implements OnInit {
         this.users = data;
       })
       .catch(error => {
-        this.alertService.error(error);
+        this.alertService.error(error.json()['error']);
       });
   }
 
