@@ -1,0 +1,40 @@
+<div class="ui center aligned page grid">
+  <div class="column">
+    <h2 class="ui blue image header">
+      <img src="assets/logo.png" class="image">
+      <div class="content">
+        Register
+      </div>
+    </h2>
+    <form class="ui large form" name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
+      <div class="ui segment">
+        <div class="field" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+          <input type="text" name="firstName" placeholder="First Name" [(ngModel)]="model.firstName"
+                 #firstName="ngModel" required/>
+          <div *ngIf="f.submitted && !firstName.valid" class="help-block">First Name is required</div>
+        </div>
+        <div class="field" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+          <input type="text" placeholder="Last Name" name="lastName" [(ngModel)]="model.lastName" #lastName="ngModel"
+                 required/>
+          <div *ngIf="f.submitted && !lastName.valid" class="help-block">Last Name is required</div>
+        </div>
+        <div class="field" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
+          <input type="text" name="username" placeholder="Username" [(ngModel)]="model.email" #username="ngModel"
+                 required/>
+          <div *ngIf="f.submitted && !username.valid" class="help-block">Username is required</div>
+        </div>
+        <div class="field" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
+          <input type="password" name="password" placeholder="Password" [(ngModel)]="model.password" #password="ngModel"
+                 required/>
+          <div *ngIf="f.submitted && !password.valid" class="help-block">Password is required</div>
+        </div>
+      </div>
+      <div class="ui fluid buttons">
+        <button [disabled]="loading" type="submit" class="ui large stacked primary submit button">Sign Up</button>
+        <a [routerLink]="['/login']" class="ui large stacked basic red button">Cancel</a>
+      </div>
+    </form>
+    <div *ngIf="loading" class="ui text loader">Loading</div>
+  </div>
+</div>
+

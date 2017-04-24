@@ -1,0 +1,36 @@
+<div class="ui center aligned page grid">
+  <div class="column">
+    <h2 class="ui blue image header">
+      <img src="assets/logo.png" class="image">
+      <div class="content">
+        Login
+      </div>
+    </h2>
+    <form class="ui large form" name="form" (ngSubmit)="onSubmit()" #f="ngForm" novalidate>
+      <div class="ui segment">
+        <div class="field" [ngClass]="{ 'has-error': !username.valid }">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="text" placeholder="Username" [(ngModel)]="model.email" #username="ngModel"
+                   required>
+            <div *ngIf="!username.valid" class="ui message">Username is required</div>
+          </div>
+        </div>
+        <div class="field" [ngClass]="{ 'has-error': !password.valid }">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password" [(ngModel)]="model.password"
+                   #password="ngModel" required>
+            <div *ngIf="!password.valid" class="ui message">Password is required</div>
+          </div>
+        </div>
+      </div>
+      <div class="ui fluid buttons">
+        <button [disabled]="!f.form.valid" type="submit" class="ui large stacked primary button">Login</button>
+        <a [routerLink]="['/register']" class="ui large stacked basic blue button">Sign Up</a>
+      </div>
+    </form>
+
+    <div *ngIf="loading" class="ui text loader">Loading</div>
+  </div>
+</div>
