@@ -14,6 +14,8 @@ import {AlertService} from '../service/alert.service';
 import {AuthenticationService} from '../service/authentication.service';
 import {routing} from './app.routing';
 import {ApiService} from '../service/api.service';
+import { NavbarComponent } from './navbar/navbar.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import {ApiService} from '../service/api.service';
     AlertComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    NavbarComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

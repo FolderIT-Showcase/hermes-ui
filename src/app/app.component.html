@@ -1,5 +1,17 @@
 <div class="ui container">
-  <router-outlet></router-outlet>
-  <app-alert></app-alert>
-</div>
+  <app-navbar></app-navbar>
+  <div class="container-fluid">
+    <div class="row">
 
+      <div class="col-md-2 sidebar">
+        <app-sidebar></app-sidebar>
+      </div>
+
+      <div class="content col-md-offset-2">
+        <router-outlet></router-outlet>
+        <app-alert></app-alert>
+      </div>
+
+    </div>
+  </div>
+</div>
