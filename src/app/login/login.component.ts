@@ -30,7 +30,6 @@ export class LoginComponent implements OnInit {
     const user = new User();
     user.email = this.model.email;
     user.password = this.model.password;
-    console.log(user);
     this.authenticationService.login(user)
       .then(() => {
         this.router.navigate(['/']);

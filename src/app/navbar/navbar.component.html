@@ -15,7 +15,7 @@
         <li><a [routerLink]="['/register']">Registrarse</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right" *ngIf="!!usuarioLogeado">
-        <li><a [routerLink]="['/']">{{usuarioLogeado.email}}</a></li>
+        <li><a [routerLink]="['/']">{{usuarioLogeado.name}}</a></li>
         <li><a [routerLink]="['/']" (click)="salir()">Salir</a></li>
       </ul>
     </div>
