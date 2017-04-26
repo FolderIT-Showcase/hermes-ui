@@ -2,16 +2,13 @@
   <app-navbar></app-navbar>
   <div class="container-fluid">
     <div class="row">
-
-      <div class="col-md-2 sidebar">
+      <div class="col-sm-3 col-md-2" *ngIf="mostrarBarraLateral">
         <app-sidebar></app-sidebar>
       </div>
-
-      <div class="content col-md-offset-2">
+      <div [ngClass]="{'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2': mostrarBarraLateral}">
         <router-outlet></router-outlet>
         <app-alert></app-alert>
       </div>
-
     </div>
   </div>
 </div>

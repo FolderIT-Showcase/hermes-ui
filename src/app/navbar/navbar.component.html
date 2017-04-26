@@ -10,9 +10,13 @@
       <a class="navbar-brand" href="/">Hermes</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="nav navbar-nav navbar-right" *ngIf="!usuarioLogeado">
         <li><a [routerLink]="['/login']">Iniciar Sesión</a></li>
         <li><a [routerLink]="['/register']">Registrarse</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right" *ngIf="!!usuarioLogeado">
+        <li><a [routerLink]="['/']">{{usuarioLogeado.email}}</a></li>
+        <li><a [routerLink]="['/']" (click)="salir()">Salir</a></li>
       </ul>
     </div>
   </div>
