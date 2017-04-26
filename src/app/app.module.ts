@@ -16,6 +16,8 @@ import {routing} from './app.routing';
 import {ApiService} from '../service/api.service';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ClientesComponent } from './clientes/clientes.component';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -26,19 +28,21 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     RegisterComponent,
     NavbarComponent,
     SidebarComponent,
+    ClientesComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
-    routing
+    routing,
+    DataTablesModule
   ],
   providers: [
     AuthGuard,
     AlertService,
     AuthenticationService,
     UserService,
-    ApiService
+    ApiService,
   ],
   bootstrap: [AppComponent]
 })
