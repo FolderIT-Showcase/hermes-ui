@@ -33,7 +33,7 @@ export class ApiService {
 
   useJwt() {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
-    this.headers.append('authorization', user.token);
+    this.headers.set('Authorization', user.token);
   }
 
   private checkForError(response: Response): Response | Observable<any> {
@@ -46,6 +46,7 @@ export class ApiService {
   }
 
   public get(path: string): Observable<any> {
+    this.useJwt();
     return this.http.get(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
       .catch(err => Observable.throw(err))
@@ -68,25 +69,16 @@ export class ApiService {
         `${this.baseURL}${path}`, JSON.stringify(body),
         {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err));
-    // .map(this.getJson);
-  }
-
-  public patch(path: string, body): Observable<any> {
-    return this.http
-      .patch(
-        `${this.baseURL}${path}`, JSON.stringify(body),
-        {headers: this.headers})
-      .map(this.checkForError)
-      .catch(err => Observable.throw(err));
-    // .map(this.getJson);
+      .catch(err => Observable.throw(err))
+      .map(this.getJson);
   }
 
   public delete(path): Observable<any> {
+    this.useJwt();
     return this.http.delete(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err));
-    // .map(this.getJson);
+      .catch(err => Observable.throw(err))
+      .map(this.getJson);
   }
 
   public loginPost(path: string, body): Observable<any> {
