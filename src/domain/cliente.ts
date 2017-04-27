@@ -1,3 +1,4 @@
+import {Domicilio} from './domicilio';
 export class Cliente {
   id: number;
   // vendedor
@@ -12,4 +13,5 @@ export class Cliente {
   email: string;
   activo: Boolean;
   motivo: string;
+  domicilios: Domicilio[];
 }
