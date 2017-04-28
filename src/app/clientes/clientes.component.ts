@@ -5,6 +5,8 @@ import {ApiService} from '../../service/api.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Localidad} from '../../domain/localidad';
 import {Provincia} from 'domain/provincia';
+import {AlertService} from '../../service/alert.service';
+import {Domicilio} from '../../domain/domicilio';
 
 @Component({
   selector: 'app-clientes',
@@ -23,7 +25,7 @@ export class ClientesComponent implements OnInit {
   localidades: Localidad[] = [];
   provincias: Provincia[] = [];
   modalTitle: string;
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private alertService: AlertService) { }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -83,6 +85,7 @@ export class ClientesComponent implements OnInit {
 
   mostrarModalEditar(cliente: Cliente) {
     this.modalTitle = 'Editar Cliente';
+    this.enNuevo = false;
     this.clienteOriginal = cliente;
     this.clienteSeleccionado = JSON.parse(JSON.stringify(cliente));
   }
@@ -96,8 +99,8 @@ export class ClientesComponent implements OnInit {
       this.enNuevo = false;
       this.apiService.post('clientes', this.clienteSeleccionado).subscribe(
         json => {
-          console.log(json);
           this.clientes.push(json);
+          this.recargarTabla();
         }
       );
     } else {
@@ -114,14 +117,29 @@ export class ClientesComponent implements OnInit {
     if (index !== -1) {
       this.clientes.splice(index, 1);
     }
-    // TODO buscar otra forma de reflejar los cambios en la tabla
+    this.recargarTabla();
+    this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
+
+  }
+
+  private recargarTabla() {
+// TODO buscar otra forma de reflejar los cambios en la tabla
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
     });
-    this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
+  }
 
+  nuevoDomicilio() {
+    this.clienteSeleccionado.domicilios.push(new Domicilio);
+  }
+
+  eliminarDomicilio(domiciliio: Domicilio) {
+    const index: number = this.clienteSeleccionado.domicilios.indexOf(domiciliio);
+    if (index !== -1) {
+      this.clienteSeleccionado.domicilios.splice(index, 1);
+    }
   }
 }

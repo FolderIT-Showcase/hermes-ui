@@ -1,9 +1,9 @@
 import {Domicilio} from './domicilio';
 export class Cliente {
   id: number;
-  // vendedor
-  // zona
-  // tipo_categoria
+  vendedor: Number;
+  zona: Number;
+  tipo_categoria: Number;
   codigo: string;
   nombre: string;
   tipo_responsable: string;
