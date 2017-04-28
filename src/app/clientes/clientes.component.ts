@@ -56,17 +56,7 @@ export class ClientesComponent implements OnInit {
         }
       }
     };
-    const localidad1 = new Localidad();
-    localidad1.nombre = 'Santa Fe';
-    localidad1.id = 1;
-    const localidad2 = new Localidad();
-    localidad2.nombre = 'Santo Tome';
-    localidad2.id = 2;
-    this.localidades.push(localidad2);
-    this.localidades.push(localidad1);
-    const provincia = new Provincia();
-    provincia.nombre = 'Santa Fe';
-    this.provincias.push(provincia);
+
     this.apiService.get('clientes')
       .subscribe(json => {
         this.clientes = json;
@@ -88,6 +78,28 @@ export class ClientesComponent implements OnInit {
     this.enNuevo = false;
     this.clienteOriginal = cliente;
     this.clienteSeleccionado = JSON.parse(JSON.stringify(cliente));
+
+    if (this.provincias.length === 0) {
+      this.apiService.get('provincias').subscribe(
+        json => {
+          this.provincias = json;
+        }
+      );
+    }
+
+    this.localidades = [];
+    // TODO mostrar 'cargando' mientras se cargan las localidades
+    this.clienteSeleccionado.domicilios.forEach(
+      domicilio => {
+        this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
+          json => {
+            domicilio.provincia_id = json.provincia_id;
+            this.cargarLocalidades(domicilio.provincia_id);
+          }
+        );
+      }
+    );
+
   }
 
   mostrarModalEliminar(cliente: Cliente) {
@@ -141,5 +153,13 @@ export class ClientesComponent implements OnInit {
     if (index !== -1) {
       this.clienteSeleccionado.domicilios.splice(index, 1);
     }
+  }
+
+  cargarLocalidades(provinciaId: number) {
+    this.apiService.get('provincias/' + provinciaId).subscribe(
+      json => {
+        this.localidades = json.localidades;
+      }
+    );
   }
 }

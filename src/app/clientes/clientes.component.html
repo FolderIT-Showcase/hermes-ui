@@ -121,8 +121,8 @@
             <div class="form-group row">
               <label for="cliente-provincia" class="col-sm-1 control-label">Provincia:</label>
               <div class="col-sm-5">
-                <select class="form-control" id="cliente-provincia">
-                  <option *ngFor="let provincia of provincias" [ngValue]="provincia.id">{{provincia.nombre}}</option>
+                <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target.value)" >
+                  <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
                 </select>
               </div>
               <label for="cliente-localidad" class="col-sm-1 control-label">Localidad:</label>
@@ -145,6 +145,7 @@
             </div>
           </div>
 
+          <!--TODO corregir error de vaciado de campos de domicilio al agregar uno nuevo-->
           <button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button>
         </form>
       </div>
