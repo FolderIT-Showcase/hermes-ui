@@ -86,7 +86,7 @@ export class ClientesComponent implements OnInit {
             cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
           });
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 100);
+        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
   }
 
@@ -171,7 +171,7 @@ export class ClientesComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 100);
+      setTimeout(() => { this.mostrarTabla = true; }, 1000);
     });
   }
 
