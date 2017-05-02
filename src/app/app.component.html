@@ -5,7 +5,7 @@
       <div class="col-sm-3 col-md-2" *ngIf="mostrarBarraLateral">
         <app-sidebar></app-sidebar>
       </div>
-      <div [ngClass]="{'col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2': mostrarBarraLateral}">
+      <div class="col-sm-12" [ngClass]="{'col-sm-offset-1': mostrarBarraLateral}">
         <router-outlet></router-outlet>
         <app-alert></app-alert>
       </div>

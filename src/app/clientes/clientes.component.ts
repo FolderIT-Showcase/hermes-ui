@@ -25,7 +25,11 @@ export class ClientesComponent implements OnInit {
   localidades: Localidad[] = [];
   provincias: Provincia[] = [];
   modalTitle: string;
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  mostrarTabla = false;
+  tipos_responsable = [];
+  constructor(private apiService: ApiService, private alertService: AlertService) {
+
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -57,10 +61,32 @@ export class ClientesComponent implements OnInit {
       }
     };
 
+    this.tipos_responsable = [
+      {clave: 'RI', nombre: 'Responsable Inscripto'},
+      {clave: 'RNI', nombre: 'Responsable No Inscripto'},
+      {clave: 'NR', nombre: 'No Responsable'},
+      {clave: 'SE', nombre: 'Sujeto Exento'},
+      {clave: 'CF', nombre: 'Consumidor Final'},
+      {clave: 'M', nombre: 'Monotributista'},
+      {clave: 'SNC', nombre: 'Sujeto No Categorizado'},
+      {clave: 'PE', nombre: 'Proveedor del Exterior'},
+      {clave: 'CE', nombre: 'Cliente del Exterior'},
+      {clave: 'L', nombre: 'Liberado Ley 19640'},
+      {clave: 'AP', nombre: 'Agente de Percepción'},
+      {clave: 'CE', nombre: 'Contribuyente eventual'},
+      {clave: 'MS', nombre: 'Monotributista Social'},
+      {clave: 'CES', nombre: 'Contribuyente Eventual Social'},
+      ];
+
     this.apiService.get('clientes')
       .subscribe(json => {
         this.clientes = json;
+        this.clientes.forEach(
+          cliente => {
+            cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
+          });
         this.dtTrigger.next();
+        setTimeout(() => { this.mostrarTabla = true; }, 100);
       });
   }
 
@@ -119,6 +145,7 @@ export class ClientesComponent implements OnInit {
       this.apiService.put('clientes/' + this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(
         json => {
           Object.assign(this.clienteOriginal, json);
+          this.clienteOriginal.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteOriginal.tipo_responsable).nombre;
         }
       );
     }
@@ -136,11 +163,13 @@ export class ClientesComponent implements OnInit {
 
   private recargarTabla() {
 // TODO buscar otra forma de reflejar los cambios en la tabla
+    this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
+      setTimeout(() => { this.mostrarTabla = true; }, 100);
     });
   }
 
