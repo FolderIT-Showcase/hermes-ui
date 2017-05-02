@@ -54,7 +54,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -62,11 +62,12 @@
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="cliente-codigo" class="col-sm-1 control-label">Código:</label>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo">
+            <label for="cliente-codigo" class="col-sm-1 control-label">Código*:</label>
+            <div class="col-sm-2" [ngClass]="{'has-error':!codigo.valid && (!codigo.pristine || codigo.touched)}">
+              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required>
+              <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
             </div>
 
             <label for="cliente-zona" class="col-sm-1 control-label">Zona:</label>
@@ -81,15 +82,16 @@
 
             <label for="cliente-activo" class="col-sm-1 control-label">Activo:</label>
             <div class="col-sm-1">
-              <input type="email" class="form-control" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
+              <input type="checkbox" class="form-control" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
             </div>
           </div>
 
           <h4>Datos personales</h4>
           <div class="form-group row">
-            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre:</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre">
+            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre*:</label>
+            <div class="col-sm-6" [ngClass]="{'has-error':!nombre.valid && (!nombre.pristine || nombre.touched)}">
+                <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
             </div>
             <label for="cliente-email" class="col-sm-1 control-label">Email:</label>
             <div class="col-sm-4">
@@ -98,19 +100,19 @@
           </div>
 
           <div class="form-group row">
-            <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Tipo categoría</label>
+            <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Tipo categoría:</label>
             <div class="col-sm-2">
-              <input type="tel" class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
+              <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
             </div>
-            <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
+            <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable:</label>
             <div class="col-sm-3">
               <select class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
-                <option *ngFor="let tipo of tipos_responsable" [ngValue]= "tipo.clave">{{tipo.nombre}}</option>
+                <option *ngFor="let tipo of tipos_responsable" [ngValue]="tipo.clave">{{tipo.nombre}}</option>
               </select>
             </div>
-            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
+            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT:</label>
             <div class="col-sm-3">
-              <input type="tel" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit">
+              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit">
             </div>
           </div>
 
@@ -163,8 +165,8 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="editarONuevo()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
+        <button type="button" (click)="f.reset()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>

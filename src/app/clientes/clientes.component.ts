@@ -132,13 +132,14 @@ export class ClientesComponent implements OnInit {
     this.clienteSeleccionado = cliente;
   }
 
-  editarONuevo() {
+  editarONuevo(f: any) {
     if (this.enNuevo) {
       this.enNuevo = false;
       this.apiService.post('clientes', this.clienteSeleccionado).subscribe(
         json => {
           this.clientes.push(json);
           this.recargarTabla();
+          f.form.reset();
         }
       );
     } else {
@@ -146,6 +147,7 @@ export class ClientesComponent implements OnInit {
         json => {
           Object.assign(this.clienteOriginal, json);
           this.clienteOriginal.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteOriginal.tipo_responsable).nombre;
+          f.form.reset();
         }
       );
     }
