@@ -1,0 +1,158 @@
+<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+  <thead>
+  <tr>
+    <!--TODO completar con los campos necesarios y sacar los que no van-->
+    <th>Código</th>
+    <th>Nombre</th>
+    <th>CUIT</th>
+    <th>Tipo Responsable</th>
+    <th>Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let cliente of clientes">
+    <td>{{ cliente.codigo }}</td>
+    <td>{{ cliente.nombre }}</td>
+    <td>{{ cliente.cuit }}</td>
+    <td>{{ cliente.tipo_responsable }}</td>
+    <td>
+      <button (click)="mostrarModalEditar(cliente)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil"></button >
+      <button (click)="mostrarModalEliminar(cliente)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove"></button >
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div>
+  <button (click)="mostrarModalNuevo()" data-toggle="modal" data-target="#modalEditar" class="btn btn-md btn-primary"> Nuevo Cliente</button >
+</div>
+
+<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de que desea eliminar al cliente {{clienteSeleccionado.nombre}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <div class="form-group row">
+            <label for="cliente-codigo" class="col-sm-1 control-label">Código:</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo">
+            </div>
+
+            <label for="cliente-zona" class="col-sm-1 control-label">Zona:</label>
+            <div class="col-sm-2">
+              <input type="text" class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona" name="zona">
+            </div>
+
+            <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor:</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor" name="vendedor">
+            </div>
+
+            <label for="cliente-activo" class="col-sm-1 control-label">Activo:</label>
+            <div class="col-sm-1">
+              <input type="email" class="form-control" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
+            </div>
+          </div>
+
+          <h4>Datos personales</h4>
+          <div class="form-group row">
+            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre:</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre">
+            </div>
+            <label for="cliente-email" class="col-sm-1 control-label">Email:</label>
+            <div class="col-sm-4">
+              <input type="email" class="form-control" id="cliente-email" [(ngModel)]="clienteSeleccionado.email" name="email">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="cliente-tipo-categoria" class="col-sm-2 control-label">Tipo categoría</label>
+            <div class="col-sm-2">
+              <input type="tel" class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
+            </div>
+            <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
+            <div class="col-sm-2">
+              <input type="tel" class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
+            </div>
+            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
+            <div class="col-sm-3">
+              <input type="tel" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="cliente-telefono" class="col-sm-1 control-label">Teléfono:</label>
+            <div class="col-sm-5">
+              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono">
+            </div>
+            <label for="cliente-celular" class="col-sm-1 control-label">Celular:</label>
+            <div class="col-sm-5">
+              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular">
+            </div>
+          </div>
+
+          <div *ngFor="let domicilio of clienteSeleccionado.domicilios; let i = index;">
+              <h4>Domicilio {{i+1}}
+                <span>
+                  <button (click)="eliminarDomicilio(domicilio)" class="close glyphicon glyphicon-remove" aria-label="Close"><span aria-hidden="true"></span></button >
+                </span>
+              </h4>
+            <div class="form-group row">
+              <label for="cliente-provincia" class="col-sm-1 control-label">Provincia:</label>
+              <div class="col-sm-5">
+                <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target.value)" >
+                  <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
+                </select>
+              </div>
+              <label for="cliente-localidad" class="col-sm-1 control-label">Localidad:</label>
+              <div class="col-sm-5">
+                <select class="form-control" id="cliente-localidad" [(ngModel)]="domicilio.localidad_id" name="localidad">
+                  <option *ngFor="let localidad of localidades" [ngValue]="localidad.id">{{localidad.nombre}}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección:</label>
+              <div class="col-sm-9">
+                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion">
+              </div>
+              <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
+              <div class="col-sm-1">
+                <input type="text" class="form-control" id="cliente-domicilio-tipo" [(ngModel)]="domicilio.tipo" name="tipo">
+              </div>
+            </div>
+          </div>
+
+          <!--TODO corregir error de vaciado de campos de domicilio al agregar uno nuevo-->
+          <button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="editarONuevo()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
