@@ -10,8 +10,6 @@
     <!--TODO completar con los campos necesarios y sacar los que no van-->
     <th>Código</th>
     <th>Nombre</th>
-    <th>Nombre</th>
-    <th>Nombre</th>
     <th>CUIT</th>
     <th>Tipo Responsable</th>
     <th>Acciones</th>
@@ -20,8 +18,6 @@
   <tbody>
   <tr *ngFor="let cliente of clientes">
     <td>{{ cliente.codigo }}</td>
-    <td>{{ cliente.nombre }}</td>
-    <td>{{ cliente.nombre }}</td>
     <td>{{ cliente.nombre }}</td>
     <td>{{ cliente.cuit }}</td>
     <td>{{ cliente.tipo_responsable_str }}</td>
@@ -72,12 +68,16 @@
 
             <label for="cliente-zona" class="col-sm-1 control-label">Zona:</label>
             <div class="col-sm-2">
-              <input type="text" class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona" name="zona">
+              <select class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona_id" name="zona">
+                <option *ngFor="let zona of zonas" [ngValue]="zona.id">{{zona.nombre}}</option>
+              </select>
             </div>
 
             <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor:</label>
             <div class="col-sm-3">
-              <input type="text" class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor" name="vendedor">
+              <select class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor_id" name="vendedor">
+                <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">{{vendedor.nombre}}</option>
+              </select>
             </div>
 
             <label for="cliente-activo" class="col-sm-1 control-label">Activo:</label>
@@ -128,40 +128,48 @@
           </div>
 
           <div *ngFor="let domicilio of clienteSeleccionado.domicilios; let i = index;">
-              <h4>Domicilio {{i+1}}
+              <!-- <h4>Domicilio {{i+1}}
                 <span>
                   <button (click)="eliminarDomicilio(domicilio)" class="close glyphicon glyphicon-remove" aria-label="Close"><span aria-hidden="true"></span></button >
                 </span>
-              </h4>
+              </h4> -->
+            <div class="form-group row">
+              <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección:</label>
+              <div class="col-sm-11">
+                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion">
+              </div>
+              <!--
+              <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
+              <div class="col-sm-1">
+                <input type="text" class="form-control" id="cliente-domicilio-tipo" [(ngModel)]="domicilio.tipo" name="tipo">
+              </div>
+              -->
+            </div>
             <div class="form-group row">
               <label for="cliente-provincia" class="col-sm-1 control-label">Provincia:</label>
               <div class="col-sm-5">
                 <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target.value)" >
+                  <option *ngIf="provincias.length === 0">Cargando...</option>
                   <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
                 </select>
               </div>
               <label for="cliente-localidad" class="col-sm-1 control-label">Localidad:</label>
               <div class="col-sm-5">
                 <select class="form-control" id="cliente-localidad" [(ngModel)]="domicilio.localidad_id" name="localidad">
+                  <option *ngIf="localidades.length === 0">Cargando...</option>
                   <option *ngFor="let localidad of localidades" [ngValue]="localidad.id">{{localidad.nombre}}</option>
                 </select>
               </div>
             </div>
-
-            <div class="form-group row">
-              <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección:</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion">
+          </div>
+          <div class="form-group row">
+              <label for="cliente-motivo" class="col-sm-1 control-label">Motivo:</label>
+              <div class="col-sm-11">
+                <input type="text" class="form-control" id="cliente-motivo" [(ngModel)]="clienteSeleccionado.motivo" name="direccion">
               </div>
-              <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
-              <div class="col-sm-1">
-                <input type="text" class="form-control" id="cliente-domicilio-tipo" [(ngModel)]="domicilio.tipo" name="tipo">
-              </div>
-            </div>
           </div>
 
-          <!--TODO corregir error de vaciado de campos de domicilio al agregar uno nuevo-->
-          <button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button>
+           <!--<button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button> -->
         </form>
       </div>
       <div class="modal-footer">

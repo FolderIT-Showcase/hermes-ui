@@ -6,7 +6,8 @@ import {DataTableDirective} from 'angular-datatables';
 import {Localidad} from '../../domain/localidad';
 import {Provincia} from 'domain/provincia';
 import {AlertService} from '../../service/alert.service';
-import {Domicilio} from '../../domain/domicilio';
+import { Domicilio } from '../../domain/domicilio';
+import { Vendedor } from 'domain/vendedor';
 
 @Component({
   selector: 'app-clientes',
@@ -27,6 +28,8 @@ export class ClientesComponent implements OnInit {
   modalTitle: string;
   mostrarTabla = false;
   tipos_responsable = [];
+  vendedores: Vendedor[];
+  zonas: any;
   constructor(private apiService: ApiService, private alertService: AlertService) {
 
   }
@@ -58,25 +61,30 @@ export class ClientesComponent implements OnInit {
           'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
           'sortDescending': ': Activar para ordenar la columna de manera descendente'
         }
-      }
+      },
+      columnDefs: [ {
+        'targets': -1,
+        'searchable': false,
+        'orderable': false
+    } ]
     };
 
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
-      {clave: 'RNI', nombre: 'Responsable No Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},
       {clave: 'SE', nombre: 'Sujeto Exento'},
       {clave: 'CF', nombre: 'Consumidor Final'},
       {clave: 'M', nombre: 'Monotributista'},
-      {clave: 'SNC', nombre: 'Sujeto No Categorizado'},
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
-      {clave: 'CE', nombre: 'Cliente del Exterior'},
-      {clave: 'L', nombre: 'Liberado Ley 19640'},
-      {clave: 'AP', nombre: 'Agente de Percepción'},
-      {clave: 'CE', nombre: 'Contribuyente eventual'},
-      {clave: 'MS', nombre: 'Monotributista Social'},
-      {clave: 'CES', nombre: 'Contribuyente Eventual Social'},
+      {clave: 'CE', nombre: 'Cliente del Exterior'}
       ];
+      // {clave: 'SNC', nombre: 'Sujeto No Categorizado'},
+      // {clave: 'RNI', nombre: 'Responsable No Inscripto'},
+      // {clave: 'L', nombre: 'Liberado Ley 19640'},
+      // {clave: 'AP', nombre: 'Agente de Percepción'},
+      // {clave: 'CE', nombre: 'Contribuyente eventual'},
+      // {clave: 'MS', nombre: 'Monotributista Social'},
+      // {clave: 'CES', nombre: 'Contribuyente Eventual Social'},
 
     this.apiService.get('clientes')
       .subscribe(json => {
@@ -97,6 +105,10 @@ export class ClientesComponent implements OnInit {
     this.clienteSeleccionado.domicilios = [];
     this.clienteSeleccionado.tipo_responsable = 'RI';
     this.clienteSeleccionado.activo = true;
+    this.nuevoDomicilio();
+    this.cargarProvincias();
+    this.cargarVendedores();
+    this.cargarZonas();
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -104,28 +116,9 @@ export class ClientesComponent implements OnInit {
     this.enNuevo = false;
     this.clienteOriginal = cliente;
     this.clienteSeleccionado = JSON.parse(JSON.stringify(cliente));
-
-    if (this.provincias.length === 0) {
-      this.apiService.get('provincias').subscribe(
-        json => {
-          this.provincias = json;
-        }
-      );
-    }
-
-    this.localidades = [];
-    // TODO mostrar 'cargando' mientras se cargan las localidades
-    this.clienteSeleccionado.domicilios.forEach(
-      domicilio => {
-        this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
-          json => {
-            domicilio.provincia_id = json.provincia_id;
-            this.cargarLocalidades(domicilio.provincia_id);
-          }
-        );
-      }
-    );
-
+    this.cargarProvincias();
+    this.cargarVendedores();
+    this.cargarZonas();
   }
 
   mostrarModalEliminar(cliente: Cliente) {
@@ -137,6 +130,7 @@ export class ClientesComponent implements OnInit {
       this.enNuevo = false;
       this.apiService.post('clientes', this.clienteSeleccionado).subscribe(
         json => {
+          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteSeleccionado.tipo_responsable).nombre;
           this.clientes.push(json);
           this.recargarTabla();
           f.form.reset();
@@ -176,7 +170,11 @@ export class ClientesComponent implements OnInit {
   }
 
   nuevoDomicilio() {
-    this.clienteSeleccionado.domicilios.push(new Domicilio);
+    const domicilio = new Domicilio;
+    domicilio.tipo = 'P';
+    domicilio.localidad_id = 5878;
+    domicilio.direccion = '';
+    this.clienteSeleccionado.domicilios.push(domicilio);
   }
 
   eliminarDomicilio(domiciliio: Domicilio) {
@@ -186,11 +184,53 @@ export class ClientesComponent implements OnInit {
     }
   }
 
+  cargarProvincias() {
+        if (this.provincias.length === 0) {
+      this.apiService.get('provincias').subscribe(
+        json => {
+          this.provincias = json;
+        }
+      );
+    }
+
+    this.localidades = [];
+    this.clienteSeleccionado.domicilios.forEach(
+      domicilio => {
+        this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
+          json => {
+            domicilio.provincia_id = json.provincia_id;
+            this.cargarLocalidades(domicilio.provincia_id);
+          }
+        );
+      }
+    );
+  }
+
   cargarLocalidades(provinciaId: number) {
     this.apiService.get('provincias/' + provinciaId).subscribe(
       json => {
         this.localidades = json.localidades;
       }
     );
+  }
+
+  cargarVendedores() {
+    if (this.provincias.length === 0) {
+      this.apiService.get('vendedores').subscribe(
+        json => {
+          this.vendedores = json;
+        }
+      );
+    }
+  }
+
+    cargarZonas() {
+    if (this.provincias.length === 0) {
+      this.apiService.get('zonas').subscribe(
+        json => {
+          this.zonas = json;
+        }
+      );
+    }
   }
 }
