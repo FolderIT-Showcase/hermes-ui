@@ -139,8 +139,8 @@ export class ClientesComponent implements OnInit {
     } else {
       this.apiService.put('clientes/' + this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(
         json => {
+          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteSeleccionado.tipo_responsable).nombre;
           Object.assign(this.clienteOriginal, json);
-          this.clienteOriginal.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteOriginal.tipo_responsable).nombre;
           f.form.reset();
         }
       );
@@ -169,6 +169,7 @@ export class ClientesComponent implements OnInit {
     });
   }
 
+// TODO extraer todos los siguientes métodos en servicios
   nuevoDomicilio() {
     const domicilio = new Domicilio;
     domicilio.tipo = 'P';

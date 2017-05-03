@@ -18,10 +18,12 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { DataTablesModule } from 'angular-datatables';
+import AsyncValidatorDirective from './clientes/async.validator';
 
 @NgModule({
   declarations: [
     AppComponent,
+    AsyncValidatorDirective,
     AlertComponent,
     HomeComponent,
     LoginComponent,
