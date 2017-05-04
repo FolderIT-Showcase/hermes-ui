@@ -4,6 +4,8 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Rx';
 import {User} from '../domain/user';
+import {Router} from '@angular/router';
+import {AlertService} from './alert.service';
 
 @Injectable()
 export class ApiService {
@@ -24,10 +26,15 @@ export class ApiService {
   // constructor
   //
 
-  constructor(private http: Http) {
+  constructor(private http: Http,
+              private router: Router,
+              private alertService: AlertService) {
   }
 
   private getJson(response: Response) {
+    if (response.status === 204) {
+      return '';
+    }
     return response.json();
   }
 
@@ -49,7 +56,13 @@ export class ApiService {
     this.useJwt();
     return this.http.get(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err))
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
       .map(this.getJson);
   }
 

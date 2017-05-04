@@ -1,4 +1,10 @@
-<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover">
+<div class="progress" *ngIf="!mostrarTabla">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+    <span>Cargando<span class="dotdotdot"></span></span>
+  </div>
+</div>
+
+<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover" [hidden]="!mostrarTabla">
   <thead>
   <tr>
     <!--TODO completar con los campos necesarios y sacar los que no van-->
@@ -14,7 +20,7 @@
     <td>{{ cliente.codigo }}</td>
     <td>{{ cliente.nombre }}</td>
     <td>{{ cliente.cuit }}</td>
-    <td>{{ cliente.tipo_responsable }}</td>
+    <td>{{ cliente.tipo_responsable_str }}</td>
     <td>
       <button (click)="mostrarModalEditar(cliente)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil"></button >
       <button (click)="mostrarModalEliminar(cliente)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove"></button >
@@ -31,6 +37,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Eliminar cliente</h4>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea eliminar al cliente {{clienteSeleccionado.nombre}}?</p>
@@ -43,7 +50,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -51,34 +58,43 @@
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
-        <form class="form-horizontal">
+        <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="cliente-codigo" class="col-sm-1 control-label">Código:</label>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo">
+            <label for="cliente-codigo" class="col-sm-1 control-label">Código*:</label>
+            <div class="col-sm-2 has-feedback"
+             [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)) || (codigo.errors !== null && codigo.errors.asyncInvalid), 
+             'has-success': codigo.valid}">
+              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [cliente]="clienteSeleccionado">
+              <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
+              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
             </div>
 
             <label for="cliente-zona" class="col-sm-1 control-label">Zona:</label>
             <div class="col-sm-2">
-              <input type="text" class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona" name="zona">
+              <select class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona_id" name="zona">
+                <option *ngFor="let zona of zonas" [ngValue]="zona.id">{{zona.nombre}}</option>
+              </select>
             </div>
 
             <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor:</label>
             <div class="col-sm-3">
-              <input type="text" class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor" name="vendedor">
-            </div>
-
-            <label for="cliente-activo" class="col-sm-1 control-label">Activo:</label>
-            <div class="col-sm-1">
-              <input type="email" class="form-control" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
+              <select class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor_id" name="vendedor">
+                <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">{{vendedor.nombre}}</option>
+              </select>
             </div>
           </div>
-
-          <h4>Datos personales</h4>
+          
           <div class="form-group row">
-            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre:</label>
-            <div class="col-sm-6">
-              <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre">
+            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre*:</label>
+            <div class="col-sm-6 has-feedback" 
+            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
+            'has-success': nombre.valid}">
+              <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191">
+              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
             </div>
             <label for="cliente-email" class="col-sm-1 control-label">Email:</label>
             <div class="col-sm-4">
@@ -87,71 +103,92 @@
           </div>
 
           <div class="form-group row">
-            <label for="cliente-tipo-categoria" class="col-sm-2 control-label">Tipo categoría</label>
+            <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Tipo categoría:</label>
             <div class="col-sm-2">
-              <input type="tel" class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
+              <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
             </div>
-            <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
-            <div class="col-sm-2">
-              <input type="tel" class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
-            </div>
-            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
+            <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable:</label>
             <div class="col-sm-3">
-              <input type="tel" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit">
+              <select class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
+                <option *ngFor="let tipo of tipos_responsable" [ngValue]="tipo.clave">{{tipo.nombre}}</option>
+              </select>
+            </div>
+            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT:</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" [maxLength]="191">
             </div>
           </div>
 
           <div class="form-group row">
             <label for="cliente-telefono" class="col-sm-1 control-label">Teléfono:</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono">
+              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191">
             </div>
             <label for="cliente-celular" class="col-sm-1 control-label">Celular:</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular">
+              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191">
             </div>
           </div>
 
           <div *ngFor="let domicilio of clienteSeleccionado.domicilios; let i = index;">
-              <h4>Domicilio {{i+1}}
+              <!-- <h4>Domicilio {{i+1}}
                 <span>
                   <button (click)="eliminarDomicilio(domicilio)" class="close glyphicon glyphicon-remove" aria-label="Close"><span aria-hidden="true"></span></button >
                 </span>
-              </h4>
+              </h4> -->
+            <div class="form-group row">
+              <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección:</label>
+              <div class="col-sm-11">
+                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion" [maxLength]="191">
+              </div>
+              <!--
+              <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
+              <div class="col-sm-1">
+                <input type="text" class="form-control" id="cliente-domicilio-tipo" [(ngModel)]="domicilio.tipo" name="tipo">
+              </div>
+              -->
+            </div>
+
             <div class="form-group row">
               <label for="cliente-provincia" class="col-sm-1 control-label">Provincia:</label>
               <div class="col-sm-5">
                 <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target.value)" >
+                  <option *ngIf="provincias.length === 0">Cargando...</option>
                   <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
                 </select>
               </div>
               <label for="cliente-localidad" class="col-sm-1 control-label">Localidad:</label>
               <div class="col-sm-5">
                 <select class="form-control" id="cliente-localidad" [(ngModel)]="domicilio.localidad_id" name="localidad">
+                  <option *ngIf="localidades.length === 0">Cargando...</option>
                   <option *ngFor="let localidad of localidades" [ngValue]="localidad.id">{{localidad.nombre}}</option>
                 </select>
               </div>
             </div>
+          </div>
 
-            <div class="form-group row">
-              <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección:</label>
+          <div class="form-group row">
+            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
+              <label>
+                <input type="checkbox" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
+                Activo
+              </label>
+            </div>
+            
+            <div *ngIf="!clienteSeleccionado.activo">
+              <label for="cliente-motivo" class="col-sm-1 control-label">Motivo:</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion">
-              </div>
-              <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
-              <div class="col-sm-1">
-                <input type="text" class="form-control" id="cliente-domicilio-tipo" [(ngModel)]="domicilio.tipo" name="tipo">
+                <input type="text" class="form-control" id="cliente-motivo" [(ngModel)]="clienteSeleccionado.motivo" name="direccion" [maxLength]="191">
               </div>
             </div>
           </div>
 
-          <!--TODO corregir error de vaciado de campos de domicilio al agregar uno nuevo-->
-          <button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button>
+           <!--<button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button> -->
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="editarONuevo()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
+        <button type="button" (click)="f.reset()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>
