@@ -109,12 +109,18 @@ export class VendedoresComponent implements OnInit {
   }
 
   eliminar() {
-    const index: number = this.vendedores.indexOf(this.vendedorSeleccionado);
-    if (index !== -1) {
-      this.vendedores.splice(index, 1);
-    }
-    this.recargarTabla();
-    this.apiService.delete('vendedores/' + this.vendedorSeleccionado.id).subscribe();
+    this.apiService.delete('vendedores/' + this.vendedorSeleccionado.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.vendedores.indexOf(this.vendedorSeleccionado);
+        if (index !== -1) {
+          this.vendedores.splice(index, 1);
+        }
+        this.recargarTabla();
+      } else {
+          this.alertService.error(json['error']);
+      }
+    });
+
   }
 
   private recargarTabla() {

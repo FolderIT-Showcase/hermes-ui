@@ -105,12 +105,18 @@ export class MarcasComponent implements OnInit {
   }
 
   eliminar() {
-    const index: number = this.marcas.indexOf(this.marcaSeleccionada);
-    if (index !== -1) {
-      this.marcas.splice(index, 1);
-    }
-    this.recargarTabla();
-    this.apiService.delete('marcas/' + this.marcaSeleccionada.id).subscribe();
+
+    this.apiService.delete('marcas/' + this.marcaSeleccionada.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.marcas.indexOf(this.marcaSeleccionada);
+        if (index !== -1) {
+          this.marcas.splice(index, 1);
+        }
+        this.recargarTabla();
+      } else {
+          this.alertService.error(json['error']);
+      }
+    });
   }
 
   private recargarTabla() {

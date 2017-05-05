@@ -105,12 +105,17 @@ export class ZonasComponent implements OnInit {
   }
 
   eliminar() {
-    const index: number = this.zonas.indexOf(this.zonaSeleccionada);
-    if (index !== -1) {
-      this.zonas.splice(index, 1);
-    }
-    this.recargarTabla();
-    this.apiService.delete('zonas/' + this.zonaSeleccionada.id).subscribe();
+    this.apiService.delete('zonas/' + this.zonaSeleccionada.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.zonas.indexOf(this.zonaSeleccionada);
+        if (index !== -1) {
+          this.zonas.splice(index, 1);
+        }
+        this.recargarTabla();
+      } else {
+          this.alertService.error(json['error']);
+      }
+    });
   }
 
   private recargarTabla() {

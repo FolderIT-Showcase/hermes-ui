@@ -102,12 +102,17 @@ export class SubrubrosComponent implements OnInit {
   }
 
   eliminar() {
-    const index: number = this.subrubros.indexOf(this.subrubroSeleccionado);
-    if (index !== -1) {
-      this.subrubros.splice(index, 1);
-    }
-    this.recargarTabla();
-    this.apiService.delete('subrubros/' + this.subrubroSeleccionado.id).subscribe();
+    this.apiService.delete('subrubros/' + this.subrubroSeleccionado.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.subrubros.indexOf(this.subrubroSeleccionado);
+        if (index !== -1) {
+        this.subrubros.splice(index, 1);
+        }
+        this.recargarTabla();
+      } else {
+        this.alertService.error(json['error']);
+      }
+    });
   }
 
   private recargarTabla() {

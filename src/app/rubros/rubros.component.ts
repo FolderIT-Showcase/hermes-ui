@@ -105,12 +105,17 @@ export class RubrosComponent implements OnInit {
   }
 
   eliminar() {
-    const index: number = this.rubros.indexOf(this.rubroSeleccionado);
-    if (index !== -1) {
-      this.rubros.splice(index, 1);
+    this.apiService.delete('rubros/' + this.rubroSeleccionado.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.rubros.indexOf(this.rubroSeleccionado);
+        if (index !== -1) {
+          this.rubros.splice(index, 1);
+        }
+        this.recargarTabla();
+      } else {
+        this.alertService.error(json['error']);
     }
-    this.recargarTabla();
-    this.apiService.delete('rubros/' + this.rubroSeleccionado.id).subscribe();
+    });
   }
 
   private recargarTabla() {
