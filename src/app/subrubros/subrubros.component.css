@@ -1,0 +1,56 @@
+button {
+  background-color: inherit;
+  border: hidden;
+
+}
+button:hover{
+  color: #428bca;
+}
+
+/*Corrige error de flechas de bootstrap y del estilo de datatables superpuestas*/
+table.dataTable thead .sorting {
+  background-image: none;
+}
+table.dataTable thead .sorting_asc {
+  background-image: none;
+}
+table.dataTable thead .sorting_desc {
+  background-image: none;
+}
+table.dataTable thead .sorting_asc_disabled {
+  background-image: none;
+}
+table.dataTable thead .sorting_desc_disabled {
+  background-image: none;
+}
+
+/*Para mostrar el ícono de feedback a la derecha de la flecha del select y que no se superponga*/
+.form-control + .form-control-feedback {
+  right: 12px;
+}
+
+.select-style {
+    padding: 0;
+    margin: 0;
+    border: 0 solid transparent;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff url('data:image/gif;base64,R0lGODlhDwAUAIABAAAAAP///yH5BAEAAAEALAAAAAAPABQAAAIXjI+py+0Po5wH2HsXzmw//lHiSJZmUAAAOw==') no-repeat calc(100% - 30px) 50%;
+}
+
+    .select-style select {
+        padding: 5px 8px;
+        width: 100%;
+        box-shadow: none;
+        background-color: transparent;
+        background-image: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        /*appearance: none;*/
+        color: rgba(0, 0, 0, 0.6);
+    }
+
+.input-group > .select-style {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+}

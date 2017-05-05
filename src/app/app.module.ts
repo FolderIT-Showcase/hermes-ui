@@ -18,7 +18,13 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { DataTablesModule } from 'angular-datatables';
-import AsyncValidatorDirective from './clientes/async.validator';
+import {AsyncValidatorDirective} from './clientes/async.validator';
+import { VendedoresComponent } from './vendedores/vendedores.component';
+import { RubrosComponent } from './rubros/rubros.component';
+import { SubrubrosComponent } from './subrubros/subrubros.component';
+import { ArticulosComponent } from './articulos/articulos.component';
+import { ZonasComponent } from './zonas/zonas.component';
+import { MarcasComponent } from './marcas/marcas.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +36,13 @@ import AsyncValidatorDirective from './clientes/async.validator';
     RegisterComponent,
     NavbarComponent,
     SidebarComponent,
-    ClientesComponent
+    ClientesComponent,
+    VendedoresComponent,
+    RubrosComponent,
+    SubrubrosComponent,
+    ArticulosComponent,
+    ZonasComponent,
+    MarcasComponent
   ],
   imports: [
     BrowserModule,

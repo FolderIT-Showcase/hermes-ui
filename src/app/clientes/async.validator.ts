@@ -13,7 +13,7 @@ import { Cliente } from 'domain/cliente';
   ]
 })
 
-export default class AsyncValidatorDirective implements Validator {
+export class AsyncValidatorDirective implements Validator {
   @Input() cliente: Cliente;
   constructor(private apiService: ApiService) {
 
