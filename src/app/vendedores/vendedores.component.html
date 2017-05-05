@@ -90,7 +90,7 @@
             <div class="col-sm-10 has-feedback" 
             [ngClass]="{'has-error': !comision.valid && (!comision.pristine || comision.touched),
             'has-success': comision.valid}">
-              <input type="number" class="form-control" id="vendedor-comision" [(ngModel)]="vendedorSeleccionado.comision" name="comision" #comision="ngModel" required>
+              <input type="number" class="form-control" id="vendedor-comision" [(ngModel)]="vendedorSeleccionado.comision" name="comision" #comision="ngModel" required min="0">
               <span *ngIf="comision.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="comision.errors !== null && (!comision.pristine || comision.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!comision.valid && (!comision.pristine || comision.touched)" class="help-block">Ingrese una comisión</div>
