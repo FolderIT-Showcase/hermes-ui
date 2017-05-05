@@ -95,11 +95,11 @@
             <div class="col-sm-3 has-feedback"
             [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched),
             'has-success': codigo.valid}">
-              <input type="text" class="form-control" id="articulo-codigo" [(ngModel)]="articuloSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10">
+              <input type="text" class="form-control" id="articulo-codigo" [(ngModel)]="articuloSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="articuloSeleccionado" [path]="'articulos'">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
-              <!--TODO validar código único-->
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
+              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
             </div>
 
             <label for="articulo-codigo-fabrica" class="col-sm-2 control-label">Código fábrica:</label>
