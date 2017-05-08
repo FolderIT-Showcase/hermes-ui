@@ -16,7 +16,7 @@
   <tbody>
   <tr *ngFor="let vendedor of vendedores">
     <td>{{ vendedor.nombre }}</td>
-    <td>{{ vendedor.zona_id }}</td>
+    <td>{{ vendedor.zona_nombre }}</td>
     <td>{{ vendedor.comision }}</td>
     <td>
       <button (click)="mostrarModalEditar(vendedor)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil"></button >

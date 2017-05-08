@@ -86,6 +86,7 @@ export class SubrubrosComponent implements OnInit {
       this.enNuevo = false;
       this.apiService.post('subrubros', this.subrubroSeleccionado).subscribe(
         json => {
+          json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
           this.subrubros.push(json);
           this.recargarTabla();
           f.form.reset();
@@ -94,6 +95,7 @@ export class SubrubrosComponent implements OnInit {
     } else {
       this.apiService.put('subrubros/' + this.subrubroSeleccionado.id, this.subrubroSeleccionado).subscribe(
         json => {
+          json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
           Object.assign(this.subrubroOriginal, json);
           f.form.reset();
         }

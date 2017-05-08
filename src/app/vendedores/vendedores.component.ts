@@ -93,6 +93,7 @@ export class VendedoresComponent implements OnInit {
       this.enNuevo = false;
       this.apiService.post('vendedores', this.vendedorSeleccionado).subscribe(
         json => {
+          json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
           this.vendedores.push(json);
           this.recargarTabla();
           f.form.reset();
@@ -101,6 +102,7 @@ export class VendedoresComponent implements OnInit {
     } else {
       this.apiService.put('vendedores/' + this.vendedorSeleccionado.id, this.vendedorSeleccionado).subscribe(
         json => {
+          json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
           Object.assign(this.vendedorOriginal, json);
           f.form.reset();
         }
@@ -139,6 +141,9 @@ export class VendedoresComponent implements OnInit {
       this.apiService.get('zonas').subscribe(
         json => {
           this.zonas = json;
+          this.vendedores.forEach(element => {
+            element.zona_nombre = this.zonas.find(x => x.id === element.zona_id).nombre;
+          });
         }
       );
   }

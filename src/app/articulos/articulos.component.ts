@@ -94,6 +94,8 @@ export class ArticulosComponent implements OnInit {
       this.enNuevo = false;
       this.apiService.post('articulos', this.articuloSeleccionado).subscribe(
         json => {
+          json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
+          json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
           this.articulos.push(json);
           this.recargarTabla();
           f.form.reset();
@@ -102,6 +104,8 @@ export class ArticulosComponent implements OnInit {
     } else {
       this.apiService.put('articulos/' + this.articuloSeleccionado.id, this.articuloSeleccionado).subscribe(
         json => {
+          json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
+          json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
           Object.assign(this.articuloOriginal, json);
           f.form.reset();
         }
