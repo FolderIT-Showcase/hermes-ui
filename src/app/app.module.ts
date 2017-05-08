@@ -25,6 +25,7 @@ import { SubrubrosComponent } from './subrubros/subrubros.component';
 import { ArticulosComponent } from './articulos/articulos.component';
 import { ZonasComponent } from './zonas/zonas.component';
 import { MarcasComponent } from './marcas/marcas.component';
+import { FacturasComponent } from './facturas/facturas.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { MarcasComponent } from './marcas/marcas.component';
     SubrubrosComponent,
     ArticulosComponent,
     ZonasComponent,
-    MarcasComponent
+    MarcasComponent,
+    FacturasComponent
   ],
   imports: [
     BrowserModule,

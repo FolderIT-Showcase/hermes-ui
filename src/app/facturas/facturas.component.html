@@ -1,0 +1,119 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row">
+    <label for="factura-cliente" class="col-sm-1 control-label">Cliente*:</label>
+    <div class="col-sm-2">
+      <select class="form-control" id="factura-cliente" [(ngModel)]="cliente" name="cliente" required (change)="onClienteChanged()">
+        <option *ngFor="let cliente of clientes" [ngValue]="cliente">{{cliente.nombre}}</option>
+      </select>
+    </div>
+
+    <label for="factura-tipo" class="col-sm-1 control-label">Tipo:</label>
+    <div class="col-sm-1">
+      <input class="form-control" type="text" name="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
+    </div>
+
+    <label for="factura-punto-venta" class="col-sm-1 control-label">Pto vta:</label>
+    <div class="col-sm-1">
+      <input class="form-control" type="text" name="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
+    </div>
+
+    <label for="factura-numero" class="col-sm-1 control-label">Número:</label>
+    <div class="col-sm-1">
+      <input class="form-control" type="text" name="factura-numero" [(ngModel)]="factura.numero" required>
+    </div>
+
+    <label for="factura-fecha" class="col-sm-1 control-label">Fecha:</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="date" name="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event" required>
+    </div>
+  </div>
+
+  <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover" [hidden]="!mostrarTabla">
+    <thead>
+      <tr>
+        <th>Artículo</th>
+        <th>Cantidad</th>
+        <th>Importe</th>
+        <th>Total</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.nombre }}</td>
+        <td>{{ item.cantidad }}</td>
+        <td>{{ item.importe_unitario }}</td>
+        <td>{{ item.importe_total}}</td>
+        <td>
+          <button (click)="mostrarModalEditar(item)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil"></button >
+          <button (click)="eliminar(item)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove"></button >
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <button (click)="mostrarModalAgregar()" data-toggle="modal" data-target="#modalEditar" class="btn btn-md btn-primary">Agregar ítem</button >
+
+  <div class="form-group row">
+    <label for="factura-total" class="col-sm-1  col-sm-offset-8 control-label">Total:</label>
+    <div class="col-sm-3">
+      <input class="form-control" type="number" name="factura-total" [ngModel]="factura.importe_total" readonly>
+    </div>
+  </div>
+  
+  <div class="pull-right">
+    <button type="submit" (click)="generarFactura()" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Generar factura</button>
+  </div>
+</form>
+
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #fm="ngForm">
+          <div class="form-group row">
+            <label for="item-articulo" class="col-sm-3 control-label">Artículo*:</label>
+            <div class="col-sm-9"
+            [ngClass]="{'has-error': !articulo.valid && (!articulo.pristine || articulo.touched),
+            'has-success': articulo.valid}">
+              <div class="select-style">
+                <select class="form-control" id="item-articulo" [(ngModel)]="itemSeleccionado.articulo_id" name="articulo" #articulo="ngModel" required (change)="setNombreItem()">
+                  <option *ngFor="let articulo of articulos" [ngValue]="articulo.id">{{articulo.nombre}}</option>
+                </select>
+              </div>
+              <div *ngIf="!articulo.valid && (!articulo.pristine || articulo.touched)" class="help-block">Seleccione un artículo</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="item-cantidad" class="col-sm-3 control-label">Cantidad*:</label>
+            <div class="col-sm-9"
+            [ngClass]="{'has-error': !cantidad.valid && (!cantidad.pristine || cantidad.touched),
+            'has-success': cantidad.valid}">
+              <input type="number" class="form-control" id="rubro-cantidad" [(ngModel)]="itemSeleccionado.cantidad" name="cantidad" #cantidad="ngModel" required min="0" step="1">
+              <div *ngIf="cantidad.errors !== null && cantidad.errors.required && (!cantidad.pristine || cantidad.touched)" class="help-block">Ingrese una cantidad</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="item-importe" class="col-sm-3 control-label">Importe*:</label>
+            <div class="col-sm-9"
+            [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched),
+            'has-success': importe.valid}">
+              <input type="number" class="form-control" id="rubro-importe" [(ngModel)]="itemSeleccionado.importe_unitario" name="importe" #importe="ngModel" required min="0">
+              <div *ngIf="importe.errors !== null && importe.errors.required && (!importe.pristine || importe.touched)" class="help-block">Ingrese un importe</div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="editarONuevo(fm)" data-dismiss="modal" class="btn btn-primary" [disabled]="!fm.valid">Aceptar</button>
+        <button type="button" (click)="fm.reset()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
