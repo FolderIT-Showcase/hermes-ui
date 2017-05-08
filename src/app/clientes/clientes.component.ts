@@ -8,6 +8,7 @@ import {Provincia} from 'domain/provincia';
 import {AlertService} from '../../service/alert.service';
 import { Domicilio } from '../../domain/domicilio';
 import { Vendedor } from 'domain/vendedor';
+import { Zona } from 'domain/zona';
 
 @Component({
   selector: 'app-clientes',
@@ -28,11 +29,9 @@ export class ClientesComponent implements OnInit {
   modalTitle: string;
   mostrarTabla = false;
   tipos_responsable = [];
-  vendedores: Vendedor[];
-  zonas: any;
-  constructor(private apiService: ApiService, private alertService: AlertService) {
-
-  }
+  vendedores: Vendedor[] = [];
+  zonas: Zona[] = [];
+  constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -154,7 +153,6 @@ export class ClientesComponent implements OnInit {
     }
     this.recargarTabla();
     this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
-
   }
 
   private recargarTabla() {
@@ -216,7 +214,7 @@ export class ClientesComponent implements OnInit {
   }
 
   cargarVendedores() {
-    if (this.provincias.length === 0) {
+    if (this.vendedores.length === 0) {
       this.apiService.get('vendedores').subscribe(
         json => {
           this.vendedores = json;
@@ -225,8 +223,8 @@ export class ClientesComponent implements OnInit {
     }
   }
 
-    cargarZonas() {
-    if (this.provincias.length === 0) {
+  cargarZonas() {
+    if (this.zonas.length === 0) {
       this.apiService.get('zonas').subscribe(
         json => {
           this.zonas = json;

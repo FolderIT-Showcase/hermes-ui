@@ -2,7 +2,6 @@ import { Directive, forwardRef, Input } from '@angular/core';
 import { NG_ASYNC_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ApiService } from '../../service/api.service';
-import { Cliente } from 'domain/cliente';
 @Directive({
   selector: '[app-asyncValidator][formControlName], [app-asyncValidator][ngModel]',
   providers: [
@@ -13,8 +12,9 @@ import { Cliente } from 'domain/cliente';
   ]
 })
 
-export default class AsyncValidatorDirective implements Validator {
-  @Input() cliente: Cliente;
+export class AsyncValidatorDirective implements Validator {
+  @Input() objeto: any;
+  @Input() path: any;
   constructor(private apiService: ApiService) {
 
   }
@@ -25,12 +25,12 @@ export default class AsyncValidatorDirective implements Validator {
 
   validateUniqueCodePromise( codigo: string ) {
     return new Promise(resolve => {
-      this.apiService.get('clientes/codigo/' + codigo).subscribe(
+      this.apiService.get(this.path + '/codigo/' + codigo).subscribe(
         json => {
           if (json === '') {
             return resolve(null);
           } else {
-            if (json.id === this.cliente.id) {
+            if (json.id === this.objeto.id) {
               return resolve(null);
             } else {
               return resolve({

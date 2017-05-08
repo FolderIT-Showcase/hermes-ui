@@ -37,7 +37,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Eliminar cliente</h4>
+        <h4 class="modal-title">Eliminar Cliente</h4>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea eliminar al cliente {{clienteSeleccionado.nombre}}?</p>
@@ -64,7 +64,7 @@
             <div class="col-sm-2 has-feedback"
              [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)) || (codigo.errors !== null && codigo.errors.asyncInvalid), 
              'has-success': codigo.valid}">
-              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [cliente]="clienteSeleccionado">
+              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
@@ -96,9 +96,15 @@
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
             </div>
+
             <label for="cliente-email" class="col-sm-1 control-label">Email:</label>
-            <div class="col-sm-4">
-              <input type="email" class="form-control" id="cliente-email" [(ngModel)]="clienteSeleccionado.email" name="email">
+            <div class="col-sm-4 has-feedback"
+            [ngClass]="{'has-error': !email.valid && !email.pristine,
+            'has-success': email.valid && !email.pristine}">
+              <input type="email" class="form-control" id="cliente-email" [(ngModel)]="clienteSeleccionado.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+              <span *ngIf="email.valid && !email.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="email.errors !== null && !email.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!email.valid && !email.pristine" class="help-block">Email inválido</div>
             </div>
           </div>
 
@@ -107,12 +113,14 @@
             <div class="col-sm-2">
               <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria">
             </div>
+
             <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable:</label>
             <div class="col-sm-3">
               <select class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
                 <option *ngFor="let tipo of tipos_responsable" [ngValue]="tipo.clave">{{tipo.nombre}}</option>
               </select>
             </div>
+
             <label for="cliente-cuit" class="col-sm-1 control-label">CUIT:</label>
             <div class="col-sm-3">
               <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" [maxLength]="191">
@@ -124,6 +132,7 @@
             <div class="col-sm-5">
               <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191">
             </div>
+
             <label for="cliente-celular" class="col-sm-1 control-label">Celular:</label>
             <div class="col-sm-5">
               <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191">
@@ -157,6 +166,7 @@
                   <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
                 </select>
               </div>
+
               <label for="cliente-localidad" class="col-sm-1 control-label">Localidad:</label>
               <div class="col-sm-5">
                 <select class="form-control" id="cliente-localidad" [(ngModel)]="domicilio.localidad_id" name="localidad">
