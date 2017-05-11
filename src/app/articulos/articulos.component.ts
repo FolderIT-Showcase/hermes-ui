@@ -59,8 +59,20 @@ export class ArticulosComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nuevo Artículo',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('articulos')
       .subscribe(json => {
@@ -68,14 +80,9 @@ export class ArticulosComponent implements OnInit {
         this.cargarMarcas();
         this.cargarSubrubros();
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
-  }
 
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Artículo';
-    this.enNuevo = true;
-    this.articuloSeleccionado = new Articulo;
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(articulo: Articulo) {
@@ -90,9 +97,17 @@ export class ArticulosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    // Máscara para mostrar siempre 2 decimales
+    const num = this.articuloSeleccionado.costo;
+    this.articuloSeleccionado.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
+
+    const articuloAEnviar = new Articulo();
+    Object.assign(articuloAEnviar, this.articuloSeleccionado);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('articulos', this.articuloSeleccionado).subscribe(
+      this.apiService.post('articulos', articuloAEnviar).subscribe(
         json => {
           json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
           json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
@@ -102,7 +117,7 @@ export class ArticulosComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('articulos/' + this.articuloSeleccionado.id, this.articuloSeleccionado).subscribe(
+      this.apiService.put('articulos/' + articuloAEnviar.id, articuloAEnviar).subscribe(
         json => {
           json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
           json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
@@ -113,6 +128,12 @@ export class ArticulosComponent implements OnInit {
     }
   }
 
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nuevo Artículo';
+    this.enNuevo = true;
+    this.articuloSeleccionado = new Articulo;
+  }
+
   eliminar() {
     const index: number = this.articulos.indexOf(this.articuloSeleccionado);
     if (index !== -1) {
@@ -120,6 +141,11 @@ export class ArticulosComponent implements OnInit {
     }
     this.recargarTabla();
     this.apiService.delete('articulos/' + this.articuloSeleccionado.id).subscribe();
+    this.reestablecerParaNuevo();
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   private recargarTabla() {
@@ -130,7 +156,7 @@ export class ArticulosComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 

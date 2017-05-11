@@ -1,12 +1,12 @@
 <div class="row">
   <div class="col-sm-6 col-sm-offset-3 form-box">
     <div class="form">
-      <h2 class="ui blue image header">
+      <!--<h2 class="ui blue image header">
         <img src="assets/logo.png" class="image">
         <div class="content">
           Registrarse
         </div>
-      </h2>
+      </h2>-->
       <form role="form" class="register-form" name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !firstName.valid}">
           <label class="sr-only" for="form-username">Nombre</label>

@@ -18,7 +18,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ClientesComponent } from './clientes/clientes.component';
 import { DataTablesModule } from 'angular-datatables';
-import {AsyncValidatorDirective} from './clientes/async.validator';
+import { AsyncValidatorDirective } from './clientes/async.validator';
 import { VendedoresComponent } from './vendedores/vendedores.component';
 import { RubrosComponent } from './rubros/rubros.component';
 import { SubrubrosComponent } from './subrubros/subrubros.component';
@@ -26,6 +26,7 @@ import { ArticulosComponent } from './articulos/articulos.component';
 import { ZonasComponent } from './zonas/zonas.component';
 import { MarcasComponent } from './marcas/marcas.component';
 import { FacturasComponent } from './facturas/facturas.component';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { FacturasComponent } from './facturas/facturas.component';
     FacturasComponent
   ],
   imports: [
+    TypeaheadModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpModule,

@@ -56,21 +56,31 @@ export class ZonasComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nueva Zona',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+  setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('zonas')
       .subscribe(json => {
         this.zonas = json;
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalNuevo() {
-    this.modalTitle = 'Nueva Zona';
-    this.enNuevo = true;
-    this.zonaSeleccionada = new Zona;
+
   }
 
   mostrarModalEditar(zona: Zona) {
@@ -85,9 +95,13 @@ export class ZonasComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    const zonaAEnviar = new Zona();
+    Object.assign(zonaAEnviar, this.zonaSeleccionada);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('zonas', this.zonaSeleccionada).subscribe(
+      this.apiService.post('zonas', zonaAEnviar).subscribe(
         json => {
           this.zonas.push(json);
           this.recargarTabla();
@@ -95,13 +109,23 @@ export class ZonasComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('zonas/' + this.zonaSeleccionada.id, this.zonaSeleccionada).subscribe(
+      this.apiService.put('zonas/' + zonaAEnviar, zonaAEnviar).subscribe(
         json => {
           Object.assign(this.zonaOriginal, json);
           f.form.reset();
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nueva Zona';
+    this.enNuevo = true;
+    this.zonaSeleccionada = new Zona;
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -126,7 +150,7 @@ export class ZonasComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 }
