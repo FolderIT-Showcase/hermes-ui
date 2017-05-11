@@ -3,11 +3,11 @@ export class Item {
   nombre: string;
   comprobante_id: number;
   articulo_id: number;
-  cantidad: number;
-  importe_unitario: number;
-  costo_unitario: number;
+  cantidad: number | string = '';
+  importe_unitario: number | string = '';
+  costo_unitario = 0;
   importe_total: number;
-  importe_neto: number;
-  alicuota_iva: number;
-  importe_iva: number;
+  importe_neto  = 0;
+  alicuota_iva = 0;
+  importe_iva = 0;
 }

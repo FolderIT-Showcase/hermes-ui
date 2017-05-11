@@ -1,25 +1,13 @@
-button {
-  background-color: inherit;
-  border: hidden;
-
-}
-button:hover{
-  color: #428bca;
+.typeaheadcontainer {
+  margin-right: auto;
+  margin-left: auto;
+  height: 100%;
+  padding: 0;
 }
 
-/*Corrige error de flechas de bootstrap y del estilo de datatables superpuestas*/
-table.dataTable thead .sorting {
-  background-image: none;
-}
-table.dataTable thead .sorting_asc {
-  background-image: none;
-}
-table.dataTable thead .sorting_desc {
-  background-image: none;
-}
-table.dataTable thead .sorting_asc_disabled {
-  background-image: none;
-}
-table.dataTable thead .sorting_desc_disabled {
-  background-image: none;
+.typeaheadcontrol {
+    border: transparent;
+    padding: 8px;
+    width: 100%;
+    height: 100%;
 }

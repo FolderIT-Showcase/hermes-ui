@@ -4,7 +4,7 @@ export class Comprobante {
   id: number;
   cliente_id: number;
   tipo_comprobante_id: number;
-  fecha: Date;
+  fecha: Date | string;
   punto_venta: number;
   numero: number;
   cliente_nombre: string;
