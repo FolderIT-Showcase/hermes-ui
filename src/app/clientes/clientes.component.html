@@ -120,7 +120,7 @@
 
             <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
             <div class="col-sm-3">
-              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" [maxLength]="191" placeholder="00-00000000-0">
+              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0">
             </div>
           </div>
 

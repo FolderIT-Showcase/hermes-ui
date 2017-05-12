@@ -80,10 +80,6 @@ export class RubrosComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  mostrarModalNuevo() {
-
-  }
-
   mostrarModalEditar(rubro: Rubro) {
     this.modalTitle = 'Editar Rubro';
     this.enNuevo = false;

@@ -79,10 +79,6 @@ export class ZonasComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  mostrarModalNuevo() {
-
-  }
-
   mostrarModalEditar(zona: Zona) {
     this.modalTitle = 'Editar Zona';
     this.enNuevo = false;

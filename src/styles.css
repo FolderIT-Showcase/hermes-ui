@@ -85,6 +85,9 @@ input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
 }
+input[type=number] {
+  -moz-appearance: textfield;
+}
 
 /*
 * Fix para el campo buscar que se muestra en una línea diferente que el botón en datatables
@@ -96,7 +99,7 @@ input::-webkit-inner-spin-button {
   float: right;
   }
 /*
-* Fix para los buttons de datatable que aplica siempre btn-default 
+* Fix para los buttons de datatable que aplica siempre btn-default
 */
 .a-override {
   text-shadow: 0 -1px 0 rgba(0,0,0,.2);

@@ -7,6 +7,9 @@
           Registrarse
         </div>
       </h2>-->
+      <div class="row text-primary">
+        <h2>Registrarse</h2>
+      </div>
       <form role="form" class="register-form" name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !firstName.valid}">
           <label class="sr-only" for="form-username">Nombre</label>

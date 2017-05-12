@@ -77,10 +77,6 @@ export class SubrubrosComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  mostrarModalNuevo() {
-
-  }
-
   mostrarModalEditar(subrubro: Subrubro) {
     this.modalTitle = 'Editar Subrubro';
     this.enNuevo = false;

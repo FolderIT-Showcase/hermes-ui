@@ -77,14 +77,10 @@ export class VendedoresComponent implements OnInit {
     this.apiService.get('vendedores')
       .subscribe(json => {
         this.vendedores = json;
+        this.cargarZonas();
         this.dtTrigger.next();
       });
-    this.cargarZonas();
     this.reestablecerParaNuevo();
-  }
-
-  mostrarModalNuevo() {
-
   }
 
   mostrarModalEditar(vendedor: Vendedor) {
@@ -100,6 +96,10 @@ export class VendedoresComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    // Máscara para mostrar siempre 2 decimales
+    const num = this.vendedorSeleccionado.comision;
+    this.vendedorSeleccionado.comision = !isNaN(+num) ? (+num).toFixed(2) : num;
+
     const vendedorAEnviar = new Vendedor();
     Object.assign(vendedorAEnviar, this.vendedorSeleccionado);
     setTimeout(() => { this.cerrar(); }, 100);

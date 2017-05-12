@@ -1,11 +1,9 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Cliente } from 'domain/cliente';
 import { TipoComprobante } from 'domain/tipocomprobante';
 import { Comprobante } from 'domain/comprobante';
 import { Item } from 'domain/item';
 import { Articulo } from 'domain/articulo';
-import { DataTableDirective } from 'angular-datatables';
-import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
@@ -26,10 +24,6 @@ export class FacturasComponent implements OnInit {
   tipoComprobante: TipoComprobante = new TipoComprobante;
   factura: Comprobante = new Comprobante;
   dtOptions: any = {};
-  dtTrigger: Subject<any> = new Subject();
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  mostrarTabla = false;
   fechaSeleccionada = false;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {
@@ -95,7 +89,6 @@ export class FacturasComponent implements OnInit {
     };
 
     this.inicializar();
-    setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 0.2);
   }
 
   inicializar() {
@@ -118,10 +111,6 @@ export class FacturasComponent implements OnInit {
   onArticuloChanged(event) {
     this.item.nombre = event.item.nombre;
     this.item.articulo_id = event.item.id;
-  }
-
-  onArticuloInput(value) {
-    this.articuloAsync = value;
   }
 
   onCantidadChanged() {

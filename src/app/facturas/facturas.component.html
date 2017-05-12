@@ -34,7 +34,7 @@
     </div>
   </div>
 
-  <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
+  <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table">
     <thead>
       <tr>
         <th>Artículo</th>
@@ -64,10 +64,10 @@
                 (blur)="agregarNuevo()">
         </td>
         <td class="typeaheadcontainer">
-          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0">
+          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0" min="0" step="1">
         </td>
         <td  class="typeaheadcontainer">
-          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00">
+          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
         </td>
         <td>{{ item.importe_total }}</td>
       </tr>

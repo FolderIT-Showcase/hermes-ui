@@ -81,10 +81,6 @@ export class MarcasComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  mostrarModalNuevo() {
-
-  }
-
   mostrarModalEditar(marca: Marca) {
     this.modalTitle = 'Editar Marca';
     this.enNuevo = false;

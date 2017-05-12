@@ -3,5 +3,5 @@ export class Vendedor {
   zona_id: Number;
   zona_nombre: String;
   nombre: string;
-  comision: Number;
+  comision: Number | string;
 }
