@@ -120,16 +120,15 @@ export class ClientesComponent implements OnInit {
   editarONuevo(f: any) {
     const clienteAEnviar = new Cliente();
     Object.assign(clienteAEnviar, this.clienteSeleccionado);
-    setTimeout(() => { this.cerrar(); }, 200);
+    this.cerrar(f);
 
     if (this.enNuevo) {
       this.enNuevo = false;
       this.apiService.post('clientes', clienteAEnviar).subscribe(
         json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteSeleccionado.tipo_responsable).nombre;
+          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
           this.clientes.push(json);
           this.recargarTabla();
-          f.form.reset();
         }
       );
     } else {
@@ -137,13 +136,13 @@ export class ClientesComponent implements OnInit {
         json => {
           json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
           Object.assign(this.clienteOriginal, json);
-          f.form.reset();
         }
       );
     }
   }
 
   reestablecerParaNuevo() {
+    console.log('Hi');
     this.modalTitle = 'Nuevo Cliente';
     this.enNuevo = true;
     this.clienteSeleccionado = new Cliente;
@@ -166,8 +165,9 @@ export class ClientesComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  cerrar() {
-    this.reestablecerParaNuevo();
+  cerrar(f) {
+    setTimeout(() => {  f.form.reset(); }, 200);
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
   private recargarTabla() {

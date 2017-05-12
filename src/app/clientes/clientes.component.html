@@ -50,7 +50,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
@@ -110,7 +110,6 @@
               <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria" placeholder="Tipo categoría">
             </div>
 
-            <!--TODO ver por qué a veces falla al mostrar el tipo de responsable-->
             <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
             <div class="col-sm-3">
               <select class="form-control" id="cliente-tipo-responsable" [(ngModel)]="clienteSeleccionado.tipo_responsable" name="tipo-responsable">
@@ -194,7 +193,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
       </div>
     </div>
