@@ -25,6 +25,9 @@ export class FacturasComponent implements OnInit {
   factura: Comprobante = new Comprobante;
   dtOptions: any = {};
   fechaSeleccionada = false;
+  busquedaCliente: string;
+  busquedaClienteSeleccionado: Cliente;
+  busquedaClientes: Cliente[];
 
   constructor(private apiService: ApiService, private alertService: AlertService) {
     this.clientes = Observable.create((observer: any) => {
@@ -99,7 +102,7 @@ export class FacturasComponent implements OnInit {
   }
 
   onClienteChanged(event) {
-    this.cliente = event.item;
+    this.cliente = event;
     this.apiService.get('tipocomprobantes/tiporesponsable/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
@@ -154,5 +157,17 @@ export class FacturasComponent implements OnInit {
       this.factura = json;
       this.alertService.success('Se ha generado la factura con éxito');
     });
+  }
+
+  buscarClientes() {
+    this.busquedaClienteSeleccionado = null;
+    this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
+      this.busquedaClientes = json;
+    });
+  }
+
+  confirmarBusquedaCliente () {
+    this.clienteAsync = this.busquedaClienteSeleccionado.nombre;
+    this.onClienteChanged(this.busquedaClienteSeleccionado);
   }
 }
