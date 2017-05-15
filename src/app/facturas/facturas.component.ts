@@ -7,6 +7,9 @@ import { Articulo } from 'domain/articulo';
 import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
+import {Marca} from '../../domain/marca';
+import {Rubro} from '../../domain/rubro';
+import {Subrubro} from '../../domain/subrubro';
 
 @Component({
   selector: 'app-facturas',
@@ -25,6 +28,19 @@ export class FacturasComponent implements OnInit {
   factura: Comprobante = new Comprobante;
   dtOptions: any = {};
   fechaSeleccionada = false;
+  busquedaCliente: string;
+  busquedaClienteSeleccionado: Cliente;
+  busquedaClientes: Cliente[];
+  busquedaArticulo: string;
+  busquedaArticuloSeleccionado: Articulo;
+  busquedaArticulos: Articulo[];
+  marcas: Marca[];
+  rubros: Rubro[];
+  subrubros: Subrubro[];
+  subrubrosAMostrar: Subrubro[];
+  busquedaArticuloRubroId: number;
+  busquedaArticuloSubrubroId: number;
+  busquedaArticuloMarcaId: number;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {
     this.clientes = Observable.create((observer: any) => {
@@ -99,7 +115,7 @@ export class FacturasComponent implements OnInit {
   }
 
   onClienteChanged(event) {
-    this.cliente = event.item;
+    this.cliente = event;
     this.apiService.get('tipocomprobantes/tiporesponsable/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
@@ -108,9 +124,9 @@ export class FacturasComponent implements OnInit {
     });
   }
 
-  onArticuloChanged(event) {
-    this.item.nombre = event.item.nombre;
-    this.item.articulo_id = event.item.id;
+  onArticuloChanged(item) {
+    this.item.nombre = item.nombre;
+    this.item.articulo_id = item.id;
   }
 
   onCantidadChanged() {
@@ -154,5 +170,81 @@ export class FacturasComponent implements OnInit {
       this.factura = json;
       this.alertService.success('Se ha generado la factura con éxito');
     });
+  }
+
+  buscarClientes() {
+    this.busquedaClienteSeleccionado = null;
+    this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
+      this.busquedaClientes = json;
+    });
+  }
+
+  confirmarBusquedaCliente () {
+    this.clienteAsync = this.busquedaClienteSeleccionado.nombre;
+    this.onClienteChanged(this.busquedaClienteSeleccionado);
+  }
+
+  mostrarModalBuscarArticulos() {
+    this.cargarMarcas();
+    this.cargarRubros();
+    this.cargarSubrubros();
+    this.busquedaArticuloMarcaId = null;
+    this.busquedaArticuloRubroId = null;
+    this.busquedaArticuloSubrubroId = null;
+  }
+
+  cargarMarcas() {
+    this.apiService.get('marcas').subscribe( json => {
+      this.marcas = json;
+    });
+  }
+
+  cargarRubros() {
+    this.apiService.get('rubros').subscribe( json => {
+      this.rubros = json;
+    });
+  }
+
+  cargarSubrubros() {
+    this.apiService.get('subrubros').subscribe( json => {
+      this.subrubros = json;
+      this.subrubrosAMostrar = json;
+    });
+  }
+
+  filterSubrubros() {
+    if (this.busquedaArticuloRubroId !== 0){
+      this.subrubrosAMostrar = this.subrubros.filter(x => x.rubro_id === this.busquedaArticuloRubroId);
+    } else {
+      this.subrubrosAMostrar = this.subrubros;
+    }
+  }
+
+  buscarArticulos() {
+    if (this.busquedaArticuloMarcaId === null) {
+      this.busquedaArticuloMarcaId = 0;
+    }
+    if (this.busquedaArticuloRubroId === null) {
+      this.busquedaArticuloRubroId = 0;
+    }
+    if (this.busquedaArticuloSubrubroId === null) {
+      this.busquedaArticuloSubrubroId = 0;
+    }
+    this.apiService.get('articulos/buscar/' + this.busquedaArticuloMarcaId + '/'
+      + this.busquedaArticuloRubroId + '/'
+      + this.busquedaArticuloSubrubroId + '/'
+      + this.busquedaArticulo).subscribe( json => {
+        json.forEach( art => {
+          art.marca_nombre = this.marcas.find(x => x.id === art.marca_id).nombre;
+          art.rubro_nombre = this.rubros.find(x => x.id === art.subrubro.rubro_id).nombre;
+          art.subrubro_nombre = this.subrubros.find(x => x.id === art.subrubro_id).nombre;
+        });
+         this.busquedaArticulos = json;
+        });
+  }
+
+  confirmarBusquedaArticulo() {
+    this.articuloAsync = this.busquedaArticuloSeleccionado.nombre;
+    this.onArticuloChanged(this.busquedaArticuloSeleccionado);
   }
 }

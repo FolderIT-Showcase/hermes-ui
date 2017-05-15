@@ -58,7 +58,7 @@
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="articulo-marca" class="col-sm-1 control-label">Marca*</label>
+            <label for="articulo-marca" class="col-sm-1 required control-label">Marca</label>
             <div class="col-sm-5 has-feedback"
             [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched),
             'has-success': marca.valid}">
@@ -72,7 +72,7 @@
               <div *ngIf="!marca.valid && (!marca.pristine || marca.touched)" class="help-block">Seleccione una marca</div>
             </div>
 
-            <label for="articulo-subrubro" class="col-sm-1 control-label">Subrubro*</label>
+            <label for="articulo-subrubro" class="col-sm-1 required control-label">Subrubro</label>
             <div class="col-sm-5 has-feedback"
             [ngClass]="{'has-error': !subrubro.valid && (!subrubro.pristine || subrubro.touched),
             'has-success': subrubro.valid}">
@@ -88,7 +88,7 @@
           </div>
 
           <div class="form-group row">
-            <label for="articulo-codigo" class="col-sm-1 control-label">Código*</label>
+            <label for="articulo-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-3 has-feedback"
             [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched),
             'has-success': codigo.valid}">
@@ -111,7 +111,7 @@
           </div>
 
           <div class="form-group row">
-            <label for="articulo-nombre" class="col-sm-1 control-label">Nombre*</label>
+            <label for="articulo-nombre" class="col-sm-1 required control-label">Nombre</label>
             <div class="col-sm-6 has-feedback"
             [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
             'has-success': nombre.valid}">

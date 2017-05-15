@@ -4,6 +4,7 @@ export class Articulo {
   marca_nombre: string;
   subrubro_id: number;
   subrubro_nombre: string;
+  rubro_nombre: string;
   codigo: string;
   codigo_fabrica: string;
   codigo_auxiliar: string;
