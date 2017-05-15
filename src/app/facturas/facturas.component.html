@@ -12,10 +12,10 @@
                class="form-control"
                autocomplete="off"
                placeholder="Cliente*"
-               >
+        >
         <span class="input-group-btn">
-        <button class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
-      </span>
+          <button class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
+        </span>
       </div>
     </div>
 
@@ -42,41 +42,46 @@
 
   <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table">
     <thead>
-      <tr>
-        <th>Artículo</th>
-        <th>Cantidad</th>
-        <th>Importe</th>
-        <th>Total</th>
-      </tr>
+    <tr>
+      <th>Artículo</th>
+      <th>Cantidad</th>
+      <th>Importe</th>
+      <th>Total</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let item of items">
-        <td>{{ item.nombre }}</td>
-        <td>{{ item.cantidad }}</td>
-        <td>{{ item.importe_unitario }}</td>
-        <td>{{ item.importe_total }}</td>
-      </tr>
+    <tr *ngFor="let item of items">
+      <td>{{ item.nombre }}</td>
+      <td>{{ item.cantidad }}</td>
+      <td>{{ item.importe_unitario }}</td>
+      <td>{{ item.importe_total }}</td>
+    </tr>
 
-      <tr>
-        <td class="typeaheadcontainer">
-          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol"
-                [typeahead]="articulos"
-                (typeaheadOnSelect)="onArticuloChanged($event)"
-                typeaheadMinLength="3"
-                typeaheadOptionsLimit="7"
-                typeaheadOptionField="nombre"
-                autocomplete="off"
-                placeholder="artículo"
-                (blur)="agregarNuevo()">
-        </td>
-        <td class="typeaheadcontainer">
-          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0" min="0" step="1">
-        </td>
-        <td  class="typeaheadcontainer">
-          <input type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
-        </td>
-        <td>{{ item.importe_total }}</td>
-      </tr>
+    <tr>
+      <td class="typeaheadcontainer">
+        <div class="input-group">
+          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol input-group"
+                 [typeahead]="articulos"
+                 (typeaheadOnSelect)="onArticuloChanged($event.item)"
+                 typeaheadMinLength="3"
+                 typeaheadOptionsLimit="7"
+                 typeaheadOptionField="nombre"
+                 autocomplete="off"
+                 placeholder="artículo"
+                 (blur)="agregarNuevo()">
+          <span class="input-group-btn">
+            <button class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos()" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+          </span>
+        </div>
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0" min="0" step="1">
+      </td>
+      <td  class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
+      </td>
+      <td>{{ item.importe_total }}</td>
+    </tr>
     </tbody>
   </table>
 
@@ -97,14 +102,14 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">Buscar Clientes</h4>
+        <h4 class="modal-title">Buscar Clientes</h4>
       </div>
       <div class="modal-body">
         <form class="form-horizontal" #fb="ngForm">
           <div class="form-group row">
             <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" id="busqueda-cliente" [(ngModel)]="busquedaCliente" (input)="buscarClientes()" name="busqueda-cliente" placeholder="Bùsqueda" required>
+              <input type="text" class="form-control" id="busqueda-cliente" [(ngModel)]="busquedaCliente" (input)="buscarClientes()" name="busqueda-cliente" placeholder="Búsqueda" required>
             </div>
           </div>
 
@@ -131,6 +136,78 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="confirmarBusquedaCliente()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaClienteSeleccionado === null || !fb.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalBuscarArticulo" tabindex="-1" role="dialog" aria-labelledby="modalBuscarArticulo" #modalBuscarArticulo>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Buscar Artículos</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #fa="ngForm">
+          <div class="form-group row">
+            <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="busqueda-articulo" [(ngModel)]="busquedaArticulo" (input)="buscarArticulos()" name="busqueda-articulo" placeholder="Búsqueda" required>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="busqueda-cliente-rubro" class="col-sm-1 control-label">Rubro</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-rubro" [(ngModel)]="busquedaArticuloRubroId" (change)="filterSubrubros()" name="rubro">
+                <option [ngValue]="0">Todos</option>
+                <option *ngFor="let rubro of rubros" [ngValue]="rubro.id">{{rubro.nombre}}</option>
+              </select>
+            </div>
+
+            <label for="busqueda-cliente-subrubro" class="col-sm-1 control-label">Subrubro</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-subrubro" [(ngModel)]="busquedaArticuloSubrubroId" name="subrubro">
+                <option [ngValue]="0">Todos</option>
+                <option *ngFor="let subrubro of subrubrosAMostrar" [ngValue]="subrubro.id">{{subrubro.nombre}}</option>
+              </select>
+            </div>
+
+            <label for="busqueda-cliente-marca" class="col-sm-1 control-label">Marca</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-marca" [(ngModel)]="busquedaArticuloMarcaId" name="marca">
+                <option [ngValue]="0">Todos</option>
+                <option *ngFor="let marca of marcas" [ngValue]="marca.id">{{marca.nombre}}</option>
+              </select>
+            </div>
+          </div>
+
+          <table id="tabla-buscar-articulos" class="row-border hover table">
+            <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Marca</th>
+              <th>Rubro</th>
+              <th>Subrubro</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let articulo of busquedaArticulos" class='clickable-row' (click)="busquedaArticuloSeleccionado = articulo" [class.active]="articulo == busquedaArticuloSeleccionado">
+              <td>{{ articulo.codigo }}</td>
+              <td>{{ articulo.nombre }}</td>
+              <td>{{ articulo.marca_nombre }}</td>
+              <td>{{ articulo.rubro_nombre }}</td>
+              <td>{{ articulo.subrubro_nombre }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarBusquedaArticulo()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaArticuloSeleccionado === null || !fa.valid">Aceptar</button>
       </div>
     </div>
   </div>
