@@ -1,6 +1,6 @@
 <form class="form-horizontal" #f="ngForm">
   <div class="form-group row">
-    <label for="factura-cliente" class="col-sm-1 control-label">Cliente*</label>
+    <label for="factura-cliente" class="col-sm-1 required control-label">Cliente</label>
     <div class="col-sm-2">
       <input id="factura-cliente" [(ngModel)]="clienteAsync" name="clienteAsync"
          [typeahead]="clientes"

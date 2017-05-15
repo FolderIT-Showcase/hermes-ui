@@ -56,10 +56,10 @@
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="cliente-codigo" class="col-sm-1 control-label">Código*</label>
+            <label for="cliente-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-2 has-feedback"
              [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
-             'has-success': codigo.valid}">
+             'has-success': codigo.valid}" required>
               <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'" placeholder="Código*">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -83,7 +83,7 @@
           </div>
 
           <div class="form-group row">
-            <label for="cliente-nombre" class="col-sm-1 control-label">Nombre*</label>
+            <label for="cliente-nombre" class="col-sm-1 required control-label">Nombre</label>
             <div class="col-sm-6 has-feedback"
             [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
             'has-success': nombre.valid}">

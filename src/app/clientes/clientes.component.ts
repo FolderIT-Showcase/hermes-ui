@@ -5,7 +5,6 @@ import {ApiService} from '../../service/api.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Localidad} from '../../domain/localidad';
 import {Provincia} from 'domain/provincia';
-import {AlertService} from '../../service/alert.service';
 import { Domicilio } from '../../domain/domicilio';
 import { Vendedor } from 'domain/vendedor';
 import { Zona } from 'domain/zona';
@@ -31,7 +30,7 @@ export class ClientesComponent implements OnInit {
   tipos_responsable = [];
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -142,7 +141,6 @@ export class ClientesComponent implements OnInit {
   }
 
   reestablecerParaNuevo() {
-    console.log('Hi');
     this.modalTitle = 'Nuevo Cliente';
     this.enNuevo = true;
     this.clienteSeleccionado = new Cliente;
