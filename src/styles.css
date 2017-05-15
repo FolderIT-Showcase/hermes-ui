@@ -60,3 +60,48 @@ body {
   50% { content: '.'; }
   75% { content: '..'; }
 }
+
+/*
+* Colores de los íconos
+*/
+.blue {
+  color: blue;
+  background-color: inherit;
+  border: hidden;
+}
+
+.red {
+  color: red;
+  background-color: inherit;
+  border: hidden;
+}
+
+/*
+* Ocultar los spinner de los campos numéricos
+*/
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/*
+* Fix para el campo buscar que se muestra en una línea diferente que el botón en datatables
+*/
+.dataTables_wrapper .dataTables_length {
+  float: left;
+}
+.dataTables_wrapper .dataTables_filter {
+  float: right;
+  }
+/*
+* Fix para los buttons de datatable que aplica siempre btn-default
+*/
+.a-override {
+  text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+  border-color: #3e8f3e;
+}

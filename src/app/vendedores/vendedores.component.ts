@@ -58,22 +58,29 @@ export class VendedoresComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nuevo Vendedor',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('vendedores')
       .subscribe(json => {
         this.vendedores = json;
+        this.cargarZonas();
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
-    this.cargarZonas();
-  }
-
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Vendedor';
-    this.enNuevo = true;
-    this.vendedorSeleccionado = new Vendedor;
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(vendedor: Vendedor) {
@@ -89,9 +96,17 @@ export class VendedoresComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    // Máscara para mostrar siempre 2 decimales
+    const num = this.vendedorSeleccionado.comision;
+    this.vendedorSeleccionado.comision = !isNaN(+num) ? (+num).toFixed(2) : num;
+
+    const vendedorAEnviar = new Vendedor();
+    Object.assign(vendedorAEnviar, this.vendedorSeleccionado);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('vendedores', this.vendedorSeleccionado).subscribe(
+      this.apiService.post('vendedores', vendedorAEnviar).subscribe(
         json => {
           json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
           this.vendedores.push(json);
@@ -100,7 +115,7 @@ export class VendedoresComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('vendedores/' + this.vendedorSeleccionado.id, this.vendedorSeleccionado).subscribe(
+      this.apiService.put('vendedores/' + vendedorAEnviar.id, vendedorAEnviar).subscribe(
         json => {
           json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
           Object.assign(this.vendedorOriginal, json);
@@ -108,6 +123,16 @@ export class VendedoresComponent implements OnInit {
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nuevo Vendedor';
+    this.enNuevo = true;
+    this.vendedorSeleccionado = new Vendedor;
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -133,7 +158,7 @@ export class VendedoresComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 

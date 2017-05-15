@@ -56,21 +56,29 @@ export class MarcasComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nueva Marca',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('marcas')
       .subscribe(json => {
         this.marcas = json;
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
-  }
 
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nueva Marca';
-    this.enNuevo = true;
-    this.marcaSeleccionada = new Marca;
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(marca: Marca) {
@@ -85,9 +93,13 @@ export class MarcasComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    const marcaAEnviar = new Marca();
+    Object.assign(marcaAEnviar, this.marcaSeleccionada);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('marcas', this.marcaSeleccionada).subscribe(
+      this.apiService.post('marcas', marcaAEnviar).subscribe(
         json => {
           this.marcas.push(json);
           this.recargarTabla();
@@ -95,13 +107,23 @@ export class MarcasComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('marcas/' + this.marcaSeleccionada.id, this.marcaSeleccionada).subscribe(
+      this.apiService.put('marcas/' + marcaAEnviar.id, marcaAEnviar).subscribe(
         json => {
           Object.assign(this.marcaOriginal, json);
           f.form.reset();
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nueva Marca';
+    this.enNuevo = true;
+    this.marcaSeleccionada = new Marca;
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -127,7 +149,7 @@ export class MarcasComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 }

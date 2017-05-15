@@ -10,7 +10,7 @@ export class Articulo {
   nombre: string;
   nombre_reducido: string;
   lleva_stock: Boolean = false;
-  costo: number;
+  costo: number | string;
   punto_pedido: number;
   bajo_minimo: number;
   activo: Boolean = true;

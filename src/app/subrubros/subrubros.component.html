@@ -4,13 +4,13 @@
   </div>
 </div>
 
-<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover" [hidden]="!mostrarTabla">
+<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
   <tr>
     <th>Código</th>
     <th>Nombre</th>
     <th>Rubro</th>
-    <th>Acciones</th>
+    <th style="width:10%">Acciones</th>
   </tr>
   </thead>
   <tbody>
@@ -19,45 +19,42 @@
     <td>{{ subrubro.nombre }}</td>
     <td>{{ subrubro.rubro_nombre }}</td>
     <td>
-      <button (click)="mostrarModalEditar(subrubro)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil"></button >
-      <button (click)="mostrarModalEliminar(subrubro)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove"></button >
+      <button (click)="mostrarModalEditar(subrubro)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button (click)="mostrarModalEliminar(subrubro)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
   </tbody>
 </table>
-<div>
-  <button (click)="mostrarModalNuevo()" data-toggle="modal" data-target="#modalEditar" class="btn btn-md btn-primary"> Nuevo Subrubro</button >
-</div>
 
-<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
+<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Eliminar Subrubro</h4>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea eliminar el subrubro {{subrubroSeleccionado.nombre}}?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-danger">Aceptar</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="subrubro-rubro" class="col-sm-2 control-label">Rubro*:</label>
+            <label for="subrubro-rubro" class="col-sm-2 control-label">Rubro*</label>
             <div class="col-sm-10 has-feedback"
             [ngClass]="{'has-error': !rubro.valid && (!rubro.pristine || rubro.touched),
             'has-success': rubro.valid}">
@@ -73,11 +70,11 @@
           </div>
 
           <div class="form-group row">
-            <label for="subrubro-codigo" class="col-sm-2 control-label">Código*:</label>
+            <label for="subrubro-codigo" class="col-sm-2 control-label">Código*</label>
             <div class="col-sm-10 has-feedback"
             [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched),
             'has-success': codigo.valid}">
-              <input type="text" class="form-control" id="subrubro-codigo" [(ngModel)]="subrubroSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="20" app-asyncValidator [objeto]="subrubroSeleccionado" [path]="'subrubros'">
+              <input type="text" class="form-control" id="subrubro-codigo" [(ngModel)]="subrubroSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="20" app-asyncValidator [objeto]="subrubroSeleccionado" [path]="'subrubros'" placeholder="Código*">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
@@ -86,21 +83,21 @@
           </div>
 
           <div class="form-group row">
-            <label for="subrubro-nombre" class="col-sm-2 control-label">Nombre*:</label>
-            <div class="col-sm-10 has-feedback" 
+            <label for="subrubro-nombre" class="col-sm-2 control-label">Nombre*</label>
+            <div class="col-sm-10 has-feedback"
             [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
             'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="subrubro-nombre" [(ngModel)]="subrubroSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191">
+              <input type="text" class="form-control" id="subrubro-nombre" [(ngModel)]="subrubroSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
             </div>
-          </div>                 
+          </div>
         </form>
       </div>
       <div class="modal-footer">
+        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
-        <button type="button" (click)="f.reset()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>

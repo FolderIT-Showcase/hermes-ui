@@ -11,6 +11,7 @@ import { ZonasComponent } from 'app/zonas/zonas.component';
 import { RubrosComponent } from 'app/rubros/rubros.component';
 import { SubrubrosComponent } from 'app/subrubros/subrubros.component';
 import { MarcasComponent } from 'app/marcas/marcas.component';
+import { FacturasComponent } from 'app/facturas/facturas.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -23,6 +24,7 @@ const appRoutes: Routes = [
   {path: 'rubros', component: RubrosComponent, canActivate: [AuthGuard]},
   {path: 'subrubros', component: SubrubrosComponent, canActivate: [AuthGuard]},
   {path: 'marcas', component: MarcasComponent, canActivate: [AuthGuard]},
+  {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

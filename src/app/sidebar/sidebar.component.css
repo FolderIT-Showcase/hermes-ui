@@ -15,7 +15,7 @@
     z-index: 1000;
     display: block;
     padding: 20px;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: auto;
     background-color: #f5f5f5;
     border-right: 1px solid #eee;
@@ -37,8 +37,7 @@
 .nav-sidebar > .active > a:hover,
 .nav-sidebar > .active > a:focus {
   color: #fff;
-  background-color: #428bca;
-  background-image: none;
+  background: #428bca none;
 }
 .dropdown-menu {
   border-radius: 0;
@@ -50,4 +49,13 @@
   padding-top: 0;
   background-color: #f5f5f5;
   position:inherit;
+}
+
+.nav > li > a {
+  display: flow-root;
+}
+
+.nav .dropdown.open .caret{
+  border-top: none;
+  border-bottom: 4px solid;
 }

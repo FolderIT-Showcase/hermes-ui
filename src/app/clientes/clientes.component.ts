@@ -65,7 +65,18 @@ export class ClientesComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nuevo Cliente',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
 
     this.tipos_responsable = [
@@ -77,13 +88,7 @@ export class ClientesComponent implements OnInit {
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
       ];
-      // {clave: 'SNC', nombre: 'Sujeto No Categorizado'},
-      // {clave: 'RNI', nombre: 'Responsable No Inscripto'},
-      // {clave: 'L', nombre: 'Liberado Ley 19640'},
-      // {clave: 'AP', nombre: 'Agente de Percepción'},
-      // {clave: 'CE', nombre: 'Contribuyente eventual'},
-      // {clave: 'MS', nombre: 'Monotributista Social'},
-      // {clave: 'CES', nombre: 'Contribuyente Eventual Social'},
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('clientes')
       .subscribe(json => {
@@ -93,21 +98,9 @@ export class ClientesComponent implements OnInit {
             cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
           });
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
-  }
 
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Cliente';
-    this.enNuevo = true;
-    this.clienteSeleccionado = new Cliente;
-    this.clienteSeleccionado.domicilios = [];
-    this.clienteSeleccionado.tipo_responsable = 'RI';
-    this.clienteSeleccionado.activo = true;
-    this.nuevoDomicilio();
-    this.cargarProvincias();
-    this.cargarVendedores();
-    this.cargarZonas();
+      this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -125,25 +118,41 @@ export class ClientesComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    const clienteAEnviar = new Cliente();
+    Object.assign(clienteAEnviar, this.clienteSeleccionado);
+    this.cerrar(f);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('clientes', this.clienteSeleccionado).subscribe(
+      this.apiService.post('clientes', clienteAEnviar).subscribe(
         json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteSeleccionado.tipo_responsable).nombre;
+          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
           this.clientes.push(json);
           this.recargarTabla();
-          f.form.reset();
         }
       );
     } else {
-      this.apiService.put('clientes/' + this.clienteSeleccionado.id, this.clienteSeleccionado).subscribe(
+      this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
         json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.clienteSeleccionado.tipo_responsable).nombre;
+          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
           Object.assign(this.clienteOriginal, json);
-          f.form.reset();
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    console.log('Hi');
+    this.modalTitle = 'Nuevo Cliente';
+    this.enNuevo = true;
+    this.clienteSeleccionado = new Cliente;
+    this.clienteSeleccionado.domicilios = [];
+    this.clienteSeleccionado.tipo_responsable = 'RI';
+    this.clienteSeleccionado.activo = true;
+    this.nuevoDomicilio();
+    this.cargarProvincias();
+    this.cargarVendedores();
+    this.cargarZonas();
   }
 
   eliminar() {
@@ -153,6 +162,12 @@ export class ClientesComponent implements OnInit {
     }
     this.recargarTabla();
     this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
+    this.reestablecerParaNuevo();
+  }
+
+  cerrar(f) {
+    setTimeout(() => {  f.form.reset(); }, 200);
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
   private recargarTabla() {
@@ -163,7 +178,7 @@ export class ClientesComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 

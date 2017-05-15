@@ -1,12 +1,3 @@
-button {
-  background-color: inherit;
-  border: hidden;
-
-}
-button:hover{
-  color: #428bca;
-}
-
 /*Corrige error de flechas de bootstrap y del estilo de datatables superpuestas*/
 table.dataTable thead .sorting {
   background-image: none;

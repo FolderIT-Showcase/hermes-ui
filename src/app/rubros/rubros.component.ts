@@ -56,21 +56,28 @@ export class RubrosComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nuevo Rubro',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('rubros')
       .subscribe(json => {
         this.rubros = json;
         this.dtTrigger.next();
-        setTimeout(() => { this.mostrarTabla = true; }, 1000);
       });
-  }
-
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Rubro';
-    this.enNuevo = true;
-    this.rubroSeleccionado = new Rubro;
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(rubro: Rubro) {
@@ -85,9 +92,13 @@ export class RubrosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    const rubroAEnviar = new Rubro();
+    Object.assign(rubroAEnviar, this.rubroSeleccionado);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('rubros', this.rubroSeleccionado).subscribe(
+      this.apiService.post('rubros', rubroAEnviar).subscribe(
         json => {
           this.rubros.push(json);
           this.recargarTabla();
@@ -95,13 +106,23 @@ export class RubrosComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('rubros/' + this.rubroSeleccionado.id, this.rubroSeleccionado).subscribe(
+      this.apiService.put('rubros/' + rubroAEnviar.id, rubroAEnviar).subscribe(
         json => {
           Object.assign(this.rubroOriginal, json);
           f.form.reset();
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nuevo Rubro';
+    this.enNuevo = true;
+    this.rubroSeleccionado = new Rubro;
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -126,7 +147,7 @@ export class RubrosComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 }

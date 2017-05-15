@@ -58,16 +58,23 @@ export class SubrubrosComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-    } ]
+      } ],
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          text: 'Nuevo Subrubro',
+          key: '1',
+          className: 'btn btn-success a-override',
+          action: function (e, dt, node, config) {
+            $('#modalEditar').modal('show');
+          }
+        }
+      ]
     };
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.cargarRubros();
-  }
-
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Subrubro';
-    this.enNuevo = true;
-    this.subrubroSeleccionado = new Subrubro;
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(subrubro: Subrubro) {
@@ -82,9 +89,13 @@ export class SubrubrosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    const subrubroAEnviar = new Subrubro();
+    Object.assign(subrubroAEnviar, this.subrubroSeleccionado);
+    setTimeout(() => { this.cerrar(); }, 100);
+
     if (this.enNuevo) {
       this.enNuevo = false;
-      this.apiService.post('subrubros', this.subrubroSeleccionado).subscribe(
+      this.apiService.post('subrubros', subrubroAEnviar).subscribe(
         json => {
           json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
           this.subrubros.push(json);
@@ -93,7 +104,7 @@ export class SubrubrosComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('subrubros/' + this.subrubroSeleccionado.id, this.subrubroSeleccionado).subscribe(
+      this.apiService.put('subrubros/' + subrubroAEnviar.id, subrubroAEnviar).subscribe(
         json => {
           json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
           Object.assign(this.subrubroOriginal, json);
@@ -101,6 +112,16 @@ export class SubrubrosComponent implements OnInit {
         }
       );
     }
+  }
+
+  reestablecerParaNuevo() {
+    this.modalTitle = 'Nuevo Subrubro';
+    this.enNuevo = true;
+    this.subrubroSeleccionado = new Subrubro;
+  }
+
+  cerrar() {
+    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -125,7 +146,7 @@ export class SubrubrosComponent implements OnInit {
       dtInstance.destroy();
       // Call the dtTrigger to rerender again
       this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 1000);
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
 
@@ -141,7 +162,6 @@ export class SubrubrosComponent implements OnInit {
                           });
                           this.subrubros = json;
                           this.dtTrigger.next();
-                          setTimeout(() => { this.mostrarTabla = true; }, 1000);
             });
         }
       );
