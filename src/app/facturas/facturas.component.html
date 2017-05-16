@@ -11,8 +11,7 @@
                typeaheadOptionField="nombre"
                class="form-control"
                autocomplete="off"
-               placeholder="Cliente*"
-        >
+               placeholder="Cliente*">
         <span class="input-group-btn">
           <button class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
         </span>
@@ -37,6 +36,16 @@
     <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
     <div class="col-sm-2">
       <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
+    <div class="col-sm-3">
+      <select class="form-control" id="cliente-lista" [(ngModel)]="cliente.lista_id" (change)="onListaPreciosChanged()" name="lista">
+        <option [ngValue]="0">Ninguna</option>
+        <option *ngFor="let lista of listasPrecios" [ngValue]="lista.id">{{lista.nombre}}</option>
+      </select>
     </div>
   </div>
 
@@ -78,7 +87,7 @@
         <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0" min="0" step="1">
       </td>
       <td  class="typeaheadcontainer">
-        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
+        <input [readonly]="!parametroModificaPrecio.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
       </td>
       <td>{{ item.importe_total }}</td>
     </tr>

@@ -10,6 +10,10 @@ import { AlertService } from '../../service/alert.service';
 import {Marca} from '../../domain/marca';
 import {Rubro} from '../../domain/rubro';
 import {Subrubro} from '../../domain/subrubro';
+import {ListaPrecios} from '../../domain/listaPrecios';
+import {Parametro} from '../../domain/parametro';
+import {AuthenticationService} from '../../service/authentication.service';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-facturas',
@@ -17,7 +21,7 @@ import {Subrubro} from '../../domain/subrubro';
   styleUrls: ['./facturas.component.css']
 })
 export class FacturasComponent implements OnInit {
-  cliente: Cliente;
+  cliente: Cliente = new Cliente;
   clienteAsync: string;
   clientes: any;
   item: Item = new Item();
@@ -41,8 +45,13 @@ export class FacturasComponent implements OnInit {
   busquedaArticuloRubroId: number;
   busquedaArticuloSubrubroId: number;
   busquedaArticuloMarcaId: number;
+  listasPrecios: ListaPrecios[] = [];
+  parametroModificaPrecio: Parametro;
+  parametroUsaDescuento: Parametro;
+  parametroDescuentoMax: Parametro;
+  listaPreciosSeleccionada: ListaPrecios;
 
-  constructor(private apiService: ApiService, private alertService: AlertService) {
+  constructor(private apiService: ApiService, private alertService: AlertService, private authenticationService: AuthenticationService) {
     this.clientes = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         observer.next(json);
@@ -112,6 +121,8 @@ export class FacturasComponent implements OnInit {
     this.factura.importe_total = 0;
     this.factura.anulado = false;
     this.factura.fecha = new Date();
+    this.cargarListasPrecios();
+    this.obtenerParametros();
   }
 
   onClienteChanged(event) {
@@ -122,11 +133,18 @@ export class FacturasComponent implements OnInit {
         this.factura.numero = +contador.ultimo_generado + 1;
       });
     });
+    this.onListaPreciosChanged();
   }
 
   onArticuloChanged(item) {
     this.item.nombre = item.nombre;
     this.item.articulo_id = item.id;
+    if (!isNullOrUndefined(this.listaPreciosSeleccionada)) {
+      const itemLista = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === this.item.articulo_id);
+      if (!isNullOrUndefined(itemLista)) {
+        this.item.importe_unitario = itemLista.precio_venta;
+      }
+    }
   }
 
   onCantidadChanged() {
@@ -213,7 +231,7 @@ export class FacturasComponent implements OnInit {
   }
 
   filterSubrubros() {
-    if (this.busquedaArticuloRubroId !== 0){
+    if (this.busquedaArticuloRubroId !== 0) {
       this.subrubrosAMostrar = this.subrubros.filter(x => x.rubro_id === this.busquedaArticuloRubroId);
     } else {
       this.subrubrosAMostrar = this.subrubros;
@@ -246,5 +264,22 @@ export class FacturasComponent implements OnInit {
   confirmarBusquedaArticulo() {
     this.articuloAsync = this.busquedaArticuloSeleccionado.nombre;
     this.onArticuloChanged(this.busquedaArticuloSeleccionado);
+  }
+
+  private cargarListasPrecios() {
+    this.apiService.get('listaprecios').subscribe(json => {
+      this.listasPrecios = json;
+    });
+  }
+
+  private obtenerParametros() {
+    const parametros = this.authenticationService.getCurrentParameters();
+    this.parametroModificaPrecio = parametros.find(x => x.nombre === 'VTA_MODIFICA_PRECIO');
+    this.parametroUsaDescuento = parametros.find(x => x.nombre === 'VTA_USA_DESCUENTO');
+    this.parametroDescuentoMax = parametros.find(x => x.nombre === 'VTA_DESCUENTO_MAX');
+  }
+
+  onListaPreciosChanged() {
+     this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
   }
 }
