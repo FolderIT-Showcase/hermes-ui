@@ -15,4 +15,5 @@ export class Cliente {
   activo: Boolean;
   motivo: string;
   domicilios: Domicilio[];
+  lista_id: number;
 }

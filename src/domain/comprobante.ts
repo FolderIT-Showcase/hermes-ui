@@ -20,4 +20,5 @@ export class Comprobante {
   fecha_venc_cae: Date;
   anulado: Boolean;
   items: Item[];
+  lista_id: number;
 }

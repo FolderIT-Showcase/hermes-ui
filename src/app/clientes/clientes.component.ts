@@ -8,6 +8,7 @@ import {Provincia} from 'domain/provincia';
 import { Domicilio } from '../../domain/domicilio';
 import { Vendedor } from 'domain/vendedor';
 import { Zona } from 'domain/zona';
+import {ListaPrecios} from '../../domain/listaPrecios';
 
 @Component({
   selector: 'app-clientes',
@@ -30,6 +31,8 @@ export class ClientesComponent implements OnInit {
   tipos_responsable = [];
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
+  listasPrecios: ListaPrecios[] = [];
+
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
@@ -110,6 +113,7 @@ export class ClientesComponent implements OnInit {
     this.cargarProvincias();
     this.cargarVendedores();
     this.cargarZonas();
+    this.cargarListasPrecios();
   }
 
   mostrarModalEliminar(cliente: Cliente) {
@@ -151,6 +155,7 @@ export class ClientesComponent implements OnInit {
     this.cargarProvincias();
     this.cargarVendedores();
     this.cargarZonas();
+    this.cargarListasPrecios();
   }
 
   eliminar() {
@@ -244,5 +249,11 @@ export class ClientesComponent implements OnInit {
         }
       );
     }
+  }
+
+  private cargarListasPrecios() {
+    this.apiService.get('listaprecios').subscribe(json => {
+        this.listasPrecios = json;
+      });
   }
 }

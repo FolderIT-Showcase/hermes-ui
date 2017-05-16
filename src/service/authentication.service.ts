@@ -33,7 +33,7 @@ export class AuthenticationService {
           this.api.get('parametros').subscribe( json => {
             this.currentParameters = json;
             this.currentParameters$.emit(json);
-            localStorage.setItem('currentParameters', json);
+            localStorage.setItem('currentParameters', JSON.stringify(json));
           });
         }
       }).first().toPromise();
