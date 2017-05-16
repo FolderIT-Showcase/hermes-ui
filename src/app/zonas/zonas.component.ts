@@ -105,7 +105,7 @@ export class ZonasComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('zonas/' + zonaAEnviar, zonaAEnviar).subscribe(
+      this.apiService.put('zonas/' + zonaAEnviar.id, zonaAEnviar).subscribe(
         json => {
           Object.assign(this.zonaOriginal, json);
           f.form.reset();
