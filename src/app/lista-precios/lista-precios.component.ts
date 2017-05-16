@@ -60,7 +60,7 @@ export class ListaPreciosComponent implements OnInit {
       dom: 'Bfrtip',
       buttons: [
         {
-          text: 'Nueva ListaPrecios',
+          text: 'Nueva Lista de Precios',
           key: '1',
           className: 'btn btn-success a-override',
           action: function (e, dt, node, config) {
@@ -91,6 +91,10 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
+    // Máscara para mostrar siempre 2 decimales
+    const num = this.listaPreciosSeleccionada.porcentaje;
+    this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
+
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     setTimeout(() => { this.cerrar(); }, 100);
@@ -105,7 +109,7 @@ export class ListaPreciosComponent implements OnInit {
         }
       );
     } else {
-      this.apiService.put('listaprecios/' + listaPreciosAEnviar, listaPreciosAEnviar).subscribe(
+      this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
         json => {
           Object.assign(this.listaPreciosOriginal, json);
           f.form.reset();

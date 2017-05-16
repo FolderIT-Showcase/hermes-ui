@@ -1,6 +1,6 @@
 export class ListaPrecios {
   id: number;
   nombre: string;
-  porcentaje: number;
-  activo: boolean;
+  porcentaje: number | string;
+  activo = true;
 }
