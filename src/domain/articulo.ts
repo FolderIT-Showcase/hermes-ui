@@ -11,9 +11,10 @@ export class Articulo {
   nombre: string;
   nombre_reducido: string;
   lleva_stock: Boolean = false;
-  costo: number | string;
+  costo: number | string = 0;
   punto_pedido: number;
   bajo_minimo: number;
   activo: Boolean = true;
   motivo: string;
+  enlista: boolean;
 }

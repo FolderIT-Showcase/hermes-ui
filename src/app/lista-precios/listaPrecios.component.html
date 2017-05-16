@@ -17,6 +17,7 @@
     <td>{{ lista.nombre }}</td>
     <td>{{ lista.porcentaje }}</td>
     <td>
+      <button (click)="mostrarModalItems(lista)" data-toggle="modal" data-target="#modalItems" class="glyphicon glyphicon-list blue"></button >
       <button (click)="mostrarModalEditar(lista)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(lista)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
@@ -89,6 +90,43 @@
       <div class="modal-footer">
         <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalItems" tabindex="-1" role="dialog" aria-labelledby="modalItems" #modalItems data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Artículos en {{listaPreciosSeleccionada.nombre}}</h4>
+      </div>
+      <div class="modal-body">
+        <table id="tabla-articulos" class="row-border hover table">
+          <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Precio Costo</th>
+            <th>Precio Venta</th>
+            <th>En lista</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let articulo of articulos" class='clickable-row'>
+            <td>{{ articulo.codigo }}</td>
+            <td>{{ articulo.nombre }}</td>
+            <td>{{ articulo.costo }}</td>
+            <td>{{ articulo.costo * (1 + listaPreciosSeleccionada.porcentaje / 100)}}</td>
+            <td><input type="checkbox" id="lista-item-enlista" [(ngModel)]="articulo.enlista" name="activo"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="editarItems()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>

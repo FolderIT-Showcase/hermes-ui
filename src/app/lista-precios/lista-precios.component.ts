@@ -4,6 +4,9 @@ import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import {ListaPrecios} from '../../domain/listaPrecios';
+import {Articulo} from '../../domain/articulo';
+import {isNullOrUndefined} from 'util';
+import {ItemListaPrecios} from '../../domain/itemListaPrecios';
 
 @Component({
   selector: 'app-lista-precios',
@@ -22,6 +25,7 @@ export class ListaPreciosComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  articulos: Articulo[];
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -152,5 +156,50 @@ export class ListaPreciosComponent implements OnInit {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
+  }
+
+  mostrarModalItems(lista) {
+    this.listaPreciosOriginal = lista;
+    this.listaPreciosSeleccionada = JSON.parse(JSON.stringify(lista));
+
+    this.apiService.get('articulos').subscribe( json => {
+      this.articulos = json;
+      this.articulos.forEach( articulo => {
+        if (this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id)) {
+          articulo.enlista = true;
+        }
+      });
+    });
+  }
+
+  editarItems() {
+    this.articulos.forEach( articulo => {
+      if (articulo.enlista) {
+        let item = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id);
+        if (isNullOrUndefined(item)) {
+          item = new ItemListaPrecios;
+          item.articulo_id = articulo.id;
+          item.lista_id = this.listaPreciosSeleccionada.id;
+          this.listaPreciosSeleccionada.lista_precio_item.push(item);
+        }
+        item.precio_costo = +articulo.costo;
+        item.precio_venta = +articulo.costo * (1 + +this.listaPreciosSeleccionada.porcentaje / 100);
+      } else {
+        const item = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id);
+        if (!isNullOrUndefined(item)) {
+          const index: number = this.listaPreciosSeleccionada.lista_precio_item.indexOf(item);
+          if (index !== -1) {
+            this.listaPreciosSeleccionada.lista_precio_item.splice(index, 1);
+          }
+        }
+      }
+    });
+
+    const listaPreciosAEnviar = new ListaPrecios();
+    Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+    this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
+        Object.assign(this.listaPreciosOriginal, json);
+      }
+    );
   }
 }
