@@ -27,6 +27,7 @@ import { ZonasComponent } from './zonas/zonas.component';
 import { MarcasComponent } from './marcas/marcas.component';
 import { FacturasComponent } from './facturas/facturas.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { ListaPreciosComponent } from './lista-precios/lista-precios.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     ArticulosComponent,
     ZonasComponent,
     MarcasComponent,
-    FacturasComponent
+    FacturasComponent,
+    ListaPreciosComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
