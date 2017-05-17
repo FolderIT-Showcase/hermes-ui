@@ -101,6 +101,32 @@
         <h4 class="modal-title">Artículos en {{listaPreciosSeleccionada.nombre}}</h4>
       </div>
       <div class="modal-body">
+        <div class="form-group row">
+          <label for="busqueda-cliente-rubro" class="col-sm-1 control-label">Rubro</label>
+          <div class="col-sm-3">
+            <select class="form-control" id="busqueda-cliente-rubro" [ngModel]="busquedaArticuloRubroId | json" (change)="onRubroChanged($event.target.value)" name="rubro">
+              <option value="0">Todos</option>
+              <option *ngFor="let rubro of rubros" [value]="rubro.id | json">{{rubro.nombre}}</option>
+            </select>
+          </div>
+
+          <label for="busqueda-cliente-subrubro" class="col-sm-1 control-label">Subrubro</label>
+          <div class="col-sm-3">
+            <select class="form-control" id="busqueda-cliente-subrubro" [ngModel]="busquedaArticuloSubrubroId | json" (change)="onSubrubroChanged($event.target.value)" name="subrubro">
+              <option value="0">Todos</option>
+              <option *ngFor="let subrubro of subrubrosAMostrar" [value]="subrubro.id | json">{{subrubro.nombre}}</option>
+            </select>
+          </div>
+
+          <label for="busqueda-cliente-marca" class="col-sm-1 control-label">Marca</label>
+          <div class="col-sm-3">
+            <select class="form-control" id="busqueda-cliente-marca" [ngModel]="busquedaArticuloMarcaId | json" (change)="onMarcaChanged($event.target.value)" name="marca">
+              <option value="0">Todas</option>
+              <option *ngFor="let marca of marcas" [value]="marca.id | json">{{marca.nombre}}</option>
+            </select>
+          </div>
+        </div>
+
         <table id="tabla-articulos" class="row-border hover table">
           <thead>
           <tr>
@@ -112,7 +138,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let articulo of articulos" class='clickable-row'>
+          <tr *ngFor="let articulo of articulosAMostrar" class='clickable-row'>
             <td>{{ articulo.codigo }}</td>
             <td>{{ articulo.nombre }}</td>
             <td>{{ articulo.costo }}</td>

@@ -10,6 +10,7 @@ import { Vendedor } from 'domain/vendedor';
 import { Zona } from 'domain/zona';
 import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
+import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 
 @Component({
   selector: 'app-clientes',
@@ -36,6 +37,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  tipoCategoriaClientes: TipoCategoriaCliente[];
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef ) {}
 
@@ -165,6 +167,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.cargarVendedores();
     this.cargarZonas();
     this.cargarListasPrecios();
+    this.cargarTipoCategoriaCliente();
   }
 
   eliminar() {
@@ -287,5 +290,18 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     if (+this.clienteSeleccionado.lista_id === 0) {
       delete this.clienteSeleccionado.lista_id;
     }
+  }
+
+  onTipoCategoriaClienteChanged(value) {
+    this.clienteSeleccionado.tipo_categoria = +value;
+    if (+this.clienteSeleccionado.tipo_categoria === 0) {
+      delete this.clienteSeleccionado.tipo_categoria;
+    }
+  }
+
+  private cargarTipoCategoriaCliente() {
+    this.apiService.get('tipocategoriaclientes').subscribe( json => {
+        this.tipoCategoriaClientes = json;
+    });
   }
 }

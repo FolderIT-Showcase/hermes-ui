@@ -7,6 +7,9 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {Articulo} from '../../domain/articulo';
 import {isNullOrUndefined} from 'util';
 import {ItemListaPrecios} from '../../domain/itemListaPrecios';
+import {Subrubro} from '../../domain/subrubro';
+import {Rubro} from '../../domain/rubro';
+import {Marca} from '../../domain/marca';
 
 @Component({
   selector: 'app-lista-precios',
@@ -26,6 +29,17 @@ export class ListaPreciosComponent implements OnInit {
   modalTitle: string;
   mostrarTabla = false;
   articulos: Articulo[];
+  articulosAMostrar: Articulo[];
+  busquedaArticuloRubroId: number;
+  busquedaArticuloSubrubroId: number;
+  busquedaArticuloMarcaId: number;
+  subrubros: Subrubro[];
+  subrubrosAMostrar: Subrubro[];
+  rubros: Rubro[];
+  marcas: Marca[];
+  private rubroId = 0;
+  private subrubroId = 0;
+  private marcaId = 0;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -167,6 +181,9 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   mostrarModalItems(lista) {
+    this.cargarSubrubros();
+    this.cargarRubros();
+    this.cargarMarcas();
     this.listaPreciosOriginal = lista;
     this.listaPreciosSeleccionada = JSON.parse(JSON.stringify(lista));
 
@@ -177,6 +194,7 @@ export class ListaPreciosComponent implements OnInit {
           articulo.enlista = true;
         }
       });
+      this.articulosAMostrar = this.articulos;
     });
   }
 
@@ -215,5 +233,58 @@ export class ListaPreciosComponent implements OnInit {
     this.articulos.forEach( articulo => {
       articulo.enlista = value;
     });
+  }
+
+  cargarRubros() {
+    this.apiService.get('rubros').subscribe( json => {
+      this.rubros = json;
+    });
+  }
+
+  cargarSubrubros() {
+    this.apiService.get('subrubros').subscribe( json => {
+      this.subrubros = json;
+      this.subrubrosAMostrar = this.subrubros;
+    });
+  }
+
+  cargarMarcas() {
+    this.apiService.get('marcas').subscribe( json => {
+      this.marcas = json;
+    });
+  }
+
+  onMarcaChanged(value) {
+    this.marcaId = +value;
+    this.filtrarArticulos();
+  }
+
+  onRubroChanged(value) {
+    this.rubroId = +value;
+    if (+value !== 0) {
+      this.subrubrosAMostrar = this.subrubros.filter(x => x.rubro_id === +value);
+    } else {
+      this.subrubrosAMostrar = this.subrubros;
+    }
+    this.filtrarArticulos();
+  }
+
+  onSubrubroChanged(value) {
+    this.subrubroId = +value;
+    this.filtrarArticulos();
+  }
+
+  filtrarArticulos() {
+    this.articulosAMostrar = this.articulos;
+    if (this.rubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(articulo =>
+        this.subrubros.find(subrubro => subrubro.id === articulo.subrubro_id).rubro_id === this.rubroId);
+    }
+    if (this.subrubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.subrubro_id === this.subrubroId);
+    }
+    if (this.marcaId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.marca_id === this.marcaId);
+    }
   }
 }

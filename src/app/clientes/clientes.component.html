@@ -109,7 +109,10 @@
           <div class="form-group row">
             <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Tipo categoría</label>
             <div class="col-sm-2">
-              <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria" placeholder="Tipo categoría">
+              <select class="form-control" id="cliente-tipo-categoria" [ngModel]="clienteSeleccionado.tipo_categoria | json" name="tipo-categoria" (change)="onTipoCategoriaClienteChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let tipoCategoriaCliente of tipoCategoriaClientes" [value]="tipoCategoriaCliente.id | json">{{tipoCategoriaCliente.nombre}}</option>
+              </select>
             </div>
 
             <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
@@ -127,7 +130,6 @@
               <span *ngIf="cuit.valid && !cuit.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="cuit.errors !== null && !cuit.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched)" class="help-block">Ingrese un CUIT</div>
-              {{cuit.errors | json}}
             </div>
           </div>
 
