@@ -60,7 +60,12 @@ export class ListaPreciosComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-      } ],
+      },
+        {
+          'targets': -2,
+          'searchable': false,
+          'orderable': false
+        }],
       dom: 'Bfrtip',
       buttons: [
         {
@@ -101,7 +106,7 @@ export class ListaPreciosComponent implements OnInit {
 
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
-    setTimeout(() => { this.cerrar(); }, 100);
+    setTimeout(() => { this.cerrar(null); }, 100);
 
     if (this.enNuevo) {
       this.enNuevo = false;
@@ -128,8 +133,11 @@ export class ListaPreciosComponent implements OnInit {
     this.listaPreciosSeleccionada = new ListaPrecios;
   }
 
-  cerrar() {
-    this.reestablecerParaNuevo();
+  cerrar(f) {
+    if (!isNullOrUndefined(f)) {
+      setTimeout(() => {  f.form.reset(); }, 200);
+    }
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
   eliminar() {
@@ -201,5 +209,11 @@ export class ListaPreciosComponent implements OnInit {
         Object.assign(this.listaPreciosOriginal, json);
       }
     );
+  }
+
+  toggleAll(value) {
+    this.articulos.forEach( articulo => {
+      articulo.enlista = value;
+    });
   }
 }

@@ -159,11 +159,9 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
-              <label>
+            <label for="articulo-activo" class="col-sm-1 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
                 <input type="checkbox" id="articulo-activo" [(ngModel)]="articuloSeleccionado.activo" name="activo">
-                Activo
-              </label>
             </div>
 
             <div *ngIf="!articuloSeleccionado.activo">

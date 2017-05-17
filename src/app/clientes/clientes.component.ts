@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {Cliente} from 'domain/cliente';
 import {ApiService} from '../../service/api.service';
@@ -9,13 +9,14 @@ import { Domicilio } from '../../domain/domicilio';
 import { Vendedor } from 'domain/vendedor';
 import { Zona } from 'domain/zona';
 import {ListaPrecios} from '../../domain/listaPrecios';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })
-export class ClientesComponent implements OnInit {
+export class ClientesComponent implements OnInit, AfterViewChecked {
   enNuevo: boolean;
   clienteOriginal: Cliente;
   dtOptions: any = {};
@@ -32,8 +33,16 @@ export class ClientesComponent implements OnInit {
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
   listasPrecios: ListaPrecios[] = [];
+  cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
+  telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef ) {}
+
+  ngAfterViewChecked() {
+// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    this.cdRef.detectChanges();
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -169,7 +178,9 @@ export class ClientesComponent implements OnInit {
   }
 
   cerrar(f) {
-    setTimeout(() => {  f.form.reset(); }, 200);
+    if (!isNullOrUndefined(f)) {
+      setTimeout(() => {  f.form.reset(); }, 200);
+    }
     setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
@@ -255,5 +266,26 @@ export class ClientesComponent implements OnInit {
     this.apiService.get('listaprecios').subscribe(json => {
         this.listasPrecios = json;
       });
+  }
+
+  onZonaChanged(value) {
+    this.clienteSeleccionado.zona_id = +value;
+    if (+this.clienteSeleccionado.zona_id === 0) {
+      delete this.clienteSeleccionado.zona_id;
+    }
+  }
+
+  onVendedorChanged(value) {
+    this.clienteSeleccionado.vendedor_id = +value;
+    if (+this.clienteSeleccionado.vendedor_id === 0) {
+      delete this.clienteSeleccionado.vendedor_id;
+    }
+  }
+
+  onListaPreciosChanged(value) {
+    this.clienteSeleccionado.lista_id = +value;
+    if (+this.clienteSeleccionado.lista_id === 0) {
+      delete this.clienteSeleccionado.lista_id;
+    }
   }
 }

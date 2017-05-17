@@ -69,15 +69,17 @@
 
             <label for="cliente-zona" class="col-sm-1 control-label">Zona</label>
             <div class="col-sm-2">
-              <select class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona_id" name="zona">
-                <option *ngFor="let zona of zonas" [ngValue]="zona.id">{{zona.nombre}}</option>
+              <select class="form-control" id="cliente-zona" [ngModel]="clienteSeleccionado.zona_id | json" name="zona" (change)="onZonaChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let zona of zonas" [value]="zona.id | json">{{zona.nombre}}</option>
               </select>
             </div>
 
             <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor</label>
             <div class="col-sm-3">
-              <select class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor_id" name="vendedor">
-                <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">{{vendedor.nombre}}</option>
+              <select class="form-control" id="cliente-vendedor" [ngModel]="clienteSeleccionado.vendedor_id | json" name="vendedor" (change)="onVendedorChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let vendedor of vendedores" [value]="vendedor.id | json">{{vendedor.nombre}}</option>
               </select>
             </div>
           </div>
@@ -117,21 +119,27 @@
               </select>
             </div>
 
-            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
-            <div class="col-sm-3">
-              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0">
+            <label for="cliente-cuit" class="col-sm-1 control-label" [ngClass]="{required: clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'}">CUIT</label>
+            <div class="col-sm-3 has-feedback"
+                 [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched),
+            'has-success': cuit.valid && (!cuit.pristine || cuit.touched)}">
+              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'">
+              <span *ngIf="cuit.valid && !cuit.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="cuit.errors !== null && !cuit.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched)" class="help-block">Ingrese un CUIT</div>
+              {{cuit.errors | json}}
             </div>
           </div>
 
           <div class="form-group row">
             <label for="cliente-telefono" class="col-sm-1 control-label">Teléfono</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191" placeholder="0342 4000000">
+              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191" placeholder="(0342) 4000000" [textMask]="{mask: telmask, keepCharPositions: true }">
             </div>
 
             <label for="cliente-celular" class="col-sm-1 control-label">Celular</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191" placeholder="0342 150000000">
+              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191" placeholder="(0342) 150000000" [textMask]="{mask: celmask, keepCharPositions: true}">
             </div>
           </div>
 
@@ -174,20 +182,9 @@
           </div>
 
           <div class="form-group row">
-            <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
-            <div class="col-sm-5">
-              <select class="form-control" id="cliente-lista" [(ngModel)]="clienteSeleccionado.lista_id" name="lista">
-                <option *ngFor="let lista of listasPrecios" [ngValue]="lista.id">{{lista.nombre}}</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
-              <label>
-                <input type="checkbox" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
-                Activo
-              </label>
+            <label for="cliente-activo" class="col-sm-1 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
             </div>
 
             <div *ngIf="!clienteSeleccionado.activo">
@@ -195,6 +192,16 @@
               <div class="col-sm-9">
                 <input type="text" class="form-control" id="cliente-motivo" [(ngModel)]="clienteSeleccionado.motivo" name="direccion" [maxLength]="191" placeholder="Motivo">
               </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="cliente-lista" [ngModel]="clienteSeleccionado.lista_id | json" name="lista" (change)="onListaPreciosChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let lista of listasPrecios" [value]="lista.id | json">{{lista.nombre}}</option>
+              </select>
             </div>
           </div>
 

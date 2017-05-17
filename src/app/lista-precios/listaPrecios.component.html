@@ -47,7 +47,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
@@ -78,17 +78,15 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
-              <label>
+            <label for="lista-activo" class="col-sm-2 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
                 <input type="checkbox" id="lista-activo" [(ngModel)]="listaPreciosSeleccionada.activo" name="activo">
-                Activo
-              </label>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
       </div>
     </div>
@@ -110,7 +108,7 @@
             <th>Nombre</th>
             <th>Precio Costo</th>
             <th>Precio Venta</th>
-            <th>En lista</th>
+            <th><input type="checkbox" (click)="toggleAll($event.target.checked)">En lista</th>
           </tr>
           </thead>
           <tbody>
@@ -118,7 +116,7 @@
             <td>{{ articulo.codigo }}</td>
             <td>{{ articulo.nombre }}</td>
             <td>{{ articulo.costo }}</td>
-            <td>{{ articulo.costo * (1 + listaPreciosSeleccionada.porcentaje / 100)}}</td>
+            <td>{{ (articulo.costo * (1 + listaPreciosSeleccionada.porcentaje / 100)).toFixed(2)}}</td>
             <td><input type="checkbox" id="lista-item-enlista" [(ngModel)]="articulo.enlista" name="activo"></td>
           </tr>
           </tbody>
