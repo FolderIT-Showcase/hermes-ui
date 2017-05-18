@@ -74,7 +74,6 @@
               <span *ngIf="porcentaje.errors !== null && (!porcentaje.pristine || porcentaje.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="porcentaje.errors !== null && porcentaje.errors.required != null && (!porcentaje.pristine || porcentaje.touched || submitted)" class="help-block">Ingrese un porcentaje</div>
               <div *ngIf="porcentaje.errors !== null && porcentaje.errors.required == null && !porcentaje.pristine" class="help-block">Ingrese un número con dos decimales</div>
-              {{porcentaje.valid}}
             </div>
           </div>
 
