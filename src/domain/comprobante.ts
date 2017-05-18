@@ -13,7 +13,7 @@ export class Comprobante {
   importe_neto: number;
   alicuota_iva: number;
   importe_iva: number;
-  importe_total: number;
+  importe_total: string | number = '';
   saldo: number;
   cae: string;
   fecha_cae: Date;

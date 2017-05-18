@@ -163,6 +163,7 @@ export class FacturasComponent implements OnInit {
   }
 
   onArticuloChanged(item) {
+    this.item.codigo = item.codigo;
     this.item.nombre = item.nombre;
     this.item.articulo_id = item.id;
     this.articuloAsync = this.item.nombre;
@@ -176,11 +177,11 @@ export class FacturasComponent implements OnInit {
   }
 
   onCantidadChanged() {
-    this.item.importe_total = +this.item.cantidad * +this.item.importe_unitario;
+    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
   }
 
   onImporteUnitarioChanged() {
-    this.item.importe_total = +this.item.cantidad * +this.item.importe_unitario;
+    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
 
   }
 
@@ -189,7 +190,7 @@ export class FacturasComponent implements OnInit {
       const itemNuevo = new Item();
       Object.assign(itemNuevo, this.item);
       this.items.push(itemNuevo);
-      this.factura.importe_total += itemNuevo.importe_total;
+      this.factura.importe_total = (+this.factura.importe_total + +itemNuevo.importe_total).toFixed(2);
       this.item = new Item();
       this.articuloAsync = '';
       this.articuloCodAsync = '';
