@@ -233,6 +233,7 @@ export class ListaPreciosComponent implements OnInit {
 
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+    this.cerrar(null);
     this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
