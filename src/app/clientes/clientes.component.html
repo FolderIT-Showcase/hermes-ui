@@ -58,12 +58,12 @@
           <div class="form-group row">
             <label for="cliente-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-2 has-feedback"
-             [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
+             [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
              'has-success': codigo.valid}" required>
               <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'" placeholder="Código*">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
               <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
             </div>
 
@@ -87,22 +87,22 @@
           <div class="form-group row">
             <label for="cliente-nombre" class="col-sm-1 required control-label">Nombre</label>
             <div class="col-sm-6 has-feedback"
-            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
+            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
               <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
             </div>
 
             <label for="cliente-email" class="col-sm-1 control-label">Email</label>
             <div class="col-sm-4 has-feedback"
-            [ngClass]="{'has-error': !email.valid && !email.pristine,
-            'has-success': email.valid && !email.pristine}">
+            [ngClass]="{'has-error': !email.valid && (!email.pristine || email.touched || submitted),
+            'has-success': email.valid && email.value !== '' && email.value !== undefined}">
               <input type="email" class="form-control" id="cliente-email" [(ngModel)]="clienteSeleccionado.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" placeholder="email@gmail.com">
-              <span *ngIf="email.valid && !email.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="email.errors !== null && !email.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!email.valid && !email.pristine" class="help-block">Email inválido</div>
+              <span *ngIf="email.valid && email.value !== '' && email.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="email.errors !== null && (!email.pristine || email.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!email.valid && (!email.pristine || email.touched || submitted)" class="help-block">Email inválido</div>
             </div>
           </div>
 
@@ -124,12 +124,12 @@
 
             <label for="cliente-cuit" class="col-sm-1 control-label" [ngClass]="{required: clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'}">CUIT</label>
             <div class="col-sm-3 has-feedback"
-                 [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched),
-            'has-success': cuit.valid && (!cuit.pristine || cuit.touched)}">
+                 [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched || submitted),
+            'has-success': cuit.valid && cuit.value !== '' && cuit.value !== undefined}">
               <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'">
-              <span *ngIf="cuit.valid && !cuit.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="cuit.errors !== null && !cuit.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched)" class="help-block">Ingrese un CUIT</div>
+              <span *ngIf="cuit.valid && cuit.value !== '' && cuit.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="cuit.errors !== null && (!cuit.pristine || cuit.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched || submitted)" class="help-block">Ingrese un CUIT</div>
             </div>
           </div>
 
@@ -208,11 +208,11 @@
           </div>
 
            <!--<button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button> -->
+          <div class="modal-footer">
+            <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
       </div>
     </div>
   </div>

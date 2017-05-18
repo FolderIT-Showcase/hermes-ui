@@ -37,6 +37,7 @@ export class ListaPreciosComponent implements OnInit {
   subrubrosAMostrar: Subrubro[];
   rubros: Rubro[];
   marcas: Marca[];
+  submitted = false;
   private rubroId = 0;
   private subrubroId = 0;
   private marcaId = 0;
@@ -114,30 +115,35 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    // Máscara para mostrar siempre 2 decimales
-    const num = this.listaPreciosSeleccionada.porcentaje;
-    this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.listaPreciosSeleccionada.porcentaje;
+      this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
 
-    const listaPreciosAEnviar = new ListaPrecios();
-    Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
-    setTimeout(() => { this.cerrar(null); }, 100);
+      const listaPreciosAEnviar = new ListaPrecios();
+      Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+      setTimeout(() => {
+        this.cerrar(f);
+      }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
-        json => {
-          this.listasPrecios.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
-        json => {
-          Object.assign(this.listaPreciosOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
+          json => {
+            this.listasPrecios.push(json);
+            this.recargarTabla();
+          }
+        );
+      } else {
+        this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
+          json => {
+            Object.assign(this.listaPreciosOriginal, json);
+          }
+        );
+      }
     }
   }
 
@@ -145,16 +151,19 @@ export class ListaPreciosComponent implements OnInit {
     this.modalTitle = 'Nueva Lista de Precios';
     this.enNuevo = true;
     this.listaPreciosSeleccionada = new ListaPrecios;
+    this.listaPreciosSeleccionada.activo = true;
   }
 
   cerrar(f) {
+    this.submitted = false;
     if (!isNullOrUndefined(f)) {
-      setTimeout(() => {  f.form.reset(); }, 200);
+      setTimeout(() => {  f.form.reset(); }, 100);
     }
-    setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 200);
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('listaprecios/' + this.listaPreciosSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.listasPrecios.indexOf(this.listaPreciosSeleccionada);
@@ -165,6 +174,7 @@ export class ListaPreciosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
   }
 

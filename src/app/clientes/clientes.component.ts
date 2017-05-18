@@ -38,6 +38,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   tipoCategoriaClientes: TipoCategoriaCliente[];
+  submitted = false;
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef ) {}
 
@@ -100,7 +101,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
       {clave: 'M', nombre: 'Monotributista'},
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
-      ];
+    ];
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('clientes')
@@ -113,7 +114,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
         this.dtTrigger.next();
       });
 
-      this.reestablecerParaNuevo();
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -132,26 +133,29 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   }
 
   editarONuevo(f: any) {
-    const clienteAEnviar = new Cliente();
-    Object.assign(clienteAEnviar, this.clienteSeleccionado);
-    this.cerrar(f);
-
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('clientes', clienteAEnviar).subscribe(
-        json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
-          this.clientes.push(json);
-          this.recargarTabla();
-        }
-      );
-    } else {
-      this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
-        json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
-          Object.assign(this.clienteOriginal, json);
-        }
-      );
+    this.submitted = true;
+    if (f.valid) {
+      const clienteAEnviar = new Cliente();
+      Object.assign(clienteAEnviar, this.clienteSeleccionado);
+      this.cerrar(f);
+      $('#modalEditar').modal('hide');
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('clientes', clienteAEnviar).subscribe(
+          json => {
+            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
+            this.clientes.push(json);
+            this.recargarTabla();
+          }
+        );
+      } else {
+        this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
+          json => {
+            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
+            Object.assign(this.clienteOriginal, json);
+          }
+        );
+      }
     }
   }
 
@@ -177,10 +181,11 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     }
     this.recargarTabla();
     this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
-    this.reestablecerParaNuevo();
+    this.cerrar(null);
   }
 
   cerrar(f) {
+    this.submitted = false;
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 200);
     }
@@ -216,7 +221,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   }
 
   cargarProvincias() {
-        if (this.provincias.length === 0) {
+    if (this.provincias.length === 0) {
       this.apiService.get('provincias').subscribe(
         json => {
           this.provincias = json;
@@ -267,8 +272,8 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
 
   private cargarListasPrecios() {
     this.apiService.get('listaprecios').subscribe(json => {
-        this.listasPrecios = json;
-      });
+      this.listasPrecios = json;
+    });
   }
 
   onZonaChanged(value) {
@@ -301,7 +306,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
 
   private cargarTipoCategoriaCliente() {
     this.apiService.get('tipocategoriaclientes').subscribe( json => {
-        this.tipoCategoriaClientes = json;
+      this.tipoCategoriaClientes = json;
     });
   }
 }

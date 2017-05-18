@@ -130,6 +130,10 @@ export class FacturasComponent implements OnInit {
         'targets': 3,
         'searchable': false,
         'orderable': false
+      }, {
+        'targets': 4,
+        'searchable': false,
+        'orderable': false
       } ]
     };
 
