@@ -237,9 +237,7 @@ export class FacturasComponent implements OnInit {
     this.factura.cliente_nombre = this.cliente.nombre;
     this.factura.cliente_tipo_resp = this.cliente.tipo_responsable;
     this.factura.tipo_comprobante_id = this.tipoComprobante.id;
-    this.factura.importe_neto = 0;
-    this.factura.alicuota_iva = 0;
-    this.factura.importe_iva = 0;
+    this.factura.alicuota_iva = this.iva;
     this.factura.saldo = 0;
     this.factura.items = this.items;
 
