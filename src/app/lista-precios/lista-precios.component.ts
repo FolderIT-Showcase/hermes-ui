@@ -46,7 +46,6 @@ export class ListaPreciosComponent implements OnInit {
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      autoWidth: true,
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
