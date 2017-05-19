@@ -21,6 +21,7 @@ import {isNullOrUndefined} from 'util';
   styleUrls: ['./facturas.component.css']
 })
 export class FacturasComponent implements OnInit {
+  itemsABorrar: Item[] = [];
   cliente: Cliente = new Cliente;
   clienteAsync: string;
   clientes: any;
@@ -54,6 +55,8 @@ export class FacturasComponent implements OnInit {
   parametroUsaDescuento: Parametro;
   parametroDescuentoMax: Parametro;
   listaPreciosSeleccionada: ListaPrecios;
+  listaAnterior: ListaPrecios;
+  iva = 0.21;
 
   constructor(private apiService: ApiService, private alertService: AlertService, private authenticationService: AuthenticationService) {
     this.clientes = Observable.create((observer: any) => {
@@ -88,7 +91,6 @@ export class FacturasComponent implements OnInit {
   ngOnInit() {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      autoWidth: true,
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -113,27 +115,44 @@ export class FacturasComponent implements OnInit {
           'sortDescending': ': Activar para ordenar la columna de manera descendente'
         }
       },
-      dom: '',
+      dom: 'tp',
+      scrollY: '280px',
+      paging: false,
       columnDefs: [ {
         'targets': 0,
         'searchable': false,
-        'orderable': false
+        'orderable': false,
+        'width': '10%'
       }, {
         'targets': 1,
         'searchable': false,
-        'orderable': false
+        'orderable': false,
+        'width': '30%'
       }, {
         'targets': 2,
         'searchable': false,
-        'orderable': false
+        'orderable': false,
+        'width': '10%'
       }, {
         'targets': 3,
         'searchable': false,
-        'orderable': false
+        'orderable': false,
+        'width': '10%'
       }, {
         'targets': 4,
         'searchable': false,
-        'orderable': false
+        'orderable': false,
+        'width': '10%'
+      }, {
+        'targets': 5,
+        'searchable': false,
+        'orderable': false,
+        'width': '15%'
+      }, {
+        'targets': 6,
+        'searchable': false,
+        'orderable': false,
+        'width': '15%'
       } ]
     };
 
@@ -158,31 +177,46 @@ export class FacturasComponent implements OnInit {
       this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         this.factura.numero = +contador.ultimo_generado + 1;
       });
+      this.onListaPreciosChanged();
+      this.items.forEach( item => {
+        this.calcularImporteUnitario(item);
+        this.calcularImportesItem(item);
+      });
+      this.calcularImportesFactura();
     });
-    this.onListaPreciosChanged();
   }
 
-  onArticuloChanged(item) {
-    this.item.codigo = item.codigo;
-    this.item.nombre = item.nombre;
-    this.item.articulo_id = item.id;
+  onArticuloChanged(articulo: Articulo) {
+    this.item.codigo = articulo.codigo;
+    this.item.nombre = articulo.nombre;
+    this.item.articulo_id = articulo.id;
+    this.item.costo_unitario = +articulo.costo;
     this.articuloAsync = this.item.nombre;
-    this.articuloCodAsync = item.codigo;
+    this.articuloCodAsync = articulo.codigo;
     if (!isNullOrUndefined(this.listaPreciosSeleccionada)) {
-      const itemLista = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === this.item.articulo_id);
-      if (!isNullOrUndefined(itemLista)) {
-        this.item.importe_unitario = itemLista.precio_venta;
-      }
+      this.calcularImporteUnitario(this.item);
+      this.calcularImportesItem(this.item);
     }
   }
 
   onCantidadChanged() {
-    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
+    this.calcularImportesItem(this.item);
   }
 
   onImporteUnitarioChanged() {
-    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
+    this.calcularImportesItem(this.item);
+  }
 
+  onPorcentajeDescuentoChanged() {
+    if (+this.item.porcentaje_descuento > +this.parametroDescuentoMax.valor) {
+      this.item.porcentaje_descuento = +this.parametroDescuentoMax.valor;
+    }
+    this.calcularImportesItem(this.item);
+  }
+
+  calcularImportesItem(item: Item) {
+    item.importe_descuento = (+item.cantidad * +item.importe_unitario * (+item.porcentaje_descuento / 100)).toFixed(2);
+    item.importe_total = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
   }
 
   agregarNuevo() {
@@ -190,7 +224,7 @@ export class FacturasComponent implements OnInit {
       const itemNuevo = new Item();
       Object.assign(itemNuevo, this.item);
       this.items.push(itemNuevo);
-      this.factura.importe_total = (+this.factura.importe_total + +itemNuevo.importe_total).toFixed(2);
+      this.calcularImportesFactura();
       this.item = new Item();
       this.articuloAsync = '';
       this.articuloCodAsync = '';
@@ -312,5 +346,78 @@ export class FacturasComponent implements OnInit {
 
   onListaPreciosChanged() {
     this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
+    if (this.items.length > 0 && this.listaPreciosSeleccionada !== this.listaAnterior) {
+      $('#modalCambiarListaPrecios').modal('show');
+    } else {
+      this.listaAnterior = this.listaPreciosSeleccionada;
+    }
+  }
+
+  cancelarCambioListaPrecios() {
+    this.listaPreciosSeleccionada = this.listaAnterior;
+    this.cliente.lista_id = this.listaPreciosSeleccionada.id;
+  }
+
+  confirmarCambioListaPrecios() {
+    this.itemsABorrar = this.items.filter( item => {
+      if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
+        return true;
+      }
+      return !this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
+    });
+    if (this.itemsABorrar.length > 0) {
+      $('#modalEliminarItems').modal('show');
+    } else {
+      this.cambiarListaPrecios();
+    }
+  }
+
+  cambiarListaPrecios() {
+    this.listaAnterior = this.listaPreciosSeleccionada;
+    this.items = this.items.filter( item => {
+      if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
+        return false;
+      }
+      return this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
+    });
+    this.items.forEach( item => {
+      this.calcularImporteUnitario(item);
+      this.calcularImportesItem(item);
+    });
+    this.calcularImportesFactura();
+  }
+
+  private calcularImportesFactura() {
+    this.factura.importe_neto = 0;
+    this.items.forEach( item => {
+      this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
+    });
+    this.factura.importe_neto = this.factura.importe_neto.toFixed(2);
+    switch (this.tipoComprobante.nombre) {
+      case 'A':
+        this.factura.importe_iva = (+this.factura.importe_neto * this.iva).toFixed(2);
+        this.factura.importe_total = (+this.factura.importe_neto + +this.factura.importe_iva).toFixed(2);
+        break;
+      case 'B': case 'C': default:
+      this.factura.importe_total = this.factura.importe_neto;
+      break;
+    }
+  }
+
+  private calcularImporteUnitario(item: Item) {
+    let itemLista;
+    if (!isNullOrUndefined(this.listaPreciosSeleccionada)) {
+      itemLista = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
+    }
+    if (!isNullOrUndefined(itemLista)) {
+      switch (this.tipoComprobante.nombre) {
+        case 'A':
+          item.importe_unitario = itemLista.precio_venta;
+          break;
+        case 'B': case 'C': default:
+          item.importe_unitario = (itemLista.precio_venta * (1 + this.iva)).toFixed(2);
+          break;
+      }
+    }
   }
 }
