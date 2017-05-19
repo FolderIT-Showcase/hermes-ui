@@ -90,7 +90,6 @@ export class FacturasComponent implements OnInit {
 
   ngOnInit() {
     this.dtOptions = {
-      pagingType: 'full_numbers',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -121,7 +120,7 @@ export class FacturasComponent implements OnInit {
       columnDefs: [ {
         'targets': 0,
         'searchable': false,
-        'orderable': false,
+        'orderable': true,
         'width': '10%'
       }, {
         'targets': 1,
@@ -153,7 +152,7 @@ export class FacturasComponent implements OnInit {
         'searchable': false,
         'orderable': false,
         'width': '15%'
-      } ]
+      }]
     };
 
     this.inicializar();

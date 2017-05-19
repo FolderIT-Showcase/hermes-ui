@@ -73,7 +73,6 @@
       <th>% Desc.</th>
       <th>Desc.</th>
       <th>Total</th>
-      <td hidden="true"></td>
     </tr>
     </thead>
     <tbody>
@@ -85,11 +84,10 @@
       <td>{{ item.porcentaje_descuento }}</td>
       <td>{{ item.importe_descuento }}</td>
       <td>{{ item.importe_total }}</td>
-      <td hidden="true"></td>
     </tr>
 
     <tr [hidden]="!tipoComprobante.nombre">
-      <td class="typeaheadcontainer">
+      <td  class="typeaheadcontainer">
         <div class="input-group">
           <input [(ngModel)]="articuloCodAsync" name="articuloCodAsync" class="typeaheadcontrol input-group"
                  [typeahead]="articulosCod"
@@ -101,9 +99,9 @@
                  placeholder="Código">
         </div>
       </td>
-      <td class="typeaheadcontainer">
-        <div class="input-group">
-          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol input-group"
+      <td  class="typeaheadcontainer">
+        <div class="input-group" style="width: 100%">
+          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol"
                  [typeahead]="articulos"
                  (typeaheadOnSelect)="onArticuloChanged($event.item)"
                  typeaheadMinLength="3"
@@ -116,7 +114,7 @@
           </span>
         </div>
       </td>
-      <td class="typeaheadcontainer">
+      <td  class="typeaheadcontainer">
         <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" placeholder="0" min="0" step="1">
       </td>
       <td  class="typeaheadcontainer">
@@ -127,10 +125,10 @@
       </td>
       <td>{{ item.importe_descuento }}</td>
       <td>{{ item.importe_total }}</td>
-      <td hidden="true"><button type="submit" (click)="agregarNuevo()"></button></td>
     </tr>
     </tbody>
   </table>
+  <button type="submit" hidden="true" (click)="agregarNuevo()"></button>
 
   <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
     <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
