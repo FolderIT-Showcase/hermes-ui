@@ -24,6 +24,8 @@ export class SubrubrosComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  submitted = false;
+
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -89,28 +91,33 @@ export class SubrubrosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    const subrubroAEnviar = new Subrubro();
-    Object.assign(subrubroAEnviar, this.subrubroSeleccionado);
-    setTimeout(() => { this.cerrar(); }, 100);
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      const subrubroAEnviar = new Subrubro();
+      Object.assign(subrubroAEnviar, this.subrubroSeleccionado);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('subrubros', subrubroAEnviar).subscribe(
-        json => {
-          json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
-          this.subrubros.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('subrubros/' + subrubroAEnviar.id, subrubroAEnviar).subscribe(
-        json => {
-          json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
-          Object.assign(this.subrubroOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('subrubros', subrubroAEnviar).subscribe(
+          json => {
+            json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
+            this.subrubros.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('subrubros/' + subrubroAEnviar.id, subrubroAEnviar).subscribe(
+          json => {
+            json.rubro_nombre = this.rubros.find(x => x.id === json.rubro_id).nombre;
+            Object.assign(this.subrubroOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -121,20 +128,23 @@ export class SubrubrosComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('subrubros/' + this.subrubroSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.subrubros.indexOf(this.subrubroSeleccionado);
         if (index !== -1) {
-        this.subrubros.splice(index, 1);
+          this.subrubros.splice(index, 1);
         }
         this.recargarTabla();
       } else {
         this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
   }
 
@@ -157,11 +167,11 @@ export class SubrubrosComponent implements OnInit {
           this.rubros = jsonRubros;
           this.apiService.get('subrubros')
             .subscribe(json => {
-                          json.forEach(element => {
-                            element.rubro_nombre = this.rubros.find(x => x.id === element.rubro_id).nombre;
-                          });
-                          this.subrubros = json;
-                          this.dtTrigger.next();
+              json.forEach(element => {
+                element.rubro_nombre = this.rubros.find(x => x.id === element.rubro_id).nombre;
+              });
+              this.subrubros = json;
+              this.dtTrigger.next();
             });
         }
       );

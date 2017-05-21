@@ -7,6 +7,9 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {Articulo} from '../../domain/articulo';
 import {isNullOrUndefined} from 'util';
 import {ItemListaPrecios} from '../../domain/itemListaPrecios';
+import {Subrubro} from '../../domain/subrubro';
+import {Rubro} from '../../domain/rubro';
+import {Marca} from '../../domain/marca';
 
 @Component({
   selector: 'app-lista-precios',
@@ -26,12 +29,23 @@ export class ListaPreciosComponent implements OnInit {
   modalTitle: string;
   mostrarTabla = false;
   articulos: Articulo[];
+  articulosAMostrar: Articulo[];
+  busquedaArticuloRubroId: number;
+  busquedaArticuloSubrubroId: number;
+  busquedaArticuloMarcaId: number;
+  subrubros: Subrubro[];
+  subrubrosAMostrar: Subrubro[];
+  rubros: Rubro[];
+  marcas: Marca[];
+  submitted = false;
+  private rubroId = 0;
+  private subrubroId = 0;
+  private marcaId = 0;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      autoWidth: true,
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -60,7 +74,12 @@ export class ListaPreciosComponent implements OnInit {
         'targets': -1,
         'searchable': false,
         'orderable': false
-      } ],
+      },
+        {
+          'targets': -2,
+          'searchable': false,
+          'orderable': false
+        }],
       dom: 'Bfrtip',
       buttons: [
         {
@@ -95,30 +114,35 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    // Máscara para mostrar siempre 2 decimales
-    const num = this.listaPreciosSeleccionada.porcentaje;
-    this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.listaPreciosSeleccionada.porcentaje;
+      this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
 
-    const listaPreciosAEnviar = new ListaPrecios();
-    Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
-    setTimeout(() => { this.cerrar(); }, 100);
+      const listaPreciosAEnviar = new ListaPrecios();
+      Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+      setTimeout(() => {
+        this.cerrar(f);
+      }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
-        json => {
-          this.listasPrecios.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
-        json => {
-          Object.assign(this.listaPreciosOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
+          json => {
+            this.listasPrecios.push(json);
+            this.recargarTabla();
+          }
+        );
+      } else {
+        this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
+          json => {
+            Object.assign(this.listaPreciosOriginal, json);
+          }
+        );
+      }
     }
   }
 
@@ -126,13 +150,19 @@ export class ListaPreciosComponent implements OnInit {
     this.modalTitle = 'Nueva Lista de Precios';
     this.enNuevo = true;
     this.listaPreciosSeleccionada = new ListaPrecios;
+    this.listaPreciosSeleccionada.activo = true;
   }
 
-  cerrar() {
-    this.reestablecerParaNuevo();
+  cerrar(f) {
+    this.submitted = false;
+    if (!isNullOrUndefined(f)) {
+      setTimeout(() => {  f.form.reset(); }, 100);
+    }
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 200);
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('listaprecios/' + this.listaPreciosSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.listasPrecios.indexOf(this.listaPreciosSeleccionada);
@@ -143,6 +173,7 @@ export class ListaPreciosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
   }
 
@@ -159,6 +190,9 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   mostrarModalItems(lista) {
+    this.cargarSubrubros();
+    this.cargarRubros();
+    this.cargarMarcas();
     this.listaPreciosOriginal = lista;
     this.listaPreciosSeleccionada = JSON.parse(JSON.stringify(lista));
 
@@ -169,6 +203,7 @@ export class ListaPreciosComponent implements OnInit {
           articulo.enlista = true;
         }
       });
+      this.articulosAMostrar = this.articulos;
     });
   }
 
@@ -197,9 +232,69 @@ export class ListaPreciosComponent implements OnInit {
 
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+    this.cerrar(null);
     this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
     );
+  }
+
+  toggleAll(value) {
+    this.articulos.forEach( articulo => {
+      articulo.enlista = value;
+    });
+  }
+
+  cargarRubros() {
+    this.apiService.get('rubros').subscribe( json => {
+      this.rubros = json;
+    });
+  }
+
+  cargarSubrubros() {
+    this.apiService.get('subrubros').subscribe( json => {
+      this.subrubros = json;
+      this.subrubrosAMostrar = this.subrubros;
+    });
+  }
+
+  cargarMarcas() {
+    this.apiService.get('marcas').subscribe( json => {
+      this.marcas = json;
+    });
+  }
+
+  onMarcaChanged(value) {
+    this.marcaId = +value;
+    this.filtrarArticulos();
+  }
+
+  onRubroChanged(value) {
+    this.rubroId = +value;
+    if (+value !== 0) {
+      this.subrubrosAMostrar = this.subrubros.filter(x => x.rubro_id === +value);
+    } else {
+      this.subrubrosAMostrar = this.subrubros;
+    }
+    this.filtrarArticulos();
+  }
+
+  onSubrubroChanged(value) {
+    this.subrubroId = +value;
+    this.filtrarArticulos();
+  }
+
+  filtrarArticulos() {
+    this.articulosAMostrar = this.articulos;
+    if (this.rubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(articulo =>
+        this.subrubros.find(subrubro => subrubro.id === articulo.subrubro_id).rubro_id === this.rubroId);
+    }
+    if (this.subrubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.subrubro_id === this.subrubroId);
+    }
+    if (this.marcaId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.marca_id === this.marcaId);
+    }
   }
 }

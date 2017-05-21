@@ -13,33 +13,47 @@
                autocomplete="off"
                placeholder="Cliente*">
         <span class="input-group-btn">
-          <button class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
         </span>
       </div>
     </div>
 
-    <label for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
-    <div class="col-sm-1">
-      <input class="form-control" type="text" name="factura-tipo" id="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
-    </div>
+    <div class="col-sm-9">
+      <label for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="text" name="factura-tipo" id="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
+      </div>
 
-    <label for="factura-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
-    <div class="col-sm-1">
-      <input class="form-control" type="text" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
-    </div>
+      <label for="factura-punto-venta" class="col-sm-2 control-label">Pto. vta.</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="text" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
+      </div>
 
-    <label for="factura-numero" class="col-sm-1 control-label">Número</label>
-    <div class="col-sm-1">
-      <input class="form-control" type="text" name="factura-numero" id="factura-numero" [(ngModel)]="factura.numero" required placeholder="0">
-    </div>
+      <label for="factura-numero" class="col-sm-1 control-label">Número</label>
+      <div class="col-sm-2">
+        <input class="form-control" type="text" name="factura-numero" id="factura-numero" [(ngModel)]="factura.numero" required placeholder="0">
+      </div>
 
-    <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
-    <div class="col-sm-2">
-      <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
+      <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
+      </div>
     </div>
   </div>
 
   <div class="form-group row">
+    <label for="factura-cliente" class="col-sm-1 required control-label">Código</label>
+    <div class="col-sm-2">
+      <input id="factura-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
+             [typeahead]="clientesCod"
+             (typeaheadOnSelect)="onClienteChanged($event.item)"
+             typeaheadMinLength="1"
+             typeaheadOptionsLimit="7"
+             typeaheadOptionField="codigo"
+             class="form-control"
+             autocomplete="off"
+             placeholder="Cod">
+    </div>
     <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
     <div class="col-sm-3">
       <select class="form-control" id="cliente-lista" [(ngModel)]="cliente.lista_id" (change)="onListaPreciosChanged()" name="lista">
@@ -52,6 +66,7 @@
   <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table">
     <thead>
     <tr>
+      <th>Código</th>
       <th>Artículo</th>
       <th>Cantidad</th>
       <th>Importe</th>
@@ -60,6 +75,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of items">
+      <td>{{ item.codigo }}</td>
       <td>{{ item.nombre }}</td>
       <td>{{ item.cantidad }}</td>
       <td>{{ item.importe_unitario }}</td>
@@ -67,6 +83,19 @@
     </tr>
 
     <tr>
+      <td class="typeaheadcontainer">
+        <div class="input-group">
+          <input [(ngModel)]="articuloCodAsync" name="articuloCodAsync" class="typeaheadcontrol input-group"
+                 [typeahead]="articulosCod"
+                 (typeaheadOnSelect)="onArticuloChanged($event.item)"
+                 typeaheadMinLength="1"
+                 typeaheadOptionsLimit="7"
+                 typeaheadOptionField="codigo"
+                 autocomplete="off"
+                 placeholder="Código"
+                 (blur)="agregarNuevo()">
+        </div>
+      </td>
       <td class="typeaheadcontainer">
         <div class="input-group">
           <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol input-group"
@@ -79,7 +108,7 @@
                  placeholder="artículo"
                  (blur)="agregarNuevo()">
           <span class="input-group-btn">
-            <button class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos()" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos()" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
           </span>
         </div>
       </td>
@@ -186,7 +215,7 @@
             <label for="busqueda-cliente-marca" class="col-sm-1 control-label">Marca</label>
             <div class="col-sm-3">
               <select class="form-control" id="busqueda-cliente-marca" [(ngModel)]="busquedaArticuloMarcaId" name="marca">
-                <option [ngValue]="0">Todos</option>
+                <option [ngValue]="0">Todas</option>
                 <option *ngFor="let marca of marcas" [ngValue]="marca.id">{{marca.nombre}}</option>
               </select>
             </div>

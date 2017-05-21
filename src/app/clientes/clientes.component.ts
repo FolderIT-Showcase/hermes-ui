@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {Cliente} from 'domain/cliente';
 import {ApiService} from '../../service/api.service';
@@ -9,13 +9,15 @@ import { Domicilio } from '../../domain/domicilio';
 import { Vendedor } from 'domain/vendedor';
 import { Zona } from 'domain/zona';
 import {ListaPrecios} from '../../domain/listaPrecios';
+import {isNullOrUndefined} from 'util';
+import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })
-export class ClientesComponent implements OnInit {
+export class ClientesComponent implements OnInit, AfterViewChecked {
   enNuevo: boolean;
   clienteOriginal: Cliente;
   dtOptions: any = {};
@@ -32,8 +34,18 @@ export class ClientesComponent implements OnInit {
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
   listasPrecios: ListaPrecios[] = [];
+  cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
+  telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  tipoCategoriaClientes: TipoCategoriaCliente[];
+  submitted = false;
 
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef ) {}
+
+  ngAfterViewChecked() {
+// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    this.cdRef.detectChanges();
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -89,7 +101,7 @@ export class ClientesComponent implements OnInit {
       {clave: 'M', nombre: 'Monotributista'},
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
-      ];
+    ];
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('clientes')
@@ -102,7 +114,7 @@ export class ClientesComponent implements OnInit {
         this.dtTrigger.next();
       });
 
-      this.reestablecerParaNuevo();
+    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -121,26 +133,29 @@ export class ClientesComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    const clienteAEnviar = new Cliente();
-    Object.assign(clienteAEnviar, this.clienteSeleccionado);
-    this.cerrar(f);
-
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('clientes', clienteAEnviar).subscribe(
-        json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
-          this.clientes.push(json);
-          this.recargarTabla();
-        }
-      );
-    } else {
-      this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
-        json => {
-          json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
-          Object.assign(this.clienteOriginal, json);
-        }
-      );
+    this.submitted = true;
+    if (f.valid) {
+      const clienteAEnviar = new Cliente();
+      Object.assign(clienteAEnviar, this.clienteSeleccionado);
+      this.cerrar(f);
+      $('#modalEditar').modal('hide');
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('clientes', clienteAEnviar).subscribe(
+          json => {
+            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
+            this.clientes.push(json);
+            this.recargarTabla();
+          }
+        );
+      } else {
+        this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
+          json => {
+            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
+            Object.assign(this.clienteOriginal, json);
+          }
+        );
+      }
     }
   }
 
@@ -156,6 +171,7 @@ export class ClientesComponent implements OnInit {
     this.cargarVendedores();
     this.cargarZonas();
     this.cargarListasPrecios();
+    this.cargarTipoCategoriaCliente();
   }
 
   eliminar() {
@@ -165,11 +181,14 @@ export class ClientesComponent implements OnInit {
     }
     this.recargarTabla();
     this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
-    this.reestablecerParaNuevo();
+    this.cerrar(null);
   }
 
   cerrar(f) {
-    setTimeout(() => {  f.form.reset(); }, 200);
+    this.submitted = false;
+    if (!isNullOrUndefined(f)) {
+      setTimeout(() => {  f.form.reset(); }, 200);
+    }
     setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
@@ -202,7 +221,7 @@ export class ClientesComponent implements OnInit {
   }
 
   cargarProvincias() {
-        if (this.provincias.length === 0) {
+    if (this.provincias.length === 0) {
       this.apiService.get('provincias').subscribe(
         json => {
           this.provincias = json;
@@ -253,7 +272,41 @@ export class ClientesComponent implements OnInit {
 
   private cargarListasPrecios() {
     this.apiService.get('listaprecios').subscribe(json => {
-        this.listasPrecios = json;
-      });
+      this.listasPrecios = json;
+    });
+  }
+
+  onZonaChanged(value) {
+    this.clienteSeleccionado.zona_id = +value;
+    if (+this.clienteSeleccionado.zona_id === 0) {
+      delete this.clienteSeleccionado.zona_id;
+    }
+  }
+
+  onVendedorChanged(value) {
+    this.clienteSeleccionado.vendedor_id = +value;
+    if (+this.clienteSeleccionado.vendedor_id === 0) {
+      delete this.clienteSeleccionado.vendedor_id;
+    }
+  }
+
+  onListaPreciosChanged(value) {
+    this.clienteSeleccionado.lista_id = +value;
+    if (+this.clienteSeleccionado.lista_id === 0) {
+      delete this.clienteSeleccionado.lista_id;
+    }
+  }
+
+  onTipoCategoriaClienteChanged(value) {
+    this.clienteSeleccionado.tipo_categoria = +value;
+    if (+this.clienteSeleccionado.tipo_categoria === 0) {
+      delete this.clienteSeleccionado.tipo_categoria;
+    }
+  }
+
+  private cargarTipoCategoriaCliente() {
+    this.apiService.get('tipocategoriaclientes').subscribe( json => {
+      this.tipoCategoriaClientes = json;
+    });
   }
 }

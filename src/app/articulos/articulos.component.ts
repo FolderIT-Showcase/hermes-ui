@@ -25,6 +25,7 @@ export class ArticulosComponent implements OnInit {
   mostrarTabla = false;
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
+  private submitted = false;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -97,34 +98,39 @@ export class ArticulosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    // Máscara para mostrar siempre 2 decimales
-    const num = this.articuloSeleccionado.costo;
-    this.articuloSeleccionado.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.articuloSeleccionado.costo;
+      this.articuloSeleccionado.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
 
-    const articuloAEnviar = new Articulo();
-    Object.assign(articuloAEnviar, this.articuloSeleccionado);
-    setTimeout(() => { this.cerrar(); }, 100);
+      const articuloAEnviar = new Articulo();
+      Object.assign(articuloAEnviar, this.articuloSeleccionado);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('articulos', articuloAEnviar).subscribe(
-        json => {
-          json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
-          json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
-          this.articulos.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('articulos/' + articuloAEnviar.id, articuloAEnviar).subscribe(
-        json => {
-          json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
-          json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
-          Object.assign(this.articuloOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('articulos', articuloAEnviar).subscribe(
+          json => {
+            json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
+            json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
+            this.articulos.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('articulos/' + articuloAEnviar.id, articuloAEnviar).subscribe(
+          json => {
+            json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
+            json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
+            Object.assign(this.articuloOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -135,6 +141,7 @@ export class ArticulosComponent implements OnInit {
   }
 
   eliminar() {
+    this.submitted = false;
     const index: number = this.articulos.indexOf(this.articuloSeleccionado);
     if (index !== -1) {
       this.articulos.splice(index, 1);
@@ -145,6 +152,7 @@ export class ArticulosComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
@@ -160,7 +168,7 @@ export class ArticulosComponent implements OnInit {
     });
   }
 
-    cargarSubrubros() {
+  cargarSubrubros() {
     if (this.subrubros.length === 0) {
       this.apiService.get('subrubros').subscribe(
         json => {

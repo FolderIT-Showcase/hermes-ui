@@ -24,9 +24,13 @@ export class FacturasComponent implements OnInit {
   cliente: Cliente = new Cliente;
   clienteAsync: string;
   clientes: any;
+  clienteCodAsync: string;
+  clientesCod: any;
   item: Item = new Item();
   articuloAsync = '';
   articulos: Articulo[];
+  articuloCodAsync = '';
+  articulosCod: Articulo[];
   items: Item[] = [];
   tipoComprobante: TipoComprobante = new TipoComprobante;
   factura: Comprobante = new Comprobante;
@@ -58,11 +62,27 @@ export class FacturasComponent implements OnInit {
       });
     });
 
-     this.articulos = Observable.create((observer: any) => {
+    this.clientesCod = Observable.create((observer: any) => {
+      this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
+        if (json !== '') {
+          observer.next([json]);
+        }
+      });
+    });
+
+    this.articulos = Observable.create((observer: any) => {
       this.apiService.get('articulos/nombre/' + this.articuloAsync).subscribe( json => {
         observer.next(json);
       });
-     });
+    });
+
+    this.articulosCod = Observable.create((observer: any) => {
+      this.apiService.get('articulos/codigo/' + this.articuloCodAsync).subscribe( json => {
+        if (json !== '') {
+          observer.next([json]);
+        }
+      });
+    });
   }
 
   ngOnInit() {
@@ -110,6 +130,10 @@ export class FacturasComponent implements OnInit {
         'targets': 3,
         'searchable': false,
         'orderable': false
+      }, {
+        'targets': 4,
+        'searchable': false,
+        'orderable': false
       } ]
     };
 
@@ -127,6 +151,8 @@ export class FacturasComponent implements OnInit {
 
   onClienteChanged(event) {
     this.cliente = event;
+    this.clienteCodAsync = this.cliente.codigo;
+    this.clienteAsync = this.cliente.nombre;
     this.apiService.get('tipocomprobantes/tiporesponsable/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
@@ -137,8 +163,11 @@ export class FacturasComponent implements OnInit {
   }
 
   onArticuloChanged(item) {
+    this.item.codigo = item.codigo;
     this.item.nombre = item.nombre;
     this.item.articulo_id = item.id;
+    this.articuloAsync = this.item.nombre;
+    this.articuloCodAsync = item.codigo;
     if (!isNullOrUndefined(this.listaPreciosSeleccionada)) {
       const itemLista = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === this.item.articulo_id);
       if (!isNullOrUndefined(itemLista)) {
@@ -148,11 +177,11 @@ export class FacturasComponent implements OnInit {
   }
 
   onCantidadChanged() {
-    this.item.importe_total = +this.item.cantidad * +this.item.importe_unitario;
+    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
   }
 
   onImporteUnitarioChanged() {
-    this.item.importe_total = +this.item.cantidad * +this.item.importe_unitario;
+    this.item.importe_total = (+this.item.cantidad * +this.item.importe_unitario).toFixed(2);
 
   }
 
@@ -161,9 +190,10 @@ export class FacturasComponent implements OnInit {
       const itemNuevo = new Item();
       Object.assign(itemNuevo, this.item);
       this.items.push(itemNuevo);
-      this.factura.importe_total += itemNuevo.importe_total;
+      this.factura.importe_total = (+this.factura.importe_total + +itemNuevo.importe_total).toFixed(2);
       this.item = new Item();
       this.articuloAsync = '';
+      this.articuloCodAsync = '';
     }
   }
 
@@ -199,6 +229,7 @@ export class FacturasComponent implements OnInit {
 
   confirmarBusquedaCliente () {
     this.clienteAsync = this.busquedaClienteSeleccionado.nombre;
+    this.clienteCodAsync = this.busquedaClienteSeleccionado.codigo;
     this.onClienteChanged(this.busquedaClienteSeleccionado);
   }
 
@@ -252,13 +283,13 @@ export class FacturasComponent implements OnInit {
       + this.busquedaArticuloRubroId + '/'
       + this.busquedaArticuloSubrubroId + '/'
       + this.busquedaArticulo).subscribe( json => {
-        json.forEach( art => {
-          art.marca_nombre = this.marcas.find(x => x.id === art.marca_id).nombre;
-          art.rubro_nombre = this.rubros.find(x => x.id === art.subrubro.rubro_id).nombre;
-          art.subrubro_nombre = this.subrubros.find(x => x.id === art.subrubro_id).nombre;
-        });
-         this.busquedaArticulos = json;
-        });
+      json.forEach( art => {
+        art.marca_nombre = this.marcas.find(x => x.id === art.marca_id).nombre;
+        art.rubro_nombre = this.rubros.find(x => x.id === art.subrubro.rubro_id).nombre;
+        art.subrubro_nombre = this.subrubros.find(x => x.id === art.subrubro_id).nombre;
+      });
+      this.busquedaArticulos = json;
+    });
   }
 
   confirmarBusquedaArticulo() {
@@ -280,6 +311,6 @@ export class FacturasComponent implements OnInit {
   }
 
   onListaPreciosChanged() {
-     this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
+    this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
   }
 }

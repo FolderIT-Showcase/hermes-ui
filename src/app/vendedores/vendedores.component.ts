@@ -24,6 +24,7 @@ export class VendedoresComponent implements OnInit {
   modalTitle: string;
   mostrarTabla = false;
   zonas: any;
+  private submitted = false;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -96,32 +97,37 @@ export class VendedoresComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    // Máscara para mostrar siempre 2 decimales
-    const num = this.vendedorSeleccionado.comision;
-    this.vendedorSeleccionado.comision = !isNaN(+num) ? (+num).toFixed(2) : num;
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.vendedorSeleccionado.comision;
+      this.vendedorSeleccionado.comision = !isNaN(+num) ? (+num).toFixed(2) : num;
 
-    const vendedorAEnviar = new Vendedor();
-    Object.assign(vendedorAEnviar, this.vendedorSeleccionado);
-    setTimeout(() => { this.cerrar(); }, 100);
+      const vendedorAEnviar = new Vendedor();
+      Object.assign(vendedorAEnviar, this.vendedorSeleccionado);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('vendedores', vendedorAEnviar).subscribe(
-        json => {
-          json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
-          this.vendedores.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('vendedores/' + vendedorAEnviar.id, vendedorAEnviar).subscribe(
-        json => {
-          json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
-          Object.assign(this.vendedorOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('vendedores', vendedorAEnviar).subscribe(
+          json => {
+            json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
+            this.vendedores.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('vendedores/' + vendedorAEnviar.id, vendedorAEnviar).subscribe(
+          json => {
+            json.zona_nombre = this.zonas.find(x => x.id === json.zona_id).nombre;
+            Object.assign(this.vendedorOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -132,10 +138,12 @@ export class VendedoresComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('vendedores/' + this.vendedorSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.vendedores.indexOf(this.vendedorSeleccionado);
@@ -144,10 +152,10 @@ export class VendedoresComponent implements OnInit {
         }
         this.recargarTabla();
       } else {
-          this.alertService.error(json['error']);
+        this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
-
   }
 
   private recargarTabla() {
@@ -163,13 +171,13 @@ export class VendedoresComponent implements OnInit {
   }
 
   cargarZonas() {
-      this.apiService.get('zonas').subscribe(
-        json => {
-          this.zonas = json;
-          this.vendedores.forEach(element => {
-            element.zona_nombre = this.zonas.find(x => x.id === element.zona_id).nombre;
-          });
-        }
-      );
+    this.apiService.get('zonas').subscribe(
+      json => {
+        this.zonas = json;
+        this.vendedores.forEach(element => {
+          element.zona_nombre = this.zonas.find(x => x.id === element.zona_id).nombre;
+        });
+      }
+    );
   }
 }
