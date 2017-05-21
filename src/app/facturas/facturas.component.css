@@ -16,3 +16,7 @@
   background-color: #123456 !important;
   color: white;
 }
+
+table.dataTable thead .sorting_asc:after {
+  content: none;
+}

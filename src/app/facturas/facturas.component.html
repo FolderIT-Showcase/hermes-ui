@@ -67,9 +67,11 @@
     <thead>
     <tr>
       <th>Código</th>
-      <th>Artículo</th>
-      <th>Cantidad</th>
-      <th>Importe</th>
+      <th>Descripción</th>
+      <th>Cant.</th>
+      <th>Importe U.</th>
+      <th>% Desc.</th>
+      <th>Desc.</th>
       <th>Total</th>
     </tr>
     </thead>
@@ -79,11 +81,13 @@
       <td>{{ item.nombre }}</td>
       <td>{{ item.cantidad }}</td>
       <td>{{ item.importe_unitario }}</td>
+      <td>{{ item.porcentaje_descuento }}</td>
+      <td>{{ item.importe_descuento }}</td>
       <td>{{ item.importe_total }}</td>
     </tr>
 
-    <tr>
-      <td class="typeaheadcontainer">
+    <tr [hidden]="!tipoComprobante.nombre">
+      <td  class="typeaheadcontainer">
         <div class="input-group">
           <input [(ngModel)]="articuloCodAsync" name="articuloCodAsync" class="typeaheadcontrol input-group"
                  [typeahead]="articulosCod"
@@ -92,46 +96,61 @@
                  typeaheadOptionsLimit="7"
                  typeaheadOptionField="codigo"
                  autocomplete="off"
-                 placeholder="Código"
-                 (blur)="agregarNuevo()">
+                 placeholder="Código">
         </div>
       </td>
-      <td class="typeaheadcontainer">
-        <div class="input-group">
-          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol input-group"
+      <td  class="typeaheadcontainer">
+        <div class="input-group" style="width: 100%">
+          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol"
                  [typeahead]="articulos"
                  (typeaheadOnSelect)="onArticuloChanged($event.item)"
                  typeaheadMinLength="3"
                  typeaheadOptionsLimit="7"
                  typeaheadOptionField="nombre"
                  autocomplete="off"
-                 placeholder="artículo"
-                 (blur)="agregarNuevo()">
+                 placeholder="artículo">
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos()" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
           </span>
         </div>
       </td>
-      <td class="typeaheadcontainer">
-        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" (blur)="agregarNuevo()" placeholder="0" min="0" step="1">
+      <td  class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" placeholder="0" min="0" step="1">
       </td>
       <td  class="typeaheadcontainer">
-        <input [readonly]="!parametroModificaPrecio.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" (blur)="agregarNuevo()" placeholder="0.00" min="0" step="0.01">
+        <input [readonly]="!parametroModificaPrecio.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" placeholder="0.00" min="0" step="0.01">
       </td>
+      <td  class="typeaheadcontainer">
+        <input [readonly]="!parametroUsaDescuento.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento" (input)="onPorcentajeDescuentoChanged()" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
+      </td>
+      <td>{{ item.importe_descuento }}</td>
       <td>{{ item.importe_total }}</td>
     </tr>
     </tbody>
   </table>
+  <button type="submit" hidden="true" (click)="agregarNuevo()"></button>
 
+  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+    <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="number" name="factura-subtotal" id="factura-subtotal" [ngModel]="factura.importe_neto" readonly>
+    </div>
+  </div>
+  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+    <label for="factura-importe-iva" class="col-sm-1  col-sm-offset-9 control-label">IVA {{iva*100}}%</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="number" name="factura-importe-iva" id="factura-importe-iva" [ngModel]="factura.importe_iva" readonly>
+    </div>
+  </div>
   <div class="form-group row">
-    <label for="factura-total" class="col-sm-1  col-sm-offset-8 control-label">Total:</label>
-    <div class="col-sm-3">
+    <label for="factura-total" class="col-sm-1  col-sm-offset-9 control-label">Total</label>
+    <div class="col-sm-2">
       <input class="form-control" type="number" name="factura-total" id="factura-total" [ngModel]="factura.importe_total" readonly>
     </div>
   </div>
 
   <div class="pull-right">
-    <button type="submit" (click)="generarFactura()" data-dismiss="modal" class="btn btn-success" [disabled]="!f.valid">Generar factura</button>
+    <button type="button" (click)="generarFactura()" data-dismiss="modal" class="btn btn-success" [disabled]="!f.valid">Generar factura</button>
   </div>
 </form>
 
@@ -246,6 +265,55 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="confirmarBusquedaArticulo()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaArticuloSeleccionado === null || !fa.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalCambiarListaPrecios" tabindex="-1" role="dialog" aria-labelledby="modalCambiarListaPrecios" #modalCambiarListaPrecios>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Cambiar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          Al cambiar la lista de precios se modificarán los importes de los artículos cargados.
+        </div>
+        <div>
+          ¿Desea continuar?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cancelarCambioListaPrecios()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarCambioListaPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEliminarItems" tabindex="-1" role="dialog" aria-labelledby="modalEliminarItems" #modalEliminarItems>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Cambiar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          Los siguientes artículos no se encuentran en la lista de precios seleccionada y deben ser eliminados:
+        </div>
+        <ul>
+          <li *ngFor="let item of itemsABorrar">{{item.nombre}}</li>
+        </ul>
+        <div>
+          ¿Desea continuar?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cancelarCambioListaPrecios()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="cambiarListaPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>

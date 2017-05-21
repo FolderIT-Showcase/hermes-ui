@@ -10,9 +10,9 @@ export class Comprobante {
   cliente_nombre: string;
   cliente_tipo_resp: string;
   cliente_cuit: string;
-  importe_neto: number;
+  importe_neto: number | string = 0;
   alicuota_iva: number;
-  importe_iva: number;
+  importe_iva: number | string = 0;
   importe_total: string | number = '';
   saldo: number;
   cae: string;
