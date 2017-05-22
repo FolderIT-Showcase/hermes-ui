@@ -76,6 +76,12 @@ body {
   border: hidden;
 }
 
+.green {
+  color: green;
+  background-color: inherit;
+  border: hidden;
+}
+
 /*
 * Ocultar los spinner de los campos numéricos
 */

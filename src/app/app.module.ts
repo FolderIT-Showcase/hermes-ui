@@ -28,7 +28,9 @@ import { MarcasComponent } from './marcas/marcas.component';
 import { FacturasComponent } from './facturas/facturas.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ListaPreciosComponent } from './lista-precios/lista-precios.component';
-import {TextMaskModule} from "angular2-text-mask";
+import {TextMaskModule} from 'angular2-text-mask';
+import { ArticuloCodigoTypeaheadComponent } from './facturas/typeahead/articuloCodigoTypeahead.component';
+import {ArticuloTypeaheadComponent} from './facturas/typeahead/articuloTypeahead.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,9 @@ import {TextMaskModule} from "angular2-text-mask";
     ZonasComponent,
     MarcasComponent,
     FacturasComponent,
-    ListaPreciosComponent
+    ListaPreciosComponent,
+    ArticuloTypeaheadComponent,
+    ArticuloCodigoTypeaheadComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
