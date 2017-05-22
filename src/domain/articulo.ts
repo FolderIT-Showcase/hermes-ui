@@ -17,4 +17,6 @@ export class Articulo {
   activo: Boolean = true;
   motivo: string;
   enlista: boolean;
+  precio_venta: number;
+  nuevo_precio_venta: number | string;
 }
