@@ -22,6 +22,8 @@ export class RubrosComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  private submitted = false;
+
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -92,26 +94,31 @@ export class RubrosComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    const rubroAEnviar = new Rubro();
-    Object.assign(rubroAEnviar, this.rubroSeleccionado);
-    setTimeout(() => { this.cerrar(); }, 100);
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      const rubroAEnviar = new Rubro();
+      Object.assign(rubroAEnviar, this.rubroSeleccionado);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('rubros', rubroAEnviar).subscribe(
-        json => {
-          this.rubros.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('rubros/' + rubroAEnviar.id, rubroAEnviar).subscribe(
-        json => {
-          Object.assign(this.rubroOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('rubros', rubroAEnviar).subscribe(
+          json => {
+            this.rubros.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('rubros/' + rubroAEnviar.id, rubroAEnviar).subscribe(
+          json => {
+            Object.assign(this.rubroOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -122,10 +129,12 @@ export class RubrosComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('rubros/' + this.rubroSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.rubros.indexOf(this.rubroSeleccionado);
@@ -135,7 +144,8 @@ export class RubrosComponent implements OnInit {
         this.recargarTabla();
       } else {
         this.alertService.error(json['error']);
-    }
+      }
+      this.reestablecerParaNuevo();
     });
   }
 

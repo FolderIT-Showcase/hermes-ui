@@ -60,7 +60,7 @@
           <div class="form-group row">
             <label for="articulo-marca" class="col-sm-1 required control-label">Marca</label>
             <div class="col-sm-5 has-feedback"
-            [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched),
+            [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched|| submitted),
             'has-success': marca.valid}">
               <div class="select-style">
                 <select class="form-control" id="articulo-marca" [(ngModel)]="articuloSeleccionado.marca_id" name="marca" #marca="ngModel" required >
@@ -68,13 +68,13 @@
                 </select>
               </div>
               <span *ngIf="marca.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="marca.errors !== null && (!marca.pristine || marca.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!marca.valid && (!marca.pristine || marca.touched)" class="help-block">Seleccione una marca</div>
+              <span *ngIf="marca.errors !== null && (!marca.pristine || marca.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!marca.valid && (!marca.pristine || marca.touched || submitted)" class="help-block">Seleccione una marca</div>
             </div>
 
             <label for="articulo-subrubro" class="col-sm-1 required control-label">Subrubro</label>
             <div class="col-sm-5 has-feedback"
-            [ngClass]="{'has-error': !subrubro.valid && (!subrubro.pristine || subrubro.touched),
+            [ngClass]="{'has-error': !subrubro.valid && (!subrubro.pristine || subrubro.touched || submitted),
             'has-success': subrubro.valid}">
               <div class="select-style">
                 <select class="form-control" id="articulo-subrubro" [(ngModel)]="articuloSeleccionado.subrubro_id" name="subrubro" #subrubro="ngModel" required >
@@ -82,21 +82,21 @@
                 </select>
               </div>
               <span *ngIf="subrubro.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="subrubro.errors !== null && (!subrubro.pristine || subrubro.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!subrubro.valid && (!subrubro.pristine || subrubro.touched)" class="help-block">Seleccione un subrubro</div>
+              <span *ngIf="subrubro.errors !== null && (!subrubro.pristine || subrubro.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!subrubro.valid && (!subrubro.pristine || subrubro.touched || submitted)" class="help-block">Seleccione un subrubro</div>
             </div>
           </div>
 
           <div class="form-group row">
             <label for="articulo-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-3 has-feedback"
-            [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched),
+            [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched || submitted),
             'has-success': codigo.valid}">
               <input type="text" class="form-control" id="articulo-codigo" [(ngModel)]="articuloSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="articuloSeleccionado" [path]="'articulos'" placeholder="Código*">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
-              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid " class="help-block">Código repetido</div>
             </div>
 
             <label for="articulo-codigo-fabrica" class="col-sm-2 control-label">Código fábrica</label>
@@ -113,12 +113,12 @@
           <div class="form-group row">
             <label for="articulo-nombre" class="col-sm-1 required control-label">Nombre</label>
             <div class="col-sm-6 has-feedback"
-            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
+            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
               <input type="text" class="form-control" id="articulo-nombre" [(ngModel)]="articuloSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
             </div>
 
             <label for="articulo-nombre-reducido" class="col-sm-2 control-label">Nombre reducido</label>
@@ -159,11 +159,9 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
-              <label>
+            <label for="articulo-activo" class="col-sm-1 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
                 <input type="checkbox" id="articulo-activo" [(ngModel)]="articuloSeleccionado.activo" name="activo">
-                Activo
-              </label>
             </div>
 
             <div *ngIf="!articuloSeleccionado.activo">
@@ -177,7 +175,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
+        <button type="button" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>

@@ -22,6 +22,7 @@ export class ZonasComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  submitted = false;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -69,7 +70,7 @@ export class ZonasComponent implements OnInit {
         }
       ]
     };
-  setTimeout(() => { this.mostrarTabla = true; }, 350);
+    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('zonas')
       .subscribe(json => {
@@ -91,26 +92,31 @@ export class ZonasComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    const zonaAEnviar = new Zona();
-    Object.assign(zonaAEnviar, this.zonaSeleccionada);
-    setTimeout(() => { this.cerrar(); }, 100);
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      const zonaAEnviar = new Zona();
+      Object.assign(zonaAEnviar, this.zonaSeleccionada);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('zonas', zonaAEnviar).subscribe(
-        json => {
-          this.zonas.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('zonas/' + zonaAEnviar.id, zonaAEnviar).subscribe(
-        json => {
-          Object.assign(this.zonaOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('zonas', zonaAEnviar).subscribe(
+          json => {
+            this.zonas.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('zonas/' + zonaAEnviar.id, zonaAEnviar).subscribe(
+          json => {
+            Object.assign(this.zonaOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -121,10 +127,12 @@ export class ZonasComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
   eliminar() {
+    this.submitted = false;
     this.apiService.delete('zonas/' + this.zonaSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.zonas.indexOf(this.zonaSeleccionada);
@@ -133,8 +141,9 @@ export class ZonasComponent implements OnInit {
         }
         this.recargarTabla();
       } else {
-          this.alertService.error(json['error']);
+        this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
   }
 

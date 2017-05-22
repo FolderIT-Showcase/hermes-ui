@@ -236,6 +236,7 @@ export class ListaPreciosComponent implements OnInit {
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     this.cerrar(null);
+
     this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
@@ -341,9 +342,69 @@ export class ListaPreciosComponent implements OnInit {
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     this.cerrar(null);
+
     this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
     );
+  }
+
+  toggleAll(value) {
+    this.articulos.forEach( articulo => {
+      articulo.enlista = value;
+    });
+  }
+
+  cargarRubros() {
+    this.apiService.get('rubros').subscribe( json => {
+      this.rubros = json;
+    });
+  }
+
+  cargarSubrubros() {
+    this.apiService.get('subrubros').subscribe( json => {
+      this.subrubros = json;
+      this.subrubrosAMostrar = this.subrubros;
+    });
+  }
+
+  cargarMarcas() {
+    this.apiService.get('marcas').subscribe( json => {
+      this.marcas = json;
+    });
+  }
+
+  onMarcaChanged(value) {
+    this.marcaId = +value;
+    this.filtrarArticulos();
+  }
+
+  onRubroChanged(value) {
+    this.rubroId = +value;
+    if (+value !== 0) {
+      this.subrubrosAMostrar = this.subrubros.filter(x => x.rubro_id === +value);
+    } else {
+      this.subrubrosAMostrar = this.subrubros;
+    }
+    this.filtrarArticulos();
+  }
+
+  onSubrubroChanged(value) {
+    this.subrubroId = +value;
+    this.filtrarArticulos();
+  }
+
+  filtrarArticulos() {
+    this.articulosAMostrar = this.articulos;
+    if (this.rubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(articulo =>
+        this.subrubros.find(subrubro => subrubro.id === articulo.subrubro_id).rubro_id === this.rubroId);
+    }
+    if (this.subrubroId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.subrubro_id === this.subrubroId);
+    }
+    if (this.marcaId !== 0) {
+      this.articulosAMostrar = this.articulosAMostrar.filter(x => x.marca_id === this.marcaId);
+    }
   }
 }

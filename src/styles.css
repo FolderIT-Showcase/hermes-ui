@@ -98,6 +98,7 @@ input[type=number] {
 .dataTables_wrapper .dataTables_filter {
   float: right;
   }
+
 /*
 * Fix para los buttons de datatable que aplica siempre btn-default
 */
@@ -108,4 +109,9 @@ input[type=number] {
 
 .form-group .required.control-label:after {
   content:"*";color:red;
+}
+
+.help-block {
+  margin-bottom: 0;
+  margin-top: 0;
 }
