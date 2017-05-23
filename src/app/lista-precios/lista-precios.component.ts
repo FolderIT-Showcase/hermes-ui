@@ -41,9 +41,16 @@ export class ListaPreciosComponent implements OnInit {
   accionActualizar: String;
   actualizarPor: String;
   valorActualizacion = 0;
+  actualizarDescripcion: boolean;
+  actualizarPrecioCosto: boolean;
+  actualizarPrecioVenta: boolean;
+  campoCodigoAUtilizar: String;
+  archivo: any;
+  formImportarSubmitted = false;
   private rubroId = 0;
   private subrubroId = 0;
   private marcaId = 0;
+  private file: any;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -91,6 +98,14 @@ export class ListaPreciosComponent implements OnInit {
           className: 'btn btn-success a-override',
           action: function (e, dt, node, config) {
             $('#modalEditar').modal('show');
+          }
+        },
+        {
+          text: 'Importar',
+          key: '2',
+          className: 'btn btn-default',
+          action: function (e, dt, node, config) {
+            $('#modalImportar').modal('show');
           }
         }
       ]
@@ -154,6 +169,11 @@ export class ListaPreciosComponent implements OnInit {
     this.enNuevo = true;
     this.listaPreciosSeleccionada = new ListaPrecios;
     this.listaPreciosSeleccionada.activo = true;
+    this.actualizarDescripcion = true;
+    this.actualizarPrecioCosto = true;
+    this.actualizarPrecioVenta = false;
+    this.campoCodigoAUtilizar = 'codigo';
+    this.formImportarSubmitted = false;
   }
 
   cerrar(f) {
@@ -345,5 +365,24 @@ export class ListaPreciosComponent implements OnInit {
         Object.assign(this.listaPreciosOriginal, json);
       }
     );
+  }
+
+  importarListaPrecios() {
+    this.formImportarSubmitted = true;
+    if (!isNullOrUndefined(this.file)) {
+      const body = {
+        actualizarDescripcion: this.actualizarDescripcion,
+        actualizarPrecioCosto: this.actualizarPrecioCosto,
+        actualizarPrecioVenta: this.actualizarPrecioVenta,
+        campoCodigoAUtilizar: this.campoCodigoAUtilizar
+      };
+      $('#modalImportar').modal('hide');
+      this.reestablecerParaNuevo();
+      this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe();
+    }
+  }
+
+  onChangeFile(file) {
+    this.file = file[0];
   }
 }

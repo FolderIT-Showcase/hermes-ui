@@ -228,3 +228,48 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modalImportar" tabindex="-1" role="dialog" aria-labelledby="modalImportar" #modalImportar data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Importar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <form #formImportar="ngForm">
+          <p>Determine qué elementos serán actualizados</p>
+          <div class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarDescripcion" name="actualizarDescripcion">Descripción de Artículo</label>
+          </div>
+          <div class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarPrecioCosto" name="actualizarPrecioCosto">Precios de Costo</label>
+          </div>
+          <div *ngIf="actualizarPrecioCosto" class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarPrecioVenta" name="actualizarPrecioVenta">Actualizar PRECIOS DE VENTA de todas las Listas de Precios</label>
+          </div>
+
+          <p>Qué campo de Código será usado para identificar a los artículos:</p>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="codigo">Código</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="fabrica">Código de Fábrica</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="auxiliar">Código Auxiliar</label>
+          </div>
+          <div [ngClass]="{'has-error': !file && formImportarSubmitted,
+            'has-success': !!file}">
+            <input type="file" name="archivo" (change)="onChangeFile($event.target.files)" [(ngModel)]="archivo" #document="ngModel" required accept=".xls,.xlsx">
+            <div *ngIf="!file && formImportarSubmitted" class="help-block">Seleccione un archivo</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="importarListaPrecios()" class="btn btn-primary">Importar</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -103,4 +103,29 @@ export class ApiService {
       .catch(err => Observable.throw(err));
   }
 
+  public postWithFile(path: string, body,  file: File): Observable<any> {
+    const user: User = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = new Headers({
+      'Accept': 'application/json',
+      'Authorization':  user.token
+    });
+    const  formData: FormData = new FormData();
+    formData.append('file', file, file.name);
+
+    if (body !== '' && body !== undefined && body !== null) {
+      for (const property in body) {
+        if (body.hasOwnProperty(property)) {
+          formData.append(property, body[property]);
+        }
+      }
+    }
+
+    return this.http
+      .post(
+        `${this.baseURL}${path}`, formData,
+        {headers: headers})
+      .map(this.checkForError)
+      .catch(err => Observable.throw(err))
+      .map(this.getJson);
+  }
 }
