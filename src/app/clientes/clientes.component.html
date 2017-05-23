@@ -58,26 +58,28 @@
           <div class="form-group row">
             <label for="cliente-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-2 has-feedback"
-             [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
+             [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
              'has-success': codigo.valid}" required>
               <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'" placeholder="Código*">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched)" class="help-block">Ingrese un código</div>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
               <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
             </div>
 
             <label for="cliente-zona" class="col-sm-1 control-label">Zona</label>
             <div class="col-sm-2">
-              <select class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona_id" name="zona">
-                <option *ngFor="let zona of zonas" [ngValue]="zona.id">{{zona.nombre}}</option>
+              <select class="form-control" id="cliente-zona" [ngModel]="clienteSeleccionado.zona_id | json" name="zona" (change)="onZonaChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let zona of zonas" [value]="zona.id | json">{{zona.nombre}}</option>
               </select>
             </div>
 
             <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor</label>
             <div class="col-sm-3">
-              <select class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor_id" name="vendedor">
-                <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">{{vendedor.nombre}}</option>
+              <select class="form-control" id="cliente-vendedor" [ngModel]="clienteSeleccionado.vendedor_id | json" name="vendedor" (change)="onVendedorChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let vendedor of vendedores" [value]="vendedor.id | json">{{vendedor.nombre}}</option>
               </select>
             </div>
           </div>
@@ -85,29 +87,32 @@
           <div class="form-group row">
             <label for="cliente-nombre" class="col-sm-1 required control-label">Nombre</label>
             <div class="col-sm-6 has-feedback"
-            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched),
+            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
               <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched)" class="help-block">Ingrese un nombre</div>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
             </div>
 
             <label for="cliente-email" class="col-sm-1 control-label">Email</label>
             <div class="col-sm-4 has-feedback"
-            [ngClass]="{'has-error': !email.valid && !email.pristine,
-            'has-success': email.valid && !email.pristine}">
+            [ngClass]="{'has-error': !email.valid && (!email.pristine || email.touched || submitted),
+            'has-success': email.valid && email.value !== '' && email.value !== undefined}">
               <input type="email" class="form-control" id="cliente-email" [(ngModel)]="clienteSeleccionado.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" placeholder="email@gmail.com">
-              <span *ngIf="email.valid && !email.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="email.errors !== null && !email.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!email.valid && !email.pristine" class="help-block">Email inválido</div>
+              <span *ngIf="email.valid && email.value !== '' && email.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="email.errors !== null && (!email.pristine || email.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!email.valid && (!email.pristine || email.touched || submitted)" class="help-block">Email inválido</div>
             </div>
           </div>
 
           <div class="form-group row">
             <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Tipo categoría</label>
             <div class="col-sm-2">
-              <input class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria" name="tipo-categoria" placeholder="Tipo categoría">
+              <select class="form-control" id="cliente-tipo-categoria" [ngModel]="clienteSeleccionado.tipo_categoria | json" name="tipo-categoria" (change)="onTipoCategoriaClienteChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let tipoCategoriaCliente of tipoCategoriaClientes" [value]="tipoCategoriaCliente.id | json">{{tipoCategoriaCliente.nombre}}</option>
+              </select>
             </div>
 
             <label for="cliente-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
@@ -117,21 +122,26 @@
               </select>
             </div>
 
-            <label for="cliente-cuit" class="col-sm-1 control-label">CUIT</label>
-            <div class="col-sm-3">
-              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0">
+            <label for="cliente-cuit" class="col-sm-1 control-label" [ngClass]="{required: clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'}">CUIT</label>
+            <div class="col-sm-3 has-feedback"
+                 [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched || submitted),
+            'has-success': cuit.valid && cuit.value !== '' && cuit.value !== undefined}">
+              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'">
+              <span *ngIf="cuit.valid && cuit.value !== '' && cuit.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="cuit.errors !== null && (!cuit.pristine || cuit.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched || submitted)" class="help-block">Ingrese un CUIT</div>
             </div>
           </div>
 
           <div class="form-group row">
             <label for="cliente-telefono" class="col-sm-1 control-label">Teléfono</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191" placeholder="0342 4000000">
+              <input type="tel" class="form-control" id="cliente-telefono" [(ngModel)]="clienteSeleccionado.telefono" name="telefono" [maxLength]="191" placeholder="(0342) 4000000" [textMask]="{mask: telmask, keepCharPositions: true }">
             </div>
 
             <label for="cliente-celular" class="col-sm-1 control-label">Celular</label>
             <div class="col-sm-5">
-              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191" placeholder="0342 150000000">
+              <input type="tel" class="form-control" id="cliente-celular" [(ngModel)]="clienteSeleccionado.celular" name="celular" [maxLength]="191" placeholder="(0342) 150000000" [textMask]="{mask: celmask, keepCharPositions: true}">
             </div>
           </div>
 
@@ -174,11 +184,9 @@
           </div>
 
           <div class="form-group row">
-            <div class="col-sm-1 col-sm-offset-1 checkbox-inline">
-              <label>
-                <input type="checkbox" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
-                Activo
-              </label>
+            <label for="cliente-activo" class="col-sm-1 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="cliente-activo" [(ngModel)]="clienteSeleccionado.activo" name="activo">
             </div>
 
             <div *ngIf="!clienteSeleccionado.activo">
@@ -189,12 +197,22 @@
             </div>
           </div>
 
+          <div class="form-group row">
+            <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
+            <div class="col-sm-5">
+              <select class="form-control" id="cliente-lista" [ngModel]="clienteSeleccionado.lista_id | json" name="lista" (change)="onListaPreciosChanged($event.target.value)">
+                <option value=0></option>
+                <option *ngFor="let lista of listasPrecios" [value]="lista.id | json">{{lista.nombre}}</option>
+              </select>
+            </div>
+          </div>
+
            <!--<button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button> -->
+          <div class="modal-footer">
+            <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+          </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" data-dismiss="modal" class="btn btn-primary" [disabled]="!f.valid">Aceptar</button>
       </div>
     </div>
   </div>

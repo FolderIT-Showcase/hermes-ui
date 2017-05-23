@@ -22,6 +22,8 @@ export class MarcasComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  private submitted = false;
+
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -93,26 +95,31 @@ export class MarcasComponent implements OnInit {
   }
 
   editarONuevo(f: any) {
-    const marcaAEnviar = new Marca();
-    Object.assign(marcaAEnviar, this.marcaSeleccionada);
-    setTimeout(() => { this.cerrar(); }, 100);
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      $('#modalEditar').modal('hide');
+      const marcaAEnviar = new Marca();
+      Object.assign(marcaAEnviar, this.marcaSeleccionada);
+      setTimeout(() => { this.cerrar(); }, 100);
 
-    if (this.enNuevo) {
-      this.enNuevo = false;
-      this.apiService.post('marcas', marcaAEnviar).subscribe(
-        json => {
-          this.marcas.push(json);
-          this.recargarTabla();
-          f.form.reset();
-        }
-      );
-    } else {
-      this.apiService.put('marcas/' + marcaAEnviar.id, marcaAEnviar).subscribe(
-        json => {
-          Object.assign(this.marcaOriginal, json);
-          f.form.reset();
-        }
-      );
+      if (this.enNuevo) {
+        this.enNuevo = false;
+        this.apiService.post('marcas', marcaAEnviar).subscribe(
+          json => {
+            this.marcas.push(json);
+            this.recargarTabla();
+            f.form.reset();
+          }
+        );
+      } else {
+        this.apiService.put('marcas/' + marcaAEnviar.id, marcaAEnviar).subscribe(
+          json => {
+            Object.assign(this.marcaOriginal, json);
+            f.form.reset();
+          }
+        );
+      }
     }
   }
 
@@ -123,11 +130,12 @@ export class MarcasComponent implements OnInit {
   }
 
   cerrar() {
+    this.submitted = false;
     this.reestablecerParaNuevo();
   }
 
   eliminar() {
-
+    this.submitted = false;
     this.apiService.delete('marcas/' + this.marcaSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.marcas.indexOf(this.marcaSeleccionada);
@@ -136,8 +144,9 @@ export class MarcasComponent implements OnInit {
         }
         this.recargarTabla();
       } else {
-          this.alertService.error(json['error']);
+        this.alertService.error(json['error']);
       }
+      this.reestablecerParaNuevo();
     });
   }
 

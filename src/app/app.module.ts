@@ -28,6 +28,7 @@ import { MarcasComponent } from './marcas/marcas.component';
 import { FacturasComponent } from './facturas/facturas.component';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { ListaPreciosComponent } from './lista-precios/lista-precios.component';
+import {TextMaskModule} from "angular2-text-mask";
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ListaPreciosComponent } from './lista-precios/lista-precios.component';
     FormsModule,
     HttpModule,
     routing,
-    DataTablesModule
+    DataTablesModule,
+    TextMaskModule
   ],
   providers: [
     AuthGuard,
