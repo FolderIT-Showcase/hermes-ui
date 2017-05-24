@@ -6,6 +6,7 @@ import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import { Marca } from 'domain/marca';
 import { Subrubro } from 'domain/subrubro';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-articulos',
@@ -108,7 +109,7 @@ export class ArticulosComponent implements OnInit {
 
       const articuloAEnviar = new Articulo();
       Object.assign(articuloAEnviar, this.articuloSeleccionado);
-      setTimeout(() => { this.cerrar(); }, 100);
+      setTimeout(() => { this.cerrar(f); }, 100);
 
       if (this.enNuevo) {
         this.enNuevo = false;
@@ -118,7 +119,6 @@ export class ArticulosComponent implements OnInit {
             json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
             this.articulos.push(json);
             this.recargarTabla();
-            f.form.reset();
           }
         );
       } else {
@@ -127,7 +127,6 @@ export class ArticulosComponent implements OnInit {
             json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
             json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
             Object.assign(this.articuloOriginal, json);
-            f.form.reset();
           }
         );
       }
@@ -151,9 +150,12 @@ export class ArticulosComponent implements OnInit {
     this.reestablecerParaNuevo();
   }
 
-  cerrar() {
+  cerrar(f: any) {
     this.submitted = false;
-    this.reestablecerParaNuevo();
+    if (!isNullOrUndefined(f)) {
+      setTimeout(() => {  f.form.reset(); }, 100);
+    }
+    setTimeout(() => {  this.reestablecerParaNuevo(); }, 200);
   }
 
   private recargarTabla() {
