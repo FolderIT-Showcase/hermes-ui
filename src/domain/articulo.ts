@@ -19,4 +19,5 @@ export class Articulo {
   enlista: boolean;
   precio_venta: number;
   nuevo_precio_venta: number | string;
+  precio_de_costo: number | string;
 }

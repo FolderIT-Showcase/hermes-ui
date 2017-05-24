@@ -47,6 +47,7 @@ export class ListaPreciosComponent implements OnInit {
   campoCodigoAUtilizar: String;
   archivo: any;
   formImportarSubmitted = false;
+  articulosNoEncontrados: Articulo[];
   private rubroId = 0;
   private subrubroId = 0;
   private marcaId = 0;
@@ -174,6 +175,7 @@ export class ListaPreciosComponent implements OnInit {
     this.actualizarPrecioVenta = false;
     this.campoCodigoAUtilizar = 'codigo';
     this.formImportarSubmitted = false;
+    this.articulosNoEncontrados = [];
   }
 
   cerrar(f) {
@@ -380,7 +382,12 @@ export class ListaPreciosComponent implements OnInit {
       };
       $('#modalImportar').modal('hide');
       this.reestablecerParaNuevo();
-      this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe();
+      this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
+        this.articulosNoEncontrados = json.no_encontrados;
+        if (this.articulosNoEncontrados.length !== 0) {
+          $('#modalNoEncontrados').modal('show');
+        }
+      });
     }
   }
 
