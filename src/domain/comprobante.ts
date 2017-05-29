@@ -1,4 +1,5 @@
 import { Item } from 'domain/item';
+import {Cliente} from './cliente';
 
 export class Comprobante {
   id: number;
@@ -21,4 +22,5 @@ export class Comprobante {
   anulado: Boolean;
   items: Item[];
   lista_id: number;
+  cliente: Cliente;
 }

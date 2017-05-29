@@ -1,0 +1,22 @@
+.typeaheadcontainer {
+  margin-right: auto;
+  margin-left: auto;
+  height: 100%;
+  padding: 0;
+}
+
+.typeaheadcontrol {
+  border: transparent;
+  padding: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+.table tr.active td {
+  background-color: #123456 !important;
+  color: white;
+}
+
+table.dataTable thead .sorting_asc:after {
+  content: none;
+}

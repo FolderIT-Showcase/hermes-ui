@@ -1,3 +1,4 @@
+import {Articulo} from './articulo';
 export class Item {
   id: number;
   codigo: string;
@@ -13,4 +14,5 @@ export class Item {
   importe_neto  = 0;
   alicuota_iva = 0;
   importe_iva = 0;
+  articulo: Articulo;
 }

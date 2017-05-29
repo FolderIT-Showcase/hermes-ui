@@ -4,6 +4,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import {Comprobante} from '../../domain/comprobante';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-presupuestos',
@@ -11,9 +12,6 @@ import {Comprobante} from '../../domain/comprobante';
   styleUrls: ['./presupuestos.component.css']
 })
 export class PresupuestosComponent implements OnInit {
-
-  enNuevo: boolean;
-  presupuestoOriginal: Comprobante;
   dtOptions: any = {};
   presupuestos: Comprobante[] = [];
   dtTrigger: Subject<any> = new Subject();
@@ -22,8 +20,7 @@ export class PresupuestosComponent implements OnInit {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
-  submitted = false;
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService, private alertService: AlertService, private router: Router) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -65,7 +62,8 @@ export class PresupuestosComponent implements OnInit {
           key: '1',
           className: 'btn btn-success a-override',
           action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+            // TODO ver como usar el router de Angular para no recargar la página
+            window.location.href = 'http://localhost:4200/presupuestos/presupuesto/0';
           }
         }
       ]
@@ -77,63 +75,14 @@ export class PresupuestosComponent implements OnInit {
         this.presupuestos = json;
         this.dtTrigger.next();
       });
-    this.reestablecerParaNuevo();
-  }
-
-  mostrarModalEditar(presupuesto: Comprobante) {
-    this.modalTitle = 'Editar Presupuesto';
-    this.enNuevo = false;
-    this.presupuestoOriginal = presupuesto;
-    this.presupuestoSeleccionado = JSON.parse(JSON.stringify(presupuesto));
   }
 
   mostrarModalEliminar(presupuesto: Comprobante) {
     this.presupuestoSeleccionado = presupuesto;
   }
 
-  editarONuevo(f: any) {
-    this.submitted = true;
-    if (f.valid) {
-      this.submitted = false;
-      $('#modalEditar').modal('hide');
-      const presupuestoAEnviar = new Comprobante();
-      Object.assign(presupuestoAEnviar, this.presupuestoSeleccionado);
-      setTimeout(() => { this.cerrar(); }, 100);
-
-      if (this.enNuevo) {
-        this.enNuevo = false;
-        this.apiService.post('presupuestos', presupuestoAEnviar).subscribe(
-          json => {
-            this.presupuestos.push(json);
-            this.recargarTabla();
-            f.form.reset();
-          }
-        );
-      } else {
-        this.apiService.put('presupuestos/' + presupuestoAEnviar.id, presupuestoAEnviar).subscribe(
-          json => {
-            Object.assign(this.presupuestoOriginal, json);
-            f.form.reset();
-          }
-        );
-      }
-    }
-  }
-
-  reestablecerParaNuevo() {
-    this.modalTitle = 'Nueva Presupuesto';
-    this.enNuevo = true;
-    this.presupuestoSeleccionado = new Comprobante;
-  }
-
-  cerrar() {
-    this.submitted = false;
-    this.reestablecerParaNuevo();
-  }
-
   eliminar() {
-    this.submitted = false;
-    this.apiService.delete('presupuestos/' + this.presupuestoSeleccionado.id).subscribe( json => {
+    this.apiService.delete('comprobantes/' + this.presupuestoSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.presupuestos.indexOf(this.presupuestoSeleccionado);
         if (index !== -1) {
@@ -143,7 +92,6 @@ export class PresupuestosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 
