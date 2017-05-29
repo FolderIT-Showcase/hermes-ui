@@ -17,6 +17,7 @@
     <td>{{ lista.nombre }}</td>
     <td>{{ lista.porcentaje }}</td>
     <td style="width:15%">
+      <button (click)="mostrarModalActualizarPrecios(lista)" data-toggle="modal" data-target="#modalActualizarPrecios" class="glyphicon glyphicon-sort blue"></button >
       <button (click)="mostrarModalItems(lista)" data-toggle="modal" data-target="#modalItems" class="glyphicon glyphicon-list blue"></button >
       <button (click)="mostrarModalEditar(lista)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(lista)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
@@ -80,7 +81,7 @@
           <div class="form-group row">
             <label for="lista-activo" class="col-sm-2 control-label">Activo</label>
             <div class="col-sm-1 checkbox-inline">
-                <input type="checkbox" id="lista-activo" [(ngModel)]="listaPreciosSeleccionada.activo" name="activo">
+              <input type="checkbox" id="lista-activo" [(ngModel)]="listaPreciosSeleccionada.activo" name="activo">
             </div>
           </div>
           <div class="modal-footer">
@@ -100,7 +101,7 @@
         <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Artículos en {{listaPreciosSeleccionada.nombre}}</h4>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="height: 450px;overflow-y: auto;">
         <div class="form-group form-horizontal row">
           <label for="busqueda-cliente-rubro" class="col-sm-1 control-label">Rubro</label>
           <div class="col-sm-3">
@@ -151,6 +152,156 @@
       <div class="modal-footer">
         <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="editarItems()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalActualizarPrecios" tabindex="-1" role="dialog" aria-labelledby="modalActualizarPrecios" #modalActualizarPrecios data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Actualizar precios en {{listaPreciosSeleccionada.nombre}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>Desea aumentar o disminuir el Precio de Venta de los Artículos:</p>
+        <div class="radio">
+          <label><input type="radio" [(ngModel)]="accionActualizar" name="accionActualizar" value="aumentar">Aumenta</label>
+        </div>
+        <div class="radio">
+          <label><input type="radio" [(ngModel)]="accionActualizar" name="accionActualizar" value="disminuir">Disminuye</label>
+        </div>
+
+        <p>Desea actualizar los Precios de Venta en base a un Porcentaje o a un Importe Fijo:</p>
+        <div class="radio">
+          <label><input type="radio" [(ngModel)]="actualizarPor" name="actualizarPor" value="porcentaje">por Porcentaje</label>
+          <label *ngIf="actualizarPor === 'porcentaje'">valor</label>
+          <input *ngIf="actualizarPor === 'porcentaje'" type="number" [(ngModel)]="valorActualizacion">
+        </div>
+        <div class="radio">
+          <label><input type="radio" [(ngModel)]="actualizarPor" name="actualizarPor" value="importe">por Importe</label>
+          <label *ngIf="actualizarPor === 'importe'">valor</label>
+          <input *ngIf="actualizarPor === 'importe'" type="number" [(ngModel)]="valorActualizacion">
+        </div>
+
+        <p>Vamos a actualizar todos los artículos de la lista de precios {{listaPreciosSeleccionada.nombre}}</p>
+        <p *ngIf="actualizarPor === 'porcentaje'">Vamos a {{accionActualizar | uppercase}} todos los artículos un {{valorActualizacion}}% sobre el valor de venta</p>
+        <p *ngIf="actualizarPor === 'importe'">Vamos a {{accionActualizar | uppercase}} todos los artículos ${{valorActualizacion}} sobre el valor de venta</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="actualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConfirmarActualizarPrecios" tabindex="-1" role="dialog" aria-labelledby="modalConfirmarActualizarPrecios" #modalConfirmarActualizarPrecios data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Actualizar precios en {{listaPreciosSeleccionada.nombre}}</h4>
+      </div>
+      <div class="modal-body">
+        <p>Artículos de la lista de precios {{listaPreciosSeleccionada.nombre}} que serán actualizados:</p>
+        <table class="table">
+          <tr>
+            <th>Código</th>
+            <th>Artículo</th>
+            <th>Precio Anterior</th>
+            <th>Precio Nuevo</th>
+          </tr>
+          <tr *ngFor="let articulo of articulos">
+            <td>{{articulo.codigo}}</td>
+            <td>{{articulo.nombre}}</td>
+            <td>{{articulo.precio_venta}}</td>
+            <td>{{articulo.nuevo_precio_venta}}</td>
+          </tr>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarActualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalImportar" tabindex="-1" role="dialog" aria-labelledby="modalImportar" #modalImportar data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Importar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <form #formImportar="ngForm">
+          <p>Determine qué elementos serán actualizados</p>
+          <div class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarDescripcion" name="actualizarDescripcion">Descripción de Artículo</label>
+          </div>
+          <div class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarPrecioCosto" name="actualizarPrecioCosto">Precios de Costo</label>
+          </div>
+          <div *ngIf="actualizarPrecioCosto" class="radio">
+            <label><input type="checkbox" [(ngModel)]="actualizarPrecioVenta" name="actualizarPrecioVenta">Actualizar PRECIOS DE VENTA de todas las Listas de Precios</label>
+          </div>
+
+          <p>Qué campo de Código será usado para identificar a los artículos:</p>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="codigo">Código</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="fabrica">Código de Fábrica</label>
+          </div>
+          <div class="radio">
+            <label><input type="radio" [(ngModel)]="campoCodigoAUtilizar" name="campoCodigoAUtilizar" value="auxiliar">Código Auxiliar</label>
+          </div>
+          <div [ngClass]="{'has-error': !file && formImportarSubmitted,
+            'has-success': !!file}">
+            <input type="file" name="archivo" (change)="onChangeFile($event.target.files)" [(ngModel)]="archivo" #document="ngModel" required accept=".xls,.xlsx">
+            <div *ngIf="!file && formImportarSubmitted" class="help-block">Seleccione un archivo</div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="importarListaPrecios()" class="btn btn-primary">Importar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalNoEncontrados" tabindex="-1" role="dialog" aria-labelledby="modalNoEncontrados" #modalNoEncontrados data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Artículos no encontrados</h4>
+      </div>
+      <div class="modal-body" style="height: 400px;overflow-y: auto;">
+        <p>No se han encontrado los siguientes artículos al importar:</p>
+        <table class="table" >
+          <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Precio de Costo</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let articulo of articulosNoEncontrados">
+            <td>{{articulo.codigo}}</td>
+            <td>{{articulo.nombre}}</td>
+            <td>{{(+articulo.precio_de_costo).toFixed(2)}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Aceptar</button>
       </div>
     </div>
   </div>

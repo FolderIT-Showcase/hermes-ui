@@ -52,7 +52,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <div class="modal-body">
@@ -174,7 +174,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
       </div>
     </div>

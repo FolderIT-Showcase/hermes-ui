@@ -38,9 +38,20 @@ export class ListaPreciosComponent implements OnInit {
   rubros: Rubro[];
   marcas: Marca[];
   submitted = false;
+  accionActualizar: String;
+  actualizarPor: String;
+  valorActualizacion = 0;
+  actualizarDescripcion: boolean;
+  actualizarPrecioCosto: boolean;
+  actualizarPrecioVenta: boolean;
+  campoCodigoAUtilizar: String;
+  archivo: any;
+  formImportarSubmitted = false;
+  articulosNoEncontrados: Articulo[];
   private rubroId = 0;
   private subrubroId = 0;
   private marcaId = 0;
+  private file: any;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {
@@ -88,6 +99,14 @@ export class ListaPreciosComponent implements OnInit {
           className: 'btn btn-success a-override',
           action: function (e, dt, node, config) {
             $('#modalEditar').modal('show');
+          }
+        },
+        {
+          text: 'Importar',
+          key: '2',
+          className: 'btn btn-default',
+          action: function (e, dt, node, config) {
+            $('#modalImportar').modal('show');
           }
         }
       ]
@@ -151,6 +170,12 @@ export class ListaPreciosComponent implements OnInit {
     this.enNuevo = true;
     this.listaPreciosSeleccionada = new ListaPrecios;
     this.listaPreciosSeleccionada.activo = true;
+    this.actualizarDescripcion = true;
+    this.actualizarPrecioCosto = true;
+    this.actualizarPrecioVenta = false;
+    this.campoCodigoAUtilizar = 'codigo';
+    this.formImportarSubmitted = false;
+    this.articulosNoEncontrados = [];
   }
 
   cerrar(f) {
@@ -233,6 +258,7 @@ export class ListaPreciosComponent implements OnInit {
     const listaPreciosAEnviar = new ListaPrecios();
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     this.cerrar(null);
+
     this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
@@ -296,5 +322,76 @@ export class ListaPreciosComponent implements OnInit {
     if (this.marcaId !== 0) {
       this.articulosAMostrar = this.articulosAMostrar.filter(x => x.marca_id === this.marcaId);
     }
+  }
+
+  mostrarModalActualizarPrecios(lista: ListaPrecios) {
+    this.listaPreciosOriginal = lista;
+    this.listaPreciosSeleccionada = JSON.parse(JSON.stringify(lista));
+    this.accionActualizar = 'aumentar';
+    this.actualizarPor = 'porcentaje';
+    this.valorActualizacion = 0;
+  }
+
+  actualizarPrecios() {
+    $('#modalConfirmarActualizarPrecios').modal('show');
+
+    this.apiService.get('articulos').subscribe( json => {
+      this.articulos = json;
+      this.articulos = this.articulos.filter( articulo => {
+        return !isNullOrUndefined(this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id));
+      });
+      this.articulos.forEach( articulo => {
+        articulo.precio_venta = (this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id)).precio_venta;
+      });
+      this.articulos.forEach( articulo => {
+        switch (this.actualizarPor) {
+          case 'importe':
+            articulo.nuevo_precio_venta = +articulo.precio_venta + +(this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1));
+            break;
+          case 'porcentaje': default:
+            articulo.nuevo_precio_venta = +articulo.precio_venta * +(1 + (this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1)) / 100);
+            break;
+        }
+        articulo.nuevo_precio_venta = articulo.nuevo_precio_venta.toFixed(2);
+      });
+    });
+  }
+
+  confirmarActualizarPrecios() {
+    this.articulos.forEach( articulo => {
+      this.listaPreciosSeleccionada.lista_precio_item.find( x => x.articulo_id === articulo.id).precio_venta = +articulo.nuevo_precio_venta;
+    });
+    const listaPreciosAEnviar = new ListaPrecios();
+    Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
+    this.cerrar(null);
+
+    this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
+        Object.assign(this.listaPreciosOriginal, json);
+      }
+    );
+  }
+
+  importarListaPrecios() {
+    this.formImportarSubmitted = true;
+    if (!isNullOrUndefined(this.file)) {
+      const body = {
+        actualizarDescripcion: this.actualizarDescripcion,
+        actualizarPrecioCosto: this.actualizarPrecioCosto,
+        actualizarPrecioVenta: this.actualizarPrecioVenta,
+        campoCodigoAUtilizar: this.campoCodigoAUtilizar
+      };
+      $('#modalImportar').modal('hide');
+      this.reestablecerParaNuevo();
+      this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
+        this.articulosNoEncontrados = json.no_encontrados;
+        if (this.articulosNoEncontrados.length !== 0) {
+          $('#modalNoEncontrados').modal('show');
+        }
+      });
+    }
+  }
+
+  onChangeFile(file) {
+    this.file = file[0];
   }
 }
