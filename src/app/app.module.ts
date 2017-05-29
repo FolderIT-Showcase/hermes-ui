@@ -31,6 +31,7 @@ import { ListaPreciosComponent } from './lista-precios/lista-precios.component';
 import {TextMaskModule} from 'angular2-text-mask';
 import { ArticuloCodigoTypeaheadComponent } from './facturas/typeahead/articuloCodigoTypeahead.component';
 import {ArticuloTypeaheadComponent} from './facturas/typeahead/articuloTypeahead.component';
+import { PresupuestosComponent } from './presupuestos/presupuestos.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import {ArticuloTypeaheadComponent} from './facturas/typeahead/articuloTypeahead
     FacturasComponent,
     ListaPreciosComponent,
     ArticuloTypeaheadComponent,
-    ArticuloCodigoTypeaheadComponent
+    ArticuloCodigoTypeaheadComponent,
+    PresupuestosComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

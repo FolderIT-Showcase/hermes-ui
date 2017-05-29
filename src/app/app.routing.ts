@@ -13,6 +13,7 @@ import { SubrubrosComponent } from 'app/subrubros/subrubros.component';
 import { MarcasComponent } from 'app/marcas/marcas.component';
 import { FacturasComponent } from 'app/facturas/facturas.component';
 import {ListaPreciosComponent} from './lista-precios/lista-precios.component';
+import {PresupuestosComponent} from './presupuestos/presupuestos.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -27,6 +28,7 @@ const appRoutes: Routes = [
   {path: 'marcas', component: MarcasComponent, canActivate: [AuthGuard]},
   {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard]},
   {path: 'listaprecios', component: ListaPreciosComponent, canActivate: [AuthGuard]},
+  {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
