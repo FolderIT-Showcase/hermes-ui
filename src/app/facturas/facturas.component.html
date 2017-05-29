@@ -52,7 +52,7 @@
              typeaheadOptionField="codigo"
              class="form-control"
              autocomplete="off"
-             placeholder="Cod">
+             placeholder="Código">
     </div>
     <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
     <div class="col-sm-3">
@@ -73,63 +73,45 @@
       <th>% Desc.</th>
       <th>Desc.</th>
       <th>Total</th>
+      <th>Acciones</th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let item of items">
-      <td>{{ item.codigo }}</td>
-      <td>{{ item.nombre }}</td>
-      <td>{{ item.cantidad }}</td>
-      <td>{{ item.importe_unitario }}</td>
-      <td>{{ item.porcentaje_descuento }}</td>
-      <td>{{ item.importe_descuento }}</td>
-      <td>{{ item.importe_total }}</td>
-    </tr>
-
-    <tr [hidden]="!tipoComprobante.nombre">
+    <tr *ngFor="let item of items; let i = index" [hidden]="!tipoComprobante.nombre">
       <td  class="typeaheadcontainer">
         <div class="input-group">
-          <input [(ngModel)]="articuloCodAsync" name="articuloCodAsync" class="typeaheadcontrol input-group"
-                 [typeahead]="articulosCod"
-                 (typeaheadOnSelect)="onArticuloChanged($event.item)"
-                 typeaheadMinLength="1"
-                 typeaheadOptionsLimit="7"
-                 typeaheadOptionField="codigo"
-                 autocomplete="off"
-                 placeholder="Código">
+          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item)"></app-articulo-codigo-typeahead>
         </div>
       </td>
+
       <td  class="typeaheadcontainer">
         <div class="input-group" style="width: 100%">
-          <input [(ngModel)]="articuloAsync" name="articuloAsync" class="typeaheadcontrol"
-                 [typeahead]="articulos"
-                 (typeaheadOnSelect)="onArticuloChanged($event.item)"
-                 typeaheadMinLength="3"
-                 typeaheadOptionsLimit="7"
-                 typeaheadOptionField="nombre"
-                 autocomplete="off"
-                 placeholder="artículo">
+          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item)"></app-articulo-typeahead>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos()" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+            <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item)" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
           </span>
         </div>
       </td>
+
       <td  class="typeaheadcontainer">
-        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad" (input)="onCantidadChanged()" placeholder="0" min="0" step="1">
+        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (input)="onCantidadChanged(item)" placeholder="0" min="0" step="1">
       </td>
       <td  class="typeaheadcontainer">
-        <input [readonly]="!parametroModificaPrecio.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario" (input)="onImporteUnitarioChanged()" placeholder="0.00" min="0" step="0.01">
+        <input type="number" [readonly]="!parametroModificaPrecio.valor"  class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" placeholder="0.00" min="0" step="0.01">
       </td>
       <td  class="typeaheadcontainer">
-        <input [readonly]="!parametroUsaDescuento.valor" type="number" class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento" (input)="onPorcentajeDescuentoChanged()" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
+        <input type="number" [readonly]="!parametroUsaDescuento.valor"  class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (input)="onPorcentajeDescuentoChanged(item)" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
       </td>
       <td>{{ item.importe_descuento }}</td>
       <td>{{ item.importe_total }}</td>
+      <td>
+        <button type="submit" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
+        <button type="button" *ngIf="i !== items.length - 1" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
+      </td>
     </tr>
     </tbody>
   </table>
-  <button type="submit" hidden="true" (click)="agregarNuevo()"></button>
-
+  <!--<button type="submit" hidden="true" (click)="agregarNuevo()"></button>-->
   <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
     <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
     <div class="col-sm-2">

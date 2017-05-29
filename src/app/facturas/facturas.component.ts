@@ -27,11 +27,8 @@ export class FacturasComponent implements OnInit {
   clientes: any;
   clienteCodAsync: string;
   clientesCod: any;
-  item: Item = new Item();
-  articuloAsync = '';
   articulos: Articulo[];
   articuloCodAsync = '';
-  articulosCod: Articulo[];
   items: Item[] = [];
   tipoComprobante: TipoComprobante = new TipoComprobante;
   factura: Comprobante = new Comprobante;
@@ -57,6 +54,7 @@ export class FacturasComponent implements OnInit {
   listaPreciosSeleccionada: ListaPrecios;
   listaAnterior: ListaPrecios;
   iva = 0.21;
+  itemEnBusqueda: Item;
 
   constructor(private apiService: ApiService, private alertService: AlertService, private authenticationService: AuthenticationService) {
     this.clientes = Observable.create((observer: any) => {
@@ -72,20 +70,6 @@ export class FacturasComponent implements OnInit {
         }
       });
     });
-
-    this.articulos = Observable.create((observer: any) => {
-      this.apiService.get('articulos/nombre/' + this.articuloAsync).subscribe( json => {
-        observer.next(json);
-      });
-    });
-
-    this.articulosCod = Observable.create((observer: any) => {
-      this.apiService.get('articulos/codigo/' + this.articuloCodAsync).subscribe( json => {
-        if (json !== '') {
-          observer.next([json]);
-        }
-      });
-    });
   }
 
   ngOnInit() {
@@ -93,8 +77,8 @@ export class FacturasComponent implements OnInit {
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
+        'zeroRecords':    '',
+        'emptyTable':     '',
         'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
         'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
         'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
@@ -182,52 +166,61 @@ export class FacturasComponent implements OnInit {
         this.calcularImportesItem(item);
       });
       this.calcularImportesFactura();
+      if (this.items.length === 0) {
+        this.items.push(new Item);
+      }
     });
   }
 
-  onArticuloChanged(articulo: Articulo) {
-    this.item.codigo = articulo.codigo;
-    this.item.nombre = articulo.nombre;
-    this.item.articulo_id = articulo.id;
-    this.item.costo_unitario = +articulo.costo;
-    this.articuloAsync = this.item.nombre;
+  onArticuloChanged(articulo: Articulo, item: Item) {
+    item.codigo = articulo.codigo;
+    item.nombre = articulo.nombre;
+    item.articulo_id = articulo.id;
+    item.costo_unitario = +articulo.costo;
     this.articuloCodAsync = articulo.codigo;
     if (!isNullOrUndefined(this.listaPreciosSeleccionada)) {
-      this.calcularImporteUnitario(this.item);
-      this.calcularImportesItem(this.item);
+      this.calcularImporteUnitario(item);
+      this.calcularImportesItem(item);
     }
   }
 
-  onCantidadChanged() {
-    this.calcularImportesItem(this.item);
+  onCantidadChanged(item: Item) {
+    this.calcularImportesItem(item);
   }
 
-  onImporteUnitarioChanged() {
-    this.calcularImportesItem(this.item);
+  onImporteUnitarioChanged(item: Item) {
+    console.log(item);
+    this.calcularImportesItem(item);
   }
 
-  onPorcentajeDescuentoChanged() {
-    if (+this.item.porcentaje_descuento > +this.parametroDescuentoMax.valor) {
-      this.item.porcentaje_descuento = +this.parametroDescuentoMax.valor;
+  onPorcentajeDescuentoChanged(item: Item) {
+    if (+item.porcentaje_descuento > +this.parametroDescuentoMax.valor) {
+      item.porcentaje_descuento = +this.parametroDescuentoMax.valor;
     }
-    this.calcularImportesItem(this.item);
+    this.calcularImportesItem(item);
   }
 
   calcularImportesItem(item: Item) {
     item.importe_descuento = (+item.cantidad * +item.importe_unitario * (+item.porcentaje_descuento / 100)).toFixed(2);
     item.importe_total = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
+    if (this.items.indexOf(item) !== this.items.length - 1) {
+      this.calcularImportesFactura();
+    }
   }
 
-  agregarNuevo() {
-    if (this.item.articulo_id && this.item.cantidad && this.item.importe_unitario) {
-      const itemNuevo = new Item();
-      Object.assign(itemNuevo, this.item);
-      this.items.push(itemNuevo);
+  agregarNuevo(item: Item) {
+    if (item.articulo_id && item.cantidad && item.importe_unitario) {
+      this.items.push(new Item);
       this.calcularImportesFactura();
-      this.item = new Item();
-      this.articuloAsync = '';
-      this.articuloCodAsync = '';
     }
+  }
+
+  quitarItem(item: Item) {
+    const index: number = this.items.indexOf(item);
+    if (index !== -1) {
+      this.items.splice(index, 1);
+    }
+    this.calcularImportesFactura();
   }
 
   generarFactura() {
@@ -238,7 +231,7 @@ export class FacturasComponent implements OnInit {
     this.factura.tipo_comprobante_id = this.tipoComprobante.id;
     this.factura.alicuota_iva = this.iva;
     this.factura.saldo = 0;
-    this.factura.items = this.items;
+    this.factura.items = this.items.slice(0, this.items.length - 1);
 
     if (!this.fechaSeleccionada) {
       const today = new Date();
@@ -264,13 +257,14 @@ export class FacturasComponent implements OnInit {
     this.onClienteChanged(this.busquedaClienteSeleccionado);
   }
 
-  mostrarModalBuscarArticulos() {
+  mostrarModalBuscarArticulos(item: Item) {
     this.cargarMarcas();
     this.cargarRubros();
     this.cargarSubrubros();
     this.busquedaArticuloMarcaId = null;
     this.busquedaArticuloRubroId = null;
     this.busquedaArticuloSubrubroId = null;
+    this.itemEnBusqueda = item;
   }
 
   cargarMarcas() {
@@ -324,8 +318,7 @@ export class FacturasComponent implements OnInit {
   }
 
   confirmarBusquedaArticulo() {
-    this.articuloAsync = this.busquedaArticuloSeleccionado.nombre;
-    this.onArticuloChanged(this.busquedaArticuloSeleccionado);
+    this.onArticuloChanged(this.busquedaArticuloSeleccionado, this.itemEnBusqueda);
   }
 
   private cargarListasPrecios() {
@@ -344,7 +337,13 @@ export class FacturasComponent implements OnInit {
   onListaPreciosChanged() {
     this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
     if (this.items.length > 0 && this.listaPreciosSeleccionada !== this.listaAnterior) {
-      $('#modalCambiarListaPrecios').modal('show');
+      if (this.items.length > 1) {
+        $('#modalCambiarListaPrecios').modal('show');
+      } else if (this.items.length === 1 && this.items[0].articulo_id) {
+        $('#modalCambiarListaPrecios').modal('show');
+      } else {
+        this.listaAnterior = this.listaPreciosSeleccionada;
+      }
     } else {
       this.listaAnterior = this.listaPreciosSeleccionada;
     }
@@ -357,6 +356,9 @@ export class FacturasComponent implements OnInit {
 
   confirmarCambioListaPrecios() {
     this.itemsABorrar = this.items.filter( item => {
+      if (!item.articulo_id) {
+        return false;
+      }
       if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
         return true;
       }
@@ -372,6 +374,9 @@ export class FacturasComponent implements OnInit {
   cambiarListaPrecios() {
     this.listaAnterior = this.listaPreciosSeleccionada;
     this.items = this.items.filter( item => {
+      if (!item.articulo_id) {
+        return true;
+      }
       if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
         return false;
       }
@@ -382,11 +387,14 @@ export class FacturasComponent implements OnInit {
       this.calcularImportesItem(item);
     });
     this.calcularImportesFactura();
+    if (this.items.length === 0) {
+      this.items.push(new Item);
+    }
   }
 
   private calcularImportesFactura() {
     this.factura.importe_neto = 0;
-    this.items.forEach( item => {
+    this.items.slice(0, this.items.length - 1).forEach( item => {
       this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
     });
     this.factura.importe_neto = this.factura.importe_neto.toFixed(2);
@@ -409,12 +417,14 @@ export class FacturasComponent implements OnInit {
     if (!isNullOrUndefined(itemLista)) {
       switch (this.tipoComprobante.nombre) {
         case 'A':
-          item.importe_unitario = itemLista.precio_venta;
+          item.importe_unitario = (+itemLista.precio_venta).toFixed(2);
           break;
         case 'B': case 'C': default:
-          item.importe_unitario = (itemLista.precio_venta * (1 + this.iva)).toFixed(2);
-          break;
+        item.importe_unitario = (itemLista.precio_venta * (1 + this.iva)).toFixed(2);
+        break;
       }
+    } else {
+      item.importe_unitario = 0;
     }
   }
 }

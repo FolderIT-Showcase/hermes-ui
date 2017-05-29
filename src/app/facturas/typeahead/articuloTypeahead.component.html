@@ -1,0 +1,8 @@
+<input [(ngModel)]="nombreArticulo" name="nombreArticulo" class="typeaheadcontrol"
+       [typeahead]="articulos"
+       (typeaheadOnSelect)="onArticuloChanged($event.item)"
+       typeaheadMinLength="3"
+       typeaheadOptionsLimit="7"
+       typeaheadOptionField="nombre"
+       autocomplete="off"
+       placeholder="Artículo">
