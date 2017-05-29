@@ -86,8 +86,8 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
           text: 'Nuevo Cliente',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -113,8 +113,6 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
           });
         this.dtTrigger.next();
       });
-
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -126,6 +124,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.cargarVendedores();
     this.cargarZonas();
     this.cargarListasPrecios();
+    this.cargarTipoCategoriaCliente();
   }
 
   mostrarModalEliminar(cliente: Cliente) {
@@ -159,7 +158,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nuevo Cliente';
     this.enNuevo = true;
     this.clienteSeleccionado = new Cliente;
@@ -172,6 +171,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.cargarZonas();
     this.cargarListasPrecios();
     this.cargarTipoCategoriaCliente();
+    $('#modalEditar').modal('show');
   }
 
   eliminar() {
@@ -189,7 +189,6 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 200);
     }
-    setTimeout(() => {  this.reestablecerParaNuevo(); }, 400);
   }
 
   private recargarTabla() {

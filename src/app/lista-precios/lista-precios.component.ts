@@ -97,16 +97,16 @@ export class ListaPreciosComponent implements OnInit {
           text: 'Nueva Lista de Precios',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         },
         {
           text: 'Importar',
           key: '2',
           className: 'btn btn-default',
-          action: function (e, dt, node, config) {
-            $('#modalImportar').modal('show');
+          action: () => {
+            this.mostrarModalImportar();
           }
         }
       ]
@@ -118,7 +118,6 @@ export class ListaPreciosComponent implements OnInit {
         this.listasPrecios = json;
         this.dtTrigger.next();
       });
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(listaPrecios: ListaPrecios) {
@@ -165,17 +164,23 @@ export class ListaPreciosComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nueva Lista de Precios';
     this.enNuevo = true;
     this.listaPreciosSeleccionada = new ListaPrecios;
     this.listaPreciosSeleccionada.activo = true;
+    this.listaPreciosSeleccionada.lista_precio_item = [];
+    $('#modalEditar').modal('show');
+  }
+
+  mostrarModalImportar() {
     this.actualizarDescripcion = true;
     this.actualizarPrecioCosto = true;
     this.actualizarPrecioVenta = false;
     this.campoCodigoAUtilizar = 'codigo';
     this.formImportarSubmitted = false;
     this.articulosNoEncontrados = [];
+    $('#modalImportar').modal('show');
   }
 
   cerrar(f) {
@@ -183,7 +188,6 @@ export class ListaPreciosComponent implements OnInit {
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 100);
     }
-    setTimeout(() => {  this.reestablecerParaNuevo(); }, 200);
   }
 
   eliminar() {
@@ -198,7 +202,6 @@ export class ListaPreciosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 
@@ -381,7 +384,6 @@ export class ListaPreciosComponent implements OnInit {
         campoCodigoAUtilizar: this.campoCodigoAUtilizar
       };
       $('#modalImportar').modal('hide');
-      this.reestablecerParaNuevo();
       this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
         this.articulosNoEncontrados = json.no_encontrados;
         if (this.articulosNoEncontrados.length !== 0) {

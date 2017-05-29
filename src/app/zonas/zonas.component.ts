@@ -64,8 +64,8 @@ export class ZonasComponent implements OnInit {
           text: 'Nueva Zona',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -77,7 +77,6 @@ export class ZonasComponent implements OnInit {
         this.zonas = json;
         this.dtTrigger.next();
       });
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(zona: Zona) {
@@ -120,15 +119,15 @@ export class ZonasComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nueva Zona';
     this.enNuevo = true;
     this.zonaSeleccionada = new Zona;
+    $('#modalEditar').modal('show');
   }
 
   cerrar() {
     this.submitted = false;
-    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -143,7 +142,6 @@ export class ZonasComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 

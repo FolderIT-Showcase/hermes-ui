@@ -68,8 +68,8 @@ export class ArticulosComponent implements OnInit {
           text: 'Nuevo Artículo',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -84,7 +84,6 @@ export class ArticulosComponent implements OnInit {
         this.dtTrigger.next();
       });
 
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(articulo: Articulo) {
@@ -133,10 +132,11 @@ export class ArticulosComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nuevo Artículo';
     this.enNuevo = true;
     this.articuloSeleccionado = new Articulo;
+    $('#modalEditar').modal('show');
   }
 
   eliminar() {
@@ -147,7 +147,6 @@ export class ArticulosComponent implements OnInit {
     }
     this.recargarTabla();
     this.apiService.delete('articulos/' + this.articuloSeleccionado.id).subscribe();
-    this.reestablecerParaNuevo();
   }
 
   cerrar(f: any) {
@@ -155,7 +154,6 @@ export class ArticulosComponent implements OnInit {
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 100);
     }
-    setTimeout(() => {  this.reestablecerParaNuevo(); }, 200);
   }
 
   private recargarTabla() {

@@ -66,8 +66,8 @@ export class VendedoresComponent implements OnInit {
           text: 'Nuevo Vendedor',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -81,7 +81,6 @@ export class VendedoresComponent implements OnInit {
         this.cargarZonas();
         this.dtTrigger.next();
       });
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(vendedor: Vendedor) {
@@ -131,7 +130,8 @@ export class VendedoresComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
+    $('#modalEditar').modal('show');
     this.modalTitle = 'Nuevo Vendedor';
     this.enNuevo = true;
     this.vendedorSeleccionado = new Vendedor;
@@ -139,7 +139,6 @@ export class VendedoresComponent implements OnInit {
 
   cerrar() {
     this.submitted = false;
-    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -154,7 +153,6 @@ export class VendedoresComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 

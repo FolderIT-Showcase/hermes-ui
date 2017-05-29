@@ -61,9 +61,8 @@ export class PresupuestosComponent implements OnInit {
           text: 'Nuevo Presupuesto',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            // TODO ver como usar el router de Angular para no recargar la página
-            window.location.href = 'http://localhost:4200/presupuestos/presupuesto/0';
+          action: () => {
+            this.router.navigate(['/presupuestos/presupuesto/0']);
           }
         }
       ]

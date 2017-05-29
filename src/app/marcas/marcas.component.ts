@@ -65,8 +65,8 @@ export class MarcasComponent implements OnInit {
           text: 'Nueva Marca',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -79,8 +79,6 @@ export class MarcasComponent implements OnInit {
         this.marcas = json;
         this.dtTrigger.next();
       });
-
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(marca: Marca) {
@@ -123,15 +121,15 @@ export class MarcasComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nueva Marca';
     this.enNuevo = true;
     this.marcaSeleccionada = new Marca;
+    $('#modalEditar').modal('show');
   }
 
   cerrar() {
     this.submitted = false;
-    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -146,7 +144,6 @@ export class MarcasComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 

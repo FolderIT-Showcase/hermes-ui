@@ -67,8 +67,8 @@ export class SubrubrosComponent implements OnInit {
           text: 'Nuevo Subrubro',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -76,7 +76,6 @@ export class SubrubrosComponent implements OnInit {
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.cargarRubros();
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(subrubro: Subrubro) {
@@ -121,15 +120,15 @@ export class SubrubrosComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
     this.modalTitle = 'Nuevo Subrubro';
     this.enNuevo = true;
     this.subrubroSeleccionado = new Subrubro;
+    $('#modalEditar').modal('show');
   }
 
   cerrar() {
     this.submitted = false;
-    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -144,7 +143,6 @@ export class SubrubrosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 
