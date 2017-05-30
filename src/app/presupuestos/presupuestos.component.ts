@@ -105,4 +105,22 @@ export class PresupuestosComponent implements OnInit {
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
   }
+
+  enviarPorMail(presupuesto: Comprobante) {
+
+  }
+
+  imprimirPDF(presupuesto: Comprobante) {
+    this.apiService.downloadPDF('comprobantes/presupuestos/imprimir/' + presupuesto.id, presupuesto).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
+  }
 }

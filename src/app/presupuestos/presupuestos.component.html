@@ -10,7 +10,7 @@
     <th>Número</th>
     <th>Cliente</th>
     <th>Importe total</th>
-    <th style="width:10%">Acciones</th>
+    <th style="width:15%">Acciones</th>
   </tr>
   </thead>
   <tbody>
@@ -18,7 +18,9 @@
     <td>{{ presupuesto.numero }}</td>
     <td>{{ presupuesto.cliente_nombre }}</td>
     <td>{{ presupuesto.importe_total }}</td>
-    <td>
+    <td style="width: 15%">
+      <button (click)="enviarPorMail(presupuesto)" class="glyphicon glyphicon-envelope blue"></button >
+      <button (click)="imprimirPDF(presupuesto)" class="glyphicon glyphicon-print blue"></button >
       <button [routerLink]="['/presupuestos/presupuesto', presupuesto.id]" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(presupuesto)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>

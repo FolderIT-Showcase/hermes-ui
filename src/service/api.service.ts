@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, Response} from '@angular/http';
+import {Headers, Http, Response, ResponseContentType} from '@angular/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Rx';
@@ -127,5 +127,21 @@ export class ApiService {
       .map(this.checkForError)
       .catch(err => Observable.throw(err))
       .map(this.getJson);
+  }
+
+  public downloadPDF(path: string, body): Observable<any> {
+    const user: User = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = new Headers({
+      'Accept': 'application/pdf',
+      'Authorization':  user.token,
+    });
+    return this.http
+      .post(
+        `${this.baseURL}${path}`, JSON.stringify(body),
+        {headers: headers, responseType: ResponseContentType.Blob})
+      .map(
+        (res) => {
+          return new Blob([res.blob()], { type: 'application/pdf' });
+        });
   }
 }
