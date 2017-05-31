@@ -14,6 +14,7 @@ import {ListaPrecios} from '../../../domain/listaPrecios';
 import {Parametro} from '../../../domain/parametro';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {isNullOrUndefined} from 'util';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-factura',
@@ -26,6 +27,7 @@ export class FacturaComponent implements OnInit {
   @Input() cliente: Cliente;
   @Input() nuevoOEditar = 'nuevo';
   @Input() @Output() factura: Comprobante = new Comprobante;
+  @Input() routeAfter: string;
   itemsABorrar: Item[] = [];
   clienteAsync: string;
   clientes: any;
@@ -57,7 +59,10 @@ export class FacturaComponent implements OnInit {
   iva = 0.21;
   itemEnBusqueda: Item;
 
-  constructor(private apiService: ApiService, private alertService: AlertService, private authenticationService: AuthenticationService) {
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private authenticationService: AuthenticationService,
+              private router: Router) {
     this.clientes = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         observer.next(json);
@@ -259,10 +264,16 @@ export class FacturaComponent implements OnInit {
     if (this.nuevoOEditar === 'nuevo') {
       this.apiService.post('comprobantes', this.factura).subscribe( () => {
         this.alertService.success('El comprobante se ha generado con éxito');
+        if (!isNullOrUndefined(this.routeAfter)) {
+          this.router.navigate([this.routeAfter]).catch();
+        }
       });
     } else {
       this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( () => {
-        this.alertService.success('El comprobante se ha modificado con éxito');
+        this.alertService.success('El comprobante se ha modificado con éxito', true);
+        if (!isNullOrUndefined(this.routeAfter)) {
+          this.router.navigate([this.routeAfter]).catch();
+        }
       });
     }
   }

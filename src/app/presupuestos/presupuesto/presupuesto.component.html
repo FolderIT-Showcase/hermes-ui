@@ -1,1 +1,1 @@
-<app-factura *ngIf="mostrarComponenteFactura" [(factura)]="presupuesto" [tipoFactura]="'presupuesto'" [cliente]="presupuesto.cliente" [nuevoOEditar]="nuevoOEditar"></app-factura>
+<app-factura *ngIf="mostrarComponenteFactura" [(factura)]="presupuesto" [routeAfter]="'/presupuestos'" [tipoFactura]="'presupuesto'" [cliente]="presupuesto.cliente" [nuevoOEditar]="nuevoOEditar"></app-factura>
