@@ -21,7 +21,7 @@ import {isNullOrUndefined} from 'util';
   styleUrls: ['./factura.component.css']
 })
 export class FacturaComponent implements OnInit {
-  @Input() items: Item[] = [];
+  items: Item[] = [];
   @Input() tipoFactura: string;
   @Input() cliente: Cliente;
   @Input() nuevoOEditar = 'nuevo';
@@ -138,11 +138,11 @@ export class FacturaComponent implements OnInit {
         'orderable': false,
         'width': '15%'
       }, {
-      'targets': 7,
+        'targets': 7,
         'searchable': false,
         'orderable': false,
         'width': '5%'
-    }]
+      }]
     };
 
     this.inicializar();
@@ -157,6 +157,7 @@ export class FacturaComponent implements OnInit {
       this.factura.punto_venta = 1;
       this.factura.anulado = false;
     } else {
+      Object.assign(this.items, this.factura.items);
       this.clienteCodAsync = this.cliente.codigo;
       this.clienteAsync = this.cliente.nombre;
       this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
@@ -206,7 +207,6 @@ export class FacturaComponent implements OnInit {
   }
 
   onImporteUnitarioChanged(item: Item) {
-    console.log(item);
     this.calcularImportesItem(item);
   }
 
@@ -257,17 +257,14 @@ export class FacturaComponent implements OnInit {
     }
 
     if (this.nuevoOEditar === 'nuevo') {
-      this.apiService.post('comprobantes', this.factura).subscribe( json => {
-        this.factura = json;
+      this.apiService.post('comprobantes', this.factura).subscribe( () => {
         this.alertService.success('El comprobante se ha generado con éxito');
       });
     } else {
-      this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( json => {
-        this.factura = json;
+      this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( () => {
         this.alertService.success('El comprobante se ha modificado con éxito');
       });
     }
-
   }
 
   buscarClientes() {
@@ -350,6 +347,10 @@ export class FacturaComponent implements OnInit {
   private cargarListasPrecios() {
     this.apiService.get('listaprecios').subscribe(json => {
       this.listasPrecios = json;
+      if (!isNullOrUndefined(this.cliente) && ! isNullOrUndefined(this.cliente.lista_id)) {
+        this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
+        this.listaAnterior = this.listaPreciosSeleccionada;
+      }
     });
   }
 

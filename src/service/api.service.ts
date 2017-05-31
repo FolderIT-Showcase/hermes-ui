@@ -139,6 +139,8 @@ export class ApiService {
       .get(
         `${this.baseURL}${path}`,
         {headers: headers, responseType: ResponseContentType.Blob})
+      .map(this.checkForError)
+      .catch(err => Observable.throw(err))
       .map(
         (res) => {
           return new Blob([res.blob()], { type: 'application/pdf' });

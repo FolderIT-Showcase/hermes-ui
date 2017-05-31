@@ -93,17 +93,21 @@
         </div>
       </td>
 
-      <td  class="typeaheadcontainer">
+      <td class="typeaheadcontainer">
         <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (input)="onCantidadChanged(item)" placeholder="0" min="0" step="1">
       </td>
-      <td  class="typeaheadcontainer">
+      <td class="typeaheadcontainer">
         <input type="number" [readonly]="!parametroModificaPrecio.valor"  class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" placeholder="0.00" min="0" step="0.01">
       </td>
-      <td  class="typeaheadcontainer">
+      <td class="typeaheadcontainer">
         <input type="number" [readonly]="!parametroUsaDescuento.valor"  class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (input)="onPorcentajeDescuentoChanged(item)" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
       </td>
-      <td>{{ item.importe_descuento }}</td>
-      <td>{{ item.importe_total }}</td>
+      <td class="typeaheadcontainer">
+        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_descuento" name="item-porcentaje-importe{{i}}" placeholder="0.00" min="0" step="0.01">
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_total" name="item--importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
+      </td>
       <td>
         <button type="submit" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
         <button type="button" *ngIf="i !== items.length - 1" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
