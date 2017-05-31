@@ -136,8 +136,8 @@ export class ApiService {
       'Authorization':  user.token,
     });
     return this.http
-      .post(
-        `${this.baseURL}${path}`, JSON.stringify(body),
+      .get(
+        `${this.baseURL}${path}`,
         {headers: headers, responseType: ResponseContentType.Blob})
       .map(
         (res) => {

@@ -5,6 +5,7 @@ import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import {Comprobante} from '../../domain/comprobante';
 import {Router} from '@angular/router';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-presupuestos',
@@ -107,7 +108,17 @@ export class PresupuestosComponent implements OnInit {
   }
 
   enviarPorMail(presupuesto: Comprobante) {
-
+    if (isNullOrUndefined(presupuesto.cliente.email)) {
+      this.alertService.error('El cliente ' + presupuesto.cliente_nombre + ' no tiene un email asociado');
+    } else {
+      this.apiService.get('comprobantes/presupuestos/mail/' + presupuesto.id).subscribe( json => {
+        if (json === 'ok') {
+          this.alertService.success('Se ha enviado correctamente el mail con el presupuesto a ' + presupuesto.cliente_nombre);
+        } else {
+          this.alertService.error('No se ha podido enviar el mail con el presupuesto a ' + presupuesto.cliente_nombre);
+        }
+      });
+    }
   }
 
   imprimirPDF(presupuesto: Comprobante) {
