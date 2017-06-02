@@ -57,10 +57,7 @@ export class ApiService {
     return this.http.get(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(this.getJson);
@@ -73,10 +70,7 @@ export class ApiService {
         {headers: this.headers})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(this.getJson);
@@ -89,10 +83,7 @@ export class ApiService {
         {headers: this.headers})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(this.getJson);
@@ -103,10 +94,7 @@ export class ApiService {
     return this.http.delete(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(this.getJson);
@@ -144,16 +132,13 @@ export class ApiService {
         {headers: headers})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(this.getJson);
   }
 
-  public downloadPDF(path: string, body): Observable<any> {
+  public downloadPDF(path: string): Observable<any> {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
     const headers = new Headers({
       'Accept': 'application/pdf',
@@ -165,15 +150,19 @@ export class ApiService {
         {headers: headers, responseType: ResponseContentType.Blob})
       .map(this.checkForError)
       .catch( err => {
-        if (err.status === 401) {
-          this.alertService.error('La sesión ha expirado', true);
-          this.router.navigate(['/login']);
-        }
+        this.check401(err);
         return Observable.throw(err);
       })
       .map(
         (res) => {
           return new Blob([res.blob()], { type: 'application/pdf' });
         });
+  }
+
+  private check401(err) {
+    if (err.status === 401) {
+      this.alertService.error('La sesión ha expirado', true);
+      this.router.navigate(['/login']);
+    }
   }
 }
