@@ -65,8 +65,8 @@ export class RubrosComponent implements OnInit {
           text: 'Nuevo Rubro',
           key: '1',
           className: 'btn btn-success a-override',
-          action: function (e, dt, node, config) {
-            $('#modalEditar').modal('show');
+          action: () => {
+            this.mostrarModalNuevo();
           }
         }
       ]
@@ -79,7 +79,6 @@ export class RubrosComponent implements OnInit {
         this.rubros = json;
         this.dtTrigger.next();
       });
-    this.reestablecerParaNuevo();
   }
 
   mostrarModalEditar(rubro: Rubro) {
@@ -122,7 +121,8 @@ export class RubrosComponent implements OnInit {
     }
   }
 
-  reestablecerParaNuevo() {
+  mostrarModalNuevo() {
+    $('#modalEditar').modal('show');
     this.modalTitle = 'Nuevo Rubro';
     this.enNuevo = true;
     this.rubroSeleccionado = new Rubro;
@@ -130,7 +130,6 @@ export class RubrosComponent implements OnInit {
 
   cerrar() {
     this.submitted = false;
-    this.reestablecerParaNuevo();
   }
 
   eliminar() {
@@ -145,7 +144,6 @@ export class RubrosComponent implements OnInit {
       } else {
         this.alertService.error(json['error']);
       }
-      this.reestablecerParaNuevo();
     });
   }
 

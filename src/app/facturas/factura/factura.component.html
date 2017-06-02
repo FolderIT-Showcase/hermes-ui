@@ -1,0 +1,307 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row">
+    <div class="col-sm-3">
+      <label for="factura-cliente" class="col-sm-4 required control-label">Cliente</label>
+      <div class="col-sm-8 input-group">
+        <input id="factura-cliente" [(ngModel)]="clienteAsync" name="clienteAsync"
+               [typeahead]="clientes"
+               (typeaheadOnSelect)="onClienteChanged($event.item)"
+               typeaheadMinLength="3"
+               typeaheadOptionsLimit="7"
+               typeaheadOptionField="nombre"
+               class="form-control"
+               autocomplete="off"
+               placeholder="Cliente*">
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
+        </span>
+      </div>
+    </div>
+
+    <div class="col-sm-9">
+      <label for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="text" name="factura-tipo" id="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
+      </div>
+
+      <label for="factura-punto-venta" class="col-sm-2 control-label">Pto. vta.</label>
+      <div class="col-sm-1">
+        <input class="form-control" type="text" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
+      </div>
+
+      <label for="factura-numero" class="col-sm-1 control-label">Número</label>
+      <div class="col-sm-2">
+        <input class="form-control" type="text" name="factura-numero" id="factura-numero" [(ngModel)]="factura.numero" required placeholder="0">
+      </div>
+
+      <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
+      <div class="col-sm-3">
+        <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="factura-cliente" class="col-sm-1 required control-label">Código</label>
+    <div class="col-sm-2">
+      <input id="factura-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
+             [typeahead]="clientesCod"
+             (typeaheadOnSelect)="onClienteChanged($event.item)"
+             typeaheadMinLength="1"
+             typeaheadOptionsLimit="7"
+             typeaheadOptionField="codigo"
+             class="form-control"
+             autocomplete="off"
+             placeholder="Código">
+    </div>
+    <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
+    <div class="col-sm-3">
+      <select class="form-control" id="cliente-lista" [(ngModel)]="cliente.lista_id" (change)="onListaPreciosChanged()" name="lista">
+        <option [ngValue]="0">Ninguna</option>
+        <option *ngFor="let lista of listasPrecios" [ngValue]="lista.id">{{lista.nombre}}</option>
+      </select>
+    </div>
+  </div>
+
+  <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table">
+    <thead>
+    <tr>
+      <th>Código</th>
+      <th>Descripción</th>
+      <th>Cant.</th>
+      <th>Importe U.</th>
+      <th>% Desc.</th>
+      <th>Desc.</th>
+      <th>Total</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of items; let i = index" [hidden]="!tipoComprobante.nombre">
+      <td  class="typeaheadcontainer">
+        <div class="input-group">
+          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item)"></app-articulo-codigo-typeahead>
+        </div>
+      </td>
+
+      <td  class="typeaheadcontainer">
+        <div class="input-group" style="width: 100%">
+          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item)"></app-articulo-typeahead>
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item)" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+          </span>
+        </div>
+      </td>
+
+      <td class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (input)="onCantidadChanged(item)" placeholder="0" min="0" step="1">
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" [readonly]="!parametroModificaPrecio.valor"  class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" placeholder="0.00" min="0" step="0.01">
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" [readonly]="!parametroUsaDescuento.valor"  class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (input)="onPorcentajeDescuentoChanged(item)" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_descuento" name="item-porcentaje-importe{{i}}" placeholder="0.00" min="0" step="0.01">
+      </td>
+      <td class="typeaheadcontainer">
+        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_total" name="item--importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
+      </td>
+      <td>
+        <button type="submit" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
+        <button type="button" *ngIf="i !== items.length - 1" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <!--<button type="submit" hidden="true" (click)="agregarNuevo()"></button>-->
+  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+    <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="number" name="factura-subtotal" id="factura-subtotal" [ngModel]="factura.importe_neto" readonly>
+    </div>
+  </div>
+  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+    <label for="factura-importe-iva" class="col-sm-1  col-sm-offset-9 control-label">IVA {{iva*100}}%</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="number" name="factura-importe-iva" id="factura-importe-iva" [ngModel]="factura.importe_iva" readonly>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="factura-total" class="col-sm-1  col-sm-offset-9 control-label">Total</label>
+    <div class="col-sm-2">
+      <input class="form-control" type="number" name="factura-total" id="factura-total" [ngModel]="factura.importe_total" readonly>
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <button type="button" *ngIf="tipoFactura === 'presupuesto'" [routerLink]="['/presupuestos']" class="btn btn-default">Cancelar</button>
+    <button type="button" (click)="generarFactura()" class="btn btn-success" [disabled]="!f.valid">Confirmar</button>
+  </div>
+</form>
+
+<div class="modal fade" id="modalBuscarCliente" tabindex="-1" role="dialog" aria-labelledby="modalBuscarCliente" #modalBuscarCliente>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Buscar Clientes</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #fb="ngForm">
+          <div class="form-group row">
+            <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="busqueda-cliente" [(ngModel)]="busquedaCliente" (input)="buscarClientes()" name="busqueda-cliente" placeholder="Búsqueda" required>
+            </div>
+          </div>
+
+          <table id="tabla-buscar-clientes" class="row-border hover table">
+            <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>CUIT</th>
+              <th>Domicilio</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let cliente of busquedaClientes" class='clickable-row' (click)="busquedaClienteSeleccionado = cliente" [class.active]="cliente == busquedaClienteSeleccionado">
+              <td>{{ cliente.codigo }}</td>
+              <td>{{ cliente.nombre }}</td>
+              <td>{{ cliente.cuit }}</td>
+              <td>{{ cliente.domicilios[0].direccion }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarBusquedaCliente()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaClienteSeleccionado === null || !fb.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalBuscarArticulo" tabindex="-1" role="dialog" aria-labelledby="modalBuscarArticulo" #modalBuscarArticulo>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Buscar Artículos</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #fa="ngForm">
+          <div class="form-group row">
+            <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="busqueda-articulo" [(ngModel)]="busquedaArticulo" (input)="buscarArticulos()" name="busqueda-articulo" placeholder="Búsqueda" required>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="busqueda-cliente-rubro" class="col-sm-1 control-label">Rubro</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-rubro" [(ngModel)]="busquedaArticuloRubroId" (change)="filterSubrubros()" name="rubro">
+                <option [ngValue]="0">Todos</option>
+                <option *ngFor="let rubro of rubros" [ngValue]="rubro.id">{{rubro.nombre}}</option>
+              </select>
+            </div>
+
+            <label for="busqueda-cliente-subrubro" class="col-sm-1 control-label">Subrubro</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-subrubro" [(ngModel)]="busquedaArticuloSubrubroId" name="subrubro">
+                <option [ngValue]="0">Todos</option>
+                <option *ngFor="let subrubro of subrubrosAMostrar" [ngValue]="subrubro.id">{{subrubro.nombre}}</option>
+              </select>
+            </div>
+
+            <label for="busqueda-cliente-marca" class="col-sm-1 control-label">Marca</label>
+            <div class="col-sm-3">
+              <select class="form-control" id="busqueda-cliente-marca" [(ngModel)]="busquedaArticuloMarcaId" name="marca">
+                <option [ngValue]="0">Todas</option>
+                <option *ngFor="let marca of marcas" [ngValue]="marca.id">{{marca.nombre}}</option>
+              </select>
+            </div>
+          </div>
+
+          <table id="tabla-buscar-articulos" class="row-border hover table">
+            <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Marca</th>
+              <th>Rubro</th>
+              <th>Subrubro</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let articulo of busquedaArticulos" class='clickable-row' (click)="busquedaArticuloSeleccionado = articulo" [class.active]="articulo == busquedaArticuloSeleccionado">
+              <td>{{ articulo.codigo }}</td>
+              <td>{{ articulo.nombre }}</td>
+              <td>{{ articulo.marca_nombre }}</td>
+              <td>{{ articulo.rubro_nombre }}</td>
+              <td>{{ articulo.subrubro_nombre }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarBusquedaArticulo()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaArticuloSeleccionado === null || !fa.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalCambiarListaPrecios" tabindex="-1" role="dialog" aria-labelledby="modalCambiarListaPrecios" #modalCambiarListaPrecios>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Cambiar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          Al cambiar la lista de precios se modificarán los importes de los artículos cargados.
+        </div>
+        <div>
+          ¿Desea continuar?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cancelarCambioListaPrecios()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="confirmarCambioListaPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEliminarItems" tabindex="-1" role="dialog" aria-labelledby="modalEliminarItems" #modalEliminarItems>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Cambiar lista de precios</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          Los siguientes artículos no se encuentran en la lista de precios seleccionada y deben ser eliminados:
+        </div>
+        <ul>
+          <li *ngFor="let item of itemsABorrar">{{item.nombre}}</li>
+        </ul>
+        <div>
+          ¿Desea continuar?
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cancelarCambioListaPrecios()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="cambiarListaPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

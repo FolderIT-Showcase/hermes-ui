@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Headers, Http, Response} from '@angular/http';
+import {Headers, Http, Response, ResponseContentType} from '@angular/http';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Rx';
@@ -72,7 +72,13 @@ export class ApiService {
         `${this.baseURL}${path}`, JSON.stringify(body),
         {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err))
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
       .map(this.getJson);
   }
 
@@ -82,7 +88,13 @@ export class ApiService {
         `${this.baseURL}${path}`, JSON.stringify(body),
         {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err))
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
       .map(this.getJson);
   }
 
@@ -90,7 +102,13 @@ export class ApiService {
     this.useJwt();
     return this.http.delete(`${this.baseURL}${path}`, {headers: this.headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err))
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
       .map(this.getJson);
   }
 
@@ -125,7 +143,37 @@ export class ApiService {
         `${this.baseURL}${path}`, formData,
         {headers: headers})
       .map(this.checkForError)
-      .catch(err => Observable.throw(err))
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
       .map(this.getJson);
+  }
+
+  public downloadPDF(path: string, body): Observable<any> {
+    const user: User = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = new Headers({
+      'Accept': 'application/pdf',
+      'Authorization':  user.token,
+    });
+    return this.http
+      .get(
+        `${this.baseURL}${path}`,
+        {headers: headers, responseType: ResponseContentType.Blob})
+      .map(this.checkForError)
+      .catch( err => {
+        if (err.status === 401) {
+          this.alertService.error('La sesión ha expirado', true);
+          this.router.navigate(['/login']);
+        }
+        return Observable.throw(err);
+      })
+      .map(
+        (res) => {
+          return new Blob([res.blob()], { type: 'application/pdf' });
+        });
   }
 }

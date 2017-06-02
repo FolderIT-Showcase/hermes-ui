@@ -1,30 +1,27 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Marca } from 'domain/marca';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
+import {Comprobante} from '../../domain/comprobante';
+import {Router} from '@angular/router';
+import {isNullOrUndefined} from 'util';
 
 @Component({
-  selector: 'app-marcas',
-  templateUrl: './marcas.component.html',
-  styleUrls: ['./marcas.component.css']
+  selector: 'app-presupuestos',
+  templateUrl: './presupuestos.component.html',
+  styleUrls: ['./presupuestos.component.css']
 })
-export class MarcasComponent implements OnInit {
-
-  enNuevo: boolean;
-  marcaOriginal: Marca;
+export class PresupuestosComponent implements OnInit {
   dtOptions: any = {};
-  marcas: Marca[] = [];
+  presupuestos: Comprobante[] = [];
   dtTrigger: Subject<any> = new Subject();
-  marcaSeleccionada: Marca = new Marca();
+  presupuestoSeleccionado: Comprobante = new Comprobante();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
-  private submitted = false;
-
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService, private alertService: AlertService, private router: Router) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -62,83 +59,34 @@ export class MarcasComponent implements OnInit {
       dom: 'Bfrtip',
       buttons: [
         {
-          text: 'Nueva Marca',
+          text: 'Nuevo Presupuesto',
           key: '1',
           className: 'btn btn-success a-override',
           action: () => {
-            this.mostrarModalNuevo();
+            this.router.navigate(['/presupuestos/presupuesto/0']);
           }
         }
       ]
     };
-
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
-    this.apiService.get('marcas')
+    this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
-        this.marcas = json;
+        this.presupuestos = json;
         this.dtTrigger.next();
       });
   }
 
-  mostrarModalEditar(marca: Marca) {
-    this.modalTitle = 'Editar Marca';
-    this.enNuevo = false;
-    this.marcaOriginal = marca;
-    this.marcaSeleccionada = JSON.parse(JSON.stringify(marca));
-  }
-
-  mostrarModalEliminar(marca: Marca) {
-    this.marcaSeleccionada = marca;
-  }
-
-  editarONuevo(f: any) {
-    this.submitted = true;
-    if (f.valid) {
-      this.submitted = false;
-      $('#modalEditar').modal('hide');
-      const marcaAEnviar = new Marca();
-      Object.assign(marcaAEnviar, this.marcaSeleccionada);
-      setTimeout(() => { this.cerrar(); }, 100);
-
-      if (this.enNuevo) {
-        this.enNuevo = false;
-        this.apiService.post('marcas', marcaAEnviar).subscribe(
-          json => {
-            this.marcas.push(json);
-            this.recargarTabla();
-            f.form.reset();
-          }
-        );
-      } else {
-        this.apiService.put('marcas/' + marcaAEnviar.id, marcaAEnviar).subscribe(
-          json => {
-            Object.assign(this.marcaOriginal, json);
-            f.form.reset();
-          }
-        );
-      }
-    }
-  }
-
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nueva Marca';
-    this.enNuevo = true;
-    this.marcaSeleccionada = new Marca;
-    $('#modalEditar').modal('show');
-  }
-
-  cerrar() {
-    this.submitted = false;
+  mostrarModalEliminar(presupuesto: Comprobante) {
+    this.presupuestoSeleccionado = presupuesto;
   }
 
   eliminar() {
-    this.submitted = false;
-    this.apiService.delete('marcas/' + this.marcaSeleccionada.id).subscribe( json => {
+    this.apiService.delete('comprobantes/' + this.presupuestoSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
-        const index: number = this.marcas.indexOf(this.marcaSeleccionada);
+        const index: number = this.presupuestos.indexOf(this.presupuestoSeleccionado);
         if (index !== -1) {
-          this.marcas.splice(index, 1);
+          this.presupuestos.splice(index, 1);
         }
         this.recargarTabla();
       } else {
@@ -157,5 +105,33 @@ export class MarcasComponent implements OnInit {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
+  }
+
+  enviarPorMail(presupuesto: Comprobante) {
+    if (isNullOrUndefined(presupuesto.cliente.email)) {
+      this.alertService.error('El cliente ' + presupuesto.cliente_nombre + ' no tiene un email asociado');
+    } else {
+      this.apiService.get('comprobantes/presupuestos/mail/' + presupuesto.id).subscribe( json => {
+        if (json === 'ok') {
+          this.alertService.success('Se ha enviado correctamente el mail con el presupuesto a ' + presupuesto.cliente_nombre);
+        } else {
+          this.alertService.error('No se ha podido enviar el mail con el presupuesto a ' + presupuesto.cliente_nombre);
+        }
+      });
+    }
+  }
+
+  imprimirPDF(presupuesto: Comprobante) {
+    this.apiService.downloadPDF('comprobantes/presupuestos/imprimir/' + presupuesto.id, presupuesto).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
   }
 }
