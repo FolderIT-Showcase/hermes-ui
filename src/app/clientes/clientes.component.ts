@@ -11,6 +11,7 @@ import { Zona } from 'domain/zona';
 import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
+import {AlertService} from '../../service/alert.service';
 
 @Component({
   selector: 'app-clientes',
@@ -39,8 +40,17 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   tipoCategoriaClientes: TipoCategoriaCliente[];
   submitted = false;
+  parametroReporteFiltrarPorVendedor: Boolean;
+  parametroReporteVendedor: Number;
+  parametroReporteFiltrarPorZona: Boolean;
+  parametroReporteZona: Number;
+  parametroReporteFiltrarPorProvincia: Boolean;
+  parametroReporteProvincia: Number;
+  parametroReporteFiltrarPorLocalidad: Boolean;
+  parametroReporteLocalidad: Number;
+  parametroReporteSoloActivos: Number;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef ) {}
+  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -88,6 +98,13 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
           className: 'btn btn-success a-override',
           action: () => {
             this.mostrarModalNuevo();
+          }
+        }, {
+          text: 'Listado',
+          key: '2',
+          className: 'btn btn-default',
+          action: () => {
+            this.mostrarModalReporte();
           }
         }
       ]
@@ -229,16 +246,18 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     }
 
     this.localidades = [];
-    this.clienteSeleccionado.domicilios.forEach(
-      domicilio => {
-        this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
-          json => {
-            domicilio.provincia_id = json.provincia_id;
-            this.cargarLocalidades(domicilio.provincia_id);
-          }
-        );
-      }
-    );
+    if (isNullOrUndefined(this.clienteSeleccionado)) {
+      this.clienteSeleccionado.domicilios.forEach(
+        domicilio => {
+          this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
+            json => {
+              domicilio.provincia_id = json.provincia_id;
+              this.cargarLocalidades(domicilio.provincia_id);
+            }
+          );
+        }
+      );
+    }
   }
 
   cargarLocalidades(provinciaId: number) {
@@ -307,5 +326,68 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.apiService.get('tipocategoriaclientes').subscribe( json => {
       this.tipoCategoriaClientes = json;
     });
+  }
+
+  private mostrarModalReporte() {
+    this.parametroReporteFiltrarPorVendedor = false;
+    this.parametroReporteVendedor = 0;
+    this.parametroReporteFiltrarPorZona = false;
+    this.parametroReporteZona = 0;
+    this.parametroReporteFiltrarPorProvincia = false;
+    this.parametroReporteProvincia = 0;
+    this.parametroReporteFiltrarPorLocalidad = false;
+    this.parametroReporteLocalidad = 0;
+    this.parametroReporteSoloActivos = 1;
+    $('#modalReporte').modal('show');
+    this.clienteSeleccionado = new Cliente;
+    this.cargarProvincias();
+    this.cargarVendedores();
+    this.cargarZonas();
+  }
+
+  onParametroReporteVendedorChanged(value) {
+    this.parametroReporteVendedor = +value;
+  }
+
+  onParametroReporteZonaChanged(value) {
+    this.parametroReporteZona = +value;
+  }
+
+  onParametroReporteProvinciaChanged(value) {
+    this.parametroReporteProvincia = +value;
+    this.parametroReporteLocalidad = 0;
+    this.cargarLocalidades(value);
+  }
+
+  generarReporteClientes() {
+    if (this.parametroReporteFiltrarPorVendedor === false) {
+      this.parametroReporteVendedor = 0;
+    }
+    if (this.parametroReporteFiltrarPorZona === false) {
+      this.parametroReporteZona = 0;
+    }
+    if (this.parametroReporteFiltrarPorProvincia === false) {
+      this.parametroReporteProvincia = 0;
+    }
+    if (this.parametroReporteFiltrarPorLocalidad   === false) {
+      this.parametroReporteLocalidad = 0;
+    }
+
+    this.apiService.downloadPDF('clientes/reporte/'
+      + this.parametroReporteVendedor + '/'
+      + this.parametroReporteZona + '/'
+      + this.parametroReporteProvincia + '/'
+      + this.parametroReporteLocalidad + '/'
+      + this.parametroReporteSoloActivos).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
   }
 }
