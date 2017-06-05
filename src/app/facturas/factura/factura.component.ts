@@ -338,10 +338,13 @@ export class FacturaComponent implements OnInit {
     if (this.busquedaArticuloSubrubroId === null) {
       this.busquedaArticuloSubrubroId = 0;
     }
-    this.apiService.get('articulos/buscar/' + this.busquedaArticuloMarcaId + '/'
-      + this.busquedaArticuloRubroId + '/'
-      + this.busquedaArticuloSubrubroId + '/'
-      + this.busquedaArticulo).subscribe( json => {
+    this.apiService.get('articulos/buscar', {
+        'marca': this.busquedaArticuloMarcaId,
+        'rubro': this.busquedaArticuloRubroId,
+        'subrubro': this.busquedaArticuloSubrubroId,
+        'busqueda': this.busquedaArticulo
+      }
+    ).subscribe( json => {
       json.forEach( art => {
         art.marca_nombre = this.marcas.find(x => x.id === art.marca_id).nombre;
         art.rubro_nombre = this.rubros.find(x => x.id === art.subrubro.rubro_id).nombre;
