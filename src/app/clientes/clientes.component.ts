@@ -229,12 +229,12 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.clienteSeleccionado.domicilios.push(domicilio);
   }
 
-  eliminarDomicilio(domiciliio: Domicilio) {
-    const index: number = this.clienteSeleccionado.domicilios.indexOf(domiciliio);
-    if (index !== -1) {
-      this.clienteSeleccionado.domicilios.splice(index, 1);
-    }
-  }
+  /*  eliminarDomicilio(domiciliio: Domicilio) {
+   const index: number = this.clienteSeleccionado.domicilios.indexOf(domiciliio);
+   if (index !== -1) {
+   this.clienteSeleccionado.domicilios.splice(index, 1);
+   }
+   }*/
 
   cargarProvincias() {
     if (this.provincias.length === 0) {
@@ -373,12 +373,14 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
       this.parametroReporteLocalidad = 0;
     }
 
-    this.apiService.downloadPDF('clientes/reporte/'
-      + this.parametroReporteVendedor + '/'
-      + this.parametroReporteZona + '/'
-      + this.parametroReporteProvincia + '/'
-      + this.parametroReporteLocalidad + '/'
-      + this.parametroReporteSoloActivos).subscribe(
+    this.apiService.downloadPDF('clientes/reporte', {
+        'vendedor': this.parametroReporteVendedor,
+        'zona': this.parametroReporteZona,
+        'provincia': this.parametroReporteProvincia,
+        'localidad': this.parametroReporteLocalidad,
+        'activos': this.parametroReporteSoloActivos
+      }
+    ).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
