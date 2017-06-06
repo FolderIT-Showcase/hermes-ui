@@ -12,6 +12,8 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 import {AlertService} from '../../service/alert.service';
+import {CtaCteCliente} from '../../domain/ctaCteCliente';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-clientes',
@@ -40,6 +42,8 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   tipoCategoriaClientes: TipoCategoriaCliente[];
   submitted = false;
+
+  // Reporte lista clientes
   parametroReporteFiltrarPorVendedor: Boolean;
   parametroReporteVendedor: Number;
   parametroReporteFiltrarPorZona: Boolean;
@@ -49,6 +53,15 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
   parametroReporteFiltrarPorLocalidad: Boolean;
   parametroReporteLocalidad: Number;
   parametroReporteSoloActivos: Number;
+
+  // Cuenta Corriente
+  clienteCtaCteSeleccionado: Cliente;
+  fechaInicioCtaCte: Date | string;
+  fechaFinCtaCte: Date | string;
+  registrosCtaCte: CtaCteCliente[];
+  fechaSeleccionadaCtaCte: false;
+  clienteCtaCteAsync: string;
+  clientesCtaCte: Cliente[];
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
@@ -106,6 +119,13 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
           action: () => {
             this.mostrarModalReporte();
           }
+        }, {
+          text: 'Cuenta Corriente',
+          key: '3',
+          className: 'btn btn-default',
+          action: () => {
+            this.mostrarModalCtaCte();
+          }
         }
       ]
     };
@@ -130,6 +150,12 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
           });
         this.dtTrigger.next();
       });
+
+    this.clientesCtaCte = Observable.create((observer: any) => {
+      this.apiService.get('clientes/nombre/' + this.clienteCtaCteAsync).subscribe(json => {
+        observer.next(json);
+      });
+    });
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -391,5 +417,52 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
         }
       }
     );
+  }
+
+  mostrarModalCtaCte() {
+    this.clienteCtaCteSeleccionado = new Cliente;
+    this.fechaSeleccionadaCtaCte = false;
+    this.fechaInicioCtaCte = new Date;
+    this.fechaFinCtaCte = new Date;
+    this.clienteCtaCteAsync = '';
+    this.registrosCtaCte = [];
+    const pastYear = new Date();
+    pastYear.setFullYear(pastYear.getFullYear() - 1, pastYear.getMonth(), pastYear.getDate());
+    this.fechaInicioCtaCte =  pastYear.getFullYear() + '-' + (pastYear.getMonth() + 1) + '-' + pastYear.getDate();
+    const today = new Date();
+    this.fechaFinCtaCte =  today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    $('#modalCtaCte').modal('show');
+  }
+
+  filtrarCtaCte() {
+    let fechaInicioAEnviar = this.fechaInicioCtaCte;
+    const fechaFinAEnviar = this.fechaFinCtaCte;
+    if (!this.fechaSeleccionadaCtaCte) {
+      const initialYear = new Date();
+      initialYear.setTime(0);
+      fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
+    }
+
+    this.apiService.get('cuentacorriente/buscar', {
+      'cliente_id': this.clienteCtaCteSeleccionado.id,
+      'fecha_inicio': fechaInicioAEnviar,
+      'fecha_fin': fechaFinAEnviar,
+    }).subscribe( json => {
+      this.registrosCtaCte = json;
+      let saldo = 0.0;
+      this.registrosCtaCte.forEach( reg => {
+        saldo += +reg.debe;
+        saldo -= +reg.haber;
+        reg.saldo = saldo.toFixed(2);
+      });
+    });
+  }
+
+  onClienteCtaCteChanged(event) {
+    this.clienteCtaCteSeleccionado = event;
+    this.clienteCtaCteAsync = this.clienteCtaCteSeleccionado.nombre;
+  }
+
+  imprimirReporteCtaCte() {
   }
 }
