@@ -424,9 +424,10 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.fechaSeleccionadaCtaCte = false;
     this.fechaInicioCtaCte = new Date;
     this.fechaFinCtaCte = new Date;
+    this.clienteCtaCteAsync = '';
     this.registrosCtaCte = [];
     const pastYear = new Date();
-    pastYear.setFullYear(pastYear.getFullYear() - 1, pastYear.getMonth() + 1, pastYear.getDate());
+    pastYear.setFullYear(pastYear.getFullYear() - 1, pastYear.getMonth(), pastYear.getDate());
     this.fechaInicioCtaCte =  pastYear.getFullYear() + '-' + (pastYear.getMonth() + 1) + '-' + pastYear.getDate();
     const today = new Date();
     this.fechaFinCtaCte =  today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
