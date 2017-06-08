@@ -1,10 +1,12 @@
 import { Item } from 'domain/item';
 import {Cliente} from './cliente';
+import {TipoComprobante} from './tipocomprobante';
 
 export class Comprobante {
   id: number;
   cliente_id: number;
   tipo_comprobante_id: number;
+  tipo_comprobante: TipoComprobante;
   fecha: Date | string;
   punto_venta: number;
   numero: number;

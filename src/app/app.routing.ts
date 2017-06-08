@@ -15,6 +15,7 @@ import { FacturasComponent } from 'app/facturas/facturas.component';
 import {ListaPreciosComponent} from './lista-precios/lista-precios.component';
 import {PresupuestosComponent} from './presupuestos/presupuestos.component';
 import {PresupuestoComponent} from './presupuestos/presupuesto/presupuesto.component';
+import {CtaCteClientesComponent} from './cta-cte-clientes/cta-cte-clientes.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -31,6 +32,7 @@ const appRoutes: Routes = [
   {path: 'listaprecios', component: ListaPreciosComponent, canActivate: [AuthGuard]},
   {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent, canActivate: [AuthGuard]},
   {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard]},
+  {path: 'ctacteclientes', component: CtaCteClientesComponent, canActivate: [AuthGuard]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

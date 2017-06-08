@@ -1,0 +1,173 @@
+<form class="form-horizontal">
+  <div class="form-group row">
+    <div class="col-sm-3">
+      <label for="cta-cte-cliente" class="col-sm-4 control-label">Cliente:</label>
+      <div class="col-sm-8 input-group">
+        <input id="cta-cte-cliente" [(ngModel)]="clienteCtaCteAsync" name="clienteCtaCteAsync"
+               [typeahead]="clientesCtaCte"
+               (typeaheadOnSelect)="onClienteCtaCteChanged($event.item)"
+               typeaheadMinLength="3"
+               typeaheadOptionsLimit="7"
+               typeaheadOptionField="nombre"
+               class="form-control"
+               autocomplete="off"
+               placeholder="Cliente">
+      </div>
+    </div>
+
+    <div class="col-sm-7">
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="fechaSeleccionadaCtaCte" name="fechaSeleccionadaCtaCte" [value]="false" >Todos los movimientos</label>
+      </div>
+      <div class="radio input-group">
+        <div class="col-sm-4" style="padding-left: 0; padding-right: 0; padding-top: 8px">
+          <label>
+            <input type="radio" [(ngModel)]="fechaSeleccionadaCtaCte" name="fechaSeleccionadaCtaCte" [value]="true">
+            Solo el intervalo:
+          </label>
+        </div>
+
+
+        <div class="col-sm-8" style="padding-left: 0; padding-right: 0">
+          <div class="col-sm-6">
+            <input class="form-control" type="date" name="cta-cte-fecha-inicio" id="cta-cte-fecha-inicio" [ngModel]="fechaInicioCtaCte | date:'yyyy-MM-dd'" (ngModelChange)="fechaInicioCtaCte = $event">
+          </div>
+
+          <div class="col-sm-6">
+            <input class="form-control" type="date" name="cta-cte-fecha-fin" id="cta-cte-fecha-fin" [ngModel]="fechaFinCtaCte | date:'yyyy-MM-dd'" (ngModelChange)="fechaFinCtaCte = $event">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-2">
+      <button class="btn btn-default" (click)="filtrarCtaCte()">Filtrar</button>
+    </div>
+  </div>
+
+  <table id="table" datatable [dtOptions]="dtOptions" class="row-border hover table" width="100%">
+    <thead>
+    <tr>
+      <th class="text-center" width="15%">Fecha</th>
+      <th width="20%">Comprobante</th>
+      <th width="10%">Nro.</th>
+      <th class="text-center" width="15%">Debe</th>
+      <th class="text-center" width="15%">Haber</th>
+      <th class="text-center" width="20%">Saldo</th>
+      <th width="5%">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let reg of registrosCtaCte">
+      <td class="text-center" width="15%">{{reg.fecha}}</td>
+      <td width="20%">{{reg.tipo_comprobante.nombre}}</td>
+      <td width="10%">{{reg.comprobante.numero}}</td>
+      <td class="text-center" width="15%">{{reg.debe}}</td>
+      <td class="text-center" width="15%">{{reg.haber}}</td>
+      <td class="text-center" width="20%">{{reg.saldo}}</td>
+      <td width="5%">
+        <button (click)="mostrarModalVer(reg)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-eye-open blue"></button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <th width="15%"></th>
+      <th width="20%"></th>
+      <th width="10%"></th>
+      <th width="15%"></th>
+      <th class="text-center" width="15%">Saldo Total</th>
+      <th class="text-center" width="20%">{{saldo.toFixed(2)}}</th>
+      <th width="5%"></th>
+    </tr>
+    </tfoot>
+  </table>
+
+</form>
+<button type="submit" (click)="imprimirReporteCtaCte()" data-dismiss="modal" class="btn btn-default pull-right">Imprimir</button>
+
+
+<div class="modal fade" id="modalVer" tabindex="-1" role="dialog" aria-labelledby="modalVer" #modalVer>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Comprobante</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #f="ngForm">
+          <div class="form-group row">
+            <div class="col-sm-12">
+              <label for="comprobante-tipo" class="col-sm-1 control-label">Tipo</label>
+              <div class="col-sm-2">
+                <input class="form-control" type="text" name="comprobante-tipo" id="comprobante-tipo" [ngModel]="comprobante.tipo_comprobante.nombre" readonly>
+              </div>
+
+              <label for="comprobante-punto-venta" class="col-sm-2 control-label">Pto. vta.</label>
+              <div class="col-sm-1">
+                <input class="form-control" type="text" name="comprobante-punto-venta" id="comprobante-punto-venta" [ngModel]="comprobante.punto_venta" readonly>
+              </div>
+
+              <label for="comprobante-numero" class="col-sm-1 control-label">Número</label>
+              <div class="col-sm-2">
+                <input class="form-control" type="text" name="comprobante-numero" id="comprobante-numero" [(ngModel)]="comprobante.numero" required placeholder="0" readonly>
+              </div>
+
+              <label for="comprobante-fecha" class="col-sm-1 control-label">Fecha</label>
+              <div class="col-sm-2">
+                <input class="form-control" name="comprobante-fecha" id="comprobante-fecha" [ngModel]="comprobante.fecha | date:'yyyy-MM-dd'" (ngModelChange)="comprobante.fecha = $event; fechaSeleccionada = true;" readonly>
+              </div>
+            </div>
+          </div>
+          <div style="height: 250px;overflow-y: auto;">
+            <table id="tablemodal" class="row-border hover table" >
+              <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Cant.</th>
+                <th>Importe U.</th>
+                <th>% Desc.</th>
+                <th>Desc.</th>
+                <th>Total</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of comprobante.items">
+                <td>{{item.codigo}}</td>
+                <td>{{item.nombre}}</td>
+                <td>{{item.cantidad}}</td>
+                <td>{{item.importe_unitario}}</td>
+                <td>{{item.porcentaje_descuento}}</td>
+                <td>{{item.importe_descuento}}</td>
+                <td>{{item.importe_total}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comprobante.codigo)">
+            <label for="comprobante-subtotal" class="col-sm-2  col-sm-offset-8 control-label">Subtotal</label>
+            <div class="col-sm-2">
+              <input class="form-control" type="number" name="comprobante-subtotal" id="comprobante-subtotal" [ngModel]="comprobante.importe_neto" readonly>
+            </div>
+          </div>
+          <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comprobante.codigo)">
+            <label for="comprobante-importe-iva" class="col-sm-2  col-sm-offset-8 control-label">IVA {{iva*100}}%</label>
+            <div class="col-sm-2">
+              <input class="form-control" type="number" name="comprobante-importe-iva" id="comprobante-importe-iva" [ngModel]="comprobante.importe_iva" readonly>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="comprobante-total" class="col-sm-2  col-sm-offset-8 control-label">Total</label>
+            <div class="col-sm-2">
+              <input class="form-control" type="number" name="comprobante-total" id="comprobante-total" [ngModel]="comprobante.importe_total" readonly>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
