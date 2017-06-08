@@ -5,6 +5,7 @@ import {ApiService} from '../../service/api.service';
 import {Observable} from 'rxjs/Observable';
 import {Comprobante} from '../../domain/comprobante';
 import {TipoComprobante} from '../../domain/tipocomprobante';
+import {AlertService} from '../../service/alert.service';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -25,7 +26,7 @@ export class CtaCteClientesComponent implements OnInit {
   dtOptions: any;
   regexTipoA: RegExp = new RegExp('..A');
 
-  constructor(private apiService: ApiService) {
+  constructor(private apiService: ApiService, private alertService: AlertService) {
     this.comprobante = new Comprobante;
     this.comprobante.tipo_comprobante = new TipoComprobante;
   }
@@ -144,8 +145,31 @@ export class CtaCteClientesComponent implements OnInit {
   }
 
   imprimirReporteCtaCte() {
-  }
+    let fechaInicioAEnviar = this.fechaInicioCtaCte;
+    const fechaFinAEnviar = this.fechaFinCtaCte;
+    if (!this.fechaSeleccionadaCtaCte) {
+      const initialYear = new Date();
+      initialYear.setTime(0);
+      fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
+    }
 
+    this.apiService.downloadPDF('cuentacorriente/reporte', {
+      'cliente_id': this.clienteCtaCteSeleccionado.id,
+      'fecha_inicio': fechaInicioAEnviar,
+      'fecha_fin': fechaFinAEnviar,
+      }
+    ).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
+  }
 
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
     this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( json => {
