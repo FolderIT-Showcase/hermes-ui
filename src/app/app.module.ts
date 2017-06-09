@@ -35,6 +35,9 @@ import { PresupuestosComponent } from './presupuestos/presupuestos.component';
 import { FacturaComponent } from './facturas//factura/factura.component';
 import { PresupuestoComponent } from './presupuestos/presupuesto/presupuesto.component';
 import { CtaCteClientesComponent } from './cta-cte-clientes/cta-cte-clientes.component';
+import { NotaDebitoComponent } from './nota-debito/nota-debito.component';
+import { NotaCreditoComponent } from './nota-credito/nota-credito.component';
+import { NotaComponent } from './nota-credito/nota/nota.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +63,10 @@ import { CtaCteClientesComponent } from './cta-cte-clientes/cta-cte-clientes.com
     PresupuestosComponent,
     FacturaComponent,
     PresupuestoComponent,
-    CtaCteClientesComponent
+    CtaCteClientesComponent,
+    NotaDebitoComponent,
+    NotaCreditoComponent,
+    NotaComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

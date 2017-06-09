@@ -16,6 +16,8 @@ import {ListaPreciosComponent} from './lista-precios/lista-precios.component';
 import {PresupuestosComponent} from './presupuestos/presupuestos.component';
 import {PresupuestoComponent} from './presupuestos/presupuesto/presupuesto.component';
 import {CtaCteClientesComponent} from './cta-cte-clientes/cta-cte-clientes.component';
+import {NotaDebitoComponent} from './nota-debito/nota-debito.component';
+import {NotaCreditoComponent} from './nota-credito/nota-credito.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -33,6 +35,8 @@ const appRoutes: Routes = [
   {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent, canActivate: [AuthGuard]},
   {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard]},
   {path: 'ctacteclientes', component: CtaCteClientesComponent, canActivate: [AuthGuard]},
+  {path: 'notadebito', component: NotaDebitoComponent, canActivate: [AuthGuard]},
+  {path: 'notacredito', component: NotaCreditoComponent, canActivate: [AuthGuard]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
