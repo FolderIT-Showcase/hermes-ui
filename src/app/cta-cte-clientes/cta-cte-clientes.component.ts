@@ -97,6 +97,7 @@ export class CtaCteClientesComponent implements OnInit {
         'width': '5%'
       } ]
     };
+
     this.clienteCtaCteSeleccionado = new Cliente;
     this.fechaSeleccionadaCtaCte = false;
     this.fechaInicioCtaCte = new Date;
@@ -136,6 +137,7 @@ export class CtaCteClientesComponent implements OnInit {
         this.saldo -= +reg.haber;
         reg.saldo = this.saldo.toFixed(2);
       });
+      setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
     });
   }
 

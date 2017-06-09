@@ -12,8 +12,6 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 import {AlertService} from '../../service/alert.service';
-import {CtaCteCliente} from '../../domain/ctaCteCliente';
-import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-clientes',
