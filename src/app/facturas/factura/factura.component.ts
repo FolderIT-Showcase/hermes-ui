@@ -58,6 +58,7 @@ export class FacturaComponent implements OnInit {
   listaAnterior: ListaPrecios;
   iva = 0.21;
   itemEnBusqueda: Item;
+  regexTipoA: RegExp = new RegExp('..A');
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,

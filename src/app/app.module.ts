@@ -34,6 +34,7 @@ import {ArticuloTypeaheadComponent} from './facturas/typeahead/articuloTypeahead
 import { PresupuestosComponent } from './presupuestos/presupuestos.component';
 import { FacturaComponent } from './facturas//factura/factura.component';
 import { PresupuestoComponent } from './presupuestos/presupuesto/presupuesto.component';
+import { CtaCteClientesComponent } from './cta-cte-clientes/cta-cte-clientes.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { PresupuestoComponent } from './presupuestos/presupuesto/presupuesto.com
     ArticuloCodigoTypeaheadComponent,
     PresupuestosComponent,
     FacturaComponent,
-    PresupuestoComponent
+    PresupuestoComponent,
+    CtaCteClientesComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

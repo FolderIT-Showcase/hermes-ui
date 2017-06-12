@@ -20,7 +20,7 @@
 
     <div class="col-sm-9">
       <label for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
-      <div class="col-sm-1">
+      <div class="col-sm-2">
         <input class="form-control" type="text" name="factura-tipo" id="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
       </div>
 
@@ -35,7 +35,7 @@
       </div>
 
       <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
-      <div class="col-sm-3">
+      <div class="col-sm-2">
         <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
       </div>
     </div>
@@ -116,13 +116,13 @@
     </tbody>
   </table>
   <!--<button type="submit" hidden="true" (click)="agregarNuevo()"></button>-->
-  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+  <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
     <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
     <div class="col-sm-2">
       <input class="form-control" type="number" name="factura-subtotal" id="factura-subtotal" [ngModel]="factura.importe_neto" readonly>
     </div>
   </div>
-  <div class="form-group row" [hidden]="tipoComprobante.nombre !== 'A'">
+  <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
     <label for="factura-importe-iva" class="col-sm-1  col-sm-offset-9 control-label">IVA {{iva*100}}%</label>
     <div class="col-sm-2">
       <input class="form-control" type="number" name="factura-importe-iva" id="factura-importe-iva" [ngModel]="factura.importe_iva" readonly>
