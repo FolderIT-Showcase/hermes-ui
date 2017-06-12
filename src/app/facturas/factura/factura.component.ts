@@ -440,7 +440,7 @@ export class FacturaComponent implements OnInit {
       this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
     });
     this.factura.importe_neto = this.factura.importe_neto.toFixed(2);
-    switch (this.tipoComprobante.nombre) {
+    switch (this.tipoComprobante.codigo.substr(2, 1)) {
       case 'A':
         this.factura.importe_iva = (+this.factura.importe_neto * this.iva).toFixed(2);
         this.factura.importe_total = (+this.factura.importe_neto + +this.factura.importe_iva).toFixed(2);
@@ -457,7 +457,7 @@ export class FacturaComponent implements OnInit {
       itemLista = this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
     }
     if (!isNullOrUndefined(itemLista)) {
-      switch (this.tipoComprobante.nombre) {
+      switch (this.tipoComprobante.codigo.substr(2, 1)) {
         case 'A':
           item.importe_unitario = (+itemLista.precio_venta).toFixed(2);
           break;

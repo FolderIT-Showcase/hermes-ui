@@ -181,8 +181,8 @@ export class CtaCteClientesComponent implements OnInit {
         item.codigo = item.articulo.codigo;
         item.porcentaje_descuento = '0.00';
         item.importe_descuento = '0.00';
-        $('#modalVer').modal('show');
       });
+      $('#modalVer').modal('show');
     });
   }
 
