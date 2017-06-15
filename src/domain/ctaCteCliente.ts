@@ -12,4 +12,5 @@ export class CtaCteCliente {
   debe: number;
   haber: number;
   saldo: number | string;
+  ptoventaynumero: string;
 }

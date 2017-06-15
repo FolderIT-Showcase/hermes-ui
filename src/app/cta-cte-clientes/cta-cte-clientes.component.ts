@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Cliente} from '../../domain/cliente';
 import {CtaCteCliente} from '../../domain/ctaCteCliente';
 import {ApiService} from '../../service/api.service';
@@ -6,16 +6,18 @@ import {Observable} from 'rxjs/Observable';
 import {Comprobante} from '../../domain/comprobante';
 import {TipoComprobante} from '../../domain/tipocomprobante';
 import {AlertService} from '../../service/alert.service';
+import {IMyDpOptions} from 'mydatepicker';
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-cta-cte-clientes',
   templateUrl: './cta-cte-clientes.component.html',
   styleUrls: ['./cta-cte-clientes.component.css']
 })
-export class CtaCteClientesComponent implements OnInit {
+export class CtaCteClientesComponent implements OnInit, AfterViewInit {
   clienteCtaCteSeleccionado: Cliente;
-  fechaInicioCtaCte: Date | string;
-  fechaFinCtaCte: Date | string;
+  fechaInicioCtaCte: any;
+  fechaFinCtaCte: any;
   registrosCtaCte: CtaCteCliente[];
   fechaSeleccionadaCtaCte: false;
   clienteCtaCteAsync: string;
@@ -25,6 +27,12 @@ export class CtaCteClientesComponent implements OnInit {
   saldo = 0.00;
   dtOptions: any;
   regexTipoA: RegExp = new RegExp('..A');
+  submitted = false;
+  typeaheadNoResults: boolean;
+  listaClientes: Cliente[];
+  myDatePickerOptions: IMyDpOptions;
+  @ViewChild('typeaheadNombreCliente')
+  private typeaheadNombreClienteElement: ElementRef;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {
     this.comprobante = new Comprobante;
@@ -98,47 +106,74 @@ export class CtaCteClientesComponent implements OnInit {
       } ]
     };
 
+    this.myDatePickerOptions = {
+      // other options...
+      dateFormat: 'dd/mm/yyyy',
+      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
+      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
+                    7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
+      todayBtnTxt: 'Hoy',
+      showClearDateBtn: false,
+      editableDateField: false,
+      openSelectorOnInputClick: true,
+    };
+
     this.clienteCtaCteSeleccionado = new Cliente;
     this.fechaSeleccionadaCtaCte = false;
-    this.fechaInicioCtaCte = new Date;
-    this.fechaFinCtaCte = new Date;
     this.clienteCtaCteAsync = '';
     this.registrosCtaCte = [];
     const pastYear = new Date();
     pastYear.setFullYear(pastYear.getFullYear() - 1, pastYear.getMonth(), pastYear.getDate());
-    this.fechaInicioCtaCte =  pastYear.getFullYear() + '-' + (pastYear.getMonth() + 1) + '-' + pastYear.getDate();
+    this.fechaInicioCtaCte = { date: { year: pastYear.getFullYear(), month: pastYear.getMonth() + 1, day: pastYear.getDate() }};
     const today = new Date();
-    this.fechaFinCtaCte =  today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    this.fechaFinCtaCte =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() }};
     this.clientesCtaCte = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteCtaCteAsync).subscribe(json => {
+        this.listaClientes = json;
         observer.next(json);
       });
     });
   }
 
-  filtrarCtaCte() {
-    let fechaInicioAEnviar = this.fechaInicioCtaCte;
-    const fechaFinAEnviar = this.fechaFinCtaCte;
-    if (!this.fechaSeleccionadaCtaCte) {
-      const initialYear = new Date();
-      initialYear.setTime(0);
-      fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
-    }
+  ngAfterViewInit(): void {
+    this.typeaheadNombreClienteElement.nativeElement.focus();
+  }
 
-    this.apiService.get('cuentacorriente/buscar', {
-      'cliente_id': this.clienteCtaCteSeleccionado.id,
-      'fecha_inicio': fechaInicioAEnviar,
-      'fecha_fin': fechaFinAEnviar,
-    }).subscribe( json => {
-      this.registrosCtaCte = json;
-      this.saldo = 0.0;
-      this.registrosCtaCte.forEach( reg => {
-        this.saldo += +reg.debe;
-        this.saldo -= +reg.haber;
-        reg.saldo = this.saldo.toFixed(2);
+  filtrarCtaCte() {
+    this.submitted = true;
+
+    if ((this.clienteCtaCteAsync.length > 0 && !(this.rangoFechaInvalido() && this.fechaSeleccionadaCtaCte))
+      && !this.typeaheadNoResults && this.clienteCtaCteAsync.length > 2) {
+      if (this.clienteCtaCteAsync !== this.clienteCtaCteSeleccionado.nombre) {
+        this.clienteCtaCteSeleccionado = this.listaClientes[0];
+        this.clienteCtaCteAsync = this.clienteCtaCteSeleccionado.nombre;
+      }
+      let fechaInicioAEnviar = this.fechaInicioCtaCte.date.year + '-'
+        + this.fechaInicioCtaCte.date.month
+        + '-' + this.fechaInicioCtaCte.date.day;
+      const fechaFinAEnviar = this.fechaFinCtaCte.date.year + '-' + this.fechaFinCtaCte.date.month + '-' + this.fechaFinCtaCte.date.day;
+      if (!this.fechaSeleccionadaCtaCte) {
+        const initialYear = new Date();
+        initialYear.setTime(0);
+        fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
+      }
+
+      this.apiService.get('cuentacorriente/buscar', {
+        'cliente_id': this.clienteCtaCteSeleccionado.id,
+        'fecha_inicio': fechaInicioAEnviar,
+        'fecha_fin': fechaFinAEnviar,
+      }).subscribe( json => {
+        this.registrosCtaCte = json;
+        this.saldo = 0.0;
+        this.registrosCtaCte.forEach( reg => {
+          reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
+          this.saldo += +reg.debe;
+          this.saldo -= +reg.haber;
+          reg.saldo = this.saldo.toFixed(2);
+        });
+        setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
       });
-      setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
-    });
+    }
   }
 
   onClienteCtaCteChanged(event) {
@@ -147,8 +182,10 @@ export class CtaCteClientesComponent implements OnInit {
   }
 
   imprimirReporteCtaCte() {
-    let fechaInicioAEnviar = this.fechaInicioCtaCte;
-    const fechaFinAEnviar = this.fechaFinCtaCte;
+    let fechaInicioAEnviar = this.fechaInicioCtaCte.date.year + '-' +
+      this.fechaInicioCtaCte.date.month + '-' +
+      this.fechaInicioCtaCte.date.day;
+    const fechaFinAEnviar = this.fechaFinCtaCte.date.year + '-' + this.fechaFinCtaCte.date.month + '-' + this.fechaFinCtaCte.date.day;
     if (!this.fechaSeleccionadaCtaCte) {
       const initialYear = new Date();
       initialYear.setTime(0);
@@ -176,6 +213,8 @@ export class CtaCteClientesComponent implements OnInit {
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
     this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( json => {
       this.comprobante = json;
+      this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+      this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
       this.comprobante.items.forEach( item => {
         item.nombre = item.articulo.nombre;
         item.codigo = item.articulo.codigo;
@@ -187,5 +226,28 @@ export class CtaCteClientesComponent implements OnInit {
   }
 
   cerrar() {
+  }
+
+  changeTypeaheadNoResults(e: boolean): void {
+    this.typeaheadNoResults = e;
+  }
+
+  typeaheadOnBlur() {
+    if (!isNullOrUndefined(this.clienteCtaCteAsync)
+      && this.clienteCtaCteAsync.length > 0
+      && this.clienteCtaCteAsync !== this.clienteCtaCteSeleccionado.nombre
+      && !this.typeaheadNoResults) {
+      this.clienteCtaCteSeleccionado = this.listaClientes[0];
+      this.clienteCtaCteAsync = this.clienteCtaCteSeleccionado.nombre;
+    }
+  }
+
+  rangoFechaInvalido(): boolean {
+    return (this.fechaInicioCtaCte.date.year > this.fechaFinCtaCte.date.year)
+      ||  ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
+      (this.fechaInicioCtaCte.date.month > this.fechaFinCtaCte.date.month))
+      || ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
+      (this.fechaInicioCtaCte.date.month === this.fechaFinCtaCte.date.month)
+      && this.fechaInicioCtaCte.date.day > this.fechaFinCtaCte.date.day);
   }
 }

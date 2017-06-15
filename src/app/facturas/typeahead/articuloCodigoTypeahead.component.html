@@ -1,6 +1,8 @@
 <input [(ngModel)]="codigoArticulo" name="codigoArticulo" class="typeaheadcontrol input-group"
        [typeahead]="articulos"
        (typeaheadOnSelect)="onArticuloChanged($event.item)"
+       (typeaheadNoResults)="changeTypeaheadNoResults($event)"
+       (typeaheadOnBlur)="typeaheadOnBlur()"
        typeaheadMinLength="1"
        typeaheadOptionsLimit="7"
        typeaheadOptionField="codigo"
