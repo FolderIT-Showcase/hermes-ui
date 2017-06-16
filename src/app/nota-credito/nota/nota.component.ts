@@ -5,7 +5,7 @@ import {ApiService} from '../../../service/api.service';
 import {AlertService} from '../../../service/alert.service';
 import {Observable} from 'rxjs/Observable';
 import {Comprobante} from '../../../domain/comprobante';
-import {IMyDpOptions} from 'mydatepicker';
+import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 
 @Component({
@@ -91,6 +91,28 @@ export class NotaComponent implements OnInit, AfterViewInit {
     this.clienteAsync = this.cliente.nombre;
     this.apiService.get('tipocomprobantes/' + this.tipoNota + '/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
+      let month = this.tipoComprobante.ultima_fecha.slice(5, 7);
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
+      }
+      let day = this.tipoComprobante.ultima_fecha.slice(8, 10);
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      const options = JSON.parse(JSON.stringify(this.myDatePickerOptions));
+      options.disableUntil = {
+        year: +this.tipoComprobante.ultima_fecha.slice(0, 4),
+        month: +month,
+        day: +day
+      };
+
+      if (this.fechaMayor(options.disableUntil, this.fecha)) {
+        const copyDate = JSON.parse(JSON.stringify(this.fecha));
+        copyDate.date = JSON.parse(JSON.stringify(options.disableUntil));
+        this.fecha = copyDate;
+      }
+      this.myDatePickerOptions = options;
+
       this.apiService.get('contadores/' + this.nota.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         if (contador === '') {
           this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.nota.punto_venta, false);
@@ -185,5 +207,14 @@ export class NotaComponent implements OnInit, AfterViewInit {
       this.cliente = this.listaClientes[0];
       this.onClienteChanged(this.cliente);
     }
+  }
+
+  private fechaMayor(primerFecha: IMyDate, segundaFecha: any): boolean {
+    return (primerFecha.year > segundaFecha.date.year)
+      ||  ((primerFecha.year === segundaFecha.date.year) &&
+      (primerFecha.month > segundaFecha.date.month))
+      || ((primerFecha.year === segundaFecha.date.year) &&
+      (primerFecha.month === segundaFecha.date.month)
+      && primerFecha.day > segundaFecha.date.day);
   }
 }

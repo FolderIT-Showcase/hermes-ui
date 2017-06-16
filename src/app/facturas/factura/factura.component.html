@@ -108,17 +108,17 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of items; let i = index" [hidden]="!tipoComprobante.nombre">
-      <td class="typeaheadcontainer">
+      <td class="typeaheadcontainer" tooltip="No existe el Artículo" [isDisabled]="item.codigo === undefined || !item.noResult" #pop1="bs-tooltip">
         <div class="input-group">
-          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item)"></app-articulo-codigo-typeahead>
+          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item); pop1.isDisabled = true; pop2.isDisabled = true" (noResult)="item.noResult = $event; pop1.isDisabled = !$event; $event? pop1.show() : pop1.hide()" (keydown.Tab)="onTabKey(item)"></app-articulo-codigo-typeahead>
         </div>
       </td>
 
-      <td  class="typeaheadcontainer">
+      <td  class="typeaheadcontainer" tooltip="No existe el Artículo" [isDisabled]="item.nombre === undefined || !item.noResult" #pop2="bs-tooltip">
         <div class="input-group" style="width: 100%">
-          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item)"></app-articulo-typeahead>
+          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item); pop1.isDisabled = true; pop2.isDisabled = true" (noResult)="item.noResult = $event; pop2.isDisabled = !$event; $event? pop2.show() : pop2.hide()" (keydown.Tab)="onTabKey(item)"></app-articulo-typeahead>
           <span class="input-group-btn">
-            <button tabindex="-1" type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item)" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+            <button tabindex="-1" type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item); pop1.isDisabled = true; pop2.isDisabled = true" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
           </span>
         </div>
       </td>

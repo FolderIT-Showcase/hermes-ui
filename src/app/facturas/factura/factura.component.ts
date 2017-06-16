@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output,
+  AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output,
   ViewChild
 } from '@angular/core';
 import { Cliente } from 'domain/cliente';
@@ -18,12 +18,18 @@ import {Parametro} from '../../../domain/parametro';
 import {AuthenticationService} from '../../../service/authentication.service';
 import {isNullOrUndefined} from 'util';
 import {Router} from '@angular/router';
-import {IMyDpOptions} from 'mydatepicker';
+import {IMyDate, IMyDpOptions} from 'mydatepicker';
+import {TooltipConfig} from 'ngx-bootstrap/tooltip';
+
+export function getAlertConfig(): TooltipConfig {
+  return Object.assign(new TooltipConfig(), {placement: 'left', container: 'body'});
+}
 
 @Component({
   selector: 'app-factura',
   templateUrl: './factura.component.html',
-  styleUrls: ['./factura.component.css']
+  styleUrls: ['./factura.component.css'],
+  providers: [{provide: TooltipConfig, useFactory: getAlertConfig}]
 })
 export class FacturaComponent implements OnInit, AfterViewInit {
   items: Item[] = [];
@@ -75,8 +81,7 @@ export class FacturaComponent implements OnInit, AfterViewInit {
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private authenticationService: AuthenticationService,
-              private router: Router,
-              private cdRef: ChangeDetectorRef) {
+              private router: Router) {
     this.clientes = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -236,6 +241,28 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     this.clienteAsync = this.cliente.nombre;
     this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
+      let month = this.tipoComprobante.ultima_fecha.slice(5, 7);
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
+      }
+      let day = this.tipoComprobante.ultima_fecha.slice(8, 10);
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      const options = JSON.parse(JSON.stringify(this.myDatePickerOptions));
+      options.disableUntil = {
+        year: +this.tipoComprobante.ultima_fecha.slice(0, 4),
+        month: +month,
+        day: +day
+      };
+
+      if (this.fechaMayor(options.disableUntil, this.fecha)) {
+        const copyDate = JSON.parse(JSON.stringify(this.fecha));
+        copyDate.date = JSON.parse(JSON.stringify(options.disableUntil));
+        this.fecha = copyDate;
+      }
+      this.myDatePickerOptions = options;
+
       this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         if (contador === '') {
           this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.factura.punto_venta, false);
@@ -272,6 +299,7 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     }
     const index = this.items.indexOf(item);
     if (index !== -1) {
+      $('#pop').show();
       // Se selecciona el input de cantidad
       this.tabla.nativeElement.children[1].children[index].children[2].children[0].select();
     }
@@ -642,5 +670,18 @@ export class FacturaComponent implements OnInit, AfterViewInit {
   cancelar() {
     this.change.emit(false);
     this.router.navigate([this.routeAfter]).catch();
+  }
+
+  private fechaMayor(primerFecha: IMyDate, segundaFecha: any): boolean {
+    return (primerFecha.year > segundaFecha.date.year)
+      ||  ((primerFecha.year === segundaFecha.date.year) &&
+      (primerFecha.month > segundaFecha.date.month))
+      || ((primerFecha.year === segundaFecha.date.year) &&
+      (primerFecha.month === segundaFecha.date.month)
+      && primerFecha.day > segundaFecha.date.day);
+  }
+
+  onTabKey(item) {
+    return !item.noResult;
   }
 }
