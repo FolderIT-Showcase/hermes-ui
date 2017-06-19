@@ -299,7 +299,6 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     }
     const index = this.items.indexOf(item);
     if (index !== -1) {
-      $('#pop').show();
       // Se selecciona el input de cantidad
       this.tabla.nativeElement.children[1].children[index].children[2].children[0].select();
     }
@@ -592,8 +591,11 @@ export class FacturaComponent implements OnInit, AfterViewInit {
       return this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
     });
     this.items.forEach( item => {
-      this.calcularImporteUnitario(item);
-      this.calcularImportesItem(item);
+      if (!!item.articulo_id) {
+        this.calcularImporteUnitario(item);
+        this.calcularImportesItem(item);
+      }
+
     });
     this.calcularImportesFactura();
     if (this.items.length === 0) {
