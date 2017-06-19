@@ -686,4 +686,34 @@ export class FacturaComponent implements OnInit, AfterViewInit {
   onTabKey(item) {
     return !item.noResult;
   }
+
+  onCantidadEnterPressed(item) {
+    console.log(this.tabla);
+    if (this.parametroModificaPrecio.valor) {
+      const index = this.items.indexOf(item);
+      if (index !== -1) {
+        this.tabla.nativeElement.children[1].children[index].children[3].children[0].select();
+      }
+    } else {
+      this.onImporteEnterPressed(item);
+    }
+  }
+
+  onImporteEnterPressed(item) {
+    if (this.parametroUsaDescuento.valor) {
+      const index = this.items.indexOf(item);
+      if (index !== -1) {
+        this.tabla.nativeElement.children[1].children[index].children[4].children[0].select();
+      }
+    } else {
+      this.onDescuentoEnterPressed(item);
+    }
+  }
+
+  onDescuentoEnterPressed(item) {
+    const index = this.items.indexOf(item);
+    if (index === this.items.length - 1) {
+      this.agregarNuevo(item);
+    }
+  }
 }

@@ -124,23 +124,28 @@
       </td>
 
       <td class="typeaheadcontainer">
-        <input type="number" class="typeaheadcontrol text-center" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (ngModelChange)="onCantidadChanged(item, $event)" placeholder="0" [min]=1 [max]=99999 step="1" >
+        <input type="number" class="typeaheadcontrol text-center" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (ngModelChange)="onCantidadChanged(item, $event)" (keydown.Enter)="onCantidadEnterPressed(item)" placeholder="0" [min]=1 [max]=99999 step="1" >
       </td>
+
       <!--TODO arreglar el bug gráfico de que a veces se muestra 0.00 en vez de el valor real-->
       <td class="typeaheadcontainer">
-        <input type="number" [readonly]="!parametroModificaPrecio.valor" [tabindex]="parametroModificaPrecio.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" placeholder="0,00" min="0" step="0.01">
+        <input type="number" [readonly]="!parametroModificaPrecio.valor" [tabindex]="parametroModificaPrecio.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" (keydown.Enter)="onImporteEnterPressed(item)" placeholder="0,00" min="0" step="0.01">
       </td>
+
       <td class="typeaheadcontainer">
-        <input type="number" [readonly]="!parametroUsaDescuento.valor" [tabindex]="parametroUsaDescuento.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (ngModelChange)="onPorcentajeDescuentoChanged(item, $event)" placeholder="0.00" [min]=0 step="1" [max]="+parametroDescuentoMax.valor">
+        <input type="number" [readonly]="!parametroUsaDescuento.valor" [tabindex]="parametroUsaDescuento.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (ngModelChange)="onPorcentajeDescuentoChanged(item, $event)" (keydown.Enter)="onDescuentoEnterPressed(item)" placeholder="0.00" [min]=0 step="1" [max]="+parametroDescuentoMax.valor">
       </td>
+
       <td class="typeaheadcontainer">
         <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_descuento" name="item-porcentaje-importe{{i}}" placeholder="0.00" min="0" step="0.01">
       </td>
+
       <td class="typeaheadcontainer">
         <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_total" name="item-importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
       </td>
+
       <td class="text-center">
-        <button type="submit" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
+        <button type="button" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" (focus)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
         <button type="button" *ngIf="item.articulo_id && item.cantidad && +item.importe_unitario" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
       </td>
     </tr>
