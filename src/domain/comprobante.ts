@@ -8,8 +8,8 @@ export class Comprobante {
   tipo_comprobante_id: number;
   tipo_comprobante: TipoComprobante;
   fecha: Date | string;
-  punto_venta: number;
-  numero: number;
+  punto_venta: number | string;
+  numero: number | string;
   cliente_nombre: string;
   cliente_tipo_resp: string;
   cliente_cuit: string;

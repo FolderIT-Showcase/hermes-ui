@@ -18,6 +18,7 @@ import {PresupuestoComponent} from './presupuestos/presupuesto/presupuesto.compo
 import {CtaCteClientesComponent} from './cta-cte-clientes/cta-cte-clientes.component';
 import {NotaDebitoComponent} from './nota-debito/nota-debito.component';
 import {NotaCreditoComponent} from './nota-credito/nota-credito.component';
+import {DeactivateGuardService} from 'service/deactivate-guard.service';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -30,9 +31,9 @@ const appRoutes: Routes = [
   {path: 'rubros', component: RubrosComponent, canActivate: [AuthGuard]},
   {path: 'subrubros', component: SubrubrosComponent, canActivate: [AuthGuard]},
   {path: 'marcas', component: MarcasComponent, canActivate: [AuthGuard]},
-  {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard]},
+  {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'listaprecios', component: ListaPreciosComponent, canActivate: [AuthGuard]},
-  {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent, canActivate: [AuthGuard]},
+  {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard]},
   {path: 'ctacteclientes', component: CtaCteClientesComponent, canActivate: [AuthGuard]},
   {path: 'notadebito', component: NotaDebitoComponent, canActivate: [AuthGuard]},

@@ -38,6 +38,10 @@ import { CtaCteClientesComponent } from './cta-cte-clientes/cta-cte-clientes.com
 import { NotaDebitoComponent } from './nota-debito/nota-debito.component';
 import { NotaCreditoComponent } from './nota-credito/nota-credito.component';
 import { NotaComponent } from './nota-credito/nota/nota.component';
+import { MyDatePickerModule } from 'mydatepicker';
+import {DeactivateGuardService} from '../service/deactivate-guard.service';
+import {TooltipModule} from 'ngx-bootstrap/tooltip';
+
 
 @NgModule({
   declarations: [
@@ -70,12 +74,14 @@ import { NotaComponent } from './nota-credito/nota/nota.component';
   ],
   imports: [
     TypeaheadModule.forRoot(),
+    TooltipModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpModule,
     routing,
     DataTablesModule,
-    TextMaskModule
+    TextMaskModule,
+    MyDatePickerModule
   ],
   providers: [
     AuthGuard,
@@ -83,6 +89,7 @@ import { NotaComponent } from './nota-credito/nota/nota.component';
     AuthenticationService,
     UserService,
     ApiService,
+    DeactivateGuardService,
   ],
   bootstrap: [AppComponent]
 })

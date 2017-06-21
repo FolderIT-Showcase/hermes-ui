@@ -1,19 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Cliente } from 'domain/cliente';
-import { TipoComprobante } from 'domain/tipocomprobante';
+import { Component } from '@angular/core';
 import { Comprobante } from 'domain/comprobante';
-import { Item } from 'domain/item';
-import { Articulo } from 'domain/articulo';
-import { Observable } from 'rxjs/Observable';
-import { ApiService } from '../../service/api.service';
-import { AlertService } from '../../service/alert.service';
-import {Marca} from '../../domain/marca';
-import {Rubro} from '../../domain/rubro';
-import {Subrubro} from '../../domain/subrubro';
-import {ListaPrecios} from '../../domain/listaPrecios';
-import {Parametro} from '../../domain/parametro';
-import {AuthenticationService} from '../../service/authentication.service';
-import {isNullOrUndefined} from 'util';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'app-facturas',
@@ -22,4 +9,23 @@ import {isNullOrUndefined} from 'util';
 })
 export class FacturasComponent {
   factura: Comprobante = new Comprobante;
+  puedeSalir: Subject<Boolean> = new Subject;
+  modificado = false;
+
+  canDeactivate() {
+    if (this.modificado) {
+      $('#modalPuedeSalir').modal('show');
+      return this.puedeSalir;
+    } else {
+      return true;
+    }
+  }
+
+  continuar() {
+    this.puedeSalir.next(true);
+  }
+
+  cancelar() {
+    this.puedeSalir.next(false);
+  }
 }

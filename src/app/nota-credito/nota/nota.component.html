@@ -2,19 +2,33 @@
   <div class="form-group row">
     <div class="col-sm-3">
       <label for="nota-cliente" class="col-sm-4 required control-label">Cliente</label>
-      <div class="col-sm-8 input-group">
+      <div class="col-sm-8 input-group" [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreClienteNoResults === true
+      || (clienteAsync.length < 3 && clienteAsync.length > 0)}">
         <input id="nota-cliente" [(ngModel)]="clienteAsync" name="clienteAsync"
                [typeahead]="clientes"
                (typeaheadOnSelect)="onClienteChanged($event.item)"
+               (typeaheadNoResults)="changeTypeaheadNombreClienteNoResults($event)"
+               (typeaheadOnBlur)="typeaheadNombreClienteOnBlur()"
                typeaheadMinLength="3"
                typeaheadOptionsLimit="7"
                typeaheadOptionField="nombre"
                class="form-control"
                autocomplete="off"
-               placeholder="Cliente*">
+               placeholder="Cliente*"
+               #nombre="ngModel"
+               required
+               #typeaheadNombreCliente>
         <span class="input-group-btn">
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
         </span>
+      </div>
+      <div [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreClienteNoResults === true
+      || (clienteAsync.length < 3 && clienteAsync.length > 0)}">
+        <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+        <div *ngIf="typeaheadNombreClienteNoResults === true" class="help-block">No se han encontrado resultados</div>
+        <div *ngIf="(clienteAsync.length < 3 && clienteAsync.length > 0)" class="help-block">Ingrese 3 letras para comenzar la búsqueda</div>
       </div>
     </div>
 
@@ -24,8 +38,8 @@
         <input class="form-control" type="text" name="nota-tipo" id="nota-tipo" [ngModel]="tipoComprobante.nombre" readonly>
       </div>
 
-      <label for="nota-punto-venta" class="col-sm-2 control-label">Pto. vta.</label>
-      <div class="col-sm-1">
+      <label for="nota-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
+      <div class="col-sm-2">
         <input class="form-control" type="text" name="nota-punto-venta" id="nota-punto-venta" [ngModel]="nota.punto_venta" readonly>
       </div>
 
@@ -36,23 +50,35 @@
 
       <label for="nota-fecha" class="col-sm-1 control-label">Fecha</label>
       <div class="col-sm-2">
-        <input class="form-control" type="date" name="nota-fecha" id="nota-fecha" [ngModel]="nota.fecha | date:'yyyy-MM-dd'" (ngModelChange)="nota.fecha = $event; fechaSeleccionada = true;" required>
+        <my-date-picker id="nota-fecha" [(ngModel)]="fecha" name="nota-fecha" [options]="myDatePickerOptions"></my-date-picker>
       </div>
     </div>
   </div>
 
   <div class="form-group row">
-    <label for="nota-cliente" class="col-sm-1 required control-label">Código</label>
-    <div class="col-sm-2">
-      <input id="nota-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
-             [typeahead]="clientesCod"
-             (typeaheadOnSelect)="onClienteChanged($event.item)"
-             typeaheadMinLength="1"
-             typeaheadOptionsLimit="7"
-             typeaheadOptionField="codigo"
-             class="form-control"
-             autocomplete="off"
-             placeholder="Código">
+    <div class="col-sm-3">
+      <label for="nota-cliente-cod" class="col-sm-4 required control-label">Código</label>
+      <div class="col-sm-8 input-group" [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoClienteNoResults === true}">
+        <input id="nota-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
+               [typeahead]="clientesCod"
+               (typeaheadOnSelect)="onClienteChanged($event.item)"
+               (typeaheadNoResults)="changeTypeaheadCodigoClienteNoResults($event)"
+               (typeaheadOnBlur)="typeaheadCodClienteOnBlur()"
+               typeaheadMinLength="1"
+               typeaheadOptionsLimit="7"
+               typeaheadOptionField="codigo"
+               class="form-control"
+               autocomplete="off"
+               placeholder="Código*"
+               #codigo="ngModel"
+               required>
+      </div>
+      <div [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoClienteNoResults === true}">
+        <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+        <div *ngIf="typeaheadCodigoClienteNoResults === true" class="help-block">No se han encontrado resultados</div>
+      </div>
     </div>
   </div>
 
@@ -70,19 +96,19 @@
   <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
     <label for="nota-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="nota-subtotal" id="nota-subtotal" [ngModel]="nota.importe_neto" readonly>
+      <input class="form-control text-right" type="number" name="nota-subtotal" id="nota-subtotal" [ngModel]="nota.importe_neto" readonly>
     </div>
   </div>
   <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
     <label for="nota-importe-iva" class="col-sm-1  col-sm-offset-9 control-label">IVA {{iva*100}}%</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="nota-importe-iva" id="nota-importe-iva" [ngModel]="nota.importe_iva" readonly>
+      <input class="form-control text-right" type="number" name="nota-importe-iva" id="nota-importe-iva" [ngModel]="nota.importe_iva" readonly>
     </div>
   </div>
   <div class="form-group row">
     <label for="nota-total" class="col-sm-1  col-sm-offset-9 control-label">Total</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="nota-total" id="nota-total" [ngModel]="nota.importe_total" readonly>
+      <input class="form-control text-right" type="number" name="nota-total" id="nota-total" [ngModel]="nota.importe_total" readonly>
     </div>
   </div>
 

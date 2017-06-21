@@ -2,141 +2,177 @@
   <div class="form-group row">
     <div class="col-sm-3">
       <label for="factura-cliente" class="col-sm-4 required control-label">Cliente</label>
-      <div class="col-sm-8 input-group">
+      <div class="col-sm-8 input-group" [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreClienteNoResults === true
+      || (clienteAsync.length < 3 && clienteAsync.length > 0)}">
         <input id="factura-cliente" [(ngModel)]="clienteAsync" name="clienteAsync"
                [typeahead]="clientes"
                (typeaheadOnSelect)="onClienteChanged($event.item)"
+               (typeaheadNoResults)="changeTypeaheadNombreClienteNoResults($event)"
+               (typeaheadOnBlur)="typeaheadNombreClienteOnBlur()"
                typeaheadMinLength="3"
                typeaheadOptionsLimit="7"
                typeaheadOptionField="nombre"
                class="form-control"
                autocomplete="off"
-               placeholder="Cliente*">
+               placeholder="Cliente*"
+               #nombre="ngModel"
+               required
+               #typeaheadNombreCliente>
         <span class="input-group-btn">
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarCliente"><i class="glyphicon glyphicon-search"></i></button>
         </span>
       </div>
+      <div [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreClienteNoResults === true
+      || (clienteAsync.length < 3 && clienteAsync.length > 0)}">
+        <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+        <div *ngIf="typeaheadNombreClienteNoResults === true" class="help-block">No se han encontrado resultados</div>
+        <div *ngIf="(clienteAsync.length < 3 && clienteAsync.length > 0)" class="help-block">Ingrese 3 letras para comenzar la búsqueda</div>
+      </div>
     </div>
 
     <div class="col-sm-9">
-      <label for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
-      <div class="col-sm-2">
+      <label *ngIf="tipoFactura !== 'presupuesto'" for="factura-tipo" class="col-sm-1 control-label">Tipo</label>
+      <div *ngIf="tipoFactura !== 'presupuesto'" class="col-sm-2">
         <input class="form-control" type="text" name="factura-tipo" id="factura-tipo" [ngModel]="tipoComprobante.nombre" readonly>
       </div>
 
-      <label for="factura-punto-venta" class="col-sm-2 control-label">Pto. vta.</label>
-      <div class="col-sm-1">
+      <label for="factura-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
+      <div class="col-sm-2">
         <input class="form-control" type="text" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
       </div>
 
       <label for="factura-numero" class="col-sm-1 control-label">Número</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="factura-numero" id="factura-numero" [(ngModel)]="factura.numero" required placeholder="0">
+        <input class="form-control" type="text" name="factura-numero" id="factura-numero" [(ngModel)]="factura.numero" required placeholder="0" readonly>
       </div>
 
       <label for="factura-fecha" class="col-sm-1 control-label">Fecha</label>
       <div class="col-sm-2">
-        <input class="form-control" type="date" name="factura-fecha" id="factura-fecha" [ngModel]="factura.fecha | date:'yyyy-MM-dd'" (ngModelChange)="factura.fecha = $event; fechaSeleccionada = true;" required>
+        <my-date-picker id="factura-fecha" [(ngModel)]="fecha" name="factura-fecha" [options]="myDatePickerOptions"></my-date-picker>
       </div>
     </div>
   </div>
 
   <div class="form-group row">
-    <label for="factura-cliente" class="col-sm-1 required control-label">Código</label>
-    <div class="col-sm-2">
-      <input id="factura-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
-             [typeahead]="clientesCod"
-             (typeaheadOnSelect)="onClienteChanged($event.item)"
-             typeaheadMinLength="1"
-             typeaheadOptionsLimit="7"
-             typeaheadOptionField="codigo"
-             class="form-control"
-             autocomplete="off"
-             placeholder="Código">
-    </div>
-    <label for="cliente-lista" class="col-sm-2 control-label">Lista de precios</label>
     <div class="col-sm-3">
-      <select class="form-control" id="cliente-lista" [(ngModel)]="cliente.lista_id" (change)="onListaPreciosChanged()" name="lista">
-        <option [ngValue]="0">Ninguna</option>
-        <option *ngFor="let lista of listasPrecios" [ngValue]="lista.id">{{lista.nombre}}</option>
-      </select>
+      <label for="factura-cliente-cod" class="col-sm-4 required control-label">Código</label>
+      <div class="col-sm-8 input-group" [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoClienteNoResults === true}">
+        <input id="factura-cliente-cod" [(ngModel)]="clienteCodAsync" name="clienteCodAsync"
+               [typeahead]="clientesCod"
+               (typeaheadOnSelect)="onClienteChanged($event.item)"
+               (typeaheadNoResults)="changeTypeaheadCodigoClienteNoResults($event)"
+               (typeaheadOnBlur)="typeaheadCodClienteOnBlur()"
+               typeaheadMinLength="1"
+               typeaheadOptionsLimit="7"
+               typeaheadOptionField="codigo"
+               class="form-control"
+               autocomplete="off"
+               placeholder="Código*"
+               #codigo="ngModel"
+               required>
+      </div>
+      <div [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoClienteNoResults === true}">
+        <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+        <div *ngIf="typeaheadCodigoClienteNoResults === true" class="help-block">No se han encontrado resultados</div>
+      </div>
+    </div>
+
+    <div class="col-sm-9">
+      <label for="cliente-lista" class="col-sm-3 control-label">Lista de precios</label>
+      <div class="col-sm-3">
+        <select class="form-control" id="cliente-lista" [(ngModel)]="cliente.lista_id" (change)="onListaPreciosChanged()" name="lista">
+          <option [ngValue]="0">Ninguna</option>
+          <option *ngFor="let lista of listasPrecios" [ngValue]="lista.id">{{lista.nombre}}</option>
+        </select>
+      </div>
     </div>
   </div>
 
-  <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table">
+  <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table" #tabla>
+    <!--IMPORTANTE: si se modifica la estructura de la tabla, cambiar las referencias en el componente-->
     <thead>
     <tr>
-      <th>Código</th>
-      <th>Descripción</th>
-      <th>Cant.</th>
-      <th>Importe U.</th>
-      <th>% Desc.</th>
-      <th>Desc.</th>
-      <th>Total</th>
-      <th>Acciones</th>
+      <th class="text-center">Código</th>
+      <th class="text-center">Descripción</th>
+      <th class="text-center">Cant.</th>
+      <th class="text-center">Importe U.</th>
+      <th class="text-center">% Desc.</th>
+      <th class="text-center">Desc.</th>
+      <th class="text-center">Total</th>
+      <th class="text-center">Acciones</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let item of items; let i = index" [hidden]="!tipoComprobante.nombre">
-      <td  class="typeaheadcontainer">
-        <div class="input-group">
-          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item)"></app-articulo-codigo-typeahead>
+      <td class="typeaheadcontainer" tooltip="No existe el Artículo" [isDisabled]="item.codigo === undefined || !item.noResult" #pop1="bs-tooltip">
+        <div class="input-group" style="height: 100%">
+          <app-articulo-codigo-typeahead [codigoArticulo]="item.codigo" (artSelected)="onArticuloChanged($event, item); pop1.isDisabled = true; pop2.isDisabled = true" (noResult)="item.noResult = $event; pop1.isDisabled = !$event; $event? pop1.show() : pop1.hide()" (keydown.Tab)="onTabKey(item)"></app-articulo-codigo-typeahead>
         </div>
       </td>
 
-      <td  class="typeaheadcontainer">
-        <div class="input-group" style="width: 100%">
-          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item)"></app-articulo-typeahead>
+      <td  class="typeaheadcontainer" tooltip="No existe el Artículo" [isDisabled]="item.nombre === undefined || !item.noResult" #pop2="bs-tooltip">
+        <div class="input-group" style="width: 100%; height: 100%">
+          <app-articulo-typeahead [nombreArticulo]="item.nombre" (artSelected)="onArticuloChanged($event, item); pop1.isDisabled = true; pop2.isDisabled = true" (noResult)="item.noResult = $event; pop2.isDisabled = !$event; $event? pop2.show() : pop2.hide()" (keydown.Tab)="onTabKey(item)"></app-articulo-typeahead>
           <span class="input-group-btn">
-            <button type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item)" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
+            <button tabindex="-1" type="button" class="btn btn-default" data-toggle="modal" (click)="mostrarModalBuscarArticulos(item); pop1.isDisabled = true; pop2.isDisabled = true" data-target="#modalBuscarArticulo"><i class="glyphicon glyphicon-search"></i></button>
           </span>
         </div>
       </td>
 
       <td class="typeaheadcontainer">
-        <input type="number" class="typeaheadcontrol" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (input)="onCantidadChanged(item)" placeholder="0" min="0" step="1">
+        <input type="number" class="typeaheadcontrol text-center" [(ngModel)]="item.cantidad" name="item-cantidad{{i}}" (ngModelChange)="onCantidadChanged(item, $event)" (keydown.Enter)="onCantidadEnterPressed(item)" placeholder="0" [min]=1 [max]=99999 step="1" >
       </td>
+
+      <!--TODO arreglar el bug gráfico de que a veces se muestra 0.00 en vez de el valor real-->
       <td class="typeaheadcontainer">
-        <input type="number" [readonly]="!parametroModificaPrecio.valor"  class="typeaheadcontrol" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" placeholder="0.00" min="0" step="0.01">
+        <input type="number" [readonly]="!parametroModificaPrecio.valor" [tabindex]="parametroModificaPrecio.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_unitario" name="item-importe-unitario{{i}}" (input)="onImporteUnitarioChanged(item)" (keydown.Enter)="onImporteEnterPressed(item)" placeholder="0,00" min="0" step="0.01">
       </td>
+
       <td class="typeaheadcontainer">
-        <input type="number" [readonly]="!parametroUsaDescuento.valor"  class="typeaheadcontrol" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (input)="onPorcentajeDescuentoChanged(item)" placeholder="0.00" min="0" step="0.01" [max]="parametroDescuentoMax.valor">
+        <input type="number" [readonly]="!parametroUsaDescuento.valor" [tabindex]="parametroUsaDescuento.valor? 0 : -1" class="typeaheadcontrol text-right" [(ngModel)]="item.porcentaje_descuento" name="item-porcentaje-descuento{{i}}" (ngModelChange)="onPorcentajeDescuentoChanged(item, $event)" (keydown.Enter)="onDescuentoEnterPressed(item)" placeholder="0.00" [min]=0 step="1" [max]="+parametroDescuentoMax.valor">
       </td>
+
       <td class="typeaheadcontainer">
-        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_descuento" name="item-porcentaje-importe{{i}}" placeholder="0.00" min="0" step="0.01">
+        <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_descuento" name="item-porcentaje-importe{{i}}" placeholder="0.00" min="0" step="0.01">
       </td>
+
       <td class="typeaheadcontainer">
-        <input type="number" readonly class="typeaheadcontrol" [(ngModel)]="item.importe_total" name="item--importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
+        <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_total" name="item-importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
       </td>
-      <td>
-        <button type="submit" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
-        <button type="button" *ngIf="i !== items.length - 1" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
+
+      <td class="text-center">
+        <button type="button" *ngIf="i === items.length - 1" (click)="agregarNuevo(item)" (focus)="agregarNuevo(item)" class="glyphicon glyphicon-plus green"></button>
+        <button type="button" *ngIf="item.articulo_id && item.cantidad && +item.importe_unitario" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
       </td>
     </tr>
     </tbody>
   </table>
-  <!--<button type="submit" hidden="true" (click)="agregarNuevo()"></button>-->
-  <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
+
+  <div class="form-group row" [hidden]="cliente.tipo_responsable !== 'RI'">
     <label for="factura-subtotal" class="col-sm-1  col-sm-offset-9 control-label">Subtotal</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="factura-subtotal" id="factura-subtotal" [ngModel]="factura.importe_neto" readonly>
+      <input tabindex="-1" class="form-control text-right" type="number" name="factura-subtotal" id="factura-subtotal" [ngModel]="factura.importe_neto" readonly>
     </div>
   </div>
-  <div class="form-group row" [hidden]="!regexTipoA.test(tipoComprobante.codigo)">
+  <div class="form-group row" [hidden]="cliente.tipo_responsable !== 'RI'">
     <label for="factura-importe-iva" class="col-sm-1  col-sm-offset-9 control-label">IVA {{iva*100}}%</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="factura-importe-iva" id="factura-importe-iva" [ngModel]="factura.importe_iva" readonly>
+      <input tabindex="-1" class="form-control text-right" type="number" name="factura-importe-iva" id="factura-importe-iva" [ngModel]="factura.importe_iva" readonly>
     </div>
   </div>
   <div class="form-group row">
     <label for="factura-total" class="col-sm-1  col-sm-offset-9 control-label">Total</label>
     <div class="col-sm-2">
-      <input class="form-control" type="number" name="factura-total" id="factura-total" [ngModel]="factura.importe_total" readonly>
+      <input tabindex="-1" class="form-control text-right" type="number" name="factura-total" id="factura-total" [ngModel]="factura.importe_total" readonly>
     </div>
   </div>
 
   <div class="pull-right">
-    <button type="button" *ngIf="tipoFactura === 'presupuesto'" [routerLink]="['/presupuestos']" class="btn btn-default">Cancelar</button>
+    <button type="button" *ngIf="tipoFactura === 'presupuesto'" (click)="cancelar()" class="btn btn-default">Cancelar</button>
     <button type="button" (click)="generarFactura()" class="btn btn-success" [disabled]="!f.valid">Confirmar</button>
   </div>
 </form>

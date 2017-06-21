@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Comprobante} from '../../../domain/comprobante';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../service/api.service';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'app-presupuesto',
@@ -12,6 +13,8 @@ export class PresupuestoComponent implements OnInit {
   presupuesto: Comprobante;
   mostrarComponenteFactura = false;
   nuevoOEditar: string;
+  puedeSalir: Subject<Boolean> = new Subject;
+  modificado = false;
 
   constructor(private route: ActivatedRoute, private apiService: ApiService) { }
 
@@ -37,4 +40,20 @@ export class PresupuestoComponent implements OnInit {
     }
   }
 
+  canDeactivate() {
+    if (this.modificado) {
+      $('#modalPuedeSalir').modal('show');
+      return this.puedeSalir;
+    } else {
+      return true;
+    }
+  }
+
+  continuar() {
+    this.puedeSalir.next(true);
+  }
+
+  cancelar() {
+    this.puedeSalir.next(false);
+  }
 }
