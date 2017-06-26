@@ -257,9 +257,8 @@ export class FacturaComponent implements OnInit, AfterViewInit {
       };
 
       if (this.fechaMayor(options.disableUntil, this.fecha)) {
-        const copyDate = JSON.parse(JSON.stringify(this.fecha));
-        copyDate.date = JSON.parse(JSON.stringify(options.disableUntil));
-        this.fecha = copyDate;
+        const today = new Date();
+        this.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
       }
       this.myDatePickerOptions = options;
 
@@ -688,7 +687,6 @@ export class FacturaComponent implements OnInit, AfterViewInit {
   }
 
   onCantidadEnterPressed(item) {
-    console.log(this.tabla);
     if (this.parametroModificaPrecio.valor) {
       const index = this.items.indexOf(item);
       if (index !== -1) {
