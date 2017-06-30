@@ -77,7 +77,7 @@
       <div [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
       || typeaheadCodigoClienteNoResults === true}">
         <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
-        <div *ngIf="typeaheadCodigoClienteNoResults === true" class="help-block">No se han encontrado resultados</div>
+        <div *ngIf="typeaheadCodigoClienteNoResults === true && codigo.valid" class="help-block">No se han encontrado resultados</div>
       </div>
     </div>
 

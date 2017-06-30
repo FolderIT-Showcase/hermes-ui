@@ -1,6 +1,5 @@
 import { Directive, forwardRef, Input } from '@angular/core';
 import { NG_ASYNC_VALIDATORS, Validator, AbstractControl } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
 import { ApiService } from '../../service/api.service';
 @Directive({
   selector: '[app-asyncValidator][formControlName], [app-asyncValidator][ngModel]',
@@ -30,7 +29,7 @@ export class AsyncValidatorDirective implements Validator {
           if (json === '') {
             return resolve(null);
           } else {
-            if (json.id === this.objeto.id) {
+            if (json[0].id === this.objeto.id) {
               return resolve(null);
             } else {
               return resolve({

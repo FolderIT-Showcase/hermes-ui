@@ -91,8 +91,13 @@ export class FacturaComponent implements OnInit, AfterViewInit {
 
     this.clientesCod = Observable.create((observer: any) => {
       this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
-        this.listaClientes = json;
-        observer.next(json);
+        if (json === '') {
+          this.listaClientes = [];
+          observer.next([]);
+        } else {
+          this.listaClientes = json;
+          observer.next(json);
+        }
       });
     });
   }
@@ -607,8 +612,8 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     this.factura.importe_neto = 0;
     this.items.filter(item => item.articulo_id && item.cantidad && +item.importe_unitario)
       .forEach( item => {
-      this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
-    });
+        this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
+      });
     this.factura.importe_neto = this.factura.importe_neto.toFixed(2);
     switch (this.cliente.tipo_responsable) {
       case 'RI':
@@ -676,10 +681,10 @@ export class FacturaComponent implements OnInit, AfterViewInit {
   private fechaMayor(primerFecha: IMyDate, segundaFecha: any): boolean {
     return (primerFecha.year > segundaFecha.date.year)
       ||  ((primerFecha.year === segundaFecha.date.year) &&
-      (primerFecha.month > segundaFecha.date.month))
+        (primerFecha.month > segundaFecha.date.month))
       || ((primerFecha.year === segundaFecha.date.year) &&
-      (primerFecha.month === segundaFecha.date.month)
-      && primerFecha.day > segundaFecha.date.day);
+        (primerFecha.month === segundaFecha.date.month)
+        && primerFecha.day > segundaFecha.date.day);
   }
 
   onTabKey(item) {

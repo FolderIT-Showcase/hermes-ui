@@ -41,6 +41,7 @@ import { NotaComponent } from './nota-credito/nota/nota.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import {DeactivateGuardService} from '../service/deactivate-guard.service';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import { UsuariosComponent } from './usuarios/usuarios.component';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
     CtaCteClientesComponent,
     NotaDebitoComponent,
     NotaCreditoComponent,
-    NotaComponent
+    NotaComponent,
+    UsuariosComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

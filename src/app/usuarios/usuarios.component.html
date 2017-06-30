@@ -1,0 +1,122 @@
+<div class="progress" *ngIf="!mostrarTabla">
+  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+    <span>Cargando<span class="dotdotdot"></span></span>
+  </div>
+</div>
+
+<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
+  <thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Email</th>
+    <th>Rol</th>
+    <th style="width:10%">Acciones</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let usuario of usuarios">
+    <td>{{ usuario.name }}</td>
+    <td>{{ usuario.email }}</td>
+    <td>{{ usuario.rol_a_mostrar }}</td>
+    <td>
+      <button (click)="mostrarModalEditar(usuario)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button (click)="mostrarModalEliminar(usuario)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Eliminar Usuario</h4>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de que desea eliminar el usuario {{usuarioSeleccionado.nombre}}?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-danger">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #f="ngForm" autocomplete="off">
+          <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
+          <input style="display:none" type="text" name="fakeusernameremembered"/>
+          <input style="display:none" type="password" name="fakepasswordremembered"/>
+
+          <div class="form-group row">
+            <label for="usuario-nombre" class="col-sm-2 required control-label">Nombre</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
+            'has-success': nombre.valid}">
+              <input type="text" class="form-control" id="usuario-nombre" [(ngModel)]="usuarioSeleccionado.name" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre" autocomplete="off">
+              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="usuario-email" class="col-sm-2 required control-label">Email</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !email.valid && (!email.pristine || email.touched || submitted),
+            'has-success': email.valid && email.value !== '' && email.value !== undefined}">
+              <input type="email" class="form-control" id="usuario-email" [(ngModel)]="usuarioSeleccionado.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" placeholder="email@gmail.com" required autocomplete="off">
+              <span *ngIf="email.valid && email.value !== '' && email.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="email.errors !== null && (!email.pristine || email.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!email.valid && (!email.pristine || email.touched || submitted)" class="help-block">Email inválido</div>
+            </div>
+          </div>
+
+          <div class="form-group row" [ngClass]="{'has-error': f.submitted && !password.valid}">
+            <label class="col-sm-2 required control-label" for="usuario-password">Contraseña</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !password.valid && (!password.pristine || password.touched || submitted),
+            'has-success': password.valid}">
+              <input type="password" name="usuario-password" placeholder="Contraseña" class="form-password form-control form-control-lg"
+                     id="usuario-password" [(ngModel)]="usuarioSeleccionado.password" #password="ngModel" required minlength="6" autocomplete="off">
+              <span *ngIf="password.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="password.errors !== null && (!password.pristine || password.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="password.errors !== null && password.errors.required && (!password.pristine || password.touched || submitted)" class="help-block">Ingrese una contraseña</div>
+              <div *ngIf="password.errors !== null && password.errors.minlength && (!password.pristine || password.touched || submitted)" class="help-block">La contraseña debe tener al menos 6 caracteres</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="usuario-rol" class="col-sm-2 required control-label">Rol</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !rol.valid && (!rol.pristine || rol.touched || submitted),
+            'has-success': rol.valid}">
+              <div class="select-style">
+                <select class="form-control" id="usuario-rol" [(ngModel)]="usuarioSeleccionado.rol_id" name="rol" #rol="ngModel" required >
+                  <option *ngFor="let rol of roles" [ngValue]="rol.id">{{rol.display_name}}</option>
+                </select>
+              </div>
+              <span *ngIf="rol.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="rol.errors !== null && (!rol.pristine || rol.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!rol.valid && (!rol.pristine || rol.touched || submitted)" class="help-block">Seleccione un rol</div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
