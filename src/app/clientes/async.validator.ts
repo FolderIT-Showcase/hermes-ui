@@ -29,7 +29,7 @@ export class AsyncValidatorDirective implements Validator {
           if (json === '') {
             return resolve(null);
           } else {
-            if (json[0].id === this.objeto.id) {
+            if (json.id === this.objeto.id) {
               return resolve(null);
             } else {
               return resolve({

@@ -95,8 +95,8 @@ export class FacturaComponent implements OnInit, AfterViewInit {
           this.listaClientes = [];
           observer.next([]);
         } else {
-          this.listaClientes = json;
-          observer.next(json);
+          this.listaClientes = [json];
+          observer.next([json]);
         }
       });
     });
