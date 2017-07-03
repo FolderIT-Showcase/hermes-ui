@@ -96,7 +96,7 @@ export class MarcasComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       const marcaAEnviar = new Marca();
       Object.assign(marcaAEnviar, this.marcaSeleccionada);
       setTimeout(() => { this.cerrar(); }, 100);
@@ -125,7 +125,7 @@ export class MarcasComponent implements OnInit {
     this.modalTitle = 'Nueva Marca';
     this.enNuevo = true;
     this.marcaSeleccionada = new Marca;
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   cerrar() {

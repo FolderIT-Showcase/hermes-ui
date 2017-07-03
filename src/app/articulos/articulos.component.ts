@@ -101,7 +101,7 @@ export class ArticulosComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       // Máscara para mostrar siempre 2 decimales
       const num = this.articuloSeleccionado.costo;
       this.articuloSeleccionado.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
@@ -136,7 +136,7 @@ export class ArticulosComponent implements OnInit {
     this.modalTitle = 'Nuevo Artículo';
     this.enNuevo = true;
     this.articuloSeleccionado = new Articulo;
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   eliminar() {

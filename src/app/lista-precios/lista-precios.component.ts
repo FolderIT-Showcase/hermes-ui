@@ -135,7 +135,7 @@ export class ListaPreciosComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       // Máscara para mostrar siempre 2 decimales
       const num = this.listaPreciosSeleccionada.porcentaje;
       this.listaPreciosSeleccionada.porcentaje = !isNaN(+num) ? (+num).toFixed(2) : num;
@@ -170,7 +170,7 @@ export class ListaPreciosComponent implements OnInit {
     this.listaPreciosSeleccionada = new ListaPrecios;
     this.listaPreciosSeleccionada.activo = true;
     this.listaPreciosSeleccionada.lista_precio_item = [];
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   mostrarModalImportar() {
@@ -180,7 +180,7 @@ export class ListaPreciosComponent implements OnInit {
     this.campoCodigoAUtilizar = 'codigo';
     this.formImportarSubmitted = false;
     this.articulosNoEncontrados = [];
-    $('#modalImportar').modal('show');
+    (<any>$('#modalImportar')).modal('show');
   }
 
   cerrar(f) {
@@ -336,7 +336,7 @@ export class ListaPreciosComponent implements OnInit {
   }
 
   actualizarPrecios() {
-    $('#modalConfirmarActualizarPrecios').modal('show');
+    (<any>$('#modalConfirmarActualizarPrecios')).modal('show');
 
     this.apiService.get('articulos').subscribe( json => {
       this.articulos = json;
@@ -383,11 +383,11 @@ export class ListaPreciosComponent implements OnInit {
         actualizarPrecioVenta: this.actualizarPrecioVenta,
         campoCodigoAUtilizar: this.campoCodigoAUtilizar
       };
-      $('#modalImportar').modal('hide');
+      (<any>$('#modalImportar')).modal('hide');
       this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
         this.articulosNoEncontrados = json.no_encontrados;
         if (this.articulosNoEncontrados.length !== 0) {
-          $('#modalNoEncontrados').modal('show');
+          (<any>$('#modalNoEncontrados')).modal('show');
         }
       });
     }

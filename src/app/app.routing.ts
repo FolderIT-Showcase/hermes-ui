@@ -2,7 +2,6 @@
 
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
-import {RegisterComponent} from './register/register.component';
 import {AuthGuard} from '../guard/auth.guard';
 import {ClientesComponent} from './clientes/clientes.component';
 import { VendedoresComponent } from 'app/vendedores/vendedores.component';
@@ -19,11 +18,11 @@ import {CtaCteClientesComponent} from './cta-cte-clientes/cta-cte-clientes.compo
 import {NotaDebitoComponent} from './nota-debito/nota-debito.component';
 import {NotaCreditoComponent} from './nota-credito/nota-credito.component';
 import {DeactivateGuardService} from 'service/deactivate-guard.service';
+import {UsuariosComponent} from './usuarios/usuarios.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
   {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard]},
   {path: 'vendedores', component: VendedoresComponent, canActivate: [AuthGuard]},
   {path: 'articulos', component: ArticulosComponent, canActivate: [AuthGuard]},
@@ -33,11 +32,13 @@ const appRoutes: Routes = [
   {path: 'marcas', component: MarcasComponent, canActivate: [AuthGuard]},
   {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'listaprecios', component: ListaPreciosComponent, canActivate: [AuthGuard]},
-  {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent,
+    canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard]},
   {path: 'ctacteclientes', component: CtaCteClientesComponent, canActivate: [AuthGuard]},
   {path: 'notadebito', component: NotaDebitoComponent, canActivate: [AuthGuard]},
   {path: 'notacredito', component: NotaCreditoComponent, canActivate: [AuthGuard]},
+  {path: 'usuarios', component: UsuariosComponent, canActivate: [AuthGuard]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

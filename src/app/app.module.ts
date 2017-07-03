@@ -7,7 +7,6 @@ import {AppComponent} from './app.component';
 import {AlertComponent} from '../component/alert/alert.component';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
-import {RegisterComponent} from './register/register.component';
 import {AuthGuard} from '../guard/auth.guard';
 import {UserService} from '../service/user.service';
 import {AlertService} from '../service/alert.service';
@@ -41,6 +40,7 @@ import { NotaComponent } from './nota-credito/nota/nota.component';
 import { MyDatePickerModule } from 'mydatepicker';
 import {DeactivateGuardService} from '../service/deactivate-guard.service';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
+import { UsuariosComponent } from './usuarios/usuarios.component';
 
 
 @NgModule({
@@ -50,7 +50,6 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
     AlertComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent,
     NavbarComponent,
     SidebarComponent,
     ClientesComponent,
@@ -70,7 +69,8 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
     CtaCteClientesComponent,
     NotaDebitoComponent,
     NotaCreditoComponent,
-    NotaComponent
+    NotaComponent,
+    UsuariosComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

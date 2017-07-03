@@ -17,9 +17,6 @@
         <li [routerLinkActive]="['active']">
           <a [routerLink]="['/login']">Iniciar Sesión</a>
         </li>
-        <li [routerLinkActive]="['active']">
-          <a [routerLink]="['/register']">Registrarse</a>
-        </li>
       </ul>
       <ul class="nav navbar-nav navbar-right" *ngIf="!!usuarioLogeado">
         <li><a [routerLink]="['/']">{{usuarioLogeado.name}}</a></li>

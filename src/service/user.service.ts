@@ -1,5 +1,4 @@
 ﻿import {Injectable} from '@angular/core';
-import {Headers, Http, RequestOptions, Response} from '@angular/http';
 
 import {User} from '../domain/user';
 import {ApiService} from './api.service';
@@ -10,23 +9,23 @@ export class UserService {
   }
 
   getAll() {
-    return this.api.get('users').first().toPromise();
+    return this.api.get('usuarios');
   }
 
   getById(id: number) {
-    return this.api.get('users/' + id);
+    return this.api.get('usuarios/' + id);
   }
 
   create(user: User) {
-    return this.api.post('register', user);
+    return this.api.post('usuarios', user);
   }
 
   update(user: User) {
-    return this.api.put('users/' + user.id, user);
+    return this.api.put('usuarios/' + user.id, user);
   }
 
   delete(id: number) {
-    return this.api.delete('users/' + id);
+    return this.api.delete('usuarios/' + id);
   }
 
 }

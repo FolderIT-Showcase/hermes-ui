@@ -93,7 +93,7 @@ export class SubrubrosComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       const subrubroAEnviar = new Subrubro();
       Object.assign(subrubroAEnviar, this.subrubroSeleccionado);
       setTimeout(() => { this.cerrar(); }, 100);
@@ -124,7 +124,7 @@ export class SubrubrosComponent implements OnInit {
     this.modalTitle = 'Nuevo Subrubro';
     this.enNuevo = true;
     this.subrubroSeleccionado = new Subrubro;
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   cerrar() {

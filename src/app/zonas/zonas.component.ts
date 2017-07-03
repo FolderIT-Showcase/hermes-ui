@@ -94,7 +94,7 @@ export class ZonasComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       const zonaAEnviar = new Zona();
       Object.assign(zonaAEnviar, this.zonaSeleccionada);
       setTimeout(() => { this.cerrar(); }, 100);
@@ -123,7 +123,7 @@ export class ZonasComponent implements OnInit {
     this.modalTitle = 'Nueva Zona';
     this.enNuevo = true;
     this.zonaSeleccionada = new Zona;
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   cerrar() {

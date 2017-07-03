@@ -53,6 +53,15 @@
         </li>
       </ul>
     </li>
+
+    <li [routerLinkActive]="['active']" class="dropdown keep-open">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración<span class="caret"></span></a>
+      <ul class="dropdown-menu nav nav-sidebar" (click)="$event.stopPropagation()" role="menu">
+        <li>
+          <a [routerLink]="['/usuarios']" >Usuarios</a>
+        </li>
+      </ul>
+    </li>
   </ul>
 <!--  <ul class="nav nav-sidebar">
     <li><a href="">Nav item</a></li>
