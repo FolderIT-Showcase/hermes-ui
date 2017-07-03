@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
 import { User as Usuario} from 'domain/user';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -28,7 +28,10 @@ export class UsuariosComponent implements OnInit {
   submitted = false;
   roles = [];
 
-  constructor(private apiService: ApiService, private alertService: AlertService, private userService: UserService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private userService: UserService,
+              private changeDetectionRef: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -86,6 +89,8 @@ export class UsuariosComponent implements OnInit {
     this.enNuevo = false;
     this.usuarioOriginal = usuario;
     this.usuarioSeleccionado = JSON.parse(JSON.stringify(usuario));
+
+    this.changeDetectionRef.detectChanges();
   }
 
   mostrarModalEliminar(usuario: Usuario) {
@@ -99,7 +104,7 @@ export class UsuariosComponent implements OnInit {
       $('#modalEditar').modal('hide');
       const usuarioAEnviar = new Usuario();
       Object.assign(usuarioAEnviar, this.usuarioSeleccionado);
-      setTimeout(() => { this.cerrar(); }, 100);
+      setTimeout(() => { this.cerrar(); f.form.reset(); }, 100);
 
       if (this.enNuevo) {
         this.enNuevo = false;
@@ -110,7 +115,6 @@ export class UsuariosComponent implements OnInit {
             }
             this.usuarios.push(user);
             this.recargarTabla();
-            f.form.reset();
           },
           error => {
             let mensaje = '';
@@ -130,7 +134,6 @@ export class UsuariosComponent implements OnInit {
               user.rol_a_mostrar = user.roles[0].display_name;
             }
             Object.assign(this.usuarioOriginal, user);
-            f.form.reset();
           },
           error => {
             let mensaje = '';
@@ -151,6 +154,7 @@ export class UsuariosComponent implements OnInit {
     this.modalTitle = 'Nuevo Usuario';
     this.enNuevo = true;
     this.usuarioSeleccionado = new Usuario;
+    this.changeDetectionRef.detectChanges();
     $('#modalEditar').modal('show');
   }
 
