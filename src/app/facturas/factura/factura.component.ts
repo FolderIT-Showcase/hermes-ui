@@ -549,9 +549,9 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
     if (this.items.length > 0 && this.listaPreciosSeleccionada !== this.listaAnterior) {
       if (this.items.length > 1) {
-        $('#modalCambiarListaPrecios').modal('show');
+        (<any>$('#modalCambiarListaPrecios')).modal('show');
       } else if (this.items.length === 1 && this.items[0].articulo_id) {
-        $('#modalCambiarListaPrecios').modal('show');
+        (<any>$('#modalCambiarListaPrecios')).modal('show');
       } else {
         this.listaAnterior = this.listaPreciosSeleccionada;
       }
@@ -576,7 +576,7 @@ export class FacturaComponent implements OnInit, AfterViewInit {
       return !this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
     });
     if (this.itemsABorrar.length > 0) {
-      $('#modalEliminarItems').modal('show');
+      (<any>$('#modalEliminarItems')).modal('show');
     } else {
       this.cambiarListaPrecios();
     }

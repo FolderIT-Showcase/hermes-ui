@@ -101,7 +101,7 @@ export class UsuariosComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       const usuarioAEnviar = new Usuario();
       Object.assign(usuarioAEnviar, this.usuarioSeleccionado);
       setTimeout(() => { this.cerrar(); f.form.reset(); }, 100);
@@ -155,7 +155,7 @@ export class UsuariosComponent implements OnInit {
     this.enNuevo = true;
     this.usuarioSeleccionado = new Usuario;
     this.changeDetectionRef.detectChanges();
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   cerrar() {

@@ -99,7 +99,7 @@ export class VendedoresComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       // Máscara para mostrar siempre 2 decimales
       const num = this.vendedorSeleccionado.comision;
       this.vendedorSeleccionado.comision = !isNaN(+num) ? (+num).toFixed(2) : num;
@@ -131,7 +131,7 @@ export class VendedoresComponent implements OnInit {
   }
 
   mostrarModalNuevo() {
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
     this.modalTitle = 'Nuevo Vendedor';
     this.enNuevo = true;
     this.vendedorSeleccionado = new Vendedor;

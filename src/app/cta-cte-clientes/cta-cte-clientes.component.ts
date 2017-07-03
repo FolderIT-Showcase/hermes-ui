@@ -221,7 +221,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit {
         item.porcentaje_descuento = '0.00';
         item.importe_descuento = '0.00';
       });
-      $('#modalVer').modal('show');
+      (<any>$('#modalVer')).modal('show');
     });
   }
 

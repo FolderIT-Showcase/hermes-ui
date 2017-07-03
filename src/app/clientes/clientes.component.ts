@@ -156,7 +156,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
       const clienteAEnviar = new Cliente();
       Object.assign(clienteAEnviar, this.clienteSeleccionado);
       this.cerrar(f);
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
         this.apiService.post('clientes', clienteAEnviar).subscribe(
@@ -190,7 +190,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.cargarZonas();
     this.cargarListasPrecios();
     this.cargarTipoCategoriaCliente();
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
   }
 
   eliminar() {
@@ -340,7 +340,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     this.parametroReporteFiltrarPorLocalidad = false;
     this.parametroReporteLocalidad = 0;
     this.parametroReporteSoloActivos = 1;
-    $('#modalReporte').modal('show');
+    (<any>$('#modalReporte')).modal('show');
     this.clienteSeleccionado = new Cliente;
     this.cargarProvincias();
     this.cargarVendedores();

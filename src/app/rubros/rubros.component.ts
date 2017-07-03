@@ -96,7 +96,7 @@ export class RubrosComponent implements OnInit {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
-      $('#modalEditar').modal('hide');
+      (<any>$('#modalEditar')).modal('hide');
       const rubroAEnviar = new Rubro();
       Object.assign(rubroAEnviar, this.rubroSeleccionado);
       setTimeout(() => { this.cerrar(); }, 100);
@@ -122,7 +122,7 @@ export class RubrosComponent implements OnInit {
   }
 
   mostrarModalNuevo() {
-    $('#modalEditar').modal('show');
+    (<any>$('#modalEditar')).modal('show');
     this.modalTitle = 'Nuevo Rubro';
     this.enNuevo = true;
     this.rubroSeleccionado = new Rubro;

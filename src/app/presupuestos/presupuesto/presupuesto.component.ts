@@ -42,7 +42,7 @@ export class PresupuestoComponent implements OnInit {
 
   canDeactivate() {
     if (this.modificado) {
-      $('#modalPuedeSalir').modal('show');
+      (<any>$('#modalPuedeSalir')).modal('show');
       return this.puedeSalir;
     } else {
       return true;
