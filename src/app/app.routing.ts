@@ -2,7 +2,6 @@
 
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
-import {RegisterComponent} from './register/register.component';
 import {AuthGuard} from '../guard/auth.guard';
 import {ClientesComponent} from './clientes/clientes.component';
 import { VendedoresComponent } from 'app/vendedores/vendedores.component';
@@ -24,7 +23,6 @@ import {UsuariosComponent} from './usuarios/usuarios.component';
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
   {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard]},
   {path: 'vendedores', component: VendedoresComponent, canActivate: [AuthGuard]},
   {path: 'articulos', component: ArticulosComponent, canActivate: [AuthGuard]},

@@ -7,7 +7,6 @@ import {AppComponent} from './app.component';
 import {AlertComponent} from '../component/alert/alert.component';
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
-import {RegisterComponent} from './register/register.component';
 import {AuthGuard} from '../guard/auth.guard';
 import {UserService} from '../service/user.service';
 import {AlertService} from '../service/alert.service';
@@ -51,7 +50,6 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
     AlertComponent,
     HomeComponent,
     LoginComponent,
-    RegisterComponent,
     NavbarComponent,
     SidebarComponent,
     ClientesComponent,
