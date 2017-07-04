@@ -1,17 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Vendedor } from 'domain/vendedor';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
-import { Zona } from 'domain/zona';
 
 @Component({
   selector: 'app-vendedores',
   templateUrl: './vendedores.component.html',
   styleUrls: ['./vendedores.component.css']
 })
-export class VendedoresComponent implements OnInit {
+export class VendedoresComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   vendedorOriginal: Vendedor;
@@ -177,5 +176,22 @@ export class VendedoresComponent implements OnInit {
         });
       }
     );
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

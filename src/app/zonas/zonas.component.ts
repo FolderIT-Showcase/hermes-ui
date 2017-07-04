@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Zona } from 'domain/zona';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -10,7 +10,7 @@ import { AlertService } from '../../service/alert.service';
   templateUrl: './zonas.component.html',
   styleUrls: ['./zonas.component.css']
 })
-export class ZonasComponent implements OnInit {
+export class ZonasComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   zonaOriginal: Zona;
@@ -155,5 +155,22 @@ export class ZonasComponent implements OnInit {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

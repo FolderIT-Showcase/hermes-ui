@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output,
+  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output,
   ViewChild
 } from '@angular/core';
 import { Cliente } from 'domain/cliente';
@@ -31,7 +31,7 @@ export function getAlertConfig(): TooltipConfig {
   styleUrls: ['./factura.component.css'],
   providers: [{provide: TooltipConfig, useFactory: getAlertConfig}]
 })
-export class FacturaComponent implements OnInit, AfterViewInit {
+export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   items: Item[] = [];
   @Input() tipoFactura: string;
   @Input() cliente: Cliente;
@@ -718,5 +718,24 @@ export class FacturaComponent implements OnInit, AfterViewInit {
     if (index === this.items.length - 1) {
       this.agregarNuevo(item);
     }
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalBuscarCliente')).modal('hide');
+    (<any>$('#modalBuscarArticulo')).modal('hide');
+    (<any>$('#modalCambiarListaPrecios')).modal('hide');
+    (<any>$('#modalEliminarItems')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

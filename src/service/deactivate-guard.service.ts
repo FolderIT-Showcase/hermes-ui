@@ -13,6 +13,8 @@ export class DeactivateGuardService implements  CanDeactivate<CanComponentDeacti
                 currentState: RouterStateSnapshot,
                 nextState?: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
     if (nextState.url === '/login') {
+      // noinspection TsLint
+      component.canDeactivate ? component.canDeactivate() : true;
       return true;
     } else {
       return component.canDeactivate ? component.canDeactivate() : true;

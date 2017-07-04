@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TipoComprobante} from '../../../domain/tipocomprobante';
 import {Cliente} from '../../../domain/cliente';
 import {ApiService} from '../../../service/api.service';
@@ -13,7 +13,7 @@ import {isNullOrUndefined} from 'util';
   templateUrl: './nota.component.html',
   styleUrls: ['./nota.component.css']
 })
-export class NotaComponent implements OnInit, AfterViewInit {
+export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
   listaClientes: Cliente[];
   @Input() tipoNota: string;
   clienteAsync: string;
@@ -221,5 +221,21 @@ export class NotaComponent implements OnInit, AfterViewInit {
       || ((primerFecha.year === segundaFecha.date.year) &&
         (primerFecha.month === segundaFecha.date.month)
         && primerFecha.day > segundaFecha.date.day);
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalBuscarCliente')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

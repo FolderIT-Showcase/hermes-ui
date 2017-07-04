@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
@@ -12,7 +12,7 @@ import {isNullOrUndefined} from 'util';
   templateUrl: './presupuestos.component.html',
   styleUrls: ['./presupuestos.component.css']
 })
-export class PresupuestosComponent implements OnInit {
+export class PresupuestosComponent implements OnInit, OnDestroy {
   dtOptions: any = {};
   presupuestos: Comprobante[] = [];
   dtTrigger: Subject<any> = new Subject();
@@ -133,5 +133,21 @@ export class PresupuestosComponent implements OnInit {
         }
       }
     );
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }
