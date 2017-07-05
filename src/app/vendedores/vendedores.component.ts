@@ -23,7 +23,7 @@ export class VendedoresComponent implements OnInit, OnDestroy {
   modalTitle: string;
   mostrarTabla = false;
   zonas: any;
-  private submitted = false;
+  submitted = false;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {

@@ -22,7 +22,7 @@ export class MarcasComponent implements OnInit, OnDestroy {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
-  private submitted = false;
+  submitted = false;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 

@@ -77,6 +77,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   typeaheadCodigoClienteNoResults: boolean;
   fecha: any;
   myDatePickerOptions: IMyDpOptions;
+  submitted = false;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
