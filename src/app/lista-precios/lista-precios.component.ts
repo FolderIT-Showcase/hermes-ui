@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
@@ -16,7 +16,7 @@ import {Marca} from '../../domain/marca';
   templateUrl: './listaPrecios.component.html',
   styleUrls: ['./listaPrecios.component.css']
 })
-export class ListaPreciosComponent implements OnInit {
+export class ListaPreciosComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   listaPreciosOriginal: ListaPrecios;
@@ -349,10 +349,12 @@ export class ListaPreciosComponent implements OnInit {
       this.articulos.forEach( articulo => {
         switch (this.actualizarPor) {
           case 'importe':
-            articulo.nuevo_precio_venta = +articulo.precio_venta + +(this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1));
+            articulo.nuevo_precio_venta = +articulo.precio_venta +
+              +(this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1));
             break;
           case 'porcentaje': default:
-            articulo.nuevo_precio_venta = +articulo.precio_venta * +(1 + (this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1)) / 100);
+            articulo.nuevo_precio_venta = +articulo.precio_venta *
+              +(1 + (this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1)) / 100);
             break;
         }
         articulo.nuevo_precio_venta = articulo.nuevo_precio_venta.toFixed(2);
@@ -395,5 +397,26 @@ export class ListaPreciosComponent implements OnInit {
 
   onChangeFile(file) {
     this.file = file[0];
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+    (<any>$('#modalItems')).modal('hide');
+    (<any>$('#modalActualizarPrecios')).modal('hide');
+    (<any>$('#modalConfirmarActualizarPrecios')).modal('hide');
+    (<any>$('#modalNoEncontrados')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

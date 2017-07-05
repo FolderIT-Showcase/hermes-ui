@@ -1,4 +1,7 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
+  ViewChild
+} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {Cliente} from 'domain/cliente';
 import {ApiService} from '../../service/api.service';
@@ -18,7 +21,7 @@ import {AlertService} from '../../service/alert.service';
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })
-export class ClientesComponent implements OnInit, AfterViewChecked {
+export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   enNuevo: boolean;
   clienteOriginal: Cliente;
   dtOptions: any = {};
@@ -395,5 +398,21 @@ export class ClientesComponent implements OnInit, AfterViewChecked {
     );
   }
 
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+    (<any>$('#modalReporte')).modal('hide');
+  }
 
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
+  }
 }

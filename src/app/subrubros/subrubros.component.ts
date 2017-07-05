@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Subrubro } from 'domain/subrubro';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -11,7 +11,7 @@ import { Rubro } from 'domain/rubro';
   templateUrl: './subrubros.component.html',
   styleUrls: ['./subrubros.component.css']
 })
-export class SubrubrosComponent implements OnInit {
+export class SubrubrosComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   subrubroOriginal: Subrubro;
@@ -174,5 +174,22 @@ export class SubrubrosComponent implements OnInit {
         }
       );
     }
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

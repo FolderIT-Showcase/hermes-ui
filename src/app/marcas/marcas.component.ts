@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Marca } from 'domain/marca';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -10,7 +10,7 @@ import { AlertService } from '../../service/alert.service';
   templateUrl: './marcas.component.html',
   styleUrls: ['./marcas.component.css']
 })
-export class MarcasComponent implements OnInit {
+export class MarcasComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   marcaOriginal: Marca;
@@ -157,5 +157,22 @@ export class MarcasComponent implements OnInit {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

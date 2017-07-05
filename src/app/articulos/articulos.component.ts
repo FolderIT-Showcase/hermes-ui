@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { Articulo } from 'domain/articulo';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -13,7 +13,7 @@ import {isNullOrUndefined} from 'util';
   templateUrl: './articulos.component.html',
   styleUrls: ['./articulos.component.css']
 })
-export class ArticulosComponent implements OnInit {
+export class ArticulosComponent implements OnInit, OnDestroy {
   enNuevo: boolean;
   articuloOriginal: Articulo;
   dtOptions: any = {};
@@ -27,7 +27,7 @@ export class ArticulosComponent implements OnInit {
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
   private submitted = false;
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -192,5 +192,22 @@ export class ArticulosComponent implements OnInit {
         }
       );
     }
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

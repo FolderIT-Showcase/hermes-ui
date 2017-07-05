@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Cliente} from '../../domain/cliente';
 import {CtaCteCliente} from '../../domain/ctaCteCliente';
 import {ApiService} from '../../service/api.service';
@@ -14,7 +14,7 @@ import {isNullOrUndefined} from 'util';
   templateUrl: './cta-cte-clientes.component.html',
   styleUrls: ['./cta-cte-clientes.component.css']
 })
-export class CtaCteClientesComponent implements OnInit, AfterViewInit {
+export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy {
   clienteCtaCteSeleccionado: Cliente;
   fechaInicioCtaCte: any;
   fechaFinCtaCte: any;
@@ -249,5 +249,21 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit {
       || ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
       (this.fechaInicioCtaCte.date.month === this.fechaFinCtaCte.date.month)
       && this.fechaInicioCtaCte.date.day > this.fechaFinCtaCte.date.day);
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalVer')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }

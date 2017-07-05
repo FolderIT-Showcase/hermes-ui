@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import { User as Usuario} from 'domain/user';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -12,7 +12,7 @@ import {UserService} from '../../service/user.service';
   templateUrl: './usuarios.component.html',
   styleUrls: ['./usuarios.component.css']
 })
-export class UsuariosComponent implements OnInit {
+export class UsuariosComponent implements OnInit, OnDestroy {
 
   enNuevo: boolean;
   usuarioOriginal: Usuario;
@@ -206,5 +206,22 @@ export class UsuariosComponent implements OnInit {
     this.apiService.get('roles').subscribe( json => {
       this.roles = json;
     });
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
+  }
+
+  ngOnDestroy() {
+    this.ocultarModals();
+  }
+
+  // noinspection JSUnusedGlobalSymbols
+  canDeactivate() {
+    this.ocultarModals();
+    return true;
   }
 }
