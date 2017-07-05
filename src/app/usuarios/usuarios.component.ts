@@ -194,6 +194,7 @@ export class UsuariosComponent implements OnInit {
         json.forEach( user => {
           if (user.roles[0] !== undefined) {
             user.rol_a_mostrar = user.roles[0].display_name;
+            user.rol_id = user.roles[0].id;
           }
         });
         this.usuarios = json;
