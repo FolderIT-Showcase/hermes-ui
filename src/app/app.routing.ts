@@ -19,11 +19,13 @@ import {NotaDebitoComponent} from './nota-debito/nota-debito.component';
 import {NotaCreditoComponent} from './nota-credito/nota-credito.component';
 import {DeactivateGuardService} from 'service/deactivate-guard.service';
 import {UsuariosComponent} from './usuarios/usuarios.component';
+import {ProveedoresComponent} from './proveedores/proveedores.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent},
   {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'proveedores', component: ProveedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'vendedores', component: VendedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'articulos', component: ArticulosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'zonas', component: ZonasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},

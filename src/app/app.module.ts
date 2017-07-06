@@ -41,6 +41,7 @@ import { MyDatePickerModule } from 'mydatepicker';
 import {DeactivateGuardService} from '../service/deactivate-guard.service';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import { UsuariosComponent } from './usuarios/usuarios.component';
+import { ProveedoresComponent } from './proveedores/proveedores.component';
 
 
 @NgModule({
@@ -70,7 +71,8 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
     NotaDebitoComponent,
     NotaCreditoComponent,
     NotaComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    ProveedoresComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
