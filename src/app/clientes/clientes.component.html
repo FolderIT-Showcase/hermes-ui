@@ -32,14 +32,14 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Eliminar Cliente</h4>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea eliminar al cliente {{clienteSeleccionado.nombre}}?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-danger">Aceptar</button>
       </div>
     </div>
@@ -221,7 +221,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Generar listado de clientes</h4>
       </div>
       <div class="modal-body">
@@ -291,7 +291,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="generarReporteClientes()" data-dismiss="modal" class="btn btn-primary">Generar</button>
       </div>
     </div>

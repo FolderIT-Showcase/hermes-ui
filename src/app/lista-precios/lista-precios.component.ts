@@ -51,7 +51,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
   private rubroId = 0;
   private subrubroId = 0;
   private marcaId = 0;
-  private file: any;
+  file: any;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
   ngOnInit(): void {

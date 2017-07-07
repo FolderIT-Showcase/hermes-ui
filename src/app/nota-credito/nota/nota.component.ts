@@ -35,6 +35,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
   myDatePickerOptions: IMyDpOptions;
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
+  submitted = false;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService, ) {

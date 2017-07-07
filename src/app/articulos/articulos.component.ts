@@ -3,7 +3,6 @@ import { Articulo } from 'domain/articulo';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
-import { AlertService } from '../../service/alert.service';
 import { Marca } from 'domain/marca';
 import { Subrubro } from 'domain/subrubro';
 import {isNullOrUndefined} from 'util';
@@ -26,7 +25,7 @@ export class ArticulosComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
-  private submitted = false;
+  submitted = false;
   constructor(private apiService: ApiService) {}
 
   ngOnInit(): void {

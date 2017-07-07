@@ -167,8 +167,8 @@ export class ApiService {
 
   private check401(err) {
     if (err.status === 401) {
-      this.alertService.error('La sesión ha expirado', false);
       this.router.navigate(['/login']);
+      this.alertService.error('La sesión ha expirado', false);
     }
   }
 

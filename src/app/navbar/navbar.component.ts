@@ -9,7 +9,7 @@ import {Router} from '@angular/router';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  private usuarioLogeado: User = null;
+  usuarioLogeado: User = null;
 
   constructor(private router: Router, private authenticationService: AuthenticationService) {
     authenticationService.currentUser$.subscribe(user => this.onCurrentUserChanged(user));

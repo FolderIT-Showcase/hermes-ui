@@ -124,7 +124,7 @@
 
               <label for="comprobante-fecha" class="col-sm-1 control-label">Fecha</label>
               <div class="col-sm-2">
-                <input class="form-control" name="comprobante-fecha" id="comprobante-fecha" [ngModel]="comprobante.fecha | date:'yyyy-MM-dd'" (ngModelChange)="comprobante.fecha = $event; fechaSeleccionada = true;" readonly>
+                <input class="form-control" name="comprobante-fecha" id="comprobante-fecha" [ngModel]="comprobante.fecha | date:'yyyy-MM-dd'" (ngModelChange)="comprobante.fecha = $event" readonly>
               </div>
             </div>
           </div>
