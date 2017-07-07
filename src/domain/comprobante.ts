@@ -25,4 +25,5 @@ export class Comprobante {
   items: Item[];
   lista_id: number;
   cliente: Cliente;
+  ptoventaynumero: string;
 }
