@@ -43,6 +43,7 @@ import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
+import { ImpresionComponent } from './impresion/impresion.component';
 
 
 @NgModule({
@@ -74,7 +75,8 @@ import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales
     NotaComponent,
     UsuariosComponent,
     ProveedoresComponent,
-    PeriodosFiscalesComponent
+    PeriodosFiscalesComponent,
+    ImpresionComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

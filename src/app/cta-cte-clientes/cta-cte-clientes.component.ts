@@ -33,6 +33,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   myDatePickerOptions: IMyDpOptions;
   @ViewChild('typeaheadNombreCliente')
   private typeaheadNombreClienteElement: ElementRef;
+  ctaCteClienteSeleccionada: CtaCteCliente;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {
     this.comprobante = new Comprobante;
@@ -97,12 +98,12 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         'targets': 5,
         'searchable': false,
         'orderable': false,
-        'width': '20%'
+        'width': '15%'
       }, {
         'targets': 6,
         'searchable': false,
         'orderable': false,
-        'width': '5%'
+        'width': '10%'
       } ]
     };
 
@@ -211,6 +212,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
+    this.ctaCteClienteSeleccionada = ctaCteCliente;
     this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( json => {
       this.comprobante = json;
       this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
@@ -249,6 +251,20 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
       || ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
       (this.fechaInicioCtaCte.date.month === this.fechaFinCtaCte.date.month)
       && this.fechaInicioCtaCte.date.day > this.fechaFinCtaCte.date.day);
+  }
+
+  imprimirPDF(ctaCteCliente: CtaCteCliente) {
+    this.apiService.downloadPDF('comprobantes/facturas/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean

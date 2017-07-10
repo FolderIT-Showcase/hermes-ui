@@ -15,8 +15,8 @@
   <tr *ngFor="let zona of zonas">
     <td>{{ zona.nombre }}</td>
     <td>
-      <button (click)="mostrarModalEditar(zona)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
-      <button (click)="mostrarModalEliminar(zona)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
+      <button title="Editar zona" (click)="mostrarModalEditar(zona)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button title="Eliminar zona" (click)="mostrarModalEliminar(zona)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
   </tbody>

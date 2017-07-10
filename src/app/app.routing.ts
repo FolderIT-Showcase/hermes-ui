@@ -21,6 +21,7 @@ import {DeactivateGuardService} from 'service/deactivate-guard.service';
 import {UsuariosComponent} from './usuarios/usuarios.component';
 import {ProveedoresComponent} from './proveedores/proveedores.component';
 import {PeriodosFiscalesComponent} from './periodos-fiscales/periodos-fiscales.component';
+import {ImpresionComponent} from './impresion/impresion.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -43,6 +44,7 @@ const appRoutes: Routes = [
   {path: 'notacredito', component: NotaCreditoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'usuarios', component: UsuariosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'periodosfiscales', component: PeriodosFiscalesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'impresion', component: ImpresionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
