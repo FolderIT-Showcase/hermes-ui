@@ -42,6 +42,7 @@ import {DeactivateGuardService} from '../service/deactivate-guard.service';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
+import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 
 
 @NgModule({
@@ -72,7 +73,8 @@ import { ProveedoresComponent } from './proveedores/proveedores.component';
     NotaCreditoComponent,
     NotaComponent,
     UsuariosComponent,
-    ProveedoresComponent
+    ProveedoresComponent,
+    PeriodosFiscalesComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

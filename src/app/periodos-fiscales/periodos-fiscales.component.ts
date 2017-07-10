@@ -2,34 +2,33 @@ import {
   AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
-import { Proveedor } from 'domain/proveedor';
+import { PeriodoFiscal } from 'domain/periodoFiscal';
 import {ApiService} from '../../service/api.service';
 import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';
-import {DataTableDirective} from 'angular-datatables';
 import {AlertService} from '../../service/alert.service';
+import {DataTableDirective} from 'angular-datatables';
 
 @Component({
-  selector: 'app-proveedores',
-  templateUrl: './proveedores.component.html',
-  styleUrls: ['./proveedores.component.css']
+  selector: 'app-periodos-fiscales',
+  templateUrl: './periodos-fiscales.component.html',
+  styleUrls: ['./periodos-fiscales.component.css']
 })
-export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy {
-  mostrarTabla = false;
-  proveedores: Proveedor[] = [];
-  enNuevo: boolean;
-  modalTitle: string;
-  proveedorSeleccionado: Proveedor = new Proveedor;
-  proveedorOriginal: Proveedor;
+export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDestroy {
   submitted = false;
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
+  enNuevo: boolean;
+  mostrarTabla = false;
+  periodosFiscales: PeriodoFiscal[] = [];
+  modalTitle: string;
+  mes_index_str: string;
+  periodoFiscalSeleccionado: PeriodoFiscal = new PeriodoFiscal;
+  periodoFiscalOriginal: PeriodoFiscal;
+  meses = [];
+  anios = [];
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject;
-  tipos_responsable = [];
-  cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
-  telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
-  celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
@@ -74,61 +73,88 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
       dom: 'Bfrtip',
       buttons: [
         {
-          text: 'Nuevo Proveedor',
+          text: 'Nuevo Periodo Fiscal',
           key: '1',
           className: 'btn btn-success a-override',
           action: () => {
-           this.mostrarModalNuevo();
+            this.mostrarModalNuevo();
           }
         }
         /*, {
-          text: 'Listado',
-          key: '2',
-          className: 'btn btn-default',
-          action: () => {
-            // TODO setear accion this.mostrarModalReporte(); para mostrar "filtros" para el ListarProveedores
-          }
-        }
-        */
+         text: 'Listado',
+         key: '2',
+         className: 'btn btn-default',
+         action: () => {
+         // TODO setear boton
+         }
+         }
+         */
       ]
     };
 
-    this.tipos_responsable = [
-      {clave: 'RI', nombre: 'Responsable Inscripto'},
-      {clave: 'NR', nombre: 'No Responsable'},
-      {clave: 'SE', nombre: 'Sujeto Exento'},
-      {clave: 'CF', nombre: 'Consumidor Final'},
-      {clave: 'M', nombre: 'Monotributista'},
-      {clave: 'PE', nombre: 'Proveedor del Exterior'},
-      {clave: 'CE', nombre: 'Cliente del Exterior'}
+    this.meses = [
+      {clave: 1, nombre: 'Enero'},
+      {clave: 2, nombre: 'Febrero'},
+      {clave: 3, nombre: 'Marzo'},
+      {clave: 4, nombre: 'Abril'},
+      {clave: 5, nombre: 'Mayo'},
+      {clave: 6, nombre: 'Junio'},
+      {clave: 7, nombre: 'Julio'},
+      {clave: 8, nombre: 'Agosto'},
+      {clave: 9, nombre: 'Septiembre'},
+      {clave: 10, nombre: 'Octubre'},
+      {clave: 11, nombre: 'Noviembre'},
+      {clave: 12, nombre: 'Diciembre'}
     ];
+
+    const anioActual = (new Date).getFullYear();
+    this.anios = [
+      anioActual - 3,
+      anioActual - 2,
+      anioActual - 1,
+      anioActual,
+      anioActual + 1,
+      anioActual + 2,
+      anioActual + 3,
+      anioActual + 4,
+      anioActual + 5
+    ];
+
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
-    this.apiService.get('proveedores')
+    this.apiService.get('periodosfiscales')
       .subscribe(json => {
-        this.proveedores = json;
-        this.proveedores.forEach(
-          proveedor => {
-            proveedor.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
-          });
+        this.periodosFiscales = json;
+        this.completarStringsMeses();
         this.dtTrigger.next();
       });
   }
 
-  eliminar() {
-    this.submitted = false;
-    this.apiService.delete('proveedores/' + this.proveedorSeleccionado.id).subscribe( json => {
-      if (json === 'ok') {
-        const index: number = this.proveedores.indexOf(this.proveedorSeleccionado);
-        if (index !== -1) {
-          this.proveedores.splice(index, 1);
-        }
-        this.recargarTabla();
-        this.cerrar(null);
-      } else {
-        this.alertService.error(json['error']);
-      }
-    });
+  completarStringsMeses() {
+    this.periodosFiscales.forEach(
+      periodofiscal => {
+        periodofiscal.mes_str = this.meses.find(m => m.clave === periodofiscal.mes).nombre;
+        console.log(periodofiscal.mes_str + '/' + periodofiscal.mes);
+      });
+  }
+
+  mostrarModalNuevo() {
+    this.modalTitle = 'Nuevo Proveedor';
+    this.enNuevo = true;
+    this.periodoFiscalSeleccionado = new PeriodoFiscal;
+    this.periodoFiscalSeleccionado.abierto = true;
+    (<any>$('#modalEditar')).modal('show');
+  }
+
+  mostrarModalEliminar(periodofiscal: PeriodoFiscal) {
+    this.periodoFiscalSeleccionado = periodofiscal;
+  }
+
+  mostrarModalEditar(periodofiscal: PeriodoFiscal) {
+    this.modalTitle = 'Editar Proveedor';
+    this.enNuevo = false;
+    this.periodoFiscalOriginal = periodofiscal;
+    this.periodoFiscalSeleccionado = JSON.parse(JSON.stringify(periodofiscal));
   }
 
   cerrar(f) {
@@ -138,47 +164,44 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
     }
   }
 
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Proveedor';
-    this.enNuevo = true;
-    this.proveedorSeleccionado = new Proveedor;
-    this.proveedorSeleccionado.activo = true;
-    this.proveedorSeleccionado.tipo_responsable = 'RI';
-    (<any>$('#modalEditar')).modal('show');
-  }
-
-  mostrarModalEliminar(proveedor: Proveedor) {
-    this.proveedorSeleccionado = proveedor;
-  }
-
-  mostrarModalEditar(proveedor: Proveedor) {
-    this.modalTitle = 'Editar Proveedor';
-    this.enNuevo = false;
-    this.proveedorOriginal = proveedor;
-    this.proveedorSeleccionado = JSON.parse(JSON.stringify(proveedor));
+  eliminar() {
+    this.submitted = false;
+    this.apiService.delete('periodosfiscales/' + this.periodoFiscalSeleccionado.id).subscribe( json => {
+      if (json === 'ok') {
+        const index: number = this.periodosFiscales.indexOf(this.periodoFiscalSeleccionado);
+        if (index !== -1) {
+          this.periodosFiscales.splice(index, 1);
+        }
+        this.recargarTabla();
+        this.cerrar(null);
+      } else {
+        this.alertService.error(json['error']);
+      }
+    });
   }
 
   editarONuevo(f: any) {
     this.submitted = true;
     if (f.valid) {
-      const proveedorAEnviar = new Proveedor;
-      Object.assign(proveedorAEnviar, this.proveedorSeleccionado);
+      const periodoFiscalAEnviar = new PeriodoFiscal;
+      Object.assign(periodoFiscalAEnviar, this.periodoFiscalSeleccionado);
       this.cerrar(f);
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('proveedores', proveedorAEnviar).subscribe(
+        this.apiService.post('periodosfiscales', periodoFiscalAEnviar).subscribe(
           json => {
-            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedorAEnviar.tipo_responsable).nombre;
-            this.proveedores.push(json);
+            this.periodosFiscales.push(json);
+            this.completarStringsMeses();
             this.recargarTabla();
           }
         );
       } else {
-        this.apiService.put('proveedores/' + proveedorAEnviar.id, proveedorAEnviar).subscribe(
+        this.apiService.put('periodosfiscales/' + periodoFiscalAEnviar.id, periodoFiscalAEnviar).subscribe(
           json => {
-            json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedorAEnviar.tipo_responsable).nombre;
-            Object.assign(this.proveedorOriginal, json);
+            Object.assign(this.periodoFiscalOriginal, json);
+            this.completarStringsMeses();
+            this.recargarTabla();
           }
         );
       }
@@ -186,8 +209,8 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private recargarTabla() {
-// TODO buscar otra forma de reflejar los cambios en la tabla
     this.mostrarTabla = false;
+    this.completarStringsMeses();
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
