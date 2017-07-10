@@ -158,7 +158,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   imprimirPDF(comprobante: Comprobante) {
-    this.apiService.downloadPDF('comprobantes/facturas/imprimir/' + comprobante.id, {}).subscribe(
+    this.apiService.downloadPDF('comprobantes/imprimir/' + comprobante.id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
