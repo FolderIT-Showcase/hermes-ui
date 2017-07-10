@@ -1,9 +1,11 @@
-import {AfterViewInit, Component, HostListener, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ApiService} from '../../service/api.service';
 import {Comprobante} from '../../domain/comprobante';
 import {TipoComprobante} from '../../domain/tipocomprobante';
 import {AlertService} from '../../service/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
+import {DataTableDirective} from 'angular-datatables';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'app-impresion',
@@ -17,10 +19,14 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   fechaFin: any;
   fechaSeleccionada: false;
   comprobante: Comprobante;
-  dtOptions: any;
+  dtOptions: any = {};
   submitted = false;
   myDatePickerOptions: IMyDpOptions;
   tipos_comprobantes: TipoComprobante[];
+  @ViewChild(DataTableDirective)
+  dtElement: DataTableDirective;
+  dtTrigger: Subject<any> = new Subject();
+  mostrarTabla = false;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
@@ -55,28 +61,18 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
       paging: false,
       columnDefs: [ {
         'targets': 0,
-        'searchable': false,
-        'orderable': false,
         'width': '15%'
       }, {
         'targets': 1,
-        'searchable': false,
-        'orderable': false,
         'width': '15%'
       }, {
         'targets': 2,
-        'searchable': false,
-        'orderable': false,
         'width': '20%'
       }, {
         'targets': 3,
-        'searchable': false,
-        'orderable': false,
         'width': '20%'
       }, {
         'targets': 4,
-        'searchable': false,
-        'orderable': false,
         'width': '20%'
       }, {
         'targets': 5,
@@ -112,6 +108,8 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apiService.get('tipocomprobantes').subscribe( json => {
       this.tipos_comprobantes = json;
     });
+    setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
+
   }
 
   ngAfterViewInit(): void {
@@ -140,7 +138,8 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.comprobantes.forEach( comprobante => {
           comprobante.ptoventaynumero = ('000' + comprobante.punto_venta).slice(-4) + '-' + ('0000000' + comprobante.numero).slice(-8);
         });
-        setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
+        // setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
+        this.recargarTabla();
       });
     }
   }
@@ -169,6 +168,16 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }
     );
+  }
+
+  private recargarTabla() {
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+      setTimeout(() => { this.mostrarTabla = true; }, 350);
+    });
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
