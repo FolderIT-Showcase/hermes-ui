@@ -1,0 +1,63 @@
+<form class="form-horizontal">
+  <div class="form-group row">
+    <label for="comprobante-tipo" class="col-sm-1 control-label">Tipo:</label>
+    <div class="col-sm-2">
+      <select class="form-control" id="comprobante-tipo" [(ngModel)]="tipoComprobanteSeleccionadoId" name="tipo">
+        <option [ngValue]="0">Todos</option>
+        <option *ngFor="let tipo of tipos_comprobantes" [ngValue]="tipo.id">{{tipo.nombre}}</option>
+      </select>
+    </div>
+
+    <div class="col-sm-7">
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="fechaSeleccionada" name="fechaSeleccionada" [value]="false" >Todos los comprobantes</label>
+      </div>
+      <div class="radio" [ngClass]="{'has-error': rangoFechaInvalido() && fechaSeleccionada}">
+        <div class="col-sm-3" style="padding-left: 0; padding-right: 0; padding-top: 8px">
+          <label>
+            <input type="radio" [(ngModel)]="fechaSeleccionada" name="fechaSeleccionada" [value]="true">
+            Solo el intervalo:
+          </label>
+        </div>
+
+        <div [hidden]="!fechaSeleccionada" class="col-sm-8" style="padding-left: 0; padding-right: 0">
+          <div  class="col-sm-5">
+            <my-date-picker id="cta-cte-fecha-inicio" [(ngModel)]="fechaInicio" name="fecha-inicio" [options]="myDatePickerOptions"></my-date-picker>
+          </div>
+
+          <div class="col-sm-5">
+            <my-date-picker id="cta-cte-fecha-fin" [(ngModel)]="fechaFin" name="fecha-fin" [options]="myDatePickerOptions"></my-date-picker>
+          </div>
+        </div>
+        <div *ngIf="(rangoFechaInvalido() && fechaSeleccionada)" class="help-block col-sm-12">La fecha de inicio no puede ser posterior a la fecha de fin</div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-default" (click)="filtrar()">Filtrar</button>
+    </div>
+  </div>
+  <table id="table" datatable [dtOptions]="dtOptions" class="row-border hover table" width="100%">
+    <thead>
+    <tr>
+      <th class="text-center" width="15%">Fecha</th>
+      <th class="text-center" width="15%">Comprobante</th>
+      <th class="text-center" width="20%">Nro.</th>
+      <th class="text-center" width="20%">Cliente</th>
+      <th class="text-center" width="20%">Importe total</th>
+      <th class="text-center" width="10%">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let comprobante of comprobantes">
+      <td class="text-center" width="15%">{{comprobante.fecha}}</td>
+      <td width="15%">{{comprobante.tipo_comprobante.nombre}}</td>
+      <td class="text-center" width="20%">{{comprobante.ptoventaynumero}}</td>
+      <td class="text-left" width="20%">{{comprobante.cliente_nombre}}</td>
+      <td class="text-right" width="20%">{{comprobante.importe_total}}</td>
+      <td class="text-center" width="10%">
+        <button title="Imprimir comprobante" (click)="imprimirPDF(comprobante)" class="glyphicon glyphicon-print blue"></button >
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</form>

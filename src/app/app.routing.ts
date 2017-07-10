@@ -20,6 +20,7 @@ import {NotaCreditoComponent} from './nota-credito/nota-credito.component';
 import {DeactivateGuardService} from 'service/deactivate-guard.service';
 import {UsuariosComponent} from './usuarios/usuarios.component';
 import {ProveedoresComponent} from './proveedores/proveedores.component';
+import {ImpresionComponent} from './impresion/impresion.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -41,6 +42,7 @@ const appRoutes: Routes = [
   {path: 'notadebito', component: NotaDebitoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'notacredito', component: NotaCreditoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'usuarios', component: UsuariosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'impresion', component: ImpresionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

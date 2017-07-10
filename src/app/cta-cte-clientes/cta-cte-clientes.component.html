@@ -23,7 +23,6 @@
         <div *ngIf="typeaheadNoResults === true" class="help-block">No se han encontrado resultados</div>
         <div *ngIf="(clienteCtaCteAsync.length < 3 && clienteCtaCteAsync.length > 0)" class="help-block">Ingrese 3 letras para comenzar la búsqueda</div>
       </div>
-
     </div>
 
     <div class="col-sm-7">
@@ -62,8 +61,8 @@
       <th class="text-center" width="12%">Nro.</th>
       <th class="text-center" width="15%">Debe</th>
       <th class="text-center" width="15%">Haber</th>
-      <th class="text-center" width="20%">Saldo</th>
-      <th class="text-center" width="5%">Acciones</th>
+      <th class="text-center" width="15%">Saldo</th>
+      <th class="text-center" width="10%">Acciones</th>
     </tr>
     </thead>
     <tbody>
@@ -73,9 +72,10 @@
       <td class="text-center" width="12%">{{reg.ptoventaynumero}}</td>
       <td class="text-right" width="15%">{{reg.debe}}</td>
       <td class="text-right" width="15%">{{reg.haber}}</td>
-      <td class="text-right" width="20%">{{reg.saldo}}</td>
-      <td class="text-center" width="5%">
-        <button (click)="mostrarModalVer(reg)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-eye-open blue"></button>
+      <td class="text-right" width="15%">{{reg.saldo}}</td>
+      <td class="text-center" width="10%">
+        <button title="Ver comprobante" (click)="mostrarModalVer(reg)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-eye-open blue"></button>
+        <button title="Imprimir comprobante" (click)="imprimirPDF(reg)" class="glyphicon glyphicon-print blue"></button >
       </td>
     </tr>
     </tbody>
@@ -86,8 +86,8 @@
       <th width="12%"></th>
       <th width="15%"></th>
       <th class="text-center" width="15%">Saldo Total</th>
-      <th class="text-right" width="20%">{{saldo.toFixed(2)}}</th>
-      <th width="5%"></th>
+      <th class="text-right" width="15%">{{saldo.toFixed(2)}}</th>
+      <th width="10%"></th>
     </tr>
     </tfoot>
   </table>
@@ -177,6 +177,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="button" (click)="imprimirPDF(ctaCteClienteSeleccionada)" class="btn btn-primary">Imprimir</button >
       </div>
     </div>
   </div>
