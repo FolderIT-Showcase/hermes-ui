@@ -42,6 +42,7 @@ import {DeactivateGuardService} from '../service/deactivate-guard.service';
 import {TooltipModule} from 'ngx-bootstrap/tooltip';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
+import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
 
 
@@ -74,6 +75,7 @@ import { ImpresionComponent } from './impresion/impresion.component';
     NotaComponent,
     UsuariosComponent,
     ProveedoresComponent,
+    PeriodosFiscalesComponent,
     ImpresionComponent
   ],
   imports: [
