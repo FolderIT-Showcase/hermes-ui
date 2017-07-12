@@ -58,7 +58,7 @@
             <div class="col-sm-10 has-feedback"
                  [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="lista-nombre" [(ngModel)]="listaPreciosSeleccionada.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
+              <input type="text" class="form-control" id="lista-nombre" [(ngModel)]="listaPreciosSeleccionada.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>

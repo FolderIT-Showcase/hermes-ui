@@ -63,7 +63,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
              'has-success': codigo.valid}" required>
-              <input type="text" class="form-control" id="proveedor-codigo" [(ngModel)]="proveedorSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="proveedorSeleccionado" [path]="'proveedores'" placeholder="Código*">
+              <input type="text" class="form-control" id="proveedor-codigo" [(ngModel)]="proveedorSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="proveedorSeleccionado" [path]="'proveedores'" placeholder="Código">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
@@ -76,7 +76,7 @@
             <div class="col-sm-6 has-feedback"
                  [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="proveedor-nombre" [(ngModel)]="proveedorSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre*">
+              <input type="text" class="form-control" id="proveedor-nombre" [(ngModel)]="proveedorSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
