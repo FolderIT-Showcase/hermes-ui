@@ -17,7 +17,7 @@ import {Marca} from '../../domain/marca';
   styleUrls: ['./listaPrecios.component.css']
 })
 export class ListaPreciosComponent implements OnInit, OnDestroy {
-
+  mostrarBarraCarga = true;
   enNuevo: boolean;
   listaPreciosOriginal: ListaPrecios;
   dtOptions: any = {};
@@ -111,13 +111,17 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('listaprecios')
       .subscribe(json => {
-        this.listasPrecios = json;
-        this.dtTrigger.next();
-      });
+          this.listasPrecios = json;
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(listaPrecios: ListaPrecios) {
@@ -353,9 +357,9 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
               +(this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1));
             break;
           case 'porcentaje': default:
-            articulo.nuevo_precio_venta = +articulo.precio_venta *
-              +(1 + (this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1)) / 100);
-            break;
+          articulo.nuevo_precio_venta = +articulo.precio_venta *
+            +(1 + (this.valorActualizacion * (this.accionActualizar === 'aumentar' ? 1 : -1)) / 100);
+          break;
         }
         articulo.nuevo_precio_venta = articulo.nuevo_precio_venta.toFixed(2);
       });

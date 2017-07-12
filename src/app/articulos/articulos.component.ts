@@ -13,6 +13,7 @@ import {isNullOrUndefined} from 'util';
   styleUrls: ['./articulos.component.css']
 })
 export class ArticulosComponent implements OnInit, OnDestroy {
+  mostrarBarraCarga = true;
   enNuevo: boolean;
   articuloOriginal: Articulo;
   dtOptions: any = {};
@@ -73,15 +74,19 @@ export class ArticulosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('articulos')
       .subscribe(json => {
-        this.articulos = json;
-        this.cargarMarcas();
-        this.cargarSubrubros();
-        this.dtTrigger.next();
-      });
+          this.articulos = json;
+          this.cargarMarcas();
+          this.cargarSubrubros();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
 
   }
 

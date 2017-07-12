@@ -23,6 +23,7 @@ export class MarcasComponent implements OnInit, OnDestroy {
   modalTitle: string;
   mostrarTabla = false;
   submitted = false;
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
@@ -72,13 +73,16 @@ export class MarcasComponent implements OnInit, OnDestroy {
       ]
     };
 
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
     this.apiService.get('marcas')
       .subscribe(json => {
-        this.marcas = json;
-        this.dtTrigger.next();
-      });
+          this.marcas = json;
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(marca: Marca) {

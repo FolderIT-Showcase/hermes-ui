@@ -381,6 +381,9 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   calcularImportesItem(item: Item) {
     item.importe_descuento = (+item.cantidad * +item.importe_unitario * (+item.porcentaje_descuento / 100)).toFixed(2);
     item.importe_total = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
+    item.alicuota_iva = this.iva * 100;
+    item.importe_iva = +item.importe_total * this.iva;
+    item.importe_neto = +item.importe_total - item.importe_iva;
     if (item.articulo_id && item.cantidad && +item.importe_unitario) {
       this.calcularImportesFactura();
     }
@@ -415,7 +418,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.factura.cliente_nombre = this.cliente.nombre;
     this.factura.cliente_tipo_resp = this.cliente.tipo_responsable;
     this.factura.tipo_comprobante_id = this.tipoComprobante.id;
-    this.factura.alicuota_iva = this.iva;
+    this.factura.alicuota_iva = 100 * this.iva;
     this.factura.saldo = 0;
     this.factura.lista_id = this.cliente.lista_id;
     this.factura.items = this.items.filter(item => item.articulo_id && item.cantidad && +item.importe_unitario);
@@ -611,20 +614,17 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   private calcularImportesFactura() {
     this.change.emit(true);
     this.factura.importe_neto = 0;
+    this.factura.importe_iva = 0;
+    this.factura.importe_total = 0;
     this.items.filter(item => item.articulo_id && item.cantidad && +item.importe_unitario)
       .forEach( item => {
-        this.factura.importe_neto = +this.factura.importe_neto + +item.importe_total;
+        this.factura.importe_neto = +this.factura.importe_neto + +item.importe_neto;
+        this.factura.importe_iva = +this.factura.importe_iva + +item.importe_iva;
+        this.factura.importe_total = +this.factura.importe_total + +item.importe_total;
       });
     this.factura.importe_neto = this.factura.importe_neto.toFixed(2);
-    switch (this.cliente.tipo_responsable) {
-      case 'RI':
-        this.factura.importe_iva = (+this.factura.importe_neto * this.iva).toFixed(2);
-        this.factura.importe_total = (+this.factura.importe_neto + +this.factura.importe_iva).toFixed(2);
-        break;
-      case 'CF': case 'MON': default:
-      this.factura.importe_total = this.factura.importe_neto;
-      break;
-    }
+    this.factura.importe_iva = this.factura.importe_iva.toFixed(2);
+    this.factura.importe_total = this.factura.importe_total.toFixed(2);
   }
 
   private calcularImporteUnitario(item: Item) {

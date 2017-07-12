@@ -22,6 +22,7 @@ export class ZonasComponent implements OnInit, OnDestroy {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  mostrarBarraCarga = true;
   submitted = false;
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
@@ -70,13 +71,17 @@ export class ZonasComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('zonas')
       .subscribe(json => {
-        this.zonas = json;
-        this.dtTrigger.next();
-      });
+          this.zonas = json;
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(zona: Zona) {

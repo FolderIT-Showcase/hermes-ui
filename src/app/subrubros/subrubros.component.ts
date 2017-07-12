@@ -25,6 +25,7 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
   modalTitle: string;
   mostrarTabla = false;
   submitted = false;
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService, private alertService: AlertService) {}
 
@@ -73,7 +74,6 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.cargarRubros();
   }
@@ -165,12 +165,20 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
           this.rubros = jsonRubros;
           this.apiService.get('subrubros')
             .subscribe(json => {
-              json.forEach(element => {
-                element.rubro_nombre = this.rubros.find(x => x.id === element.rubro_id).nombre;
+                json.forEach(element => {
+                  element.rubro_nombre = this.rubros.find(x => x.id === element.rubro_id).nombre;
+                });
+                this.subrubros = json;
+                this.mostrarBarraCarga = false;
+                this.mostrarTabla = true;
+                this.dtTrigger.next();
+              },
+              () => {
+                this.mostrarBarraCarga = false;
               });
-              this.subrubros = json;
-              this.dtTrigger.next();
-            });
+        },
+        () => {
+          this.mostrarBarraCarga = false;
         }
       );
     }

@@ -54,6 +54,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   parametroReporteFiltrarPorLocalidad: Boolean;
   parametroReporteLocalidad: Number;
   parametroReporteSoloActivos: Number;
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
@@ -124,17 +125,21 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('clientes')
       .subscribe(json => {
-        this.clientes = json;
-        this.clientes.forEach(
-          cliente => {
-            cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
-          });
-        this.dtTrigger.next();
-      });
+          this.clientes = json;
+          this.clientes.forEach(
+            cliente => {
+              cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
+            });
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(cliente: Cliente) {

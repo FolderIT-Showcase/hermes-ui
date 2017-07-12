@@ -11,7 +11,7 @@ import { AlertService } from '../../service/alert.service';
   styleUrls: ['./vendedores.component.css']
 })
 export class VendedoresComponent implements OnInit, OnDestroy {
-
+  mostrarBarraCarga = true;
   enNuevo: boolean;
   vendedorOriginal: Vendedor;
   dtOptions: any = {};
@@ -72,14 +72,17 @@ export class VendedoresComponent implements OnInit, OnDestroy {
       ]
     };
 
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
     this.apiService.get('vendedores')
       .subscribe(json => {
-        this.vendedores = json;
-        this.cargarZonas();
-        this.dtTrigger.next();
-      });
+          this.vendedores = json;
+          this.cargarZonas();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(vendedor: Vendedor) {

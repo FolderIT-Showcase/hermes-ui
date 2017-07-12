@@ -30,6 +30,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
@@ -102,7 +103,6 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('proveedores')
       .subscribe(json => {
@@ -111,7 +111,12 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
           proveedor => {
             proveedor.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
           });
-        this.dtTrigger.next();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
       });
   }
 

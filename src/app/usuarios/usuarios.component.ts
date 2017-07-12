@@ -27,6 +27,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   submitted = false;
   roles = [];
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -78,8 +79,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
     this.cargarUsuarios();
     this.cargarRoles();
   }
@@ -198,7 +197,12 @@ export class UsuariosComponent implements OnInit, OnDestroy {
           }
         });
         this.usuarios = json;
-        this.dtTrigger.next();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
       });
   }
 

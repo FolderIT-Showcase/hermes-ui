@@ -29,6 +29,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   dtTrigger: Subject<any> = new Subject;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
+  mostrarBarraCarga = true;
 
   constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
 
@@ -120,13 +121,16 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       anioActual + 5
     ];
 
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
     this.apiService.get('periodosfiscales')
       .subscribe(json => {
         this.periodosFiscales = json;
         this.completarStringsMeses();
-        this.dtTrigger.next();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
       });
   }
 

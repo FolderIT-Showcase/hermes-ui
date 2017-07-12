@@ -13,6 +13,7 @@ import {isNullOrUndefined} from 'util';
   styleUrls: ['./presupuestos.component.css']
 })
 export class PresupuestosComponent implements OnInit, OnDestroy {
+  mostrarBarraCarga = true;
   dtOptions: any = {};
   presupuestos: Comprobante[] = [];
   dtTrigger: Subject<any> = new Subject();
@@ -68,13 +69,17 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
-        this.presupuestos = json;
-        this.dtTrigger.next();
-      });
+          this.presupuestos = json;
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEliminar(presupuesto: Comprobante) {
