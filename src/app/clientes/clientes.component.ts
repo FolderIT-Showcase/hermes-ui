@@ -46,13 +46,13 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   submitted = false;
 
   // Reporte lista clientes
-  parametroReporteFiltrarPorVendedor: Boolean;
+  parametroReporteFiltrarPorVendedor = false;
   parametroReporteVendedor: Number;
-  parametroReporteFiltrarPorZona: Boolean;
+  parametroReporteFiltrarPorZona = false;
   parametroReporteZona: Number;
-  parametroReporteFiltrarPorProvincia: Boolean;
+  parametroReporteFiltrarPorProvincia = false;
   parametroReporteProvincia: Number;
-  parametroReporteFiltrarPorLocalidad: Boolean;
+  parametroReporteFiltrarPorLocalidad = false;
   parametroReporteLocalidad: Number;
   parametroReporteSoloActivos: Number;
   mostrarBarraCarga = true;
