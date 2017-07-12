@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.loading = true;
     const user = new User();
-    user.email = this.model.email;
+    user.name = this.model.name;
     user.password = this.model.password;
     this.authenticationService.login(user)
       .then(() => {
