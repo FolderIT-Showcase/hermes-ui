@@ -6,6 +6,7 @@ import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import { Rubro } from 'domain/rubro';
 import {UserService} from '../../service/user.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -32,7 +33,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private userService: UserService,
-              private changeDetectionRef: ChangeDetectorRef) {}
+              private changeDetectionRef: ChangeDetectorRef,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -79,6 +81,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
         }
       ]
     };
+    this.navbarTitleService.setTitle('Gestión de Usuarios');
     this.cargarUsuarios();
     this.cargarRoles();
   }

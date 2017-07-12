@@ -8,6 +8,7 @@ import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';
 import {AlertService} from '../../service/alert.service';
 import {DataTableDirective} from 'angular-datatables';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-periodos-fiscales',
@@ -31,7 +32,10 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   dtElement: DataTableDirective;
   mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -92,7 +96,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
          */
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Períodos Fiscales');
     this.meses = [
       {clave: 1, nombre: 'Enero'},
       {clave: 2, nombre: 'Febrero'},

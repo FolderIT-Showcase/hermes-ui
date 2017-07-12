@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-zonas',
@@ -24,7 +25,9 @@ export class ZonasComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   mostrarBarraCarga = true;
   submitted = false;
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -71,7 +74,7 @@ export class ZonasComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Zonas');
     this.apiService.get('zonas')
       .subscribe(json => {
           this.zonas = json;

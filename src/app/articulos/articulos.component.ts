@@ -6,6 +6,7 @@ import { ApiService } from '../../service/api.service';
 import { Marca } from 'domain/marca';
 import { Subrubro } from 'domain/subrubro';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-articulos',
@@ -27,7 +28,7 @@ export class ArticulosComponent implements OnInit, OnDestroy {
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
   submitted = false;
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService, private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -75,6 +76,7 @@ export class ArticulosComponent implements OnInit, OnDestroy {
       ]
     };
 
+    this.navbarTitleService.setTitle('Gestión de Artículos');
     this.apiService.get('articulos')
       .subscribe(json => {
           this.articulos = json;

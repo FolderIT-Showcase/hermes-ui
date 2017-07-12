@@ -10,6 +10,7 @@ import {ItemListaPrecios} from '../../domain/itemListaPrecios';
 import {Subrubro} from '../../domain/subrubro';
 import {Rubro} from '../../domain/rubro';
 import {Marca} from '../../domain/marca';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-lista-precios',
@@ -52,7 +53,9 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
   private subrubroId = 0;
   private marcaId = 0;
   file: any;
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -111,7 +114,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Listas de Precios');
     this.apiService.get('listaprecios')
       .subscribe(json => {
           this.listasPrecios = json;

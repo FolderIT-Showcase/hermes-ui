@@ -44,6 +44,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
+import {NavbarTitleService} from '../service/navbar-title.service';
 
 
 @NgModule({
@@ -96,6 +97,7 @@ import { ImpresionComponent } from './impresion/impresion.component';
     UserService,
     ApiService,
     DeactivateGuardService,
+    NavbarTitleService
   ],
   bootstrap: [AppComponent]
 })

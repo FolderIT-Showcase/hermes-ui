@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-rubros',
@@ -25,7 +26,9 @@ export class RubrosComponent implements OnInit, OnDestroy {
   submitted = false;
   mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -72,7 +75,7 @@ export class RubrosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Rubros');
     this.apiService.get('rubros')
       .subscribe(json => {
         this.rubros = json;

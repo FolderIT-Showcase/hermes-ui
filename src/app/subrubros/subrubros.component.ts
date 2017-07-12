@@ -5,6 +5,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
 import { Rubro } from 'domain/rubro';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-subrubros',
@@ -27,7 +28,9 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
   submitted = false;
   mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -74,7 +77,7 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Subrubros');
     this.cargarRubros();
   }
 

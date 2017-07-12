@@ -4,6 +4,7 @@ import {Comprobante} from '../../domain/comprobante';
 import {TipoComprobante} from '../../domain/tipocomprobante';
 import {AlertService} from '../../service/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-impresion',
@@ -22,7 +23,9 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   myDatePickerOptions: IMyDpOptions;
   tipos_comprobantes: TipoComprobante[];
 
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit() {
     this.dtOptions = {
@@ -85,7 +88,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         'width': '10%'
       }]
     };
-
+    this.navbarTitleService.setTitle('Impresión de Comprobantes');
     this.myDatePickerOptions = {
       // other options...
       dateFormat: 'dd/mm/yyyy',

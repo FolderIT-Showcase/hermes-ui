@@ -6,6 +6,7 @@ import { AlertService } from '../../service/alert.service';
 import {Comprobante} from '../../domain/comprobante';
 import {Router} from '@angular/router';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-presupuestos',
@@ -22,7 +23,10 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
-  constructor(private apiService: ApiService, private alertService: AlertService, private router: Router) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private router: Router,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -69,7 +73,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Presupuestos');
     this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
           this.presupuestos = json;

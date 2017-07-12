@@ -15,6 +15,7 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 import {AlertService} from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-clientes',
@@ -56,7 +57,10 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   parametroReporteSoloActivos: Number;
   mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -115,7 +119,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Clientes');
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},

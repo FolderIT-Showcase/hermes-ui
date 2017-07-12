@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../../service/authentication.service';
 import {AlertService} from 'service/alert.service';
 import {User} from '../../domain/user';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-login',
@@ -17,12 +18,14 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router,
               private authenticationService: AuthenticationService,
-              private alertService: AlertService) {
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {
   }
 
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
+    this.navbarTitleService.setTitle('');
   }
 
   onSubmit() {

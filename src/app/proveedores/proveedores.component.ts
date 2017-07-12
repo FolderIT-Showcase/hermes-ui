@@ -8,6 +8,7 @@ import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';
 import {DataTableDirective} from 'angular-datatables';
 import {AlertService} from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-proveedores',
@@ -32,7 +33,10 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -93,7 +97,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
         */
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Proveedores');
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},
