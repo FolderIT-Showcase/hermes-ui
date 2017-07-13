@@ -29,6 +29,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   submitted = false;
   roles = [];
   mostrarBarraCarga = true;
+  passwordNoCoincide = false;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -101,7 +102,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   editarONuevo(f: any) {
     this.submitted = true;
-    if (f.valid) {
+    if (f.valid && !this.passwordNoCoincide) {
       this.submitted = false;
       (<any>$('#modalEditar')).modal('hide');
       const usuarioAEnviar = new Usuario();
@@ -213,6 +214,16 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.apiService.get('roles').subscribe( json => {
       this.roles = json;
     });
+  }
+
+  onPasswordChange(event) {
+    this.usuarioSeleccionado.password = event;
+    this.passwordNoCoincide = this.usuarioSeleccionado.password !== this.usuarioSeleccionado.repassword;
+  }
+
+  onRepasswordChange(event) {
+    this.usuarioSeleccionado.repassword = event;
+    this.passwordNoCoincide = this.usuarioSeleccionado.password !== this.usuarioSeleccionado.repassword;
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
