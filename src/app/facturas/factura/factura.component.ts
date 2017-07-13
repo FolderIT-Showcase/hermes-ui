@@ -380,10 +380,22 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   calcularImportesItem(item: Item) {
     item.importe_descuento = (+item.cantidad * +item.importe_unitario * (+item.porcentaje_descuento / 100)).toFixed(2);
-    item.importe_total = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
     item.alicuota_iva = this.iva * 100;
-    item.importe_iva = +item.importe_total * this.iva;
-    item.importe_neto = +item.importe_total - item.importe_iva;
+    switch (this.cliente.tipo_responsable) {
+      case 'RI':
+        item.importe_neto = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
+        item.importe_iva = +item.importe_neto * this.iva;
+        item.importe_total = +item.importe_neto + +item.importe_iva;
+        break;
+      case 'CF':
+      case 'MON':
+      default:
+        item.importe_total = (+item.cantidad * +item.importe_unitario - +item.importe_descuento).toFixed(2);
+        item.importe_neto = +item.importe_total / (1 + this.iva);
+        item.importe_iva = +item.importe_total - item.importe_neto;
+        break;
+    }
+
     if (item.articulo_id && item.cantidad && +item.importe_unitario) {
       this.calcularImportesFactura();
     }

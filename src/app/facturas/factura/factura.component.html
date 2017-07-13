@@ -141,7 +141,7 @@
       </td>
 
       <td class="typeaheadcontainer">
-        <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_total" name="item-importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
+        <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="cliente.tipo_responsable !== 'RI'? item.importe_total : item.importe_neto" name="item-importe-total{{i}}" placeholder="0.00" min="0" step="0.01">
       </td>
 
       <td class="text-center">

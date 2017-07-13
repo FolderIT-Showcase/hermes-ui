@@ -125,7 +125,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
       {clave: 'NR', nombre: 'No Responsable'},
       {clave: 'SE', nombre: 'Sujeto Exento'},
       {clave: 'CF', nombre: 'Consumidor Final'},
-      {clave: 'M', nombre: 'Monotributista'},
+      {clave: 'MON', nombre: 'Monotributista'},
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
