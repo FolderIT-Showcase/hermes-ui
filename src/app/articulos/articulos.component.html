@@ -58,6 +58,53 @@
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
+            <label for="articulo-codigo" class="col-sm-1 required control-label">Código</label>
+            <div class="col-sm-3 has-feedback"
+                 [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched || submitted),
+            'has-success': codigo.valid}">
+              <input type="text" class="form-control" id="articulo-codigo" [(ngModel)]="articuloSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="articuloSeleccionado" [path]="'articulos'" placeholder="Código">
+              <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid " class="help-block">Código repetido</div>
+            </div>
+
+            <label for="articulo-activo" class="col-sm-1 col-sm-offset-6 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="articulo-activo" [(ngModel)]="articuloSeleccionado.activo" name="activo">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="articulo-codigo-fabrica" class="col-sm-1 control-label">Código fábrica</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="articulo-codigo-fabrica" [(ngModel)]="articuloSeleccionado.codigo_fabrica" name="codigo_fabrica" [maxLength]="30" placeholder="0">
+            </div>
+
+            <label for="articulo-codigo-auxiliar" class="col-sm-1 control-label">Código auxiliar</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" id="articulo-codigo-auxiliar" [(ngModel)]="articuloSeleccionado.codigo_auxiliar" name="codigo_auxiliar" [maxLength]="30" placeholder="0">
+            </div>
+
+            <label for="articulo-lleva-stock" class="col-sm-1 col-sm-offset-2 control-label">Lleva stock</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="articulo-lleva-stock" [(ngModel)]="articuloSeleccionado.lleva_stock" name="stock">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="articulo-nombre" class="col-sm-1 required control-label">Nombre</label>
+            <div class="col-sm-11 has-feedback"
+                 [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
+            'has-success': nombre.valid}">
+              <input type="text" class="form-control" id="articulo-nombre" [(ngModel)]="articuloSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
+              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
             <label for="articulo-marca" class="col-sm-1 required control-label">Marca</label>
             <div class="col-sm-5 has-feedback"
             [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched|| submitted),
@@ -88,82 +135,39 @@
           </div>
 
           <div class="form-group row">
-            <label for="articulo-codigo" class="col-sm-1 required control-label">Código</label>
-            <div class="col-sm-3 has-feedback"
-            [ngClass]="{'has-error': !codigo.valid && (!codigo.pristine || codigo.touched || submitted),
-            'has-success': codigo.valid}">
-              <input type="text" class="form-control" id="articulo-codigo" [(ngModel)]="articuloSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="articuloSeleccionado" [path]="'articulos'" placeholder="Código">
-              <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
-              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid " class="help-block">Código repetido</div>
-            </div>
-
-            <label for="articulo-codigo-fabrica" class="col-sm-2 control-label">Código fábrica</label>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="articulo-codigo-fabrica" [(ngModel)]="articuloSeleccionado.codigo_fabrica" name="codigo_fabrica" [maxLength]="30" placeholder="0">
-            </div>
-
-            <label for="articulo-codigo-auxiliar" class="col-sm-2 control-label">Código auxiliar</label>
-            <div class="col-sm-2">
-              <input type="text" class="form-control" id="articulo-codigo-auxiliar" [(ngModel)]="articuloSeleccionado.codigo_auxiliar" name="codigo_auxiliar" [maxLength]="30" placeholder="0">
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="articulo-nombre" class="col-sm-1 required control-label">Nombre</label>
-            <div class="col-sm-6 has-feedback"
-            [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
-            'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="articulo-nombre" [(ngModel)]="articuloSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
-              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
-            </div>
-
-            <label for="articulo-nombre-reducido" class="col-sm-2 control-label">Nombre reducido</label>
+            <label for="articulo-nombre-reducido" class="col-sm-1 control-label">Nombre reducido</label>
             <div class="col-sm-3">
               <input type="text" class="form-control" id="articulo-nombre-reducido" [(ngModel)]="articuloSeleccionado.nombre_reducido" name="nombre_reducido" [maxLength]="20" placeholder="Nombre Reducido">
             </div>
           </div>
 
           <div class="form-group row">
+            <label for="articulo-punto-pedido" class="col-sm-1 control-label">Punto pedido</label>
+            <div class="col-sm-3"
+                 [ngClass]="{'has-error': !puntopedido.valid && !puntopedido.pristine,
+            'has-success': puntopedido.valid && !puntopedido.pristine}">
+              <input type="number" class="form-control text-center" #puntopedido="ngModel" id="articulo-punto-pedido" [(ngModel)]="articuloSeleccionado.punto_pedido" name="punto_pedido"  min="0" step="1" placeholder="0" pattern="^\d*$">
+              <div *ngIf="!puntopedido.valid && !puntopedido.pristine" class="help-block">Ingrese un número entero</div>
+            </div>
+
+            <label for="articulo-bajo-minimo" class="col-sm-1 control-label">Bajo mínimo</label>
+            <div class="col-sm-3"
+                 [ngClass]="{'has-error': !bajominimo.valid && !bajominimo.pristine,
+            'has-success': bajominimo.valid && !bajominimo.pristine}">
+              <input type="number" class="form-control text-center" id="articulo-bajo-minimo" #bajominimo="ngModel" [(ngModel)]="articuloSeleccionado.bajo_minimo" name="bajo_minimo"  min="0" step="1" placeholder="0" pattern="^\d*$">
+              <div *ngIf="!bajominimo.valid && !bajominimo.pristine" class="help-block">Ingrese un número entero</div>
+            </div>
+
             <label for="articulo-costo" class="col-sm-1 control-label">Costo</label>
-            <div class="col-sm-8 has-feedback"
-            [ngClass]="{'has-error': !costo.valid && !costo.pristine,
+            <div class="col-sm-3"
+                 [ngClass]="{'has-error': !costo.valid && !costo.pristine,
             'has-success': costo.valid && !costo.pristine}">
-              <input type="number" class="form-control" id="articulo-costo" [(ngModel)]="articuloSeleccionado.costo" name="costo"  #costo="ngModel" min="0" step="0.01" pattern="^\d+([\.\,]\d{1,2})?$" placeholder="0.00">
-              <span *ngIf="costo.valid && !costo.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="costo.errors !== null && !costo.pristine" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <input type="number" class="form-control text-right" id="articulo-costo" [(ngModel)]="articuloSeleccionado.costo" name="costo"  #costo="ngModel" min="0" step="0.01" pattern="^\d+([\.\,]\d{1,2})?$" placeholder="0.00">
               <div *ngIf="!costo.valid && !costo.pristine" class="help-block">Ingrese un número con dos decimales</div>
             </div>
-
-            <div class="col-sm-2 col-sm-offset-1 checkbox-inline">
-              <label>
-                <input type="checkbox" id="articulo-lleva-stock" [(ngModel)]="articuloSeleccionado.lleva_stock" name="activo">
-                Lleva stock
-              </label>
-            </div>
           </div>
 
           <div class="form-group row">
-            <label for="articulo-punto-pedido" class="col-sm-2 control-label">Punto pedido</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" id="articulo-punto-pedido" [(ngModel)]="articuloSeleccionado.punto_pedido" name="punto_pedido"  min="0" step="1" placeholder="0">
-            </div>
-
-            <label for="articulo-bajo-minimo" class="col-sm-2 control-label">Bajo mínimo</label>
-            <div class="col-sm-4">
-              <input type="number" class="form-control" id="articulo-bajo-minimo" [(ngModel)]="articuloSeleccionado.bajo_minimo" name="bajo_minimo"  min="0" step="1" placeholder="0">
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="articulo-activo" class="col-sm-1 control-label">Activo</label>
-            <div class="col-sm-1 checkbox-inline">
-                <input type="checkbox" id="articulo-activo" [(ngModel)]="articuloSeleccionado.activo" name="activo">
-            </div>
-
             <div *ngIf="!articuloSeleccionado.activo">
               <label for="articulo-motivo" class="col-sm-1 control-label">Motivo</label>
               <div class="col-sm-9">

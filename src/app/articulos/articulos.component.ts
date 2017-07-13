@@ -1,4 +1,7 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
+  ViewChild
+} from '@angular/core';
 import { Articulo } from 'domain/articulo';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -13,7 +16,7 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
   templateUrl: './articulos.component.html',
   styleUrls: ['./articulos.component.css']
 })
-export class ArticulosComponent implements OnInit, OnDestroy {
+export class ArticulosComponent implements OnInit, AfterViewChecked, OnDestroy {
   mostrarBarraCarga = true;
   enNuevo: boolean;
   articuloOriginal: Articulo;
@@ -28,7 +31,14 @@ export class ArticulosComponent implements OnInit, OnDestroy {
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
   submitted = false;
-  constructor(private apiService: ApiService, private navbarTitleService: NavbarTitleService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private navbarTitleService: NavbarTitleService) {}
+
+  ngAfterViewChecked() {
+// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    this.cdRef.detectChanges();
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -142,6 +152,7 @@ export class ArticulosComponent implements OnInit, OnDestroy {
     this.modalTitle = 'Nuevo Artículo';
     this.enNuevo = true;
     this.articuloSeleccionado = new Articulo;
+
     (<any>$('#modalEditar')).modal('show');
   }
 
