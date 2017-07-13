@@ -135,7 +135,9 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
           this.clientes = json;
           this.clientes.forEach(
             cliente => {
-              cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
+              if (!isNullOrUndefined(this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable))){
+                cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
+              }
             });
           this.mostrarBarraCarga = false;
           this.mostrarTabla = true;
