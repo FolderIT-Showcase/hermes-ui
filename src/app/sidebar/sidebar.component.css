@@ -92,7 +92,15 @@
   border: none;
   line-height: 28px;
   /*border-bottom: 1px solid #23282e;*/
-  margin-left: 0px;
+  padding-left: 10px;
+}
+.nav-side-menu ul .sub-menu ul li,
+.nav-side-menu li .sub-menu ul li {
+  /*background-color: #181c20;*/
+  border: none;
+  line-height: 28px;
+  /*border-bottom: 1px solid #23282e;*/
+  padding-left: 20px;
 }
 .nav-side-menu ul .sub-menu li:hover,
 .nav-side-menu li .sub-menu li:hover {
