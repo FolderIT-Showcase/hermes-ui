@@ -70,6 +70,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      pageLength: 13,
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
