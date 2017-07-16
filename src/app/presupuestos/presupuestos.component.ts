@@ -122,7 +122,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   }
 
   imprimirPDF(presupuesto: Comprobante) {
-    this.apiService.downloadPDF('comprobantes/presupuestos/imprimir/' + presupuesto.id, {}).subscribe(
+    this.apiService.downloadPDF('comprobantes/imprimir/' + presupuesto.id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
