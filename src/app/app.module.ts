@@ -44,6 +44,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
+import {NavbarTitleService} from '../service/navbar-title.service';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
 import {NumberValidatorsService} from "../service/number-validator.service";
 
@@ -99,6 +100,7 @@ import {NumberValidatorsService} from "../service/number-validator.service";
     UserService,
     ApiService,
     DeactivateGuardService,
+    NavbarTitleService
     NumberValidatorsService
   ],
   bootstrap: [AppComponent]

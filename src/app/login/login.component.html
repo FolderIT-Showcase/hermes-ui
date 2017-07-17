@@ -20,7 +20,7 @@
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !username.valid}">
           <label class="sr-only" for="form-username">Usuario</label>
           <input type="text" name="form-username" placeholder="Usuario" class="form-username form-control form-control-lg"
-                 id="form-username"  [(ngModel)]="model.email" #username="ngModel" required>
+                 id="form-username"  [(ngModel)]="model.name" #username="ngModel" required>
           <div *ngIf="f.submitted && !username.valid" class="help-block">Ingrese su usuario</div>
         </div>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !password.valid}">

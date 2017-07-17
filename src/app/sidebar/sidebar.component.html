@@ -1,3 +1,77 @@
+<div class="nav-side-menu">
+  <div class="menu-list">
+    <ul id="menu-content" class="menu-content collapse out">
+      <li data-toggle="collapse" data-target="#general"
+          [class.active]="rlaclientes.isActive || rlavendedores.isActive || rlazonas.isActive ||
+                rlaarticulos.isActive || rlarubros.isActive || rlasubrubros.isActive || rlamarcas.isActive ||
+                rlalistaprecios.isActive" class="collapsed">
+        <a class="dropdown-toggle" ><i class="fa fa-folder-open fa-lg"></i> General<span class="arrow"></span></a>
+      </li>
+      <ul class="sub-menu collapse" id="general" role="menu">
+        <li data-toggle="collapse" data-target="#clientes"
+            [class.active]="rlaclientes.isActive || rlavendedores.isActive || rlazonas.isActive" class="collapsed" #rlamenuclientes>
+          <a class="dropdown-toggle" ><i class="fa fa-address-book-o"></i> Clientes<span class="arrow"></span></a>
+        </li>
+        <ul class="sub-menu collapse" id="clientes" role="menu">
+          <li [routerLinkActive]="['active']" [routerLink]="['/clientes']" #rlaclientes="routerLinkActive"><a>Clientes</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/zonas']" #rlazonas="routerLinkActive"><a>Zonas</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/vendedores']" #rlavendedores="routerLinkActive"><a>Vendedores</a></li>
+        </ul>
+        <li data-toggle="collapse" data-target="#articulos"
+            [class.active]="rlaarticulos.isActive || rlarubros.isActive || rlasubrubros.isActive || rlamarcas.isActive" class="collapsed">
+          <a class="dropdown-toggle"><i class="fa fa-wrench"></i> Artículos<span class="arrow"></span></a>
+        </li>
+        <ul class="sub-menu collapse" id="articulos" role="menu">
+          <li [routerLinkActive]="['active']" [routerLink]="['/articulos']" #rlaarticulos="routerLinkActive"><a>Artículos</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/rubros']" #rlarubros="routerLinkActive"><a>Rubros</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/subrubros']" #rlasubrubros="routerLinkActive"><a>Subrubros</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/marcas']" #rlamarcas="routerLinkActive"><a>Marcas</a></li>
+        </ul>
+        <li [routerLinkActive]="['active']" [routerLink]="['/listaprecios']" #rlalistaprecios="routerLinkActive"><a><i class="glyphicon glyphicon-list-alt"></i> Lista de Precios</a></li>
+      </ul>
+
+      <li data-toggle="collapse" data-target="#ventas"
+          [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive ||
+            rlactacteclientes.isActive || rlaimpresion.isActive" class="collapsed">
+        <a class="dropdown-toggle"><i class="fa fa-briefcase fa-lg"></i> Ventas<span class="arrow"></span></a>
+      </li>
+      <ul id="ventas" class="sub-menu collapse" role="menu">
+        <li data-toggle="collapse" data-target="#comprobantes"
+            [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive" class="collapsed">
+          <a class="dropdown-toggle" ><i class="fa fa-file-o"></i> Comprobantes<span class="arrow"></span></a>
+        </li>
+        <ul class="sub-menu collapse" id="comprobantes" role="menu">
+          <li [routerLinkActive]="['active']" [routerLink]="['/facturas']" #rlafacturas="routerLinkActive"><a>Facturación</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/notadebito']" #rlanotadebito="routerLinkActive"><a>Notas de Débito</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/notacredito']" #rlanotacredito="routerLinkActive"><a>Notas de Crédito</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/presupuestos']" #rlapresupuestos="routerLinkActive"><a>Presupuestos</a></li>
+        </ul>
+        <li [routerLinkActive]="['active']" [routerLink]="['/ctacteclientes']" #rlactacteclientes="routerLinkActive"><a><i class="fa fa-list-ol"></i> Cuenta Corriente</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/impresion']" #rlaimpresion="routerLinkActive"><a><i class="fa fa-print"></i> Impresión por Pedido</a></li>
+      </ul>
+
+      <li data-toggle="collapse" data-target="#compras"
+          [class.active]="rlaproveedores.isActive || rlaperiodosfiscales.isActive" class="collapsed">
+        <a class="dropdown-toggle"><i class="fa fa-shopping-cart fa-lg"></i> Compras<span class="arrow"></span></a>
+      </li>
+      <ul id="compras" class="sub-menu collapse" role="menu">
+        <li [routerLinkActive]="['active']" [routerLink]="['/proveedores']" #rlaproveedores="routerLinkActive"><a><i class="fa fa-industry"></i> Proveedores</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/periodosfiscales']" #rlaperiodosfiscales="routerLinkActive"><a><i class="fa fa-calendar"></i> Periodos Fiscales</a></li>
+      </ul>
+
+      <li data-toggle="collapse" data-target="#administracion"
+          [class.active]="rlausuarios.isActive" class="collapsed">
+        <a class="dropdown-toggle"><i class="fa fa-cogs fa-lg"></i> Administración<span class="arrow"></span></a>
+      </li>
+      <ul id="administracion" class="sub-menu collapse" role="menu">
+        <li [routerLinkActive]="['active']" [routerLink]="['/usuarios']" #rlausuarios="routerLinkActive"><a><i class="fa fa-users"></i> Usuarios</a></li>
+      </ul>
+    </ul>
+  </div>
+</div>
+
+
+<!--
 <div class="sidebar">
   <ul class="nav nav-sidebar">
     <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
@@ -75,11 +149,5 @@
       </ul>
     </li>
   </ul>
-<!--  <ul class="nav nav-sidebar">
-    <li><a href="">Nav item</a></li>
-    <li><a href="">Nav item again</a></li>
-    <li><a href="">One more nav</a></li>
-    <li><a href="">Another nav item</a></li>
-    <li><a href="">More navigation</a></li>
-  </ul>-->
 </div>
+-->

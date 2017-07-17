@@ -8,6 +8,7 @@ import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';
 import {DataTableDirective} from 'angular-datatables';
 import {AlertService} from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-proveedores',
@@ -30,8 +31,12 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
+  mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -92,7 +97,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
         */
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Proveedores');
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},
@@ -102,7 +107,6 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('proveedores')
       .subscribe(json => {
@@ -111,7 +115,12 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
           proveedor => {
             proveedor.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
           });
-        this.dtTrigger.next();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
       });
   }
 
