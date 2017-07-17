@@ -257,7 +257,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {
-    this.apiService.downloadPDF('comprobantes/facturas/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
+    this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
