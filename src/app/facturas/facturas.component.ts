@@ -1,16 +1,23 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Comprobante } from 'domain/comprobante';
 import {Subject} from 'rxjs/Subject';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-facturas',
   templateUrl: './facturas.component.html',
   styleUrls: ['./facturas.component.css']
 })
-export class FacturasComponent {
+export class FacturasComponent implements OnInit {
   factura: Comprobante = new Comprobante;
   puedeSalir: Subject<Boolean> = new Subject;
   modificado = false;
+
+  constructor(private navbarTitleService: NavbarTitleService) {}
+
+  ngOnInit() {
+    this.navbarTitleService.setTitle('Factura');
+  }
 
   canDeactivate() {
     if (this.modificado) {

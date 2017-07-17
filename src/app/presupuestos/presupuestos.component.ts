@@ -6,6 +6,7 @@ import { AlertService } from '../../service/alert.service';
 import {Comprobante} from '../../domain/comprobante';
 import {Router} from '@angular/router';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-presupuestos',
@@ -13,6 +14,7 @@ import {isNullOrUndefined} from 'util';
   styleUrls: ['./presupuestos.component.css']
 })
 export class PresupuestosComponent implements OnInit, OnDestroy {
+  mostrarBarraCarga = true;
   dtOptions: any = {};
   presupuestos: Comprobante[] = [];
   dtTrigger: Subject<any> = new Subject();
@@ -21,7 +23,10 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
-  constructor(private apiService: ApiService, private alertService: AlertService, private router: Router) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private router: Router,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -68,13 +73,17 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
+    this.navbarTitleService.setTitle('Gestión de Presupuestos');
     this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
-        this.presupuestos = json;
-        this.dtTrigger.next();
-      });
+          this.presupuestos = json;
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEliminar(presupuesto: Comprobante) {
@@ -122,7 +131,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   }
 
   imprimirPDF(presupuesto: Comprobante) {
-    this.apiService.downloadPDF('comprobantes/presupuestos/imprimir/' + presupuesto.id, {}).subscribe(
+    this.apiService.downloadPDF('comprobantes/imprimir/' + presupuesto.id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {

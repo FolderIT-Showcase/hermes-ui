@@ -36,7 +36,8 @@
       <button class="btn btn-default" (click)="filtrar()">Filtrar</button>
     </div>
   </div>
-  <table id="table" datatable [dtOptions]="dtOptions" class="row-border hover table" width="100%">
+</form>
+  <table id="table" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" width="100%" [hidden]="!mostrarTabla">
     <thead>
     <tr>
       <th class="text-center" width="15%">Fecha</th>
@@ -60,4 +61,3 @@
     </tr>
     </tbody>
   </table>
-</form>

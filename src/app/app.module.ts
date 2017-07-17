@@ -44,6 +44,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
+import {NavbarTitleService} from '../service/navbar-title.service';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
 import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
 
@@ -99,7 +100,8 @@ import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-
     AuthenticationService,
     UserService,
     ApiService,
-    DeactivateGuardService
+    DeactivateGuardService,
+    NavbarTitleService,
   ],
   bootstrap: [AppComponent]
 })

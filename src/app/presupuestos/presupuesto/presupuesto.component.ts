@@ -3,6 +3,7 @@ import {Comprobante} from '../../../domain/comprobante';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../service/api.service';
 import {Subject} from 'rxjs/Subject';
+import {NavbarTitleService} from '../../../service/navbar-title.service';
 
 @Component({
   selector: 'app-presupuesto',
@@ -16,7 +17,9 @@ export class PresupuestoComponent implements OnInit {
   puedeSalir: Subject<Boolean> = new Subject;
   modificado = false;
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) { }
+  constructor(private route: ActivatedRoute,
+              private apiService: ApiService,
+              private navbarTitleService: NavbarTitleService) { }
 
   ngOnInit() {
     const id = +this.route.snapshot.params['id'];
@@ -38,6 +41,7 @@ export class PresupuestoComponent implements OnInit {
       this.nuevoOEditar = 'nuevo';
       this.mostrarComponenteFactura = true;
     }
+    this.navbarTitleService.setTitle('Presupuesto');
   }
 
   canDeactivate() {

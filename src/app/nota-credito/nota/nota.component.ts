@@ -174,16 +174,22 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private calcularImportes() {
-    this.nota.importe_neto = +this.importe;
-    this.nota.importe_neto = this.nota.importe_neto.toFixed(2);
+    this.nota.alicuota_iva = 100 * this.iva;
     switch (this.tipoComprobante.codigo.substr(2, 1)) {
       case 'A':
+        this.nota.importe_neto = +this.importe;
+        this.nota.importe_neto = this.nota.importe_neto.toFixed(2);
         this.nota.importe_iva = (+this.nota.importe_neto * this.iva).toFixed(2);
         this.nota.importe_total = (+this.nota.importe_neto + +this.nota.importe_iva).toFixed(2);
         break;
-      case 'B': case 'C': default:
-      this.nota.importe_total = this.nota.importe_neto;
-      break;
+      case 'B':
+      case 'C':
+      default:
+        this.nota.importe_total = +this.importe;
+        this.nota.importe_total = this.nota.importe_total.toFixed(2);
+        this.nota.importe_neto = (+this.nota.importe_total / (1 + this.iva)).toFixed(2);
+        this.nota.importe_iva = (+this.nota.importe_total - +this.nota.importe_neto).toFixed(2);
+        break;
     }
   }
 

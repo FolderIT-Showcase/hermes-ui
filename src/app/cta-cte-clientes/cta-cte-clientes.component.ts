@@ -8,6 +8,7 @@ import {TipoComprobante} from '../../domain/tipocomprobante';
 import {AlertService} from '../../service/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -35,7 +36,9 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   private typeaheadNombreClienteElement: ElementRef;
   ctaCteClienteSeleccionada: CtaCteCliente;
 
-  constructor(private apiService: ApiService, private alertService: AlertService) {
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {
     this.comprobante = new Comprobante;
     this.comprobante.tipo_comprobante = new TipoComprobante;
   }
@@ -106,7 +109,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         'width': '10%'
       } ]
     };
-
+    this.navbarTitleService.setTitle('Cuentas Corrientes de Clientes');
     this.myDatePickerOptions = {
       // other options...
       dateFormat: 'dd/mm/yyyy',
@@ -254,7 +257,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {
-    this.apiService.downloadPDF('comprobantes/facturas/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
+    this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {

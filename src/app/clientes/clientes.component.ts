@@ -15,6 +15,7 @@ import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 import {AlertService} from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-clientes',
@@ -45,17 +46,21 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   submitted = false;
 
   // Reporte lista clientes
-  parametroReporteFiltrarPorVendedor: Boolean;
+  parametroReporteFiltrarPorVendedor = false;
   parametroReporteVendedor: Number;
-  parametroReporteFiltrarPorZona: Boolean;
+  parametroReporteFiltrarPorZona = false;
   parametroReporteZona: Number;
-  parametroReporteFiltrarPorProvincia: Boolean;
+  parametroReporteFiltrarPorProvincia = false;
   parametroReporteProvincia: Number;
-  parametroReporteFiltrarPorLocalidad: Boolean;
+  parametroReporteFiltrarPorLocalidad = false;
   parametroReporteLocalidad: Number;
   parametroReporteSoloActivos: Number;
+  mostrarBarraCarga = true;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -65,6 +70,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      pageLength: 13,
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
@@ -114,27 +120,33 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
         }
       ]
     };
-
+    this.navbarTitleService.setTitle('Gestión de Clientes');
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},
       {clave: 'SE', nombre: 'Sujeto Exento'},
       {clave: 'CF', nombre: 'Consumidor Final'},
-      {clave: 'M', nombre: 'Monotributista'},
+      {clave: 'MON', nombre: 'Monotributista'},
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('clientes')
       .subscribe(json => {
-        this.clientes = json;
-        this.clientes.forEach(
-          cliente => {
-            cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
-          });
-        this.dtTrigger.next();
-      });
+          this.clientes = json;
+          this.clientes.forEach(
+            cliente => {
+              if (!isNullOrUndefined(this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable))){
+                cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
+              }
+            });
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(cliente: Cliente) {

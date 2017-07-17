@@ -4,6 +4,7 @@ import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
 import { AlertService } from '../../service/alert.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-vendedores',
@@ -11,7 +12,7 @@ import { AlertService } from '../../service/alert.service';
   styleUrls: ['./vendedores.component.css']
 })
 export class VendedoresComponent implements OnInit, OnDestroy {
-
+  mostrarBarraCarga = true;
   enNuevo: boolean;
   vendedorOriginal: Vendedor;
   dtOptions: any = {};
@@ -24,7 +25,9 @@ export class VendedoresComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   zonas: any;
   submitted = false;
-  constructor(private apiService: ApiService, private alertService: AlertService) {}
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -71,15 +74,18 @@ export class VendedoresComponent implements OnInit, OnDestroy {
         }
       ]
     };
-
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
-
+    this.navbarTitleService.setTitle('Gestión de Vendedores');
     this.apiService.get('vendedores')
       .subscribe(json => {
-        this.vendedores = json;
-        this.cargarZonas();
-        this.dtTrigger.next();
-      });
+          this.vendedores = json;
+          this.cargarZonas();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalEditar(vendedor: Vendedor) {

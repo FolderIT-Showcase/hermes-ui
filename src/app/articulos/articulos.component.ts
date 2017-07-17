@@ -1,4 +1,7 @@
-import {Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
+  ViewChild
+} from '@angular/core';
 import { Articulo } from 'domain/articulo';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
@@ -6,13 +9,15 @@ import { ApiService } from '../../service/api.service';
 import { Marca } from 'domain/marca';
 import { Subrubro } from 'domain/subrubro';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-articulos',
   templateUrl: './articulos.component.html',
   styleUrls: ['./articulos.component.css']
 })
-export class ArticulosComponent implements OnInit, OnDestroy {
+export class ArticulosComponent implements OnInit, AfterViewChecked, OnDestroy {
+  mostrarBarraCarga = true;
   enNuevo: boolean;
   articuloOriginal: Articulo;
   dtOptions: any = {};
@@ -26,7 +31,14 @@ export class ArticulosComponent implements OnInit, OnDestroy {
   marcas: Marca[] = [];
   subrubros: Subrubro[] = [];
   submitted = false;
-  constructor(private apiService: ApiService) {}
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private navbarTitleService: NavbarTitleService) {}
+
+  ngAfterViewChecked() {
+// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    this.cdRef.detectChanges();
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -73,15 +85,20 @@ export class ArticulosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
+    this.navbarTitleService.setTitle('Gestión de Artículos');
     this.apiService.get('articulos')
       .subscribe(json => {
-        this.articulos = json;
-        this.cargarMarcas();
-        this.cargarSubrubros();
-        this.dtTrigger.next();
-      });
+          this.articulos = json;
+          this.cargarMarcas();
+          this.cargarSubrubros();
+          this.mostrarBarraCarga = false;
+          this.mostrarTabla = true;
+          this.dtTrigger.next();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
 
   }
 
@@ -135,6 +152,7 @@ export class ArticulosComponent implements OnInit, OnDestroy {
     this.modalTitle = 'Nuevo Artículo';
     this.enNuevo = true;
     this.articuloSeleccionado = new Articulo;
+
     (<any>$('#modalEditar')).modal('show');
   }
 
