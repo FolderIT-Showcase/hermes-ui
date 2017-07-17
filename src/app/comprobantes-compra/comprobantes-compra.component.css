@@ -3,7 +3,13 @@
 }
 
 .table-retenciones {
+  padding: 0;
   margin-right: 0;
+}
+
+.tablecontainer {
+  padding: 0em;
+  height: 11em;
   overflow-y: scroll;
 }
 

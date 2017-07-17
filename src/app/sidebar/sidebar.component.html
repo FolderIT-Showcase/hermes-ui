@@ -51,11 +51,12 @@
       </ul>
 
       <li data-toggle="collapse" data-target="#compras"
-          [class.active]="rlaproveedores.isActive || rlaperiodosfiscales.isActive" class="collapsed">
+          [class.active]="rlaproveedores.isActive || rlaperiodosfiscales.isActive || rlacomprobantescompras.isActive" class="collapsed">
         <a class="dropdown-toggle"><i class="fa fa-shopping-cart fa-lg"></i> Compras<span class="arrow"></span></a>
       </li>
       <ul id="compras" class="sub-menu collapse" role="menu">
         <li [routerLinkActive]="['active']" [routerLink]="['/proveedores']" #rlaproveedores="routerLinkActive"><a><i class="fa fa-industry"></i> Proveedores</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/comprobantescompra']" #rlacomprobantescompras="routerLinkActive"><a><i class="fa fa-file-o"></i> Comprobantes Compras</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/periodosfiscales']" #rlaperiodosfiscales="routerLinkActive"><a><i class="fa fa-calendar"></i> Periodos Fiscales</a></li>
       </ul>
 
@@ -69,94 +70,3 @@
     </ul>
   </div>
 </div>
-
-
-<!--
-<div class="sidebar">
-  <ul class="nav nav-sidebar">
-    <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-      <a [routerLink]="['/']">Inicio<span class="sr-only">(current)</span></a>
-    </li>
-
-    <li [routerLinkActive]="['active']" class="dropdown keep-open">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">General<span class="caret"></span></a>
-      <ul class="dropdown-menu nav nav-sidebar" (click)="$event.stopPropagation()" role="menu">
-        <li>
-          <a [routerLink]="['/clientes']" >Clientes</a>
-        </li>
-        <li>
-          <a [routerLink]="['/zonas']" >Zonas</a>
-        </li>
-        <li>
-          <a [routerLink]="['/vendedores']" >Vendedores</a>
-        </li>
-        <li>
-          <a [routerLink]="['/articulos']" >Artículos</a>
-        </li>
-        <li>
-          <a [routerLink]="['/rubros']" >Rubros</a>
-        </li>
-        <li>
-          <a [routerLink]="['/subrubros']" >Subrubros</a>
-        </li>
-        <li>
-          <a [routerLink]="['/marcas']" >Marcas</a>
-        </li>
-        <li>
-          <a [routerLink]="['/listaprecios']" >Lista de Precios</a>
-        </li>
-      </ul>
-    </li>
-
-    <li [routerLinkActive]="['active']" class="dropdown keep-open">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Ventas<span class="caret"></span></a>
-      <ul class="dropdown-menu nav nav-sidebar" (click)="$event.stopPropagation()" role="menu">
-        <li>
-          <a [routerLink]="['/facturas']" >Facturación</a>
-        </li>
-        <li>
-          <a [routerLink]="['/notacredito']" >Notas de Crédito</a>
-        </li>
-        <li>
-          <a [routerLink]="['/notadebito']" >Notas de Débito</a>
-        </li>
-        <li>
-          <a [routerLink]="['/presupuestos']" >Presupuestos</a>
-        <li>
-          <a [routerLink]="['/ctacteclientes']" >Cta. Cte. Clientes</a>
-        </li>
-        <li>
-          <a [routerLink]="['/impresion']" >Impresión</a>
-        </li>
-      </ul>
-    </li>
-
-    <li [routerLinkActive]="['active']" class="dropdown keep-open">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Compras<span class="caret"></span></a>
-      <ul class="dropdown-menu nav nav-sidebar" (click)="$event.stopPropagation()" role="menu">
-        <li>
-          <a [routerLink]="['/proveedores']" >Proveedores</a>
-        </li>
-        <li>
-          <a [routerLink]="['/comprobantescompra']" >Comprobantes <!-- de compras--></a>
-        </li>
-        <li>
-          <a [routerLink]="['/periodosfiscales']" >Periodos Fiscales</a>
-        </li>
-        <li>
-          <a [routerLink]="['/tiporetenciones']" >Tipos de retencion</a>
-        </li>
-      </ul>
-    </li>
-
-    <li [routerLinkActive]="['active']" class="dropdown keep-open">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administración<span class="caret"></span></a>
-      <ul class="dropdown-menu nav nav-sidebar" (click)="$event.stopPropagation()" role="menu">
-        <li>
-          <a [routerLink]="['/usuarios']" >Usuarios</a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</div>
--->

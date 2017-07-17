@@ -226,7 +226,7 @@
                             <label for="comprobantecompraretencion-baseimponible" class="col-sm-4 required control-label">Base imponible</label>
                             <div class="col-sm-6 has-feedback"
                                  [ngClass]="{'has-error': !baseimponible.valid || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)}">
-                              <input type="number" class="form-control" id="comprobantecompraretencion-baseimponible" [(ngModel)]="CCretencionesSeleccionado.base_imponible" name="baseimponible" #baseimponible="ngModel" required pattern="[^0]+" (input)="OnBaseImponibleChange($event.target.value)">
+                              <input type="number" class="form-control" id="comprobantecompraretencion-baseimponible" [(ngModel)]="CCretencionesSeleccionado.base_imponible" name="baseimponible" #baseimponible="ngModel" required (input)="OnBaseImponibleChange($event.target.value)">
                               <span *ngIf="baseimponible.errors !== null || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)" class="glyphicon glyphicon-remove form-control-feedback"></span>
                             </div>
                           </div>
@@ -260,7 +260,7 @@
 
                         <div class="col-sm-6">
 
-                          <div class="form-group row">
+                          <div class="form-group row tablecontainer">
                             <!-- este es el div de la tabla -->
                             <table class="row-border hover table table-retenciones">
                               <thead>
