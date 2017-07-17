@@ -1,37 +1,34 @@
 import {
-  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
-  ViewChild
+  ChangeDetectorRef, Component, OnInit, ViewChild, HostListener, OnDestroy,
+  AfterViewChecked
 } from '@angular/core';
-import { PeriodoFiscal } from 'domain/periodoFiscal';
-import {ApiService} from '../../service/api.service';
 import {Subject} from 'rxjs/Subject';
-import {isNullOrUndefined} from 'util';
-import {AlertService} from '../../service/alert.service';
 import {DataTableDirective} from 'angular-datatables';
+import {ApiService} from '../../service/api.service';
+import {AlertService} from '../../service/alert.service';
+import {TipoRetencion} from 'domain/tipoRetencion';
+import {isNullOrUndefined} from 'util';
+import { NumberValidatorsService } from '../../service/number-validator.service';
 
 @Component({
-  selector: 'app-periodos-fiscales',
-  templateUrl: './periodos-fiscales.component.html',
-  styleUrls: ['./periodos-fiscales.component.css']
+  selector: 'app-tipo-retencion',
+  templateUrl: './tipo-retencion.component.html',
+  styleUrls: ['./tipo-retencion.component.css']
 })
-export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestroy {
+  mostrarTabla = false;
   submitted = false;
   enNuevo: boolean;
-  existe = false;
-  mostrarTabla = false;
-  periodosFiscales: PeriodoFiscal[] = [];
   modalTitle: string;
-  mes_index_str: string;
-  periodoFiscalSeleccionado: PeriodoFiscal = new PeriodoFiscal;
-  periodoFiscalOriginal: PeriodoFiscal;
-  meses = [];
-  anios = [];
+  tiporetenciones: TipoRetencion[] = [];
+  tipoRetencionSeleccionado: TipoRetencion = new TipoRetencion;
+  tipoRetencionOriginal: TipoRetencion;
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {}
+  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {  }
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -74,7 +71,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       dom: 'Bfrtip',
       buttons: [
         {
-          text: 'Nuevo Periodo Fiscal',
+          text: 'Nuevo Tipo de Retención',
           key: '1',
           className: 'btn btn-success a-override',
           action: () => {
@@ -93,70 +90,34 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       ]
     };
 
-    this.meses = [
-      {clave: 1, nombre: 'Enero'},
-      {clave: 2, nombre: 'Febrero'},
-      {clave: 3, nombre: 'Marzo'},
-      {clave: 4, nombre: 'Abril'},
-      {clave: 5, nombre: 'Mayo'},
-      {clave: 6, nombre: 'Junio'},
-      {clave: 7, nombre: 'Julio'},
-      {clave: 8, nombre: 'Agosto'},
-      {clave: 9, nombre: 'Septiembre'},
-      {clave: 10, nombre: 'Octubre'},
-      {clave: 11, nombre: 'Noviembre'},
-      {clave: 12, nombre: 'Diciembre'}
-    ];
-
-    const anioActual = (new Date).getFullYear();
-    this.anios = [
-      anioActual - 1,
-      anioActual,
-      anioActual + 1,
-      anioActual + 2,
-      anioActual + 3,
-    ];
-
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
-    this.apiService.get('periodosfiscales')
+    this.apiService.get('tiporetenciones')
       .subscribe(json => {
-        this.periodosFiscales = json;
-        this.completarStringsMeses();
+        this.tiporetenciones = json;
         this.dtTrigger.next();
       });
   }
 
-  completarStringsMeses() {
-    this.periodosFiscales.forEach(
-      periodofiscal => {
-        periodofiscal.mes_str = this.meses.find(m => m.clave === periodofiscal.mes).nombre;
-      });
-  }
-
   mostrarModalNuevo() {
-    this.existe = false;
-    this.modalTitle = 'Nuevo Periodo Fiscal';
+    this.modalTitle = 'Nuevo Tipo de retención';
     this.enNuevo = true;
-    this.periodoFiscalSeleccionado = new PeriodoFiscal;
-    this.periodoFiscalSeleccionado.abierto = true;
+    this.tipoRetencionSeleccionado = new TipoRetencion();
     (<any>$('#modalEditar')).modal('show');
   }
 
-  mostrarModalEliminar(periodofiscal: PeriodoFiscal) {
-    this.periodoFiscalSeleccionado = periodofiscal;
+  mostrarModalEliminar(tiporetencion: TipoRetencion) {
+    this.tipoRetencionSeleccionado = tiporetencion;
   }
 
-  mostrarModalEditar(periodofiscal: PeriodoFiscal) {
-    this.existe = false;
-    this.modalTitle = 'Editar Periodo Fiscal';
+  mostrarModalEditar(tiporetencion: TipoRetencion) {
+    this.modalTitle = 'Editar Tipo de retención';
     this.enNuevo = false;
-    this.periodoFiscalOriginal = periodofiscal;
-    this.periodoFiscalSeleccionado = JSON.parse(JSON.stringify(periodofiscal));
+    this.tipoRetencionOriginal = tiporetencion;
+    this.tipoRetencionSeleccionado = JSON.parse(JSON.stringify(tiporetencion));
   }
 
   cerrar(f) {
-    this.existe = false;
     this.submitted = false;
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 200);
@@ -165,11 +126,11 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
   eliminar() {
     this.submitted = false;
-    this.apiService.delete('periodosfiscales/' + this.periodoFiscalSeleccionado.id).subscribe( json => {
+    this.apiService.delete('tiporetenciones/' + this.tipoRetencionSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
-        const index: number = this.periodosFiscales.indexOf(this.periodoFiscalSeleccionado);
+        const index: number = this.tiporetenciones.indexOf(this.tipoRetencionSeleccionado);
         if (index !== -1) {
-          this.periodosFiscales.splice(index, 1);
+          this.tiporetenciones.splice(index, 1);
         }
         this.recargarTabla();
         this.cerrar(null);
@@ -182,24 +143,22 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   editarONuevo(f: any) {
     this.submitted = true;
     if (f.valid) {
-      const periodoFiscalAEnviar = new PeriodoFiscal;
-      Object.assign(periodoFiscalAEnviar, this.periodoFiscalSeleccionado);
+      const tipoRetencionAEnviar = new TipoRetencion();
+      Object.assign(tipoRetencionAEnviar, this.tipoRetencionSeleccionado);
       this.cerrar(f);
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('periodosfiscales', periodoFiscalAEnviar).subscribe(
+        this.apiService.post('tiporetenciones', tipoRetencionAEnviar).subscribe(
           json => {
-            this.periodosFiscales.push(json);
-            this.completarStringsMeses();
+            this.tiporetenciones.push(json);
             this.recargarTabla();
           }
         );
       } else {
-        this.apiService.put('periodosfiscales/' + periodoFiscalAEnviar.id, periodoFiscalAEnviar).subscribe(
+        this.apiService.put('tiporetenciones/' + tipoRetencionAEnviar.id, tipoRetencionAEnviar).subscribe(
           json => {
-            Object.assign(this.periodoFiscalOriginal, json);
-            this.completarStringsMeses();
+            Object.assign(this.tipoRetencionOriginal, json);
             this.recargarTabla();
           }
         );
@@ -209,7 +168,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
   private recargarTabla() {
     this.mostrarTabla = false;
-    this.completarStringsMeses();
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
@@ -235,27 +193,5 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   canDeactivate() {
     this.ocultarModals();
     return true;
-  }
-
-  checkExists(pf: PeriodoFiscal) {
-    // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
-    this.apiService.get('periodosfiscales').subscribe(
-      json => {
-        console.log(json.toString());
-        if (json === '') {
-          this.existe = false;
-        } else {
-          const periodofisc = json.find(p => p.mes === pf.mes && p.anio === pf.anio);
-          if (periodofisc === undefined) {
-            this.existe = false;
-          } else {
-            if (periodofisc.id === pf.id) {
-              this.existe = false;
-            } else {
-              this.existe = true;
-            }
-          }
-        }
-    });
   }
 }
