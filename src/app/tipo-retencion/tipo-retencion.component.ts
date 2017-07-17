@@ -8,7 +8,6 @@ import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
 import {TipoRetencion} from 'domain/tipoRetencion';
 import {isNullOrUndefined} from 'util';
-import { NumberValidatorsService } from '../../service/number-validator.service';
 
 @Component({
   selector: 'app-tipo-retencion',

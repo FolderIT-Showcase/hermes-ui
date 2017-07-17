@@ -45,7 +45,7 @@ import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
-import {NumberValidatorsService} from "../service/number-validator.service";
+import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
 
 
 @NgModule({
@@ -79,7 +79,8 @@ import {NumberValidatorsService} from "../service/number-validator.service";
     ProveedoresComponent,
     PeriodosFiscalesComponent,
     ImpresionComponent,
-    TipoRetencionComponent
+    TipoRetencionComponent,
+    ComprobantesCompraComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
@@ -98,8 +99,7 @@ import {NumberValidatorsService} from "../service/number-validator.service";
     AuthenticationService,
     UserService,
     ApiService,
-    DeactivateGuardService,
-    NumberValidatorsService
+    DeactivateGuardService
   ],
   bootstrap: [AppComponent]
 })
