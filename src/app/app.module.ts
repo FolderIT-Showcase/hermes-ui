@@ -45,6 +45,8 @@ import { ProveedoresComponent } from './proveedores/proveedores.component';
 import { PeriodosFiscalesComponent } from './periodos-fiscales/periodos-fiscales.component';
 import { ImpresionComponent } from './impresion/impresion.component';
 import {NavbarTitleService} from '../service/navbar-title.service';
+import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
+import {NumberValidatorsService} from "../service/number-validator.service";
 
 
 @NgModule({
@@ -77,7 +79,8 @@ import {NavbarTitleService} from '../service/navbar-title.service';
     UsuariosComponent,
     ProveedoresComponent,
     PeriodosFiscalesComponent,
-    ImpresionComponent
+    ImpresionComponent,
+    TipoRetencionComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
@@ -98,6 +101,7 @@ import {NavbarTitleService} from '../service/navbar-title.service';
     ApiService,
     DeactivateGuardService,
     NavbarTitleService
+    NumberValidatorsService
   ],
   bootstrap: [AppComponent]
 })

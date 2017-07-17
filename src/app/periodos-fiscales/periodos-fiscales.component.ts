@@ -18,6 +18,7 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDestroy {
   submitted = false;
   enNuevo: boolean;
+  existe = false;
   mostrarTabla = false;
   periodosFiscales: PeriodoFiscal[] = [];
   modalTitle: string;
@@ -114,15 +115,11 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
     const anioActual = (new Date).getFullYear();
     this.anios = [
-      anioActual - 3,
-      anioActual - 2,
       anioActual - 1,
       anioActual,
       anioActual + 1,
       anioActual + 2,
       anioActual + 3,
-      anioActual + 4,
-      anioActual + 5
     ];
 
     this.apiService.get('periodosfiscales')
@@ -142,12 +139,12 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     this.periodosFiscales.forEach(
       periodofiscal => {
         periodofiscal.mes_str = this.meses.find(m => m.clave === periodofiscal.mes).nombre;
-        console.log(periodofiscal.mes_str + '/' + periodofiscal.mes);
       });
   }
 
   mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Proveedor';
+    this.existe = false;
+    this.modalTitle = 'Nuevo Periodo Fiscal';
     this.enNuevo = true;
     this.periodoFiscalSeleccionado = new PeriodoFiscal;
     this.periodoFiscalSeleccionado.abierto = true;
@@ -159,13 +156,15 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   }
 
   mostrarModalEditar(periodofiscal: PeriodoFiscal) {
-    this.modalTitle = 'Editar Proveedor';
+    this.existe = false;
+    this.modalTitle = 'Editar Periodo Fiscal';
     this.enNuevo = false;
     this.periodoFiscalOriginal = periodofiscal;
     this.periodoFiscalSeleccionado = JSON.parse(JSON.stringify(periodofiscal));
   }
 
   cerrar(f) {
+    this.existe = false;
     this.submitted = false;
     if (!isNullOrUndefined(f)) {
       setTimeout(() => {  f.form.reset(); }, 200);
@@ -244,5 +243,27 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   canDeactivate() {
     this.ocultarModals();
     return true;
+  }
+
+  checkExists(pf: PeriodoFiscal) {
+    // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
+    this.apiService.get('periodosfiscales').subscribe(
+      json => {
+        console.log(json.toString());
+        if (json === '') {
+          this.existe = false;
+        } else {
+          const periodofisc = json.find(p => p.mes === pf.mes && p.anio === pf.anio);
+          if (periodofisc === undefined) {
+            this.existe = false;
+          } else {
+            if (periodofisc.id === pf.id) {
+              this.existe = false;
+            } else {
+              this.existe = true;
+            }
+          }
+        }
+    });
   }
 }

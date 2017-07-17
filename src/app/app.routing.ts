@@ -22,6 +22,7 @@ import {UsuariosComponent} from './usuarios/usuarios.component';
 import {ProveedoresComponent} from './proveedores/proveedores.component';
 import {PeriodosFiscalesComponent} from './periodos-fiscales/periodos-fiscales.component';
 import {ImpresionComponent} from './impresion/impresion.component';
+import {TipoRetencionComponent} from './tipo-retencion/tipo-retencion.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -45,6 +46,7 @@ const appRoutes: Routes = [
   {path: 'usuarios', component: UsuariosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'periodosfiscales', component: PeriodosFiscalesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'impresion', component: ImpresionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'tiporetenciones', component: TipoRetencionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
