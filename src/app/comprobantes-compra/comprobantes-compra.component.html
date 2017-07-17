@@ -77,13 +77,13 @@
               <div *ngIf="!proveedor.valid && (!proveedor.pristine || proveedor.touched || submitted)" class="help-block">Seleccione un proveedor</div>
             </div>
 
-            <label for="comprobantecompra-proveedortiporesponsable" class="col-sm-2 control-label">Tipo responsable</label>
-            <div class="col-sm-1">
-              <input type="tel" class="form-control" id="comprobantecompra-proveedortiporesponsable" name="proveedor-tipo" [(ngModel)]="proveedorSeleccionado.tipo_responsable" disabled="true" >
+            <label for="comprobantecompra-proveedortiporesponsable" class="col-sm-1 control-label">Tipo resp</label>
+            <div class="col-sm-3">
+              <input type="tel" class="form-control" id="comprobantecompra-proveedortiporesponsable" name="proveedor-tipo" [(ngModel)]="proveedorSeleccionado.tipo_responsable_str" disabled="true" >
             </div>
 
             <label for="comprobantecompra-proveedorcuit" class="col-sm-1 control-label">Cuit</label>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
               <input type="tel" class="form-control" id="comprobantecompra-proveedorcuit" name="proveedor-cuit" [(ngModel)]="proveedorSeleccionado.cuit" disabled="true" >
             </div>
           </div>

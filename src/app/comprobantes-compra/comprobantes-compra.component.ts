@@ -74,6 +74,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      aaSorting: [0, 'DESC'],
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -122,54 +123,6 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
         }
       ]
     };
-    this.dtRetOptions = {
-      paging: false,
-      searching: false,
-      autoWidth: true,
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    false,
-        'emptyTable':     false,
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      '',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
-      columnDefs: [
-        {
-          'targets': 0,
-          'searchable': false,
-          'orderable': false
-        }, {
-          'targets': 1,
-          'searchable': false,
-          'orderable': false
-        }, {
-          'targets': 2,
-          'searchable': false,
-          'orderable': false
-        }, {
-          'targets': 3,
-          'searchable': false,
-          'orderable': false
-        }, {
-          'targets': 4,
-          'searchable': false,
-          'orderable': false
-        }],
-      dom: 'lfrtip',
-      buttons: [
-      ]
-    };
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.myDatePickerOptions = {
@@ -184,6 +137,16 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       openSelectorOnInputClick: true,
       alignSelectorRight: true,
     };
+
+    const tipos_responsable = [
+      {clave: 'RI', nombre: 'Responsable Inscripto'},
+      {clave: 'NR', nombre: 'No Responsable'},
+      {clave: 'SE', nombre: 'Sujeto Exento'},
+      {clave: 'CF', nombre: 'Consumidor Final'},
+      {clave: 'M', nombre: 'Monotributista'},
+      {clave: 'PE', nombre: 'Proveedor del Exterior'},
+      {clave: 'CE', nombre: 'Cliente del Exterior'}
+    ];
 
     const options = JSON.parse(JSON.stringify(this.myDatePickerOptions));
     const today = new Date();
@@ -204,6 +167,13 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.apiService.get('proveedores')
       .subscribe(json => {
         this.proveedores = json;
+        this.proveedores.forEach(
+          proveedor => {
+            if (!isNullOrUndefined(tipos_responsable.find(x => x.clave === proveedor.tipo_responsable))) {
+              proveedor.tipo_responsable_str = tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
+            }
+          }
+        );
       });
 
     this.apiService.get('periodosfiscales')

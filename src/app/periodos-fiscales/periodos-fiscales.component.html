@@ -7,18 +7,20 @@
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
   <tr>
-    <th>Año</th>
-    <th>Mes</th>
-    <th>Estado</th>
-    <th style="width:10%">Acciones</th>
+    <th class="text-center">mm-aaaa</th>
+    <th class="text-center">Año</th>
+    <th class="text-center">Mes</th>
+    <th class="text-center">Estado</th>
+    <th class="text-center" style="width:10%">Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let periodofiscal of periodosFiscales">
-    <td>{{ periodofiscal.anio }}</td>
-    <td>{{ periodofiscal.mes_str }}</td>
-    <td>{{ periodofiscal.abierto ? 'Abierto' : 'Cerrado' }}</td>
-    <td>
+    <td class="text-center" style="width: 15%">{{ periodofiscal.mes }}-{{ periodofiscal.anio }}</td>
+    <td class="text-center">{{ periodofiscal.anio }}</td>
+    <td class="text-center">{{ periodofiscal.mes_str }}</td>
+    <td class="text-center">{{ periodofiscal.abierto ? 'Abierto' : 'Cerrado' }}</td>
+    <td class="text-center">
       <!--<button [routerLink]="['/']" data-toggle="modal" class="glyphicon glyphicon-eye-open blue"></button >-->
       <button (click)="mostrarModalEditar(periodofiscal)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(periodofiscal)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >

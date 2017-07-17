@@ -46,6 +46,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      aaSorting: [0, 'DESC'],
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
@@ -86,15 +87,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
             this.mostrarModalNuevo();
           }
         }
-        /*, {
-         text: 'Listado',
-         key: '2',
-         className: 'btn btn-default',
-         action: () => {
-         // TODO setear boton
-         }
-         }
-         */
       ]
     };
     this.navbarTitleService.setTitle('Gestión de Períodos Fiscales');

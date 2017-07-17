@@ -27,3 +27,7 @@
   border-left: solid gainsboro 0.05em;
   border-right: solid gainsboro 0.05em;
 }
+
+#comprobantecompra-proveedorcuit {
+  font-size: 0.85em;
+}
