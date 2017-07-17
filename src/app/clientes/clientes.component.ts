@@ -71,6 +71,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
@@ -136,7 +137,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
           this.clientes = json;
           this.clientes.forEach(
             cliente => {
-              if (!isNullOrUndefined(this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable))){
+              if (!isNullOrUndefined(this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable))) {
                 cliente.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === cliente.tipo_responsable).nombre;
               }
             });
@@ -227,7 +228,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   private recargarTabla() {
 // TODO buscar otra forma de reflejar los cambios en la tabla
-    this.mostrarTabla = false;
+//     this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();

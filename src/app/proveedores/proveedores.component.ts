@@ -47,6 +47,8 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      pageLength: 13,
+      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -196,7 +198,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
 
   private recargarTabla() {
 // TODO buscar otra forma de reflejar los cambios en la tabla
-    this.mostrarTabla = false;
+//     this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();

@@ -36,6 +36,8 @@ export class SubrubrosComponent implements OnInit, OnDestroy {
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      pageLength: 13,
+      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',

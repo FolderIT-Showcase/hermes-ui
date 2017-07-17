@@ -130,7 +130,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       dom: 'tp',
-      scrollY: '250px',
+      scrollY: '45vh',
       paging: false,
       columnDefs: [ {
         'targets': 0,
