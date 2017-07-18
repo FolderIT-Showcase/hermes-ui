@@ -25,6 +25,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   submitted = false;
   submittedInner = false;
   mostrarTabla = false;
+  mostrarBarraCarga = true;
   excedeImporteTotal = false;
   flagElimino = false;
   activeTabImportes = true;
@@ -38,6 +39,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   dtTrigger: Subject<any> = new Subject();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
+  tipos_responsable = [];
   comprobantes: ComprobanteCompra[] = [];
   proveedores: Proveedor[] = [];
   periodos: PeriodoFiscal[] = [];
@@ -74,6 +76,8 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      pageLength: 13,
+      scrollY: '70vh',
       aaSorting: [0, 'DESC'],
       language: {
         'processing':     'Procesando...',
@@ -138,7 +142,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       alignSelectorRight: true,
     };
 
-    const tipos_responsable = [
+    this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},
       {clave: 'SE', nombre: 'Sujeto Exento'},
@@ -160,17 +164,23 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
 
     this.apiService.get('comprobantescompra') // TODO definir qué se va a mostrar en la pantalla cuando se carga por primera vez
       .subscribe(json => {
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
         this.comprobantes = json;
         this.dtTrigger.next();
-      });
+      },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
 
+    // TODO: todos estos request a la api tendrían que hacerse si this.mostrarTabla===true (manejar asincronia)
     this.apiService.get('proveedores')
       .subscribe(json => {
         this.proveedores = json;
         this.proveedores.forEach(
           proveedor => {
-            if (!isNullOrUndefined(tipos_responsable.find(x => x.clave === proveedor.tipo_responsable))) {
-              proveedor.tipo_responsable_str = tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
+            if (!isNullOrUndefined(this.tipos_responsable.find(x => x.clave === proveedor.tipo_responsable))) {
+              proveedor.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedor.tipo_responsable).nombre;
             }
           }
         );
@@ -214,6 +224,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.comprobanteSeleccionado = JSON.parse(JSON.stringify(comprobantecompra));
     this.tipoComprobanteCompraSeleccionado = JSON.parse(JSON.stringify(comprobantecompra.tipo_comp_compras));
     this.proveedorSeleccionado = JSON.parse(JSON.stringify(comprobantecompra.proveedor));
+    this.proveedorSeleccionado.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === this.proveedorSeleccionado.tipo_responsable).nombre;
     this.periodoSeleccionado = JSON.parse(JSON.stringify(comprobantecompra.periodo));
     this.CCimportesSeleccionado = JSON.parse(JSON.stringify(comprobantecompra.comprobante_compra_importes));
     this.retenciones = JSON.parse(JSON.stringify(comprobantecompra.comprobante_compra_retenciones));
@@ -235,6 +246,8 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
         day: day
       }
     };
+    // console.log(this.proveedorSeleccionado.id + ' - ' + this.periodoSeleccionado.anio + '/' + this.periodoSeleccionado.mes + ' - ' + this.tipoComprobanteCompraSeleccionado.codigo);
+    // console.log(this.proveedores);
   }
 
   private mostrarModalFiltrar() {

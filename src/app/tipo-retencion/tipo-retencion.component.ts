@@ -16,6 +16,7 @@ import {isNullOrUndefined} from 'util';
 })
 export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestroy {
   mostrarTabla = false;
+  mostrarBarraCarga = true;
   submitted = false;
   enNuevo: boolean;
   modalTitle: string;
@@ -37,6 +38,8 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
@@ -77,15 +80,6 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
             this.mostrarModalNuevo();
           }
         }
-        /*, {
-         text: 'Listado',
-         key: '2',
-         className: 'btn btn-default',
-         action: () => {
-         // TODO setear boton
-         }
-         }
-         */
       ]
     };
 
@@ -94,8 +88,13 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
     this.apiService.get('tiporetenciones')
       .subscribe(json => {
         this.tiporetenciones = json;
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
         this.dtTrigger.next();
-      });
+      },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalNuevo() {

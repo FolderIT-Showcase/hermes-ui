@@ -47,6 +47,8 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     this.dtOptions = {
       pagingType: 'full_numbers',
       aaSorting: [0, 'DESC'],
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       language: {
         'processing':     'Procesando...',

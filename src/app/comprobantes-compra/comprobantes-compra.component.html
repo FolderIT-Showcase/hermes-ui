@@ -1,4 +1,4 @@
-<div class="progress" *ngIf="!mostrarTabla">
+<div class="progress" *ngIf="mostrarBarraCarga">
   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
     <span>Cargando<span class="dotdotdot"></span></span>
   </div>
@@ -68,9 +68,9 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !proveedor.valid && (!proveedor.pristine || proveedor.touched || submitted),
             'has-success': proveedor.valid}">
-              <select class="form-control" id="comprobantecompra-proveedornombre" [ngModel]="proveedorSeleccionado?.id | json" name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-proveedornombre" [(ngModel)]="proveedorSeleccionado.id" name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target.value)">
                 <option value=0></option>
-                <option *ngFor="let proveedor of proveedores" [value]="proveedor.id | json">{{proveedor.nombre}}</option>
+                <option *ngFor="let proveedor of proveedores" [ngValue]="proveedor.id">{{proveedor.nombre}}</option>
               </select>
               <span *ngIf="proveedor.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="proveedor.errors !== null && (!proveedor.pristine || proveedor.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -93,9 +93,9 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
             'has-success': tipo.valid}">
-              <select class="form-control" id="comprobantecompra-tipo" [ngModel]="tipoComprobanteCompraSeleccionado?.id | json" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-tipo" [(ngModel)]="tipoComprobanteCompraSeleccionado.id" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target.value)">
                 <option value=0></option>
-                <option *ngFor="let tipos of tiposComprobanteCompra" [value]="tipos.id | json">{{tipos.nombre}}</option>
+                <option *ngFor="let tipos of tiposComprobanteCompra" [ngValue]="tipos.id">{{tipos.nombre}}</option>
               </select>
               <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="tipo.errors !== null && (!tipo.pristine || tipo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -132,9 +132,9 @@
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': (!periodo.valid || !periodoSeleccionado.abierto) && (!periodo.pristine || periodo.touched || submitted),
             'has-success': periodo.valid}">
-              <select class="form-control" id="comprobantecompra-periodo" [ngModel]="periodoSeleccionado?.id | json" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-periodo" [(ngModel)]="periodoSeleccionado.id" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target.value)">
                 <option value=0></option>
-                <option *ngFor="let periodo of periodos" [value]="periodo.id | json">{{periodo.mes}}-{{periodo.anio}}</option>
+                <option *ngFor="let periodo of periodos" [ngValue]="periodo.id">{{periodo.mes}}-{{periodo.anio}}</option>
               </select>
               <span *ngIf="periodo.valid && periodoSeleccionado.abierto" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="(periodo.errors !== null || !periodoSeleccionado.abierto) && (!periodo.pristine || periodo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -319,11 +319,11 @@
             <div class="col-sm-11">
               <div class="form-group row radio">
                 <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorProveedor" name="parametroReporteFiltrarPorProveedor">por Proveedor</label>
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorProveedor" name="parametroReporteFiltrarPorProveedor"> por Proveedor</label>
                 </div>
 
                 <div class="col-sm-6">
-                  <select *ngIf="parametroReporteFiltrarPorProveedor" class="form-control" [ngModel]="parametroReporteProveedor | json" name="parametroReporteProveedor" (change)="onParametroReporteProveedorChanged($event.target.value)">
+                  <select [disabled]="!parametroReporteFiltrarPorProveedor" class="form-control" [ngModel]="parametroReporteProveedor | json" name="parametroReporteProveedor" (change)="onParametroReporteProveedorChanged($event.target.value)">
                     <option *ngFor="let proveedor of proveedores" [value]="proveedor.id | json">{{proveedor.nombre}}</option>
                   </select>
                 </div>
@@ -331,11 +331,11 @@
 
               <div class="form-group row radio">
                 <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorTipo" name="parametroReporteFiltrarPorTipo">por Tipo</label>
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorTipo" name="parametroReporteFiltrarPorTipo"> por Tipo</label>
                 </div>
 
                 <div class="col-sm-6">
-                  <select *ngIf="parametroReporteFiltrarPorTipo" class="form-control" [ngModel]="parametroReporteTipo | json" name="parametroReporteTipo" (change)="onParametroReporteTipoChanged($event.target.value)">
+                  <select [disabled]="!parametroReporteFiltrarPorTipo" class="form-control" [ngModel]="parametroReporteTipo | json" name="parametroReporteTipo" (change)="onParametroReporteTipoChanged($event.target.value)">
                     <option *ngFor="let tipo of tiposComprobanteCompra" [value]="tipo.id | json">{{tipo.nombre}}</option>
                   </select>
                 </div>
@@ -343,11 +343,11 @@
 
               <div class="form-group row radio">
                 <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorPeriodo" name="parametroReporteFiltrarPorPeriodo">por Periodo Fiscal</label>
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorPeriodo" name="parametroReporteFiltrarPorPeriodo"> por Periodo Fiscal</label>
                 </div>
 
                 <div class="col-sm-6">
-                  <select *ngIf="parametroReporteFiltrarPorPeriodo" class="form-control" [ngModel]="parametroReportePeriodo | json" name="parametroReportePeriodo" (change)="onParametroReportePeriodoChanged($event.target.value)" >
+                  <select [disabled]="!parametroReporteFiltrarPorPeriodo" class="form-control" [ngModel]="parametroReportePeriodo | json" name="parametroReportePeriodo" (change)="onParametroReportePeriodoChanged($event.target.value)" >
                     <option *ngFor="let periodo of periodos" [value]= "periodo.id | json">{{periodo.mes}}-{{periodo.anio}}</option>
                   </select>
                 </div>

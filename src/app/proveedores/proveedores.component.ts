@@ -47,6 +47,8 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
     this.dtOptions = {
       pagingType: 'full_numbers',
       // aaSorting: [1, 'DESC'],
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       language: {
         'processing':     'Procesando...',
