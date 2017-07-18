@@ -74,11 +74,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           'sortDescending': ': Activar para ordenar la columna de manera descendente'
         }
       },
-      columnDefs: [ {
-        'targets': -1,
-        'searchable': false,
-        'orderable': false
-      } ],
+      columnDefs: [],
       dom: 'Bfrtip',
       buttons: [
         {
@@ -210,7 +206,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   }
 
   private recargarTabla() {
-    this.mostrarTabla = false;
     this.completarStringsMeses();
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first

@@ -68,7 +68,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !proveedor.valid && (!proveedor.pristine || proveedor.touched || submitted),
             'has-success': proveedor.valid}">
-              <select class="form-control" id="comprobantecompra-proveedornombre" [ngModel]="proveedorSeleccionado.id | json" (ngModel)="proveedorSeleccionado.id" name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-proveedornombre" [(ngModel)]="proveedorSeleccionado.id"  name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target.value)">
                 <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{proveedor.nombre}}</option>
               </select>
               <span *ngIf="proveedor.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -92,7 +92,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
             'has-success': tipo.valid}">
-              <select class="form-control" id="comprobantecompra-tipo" [ngModel]="tipoComprobanteCompraSeleccionado.id | json" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-tipo" [(ngModel)]="tipoComprobanteCompraSeleccionado.id" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target.value)">
                 <option *ngFor="let tipos of tiposComprobanteCompra" [value]="tipos.id">{{tipos.nombre}}</option>
               </select>
               <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -130,7 +130,7 @@
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': (!periodo.valid || !periodoSeleccionado.abierto) && (!periodo.pristine || periodo.touched || submitted),
             'has-success': periodo.valid}">
-              <select class="form-control" id="comprobantecompra-periodo" [ngModel]="periodoSeleccionado.id | json" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-periodo" [(ngModel)]="periodoSeleccionado.id" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target.value)">
                 <option *ngFor="let periodo of periodos" [value]="periodo.id">{{periodo.mes}}-{{periodo.anio}}</option>
               </select>
               <span *ngIf="periodo.valid && periodoSeleccionado.abierto" class="glyphicon glyphicon-ok form-control-feedback"></span>

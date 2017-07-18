@@ -8,6 +8,7 @@ import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
 import {TipoRetencion} from 'domain/tipoRetencion';
 import {isNullOrUndefined} from 'util';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-tipo-retencion',
@@ -28,7 +29,10 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {  }
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -82,6 +86,7 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
         }
       ]
     };
+    this.navbarTitleService.setTitle('Gestión de Tipos de Retención');
 
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
@@ -165,7 +170,6 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
   }
 
   private recargarTabla() {
-    this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();

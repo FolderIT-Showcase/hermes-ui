@@ -191,6 +191,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
           json => {
             json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedorAEnviar.tipo_responsable).nombre;
             Object.assign(this.proveedorOriginal, json);
+            this.recargarTabla();
           }
         );
       }
@@ -198,8 +199,6 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   }
 
   private recargarTabla() {
-// TODO buscar otra forma de reflejar los cambios en la tabla
-    this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();

@@ -15,6 +15,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ComprobanteCompraImportes} from '../../domain/comprobanteCompraImportes';
 import {ComprobanteCompraRetencion} from '../../domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../domain/tipoRetencion';
+import {NavbarTitleService} from "../../service/navbar-title.service";
 
 @Component({
   selector: 'app-comprobantes-compra',
@@ -65,7 +66,10 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   parametroReporteFiltrarPorPeriodo: Boolean;
   parametroReportePeriodo: Number;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) { }
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
     // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -151,6 +155,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
+    this.navbarTitleService.setTitle('Gestión de Comprobantes de Compra');
 
     const options = JSON.parse(JSON.stringify(this.myDatePickerOptions));
     const today = new Date();
@@ -219,9 +224,9 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   }
 
   mostrarModalEditar(comprobantecompra: ComprobanteCompra) {
+    this.enNuevo = false;
     this.existe = false;
     this.modalTitle = 'Editar comprobante de compra';
-    this.enNuevo = false;
     this.comprobanteCompraOriginal = comprobantecompra;
     this.comprobanteSeleccionado = JSON.parse(JSON.stringify(comprobantecompra));
     this.tipoComprobanteCompraSeleccionado = JSON.parse(JSON.stringify(comprobantecompra.tipo_comp_compras));
@@ -292,7 +297,6 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
           }
         );
       } else {
-        // comprobanteAEnviar.comprobante_compra_retenciones.forEach(x => x.id = null);
         this.apiService.put('comprobantescompra/' + comprobanteAEnviar.id, comprobanteAEnviar).subscribe(
           json => {
             Object.assign(this.comprobanteCompraOriginal, json);
@@ -340,7 +344,6 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
 
   private recargarTabla() {
     // TODO buscar otra forma de reflejar los cambios en la tabla
-    this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
