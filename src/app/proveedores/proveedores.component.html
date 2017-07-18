@@ -59,8 +59,8 @@
         <form class="form-horizontal" #f="ngForm">
 
           <div class="form-group row">
-            <label for="proveedor-codigo" class="col-sm-1 required control-label">Código</label>
-            <div class="col-sm-3 has-feedback"
+            <label for="proveedor-codigo" class="col-sm-2 required control-label">Código</label>
+            <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
              'has-success': codigo.valid}" required>
               <input type="text" class="form-control" id="proveedor-codigo" [(ngModel)]="proveedorSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="proveedorSeleccionado" [path]="'proveedores'" placeholder="Código">
@@ -69,11 +69,25 @@
               <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
               <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
             </div>
+
+            <label for="proveedor-activo" class="col-sm-2 col-sm-offset-3 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="proveedor-activo" [(ngModel)]="proveedorSeleccionado.activo" name="activo" (click)="cleanMotivo()">
+            </div>
           </div>
 
           <div class="form-group row">
-            <label for="proveedor-nombre" class="col-sm-1 required control-label">Nombre</label>
-            <div class="col-sm-6 has-feedback"
+            <div>
+              <label for="proveedor-motivo" class="col-sm-2 control-label">Motivo</label>
+              <div class="col-sm-10">
+                <input [disabled]="proveedorSeleccionado.activo" type="text" class="form-control" id="proveedor-motivo" [(ngModel)]="proveedorSeleccionado.motivo" name="direccion" [maxLength]="191" placeholder="Motivo de la inactividad">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="proveedor-nombre" class="col-sm-2 required control-label">Nombre</label>
+            <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
               <input type="text" class="form-control" id="proveedor-nombre" [(ngModel)]="proveedorSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
@@ -82,7 +96,7 @@
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
             </div>
 
-            <label for="proveedor-email" class="col-sm-1 control-label">Email</label>
+            <label for="proveedor-email" class="col-sm-2 control-label">Email</label>
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !email.valid && (!email.pristine || email.touched || submitted),
             'has-success': email.valid && email.value !== '' && email.value !== undefined}">
@@ -94,15 +108,15 @@
           </div>
 
           <div class="form-group row">
-            <label for="proveedor-tipo-responsable" class="col-sm-3 control-label">Tipo responsable</label>
-            <div class="col-sm-3">
+            <label for="proveedor-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
+            <div class="col-sm-4">
               <select class="form-control" id="proveedor-tipo-responsable" [(ngModel)]="proveedorSeleccionado.tipo_responsable" name="tipo-responsable">
                 <option *ngFor="let tipo of tipos_responsable" [ngValue]="tipo.clave">{{tipo.nombre}}</option>
               </select>
             </div>
 
-            <label for="proveedor-cuit" class="col-sm-1 control-label" [ngClass]="{required: proveedorSeleccionado.tipo_responsable === 'RI' || proveedorSeleccionado.tipo_responsable === 'M'}">CUIT</label>
-            <div class="col-sm-5 has-feedback"
+            <label for="proveedor-cuit" class="col-sm-2 control-label" [ngClass]="{required: proveedorSeleccionado.tipo_responsable === 'RI' || proveedorSeleccionado.tipo_responsable === 'M'}">CUIT</label>
+            <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched || submitted),
             'has-success': cuit.valid && cuit.value !== '' && cuit.value !== undefined}">
               <input type="text" class="form-control" id="proveedor-cuit" [(ngModel)]="proveedorSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="proveedorSeleccionado.tipo_responsable === 'RI' || proveedorSeleccionado.tipo_responsable === 'M'">
@@ -113,30 +127,17 @@
           </div>
 
           <div class="form-group row">
-            <label for="proveedor-telefono" class="col-sm-1 control-label">Teléfono</label>
-            <div class="col-sm-5">
+            <label for="proveedor-telefono" class="col-sm-2 control-label">Teléfono</label>
+            <div class="col-sm-4">
               <input type="tel" class="form-control" id="proveedor-telefono" [(ngModel)]="proveedorSeleccionado.telefono" name="telefono" [maxLength]="191" placeholder="(0342) 4000000" [textMask]="{mask: telmask, keepCharPositions: true }">
             </div>
 
-            <label for="proveedor-celular" class="col-sm-1 control-label">Celular</label>
-            <div class="col-sm-5">
+            <label for="proveedor-celular" class="col-sm-2 control-label">Celular</label>
+            <div class="col-sm-4">
               <input type="tel" class="form-control" id="proveedor-celular" [(ngModel)]="proveedorSeleccionado.celular" name="celular" [maxLength]="191" placeholder="(0342) 150000000" [textMask]="{mask: celmask, keepCharPositions: true}">
             </div>
           </div>
 
-          <div class="form-group row">
-            <label for="proveedor-activo" class="col-sm-1 control-label">Activo</label>
-            <div class="col-sm-1 checkbox-inline">
-              <input type="checkbox" id="proveedor-activo" [(ngModel)]="proveedorSeleccionado.activo" name="activo">
-            </div>
-
-            <div *ngIf="!proveedorSeleccionado.activo">
-              <label for="proveedor-motivo" class="col-sm-1 control-label">Motivo</label>
-              <div class="col-sm-9">
-                <input type="text" class="form-control" id="proveedor-motivo" [(ngModel)]="proveedorSeleccionado.motivo" name="direccion" [maxLength]="191" placeholder="Motivo">
-              </div>
-            </div>
-          </div>
         </form>
       </div>
       <div class="modal-footer">

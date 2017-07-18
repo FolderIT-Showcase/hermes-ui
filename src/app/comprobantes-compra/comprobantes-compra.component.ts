@@ -209,8 +209,10 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.enNuevo = true;
     this.comprobanteSeleccionado = new ComprobanteCompra;
     this.proveedorSeleccionado = new Proveedor;
+    this.tipoComprobanteCompraSeleccionado = new TipoComprobanteCompra;
+    this.periodoSeleccionado = new PeriodoFiscal;
     this.CCimportesSeleccionado = new ComprobanteCompraImportes;
-    this.CCimportesSeleccionado.importe_neto_no_gravado = 0;
+    // this.CCimportesSeleccionado.importe_neto_no_gravado = 0;
     this.CCretencionesSeleccionado = new ComprobanteCompraRetencion;
     this.retenciones = [];
     (<any>$('#modalEditar')).modal('show');
@@ -246,8 +248,6 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
         day: day
       }
     };
-    // console.log(this.proveedorSeleccionado.id + ' - ' + this.periodoSeleccionado.anio + '/' + this.periodoSeleccionado.mes + ' - ' + this.tipoComprobanteCompraSeleccionado.codigo);
-    // console.log(this.proveedores);
   }
 
   private mostrarModalFiltrar() {
@@ -490,15 +490,21 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     if (!this.parametroReporteFiltrarPorPeriodo) {
       this.parametroReportePeriodo = 0;
     }
-    this.apiService.get('comprobantescompra/filtrar', {
+    if (this.parametroReporteProveedor > 0 ||
+        this.parametroReporteTipo > 0 ||
+        this.parametroReportePeriodo > 0) {
+      this.apiService.get('comprobantescompra/filtrar', {
         'proveedor': this.parametroReporteProveedor,
         'tipo': this.parametroReporteTipo,
         'periodo': this.parametroReportePeriodo
       })
-      .subscribe(json => {
-        this.comprobantes = json;
-        this.recargarTabla();
-      });
+        .subscribe(json => {
+          this.comprobantes = json;
+          this.recargarTabla();
+        });
+    } else {
+      this.cerrar(null);
+    }
   }
 
   OnTabImportesClicked() {
@@ -513,8 +519,8 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
 
   checkExists() {
     // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
-    if (this.proveedorSeleccionado.id !== null && this.tipoComprobanteCompraSeleccionado.id !== null &&
-      this.comprobanteSeleccionado.punto_venta !== null && this.comprobanteSeleccionado.numero !== null) {
+    if (!isNullOrUndefined(this.proveedorSeleccionado.id) && !isNullOrUndefined(this.tipoComprobanteCompraSeleccionado.id) &&
+      !isNullOrUndefined(this.comprobanteSeleccionado.punto_venta) && !isNullOrUndefined(this.comprobanteSeleccionado.numero)) {
       this.apiService.get('comprobantescompra/proveedor/' + this.proveedorSeleccionado.id).subscribe(
         json => {
           if (json === '') {

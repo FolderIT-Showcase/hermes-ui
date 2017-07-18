@@ -7,16 +7,16 @@
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
   <tr>
-    <th>Nombre</th>
-    <th>Alícuota</th>
-    <th style="width:10%">Acciones</th>
+    <th class="text-center">Nombre</th>
+    <th class="text-center">Alícuota</th>
+    <th class="text-center" style="width:20%">Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let tiporetencion of tiporetenciones">
-    <td>{{ tiporetencion.nombre }}</td>
-    <td>{{ tiporetencion.alicuota }}</td>
-    <td>
+    <td class="text-center">{{ tiporetencion.nombre }}</td>
+    <td class="text-center">{{ tiporetencion.alicuota }}%</td>
+    <td class="text-center">
       <button (click)="mostrarModalEditar(tiporetencion)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(tiporetencion)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
@@ -42,7 +42,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 
@@ -68,10 +68,10 @@
 
           <div class="form-group row">
             <label for="tiporetencion-alicuota" class="col-sm-2 required control-label">Alícuota</label>
-            <div class="col-sm-5 has-feedback"
+            <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !alicuota.valid && (!alicuota.pristine || alicuota.touched || submitted),
             'has-success': alicuota.valid}">
-              <input type="number" class="form-control" id="tiporetencion-alicuota" [(ngModel)]="tipoRetencionSeleccionado.alicuota" name="alicuota" #alicuota="ngModel" required pattern="^([0-9]|([1-9][0-9])|100)$" placeholder="10">
+              <input type="number" class="form-control" id="tiporetencion-alicuota" [(ngModel)]="tipoRetencionSeleccionado.alicuota" name="alicuota" #alicuota="ngModel" required pattern="^(?:99|\d{1,2})(?:\.\d{1,2})?$" placeholder="21">
               <span *ngIf="alicuota.valid && !alicuota.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="alicuota.errors !== null && (!alicuota.pristine || alicuota.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!alicuota.valid && (!alicuota.pristine || alicuota.touched || submitted)" class="help-block">Ingrese un monto de alícuota</div>

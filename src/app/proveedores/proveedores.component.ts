@@ -226,4 +226,11 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
     this.ocultarModals();
     return true;
   }
+
+  cleanMotivo() {
+    // si es no-activo y el trigger fue un click, es porque acaba de pasar de activo -> no-activo
+    if (!this.proveedorSeleccionado.activo) {
+      this.proveedorSeleccionado.motivo = '';
+    }
+  }
 }
