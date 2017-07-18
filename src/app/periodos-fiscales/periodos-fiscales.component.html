@@ -16,7 +16,7 @@
   </thead>
   <tbody>
   <tr *ngFor="let periodofiscal of periodosFiscales">
-    <td class="text-center" style="width: 15%">{{ periodofiscal.anio }}-{{ periodofiscal.mes }}</td>
+    <td class="text-center" style="width: 15%">{{ periodofiscal.anio }}-{{('0'+periodofiscal.mes).slice(-2)}}</td>
     <td class="text-center">{{ periodofiscal.anio }}</td>
     <td class="text-center">{{ periodofiscal.mes_str }}</td>
     <td class="text-center">{{ periodofiscal.abierto ? 'Abierto' : 'Cerrado' }}</td>
