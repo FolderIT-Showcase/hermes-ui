@@ -31,3 +31,10 @@
 #comprobantecompra-proveedorcuit {
   font-size: 0.85em;
 }
+
+.separator-monto {
+  padding-left: 0;
+  font-size: 1.25em;
+  font-weight: bold;
+  color: #8E8E8E;
+}

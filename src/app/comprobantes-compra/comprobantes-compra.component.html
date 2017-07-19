@@ -315,11 +315,11 @@
           <div class="form-group row">
             <div class="col-sm-11">
               <div class="form-group row radio">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorProveedor" name="parametroReporteFiltrarPorProveedor"> por Proveedor</label>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                   <select [disabled]="!parametroReporteFiltrarPorProveedor" class="form-control" [ngModel]="parametroReporteProveedor | json" name="parametroReporteProveedor" (change)="onParametroReporteProveedorChanged($event.target.value)">
                     <option *ngFor="let proveedor of proveedores" [value]="proveedor.id | json">{{proveedor.nombre}}</option>
                   </select>
@@ -327,11 +327,11 @@
               </div>
 
               <div class="form-group row radio">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorTipo" name="parametroReporteFiltrarPorTipo"> por Tipo</label>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                   <select [disabled]="!parametroReporteFiltrarPorTipo" class="form-control" [ngModel]="parametroReporteTipo | json" name="parametroReporteTipo" (change)="onParametroReporteTipoChanged($event.target.value)">
                     <option *ngFor="let tipo of tiposComprobanteCompra" [value]="tipo.id | json">{{tipo.nombre}}</option>
                   </select>
@@ -339,14 +339,28 @@
               </div>
 
               <div class="form-group row radio">
-                <div class="col-sm-6">
+                <div class="col-sm-5">
                   <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorPeriodo" name="parametroReporteFiltrarPorPeriodo"> por Periodo Fiscal</label>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-sm-7">
                   <select [disabled]="!parametroReporteFiltrarPorPeriodo" class="form-control" [ngModel]="parametroReportePeriodo | json" name="parametroReportePeriodo" (change)="onParametroReportePeriodoChanged($event.target.value)" >
                     <option *ngFor="let periodo of periodos" [value]= "periodo.id | json">{{periodo.mes}}-{{periodo.anio}}</option>
                   </select>
+                </div>
+              </div>
+
+              <div class="form-group row radio">
+                <div class="col-sm-5">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorMonto" name="parametroReporteFiltrarPorMontoMin"> por Importe</label>
+                </div>
+
+                <div class="col-sm-3">
+                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMin" name="parametroReporteMontoMin" (change)="onParametroReporteMontoMinChanged($event.target.value)" placeholder="min">
+                </div>
+                <div class="col-sm-1"><label class="control-label separator-monto">--</label></div>
+                <div class="col-sm-3">
+                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMax" name="parametroReporteMontoMax" (change)="onParametroReporteMontoMaxChanged($event.target.value)" placeholder="max">
                 </div>
               </div>
             </div>

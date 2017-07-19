@@ -15,7 +15,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ComprobanteCompraImportes} from '../../domain/comprobanteCompraImportes';
 import {ComprobanteCompraRetencion} from '../../domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../domain/tipoRetencion';
-import {NavbarTitleService} from "../../service/navbar-title.service";
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-comprobantes-compra',
@@ -65,6 +65,9 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   parametroReporteTipo: Number;
   parametroReporteFiltrarPorPeriodo: Boolean;
   parametroReportePeriodo: Number;
+  parametroReporteFiltrarPorMonto: Boolean;
+  parametroReporteMontoMin: Number;
+  parametroReporteMontoMax: Number;
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
@@ -483,7 +486,15 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.parametroReportePeriodo = (+value);
   }
 
-  generarListaFiltrada() {
+  onParametroReporteMontoMinChanged(value) {
+    this.parametroReporteMontoMin = (+value);
+  }
+
+  onParametroReporteMontoMaxChanged(value) {
+    this.parametroReporteMontoMax = (+value);
+  }
+
+    generarListaFiltrada() {
     if (!this.parametroReporteFiltrarPorProveedor) {
       this.parametroReporteProveedor = 0;
     }
@@ -493,18 +504,36 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     if (!this.parametroReporteFiltrarPorPeriodo) {
       this.parametroReportePeriodo = 0;
     }
+    if (!this.parametroReporteFiltrarPorMonto) {
+      this.parametroReporteMontoMin = -1;
+      this.parametroReporteMontoMax = -1;
+    }
+    if (!this.parametroReporteFiltrarPorMonto) {
+      this.parametroReporteMontoMin = -1;
+      this.parametroReporteMontoMax = -1;
+    }
     if (this.parametroReporteProveedor > 0 ||
         this.parametroReporteTipo > 0 ||
-        this.parametroReportePeriodo > 0) {
+        this.parametroReportePeriodo > 0 ||
+        this.parametroReporteMontoMin > -1 ||
+        this.parametroReporteMontoMax > -1) {
+      if (this.parametroReporteMontoMin > 0 && this.parametroReporteMontoMax < 1) {
+        this.parametroReporteMontoMax = -1;
+      }
       this.apiService.get('comprobantescompra/filtrar', {
         'proveedor': this.parametroReporteProveedor,
         'tipo': this.parametroReporteTipo,
-        'periodo': this.parametroReportePeriodo
+        'periodo': this.parametroReportePeriodo,
+        'montomin': this.parametroReporteMontoMin,
+        'montomax': this.parametroReporteMontoMax
       })
         .subscribe(json => {
           this.comprobantes = json;
           this.recargarTabla();
         });
+      this.parametroReporteFiltrarPorMonto = false;
+      this.parametroReporteMontoMax = null;
+      this.parametroReporteMontoMin = null;
     } else {
       this.cerrar(null);
     }

@@ -7,20 +7,20 @@
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
   <tr>
-    <th>Código</th>
-    <th>Nombre</th>
-    <th>CUIT</th>
-    <th>Tipo Responsable</th>
-    <th style="width:10%">Acciones</th>
+    <th class="text-center">Código</th>
+    <th class="text-center">Nombre</th>
+    <th class="text-center">CUIT</th>
+    <th class="text-center">Tipo Responsable</th>
+    <th style="width:10%" class="text-center">Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let proveedor of proveedores">
-    <td>{{ proveedor.codigo }}</td>
-    <td>{{ proveedor.nombre }}</td>
-    <td>{{ proveedor.cuit }}</td>
-    <td>{{ proveedor.tipo_responsable_str }}</td>
-    <td>
+    <td class="text-center">{{ proveedor.codigo }}</td>
+    <td class="text-center">{{ proveedor.nombre }}</td>
+    <td class="text-center">{{ proveedor.cuit }}</td>
+    <td class="text-center">{{ proveedor.tipo_responsable_str }}</td>
+    <td class="text-center">
       <button title="Editar proveedor" (click)="mostrarModalEditar(proveedor)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar proveedor" (click)="mostrarModalEliminar(proveedor)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
