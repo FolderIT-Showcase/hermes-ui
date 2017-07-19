@@ -3,7 +3,7 @@ export class Cliente {
   id: number;
   vendedor_id: Number;
   zona_id: Number;
-  tipo_categoria: Number;
+  tipo_categoria_id: Number;
   codigo: string;
   nombre: string;
   tipo_responsable: string;

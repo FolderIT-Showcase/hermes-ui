@@ -171,6 +171,20 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     if (f.valid) {
       const clienteAEnviar = new Cliente();
       Object.assign(clienteAEnviar, this.clienteSeleccionado);
+
+      if (+clienteAEnviar.zona_id === 0) {
+        clienteAEnviar.zona_id = null;
+      }
+      if (+clienteAEnviar.vendedor_id === 0) {
+        clienteAEnviar.vendedor_id = null;
+      }
+      if (+clienteAEnviar.lista_id === 0) {
+        clienteAEnviar.lista_id = null;
+      }
+      if (+clienteAEnviar.tipo_categoria_id === 0) {
+        clienteAEnviar.tipo_categoria_id = null;
+      }
+
       this.cerrar(f);
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
@@ -264,7 +278,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
 
     this.localidades = [];
-    if (isNullOrUndefined(this.clienteSeleccionado)) {
+    if (!isNullOrUndefined(this.clienteSeleccionado)) {
       this.clienteSeleccionado.domicilios.forEach(
         domicilio => {
           this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
@@ -310,34 +324,6 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.apiService.get('listaprecios').subscribe(json => {
       this.listasPrecios = json;
     });
-  }
-
-  onZonaChanged(value) {
-    this.clienteSeleccionado.zona_id = +value;
-    if (+this.clienteSeleccionado.zona_id === 0) {
-      delete this.clienteSeleccionado.zona_id;
-    }
-  }
-
-  onVendedorChanged(value) {
-    this.clienteSeleccionado.vendedor_id = +value;
-    if (+this.clienteSeleccionado.vendedor_id === 0) {
-      delete this.clienteSeleccionado.vendedor_id;
-    }
-  }
-
-  onListaPreciosChanged(value) {
-    this.clienteSeleccionado.lista_id = +value;
-    if (+this.clienteSeleccionado.lista_id === 0) {
-      delete this.clienteSeleccionado.lista_id;
-    }
-  }
-
-  onTipoCategoriaClienteChanged(value) {
-    this.clienteSeleccionado.tipo_categoria = +value;
-    if (+this.clienteSeleccionado.tipo_categoria === 0) {
-      delete this.clienteSeleccionado.tipo_categoria;
-    }
   }
 
   private cargarTipoCategoriaCliente() {
