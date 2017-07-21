@@ -6,11 +6,16 @@ import {Observable} from 'rxjs/Rx';
 import {User} from '../domain/user';
 import {Router} from '@angular/router';
 import {AlertService} from './alert.service';
+import {isNullOrUndefined} from 'util';
+import {Subscription} from 'rxjs/Subscription';
 
 @Injectable()
 export class ApiService {
   // server URL
   private baseURL = 'http://hermes.api/api/';
+  private user: User;
+  private timer: Observable<number>;
+  private timerSubscription: Subscription;
 
   //
   // HEADERS
@@ -29,6 +34,10 @@ export class ApiService {
   constructor(private http: Http,
               private router: Router,
               private alertService: AlertService) {
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!isNullOrUndefined(this.user)) {
+      this.startRefresh(true);
+    }
   }
 
   private getJson(response: Response) {
@@ -39,8 +48,10 @@ export class ApiService {
   }
 
   useJwt() {
-    const user: User = JSON.parse(localStorage.getItem('currentUser'));
-    this.headers.set('Authorization', user.token);
+    this.user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!isNullOrUndefined(this.user)) {
+      this.headers.set('Authorization', 'Bearer' + this.user.token);
+    }
   }
 
   private checkForError(response: Response): Response | Observable<any> {
@@ -110,6 +121,10 @@ export class ApiService {
         `${this.baseURL}${path}`, JSON.stringify(body),
         {headers: this.headers})
       .map(this.checkForError)
+      .map((response) => {
+        this.startRefresh(false);
+        return response;
+      })
       .catch(err => Observable.throw(err));
   }
 
@@ -117,7 +132,7 @@ export class ApiService {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
     const headers = new Headers({
       'Accept': 'application/json',
-      'Authorization':  user.token
+      'Authorization':  'Bearer' + user.token
     });
     const  formData: FormData = new FormData();
     formData.append('file', file, file.name);
@@ -147,7 +162,7 @@ export class ApiService {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
     const headers = new Headers({
       'Accept': 'application/pdf',
-      'Authorization':  user.token,
+      'Authorization':  'Bearer' + user.token,
     });
     return this.http
       .get(
@@ -175,6 +190,51 @@ export class ApiService {
   private check403(err) {
     if (err.status === 403) {
       this.alertService.error('No tiene permitido realizar esta acción', false);
+    }
+  }
+
+  private refreshToken() {
+    this.useJwt();
+    if (!isNullOrUndefined(this.user)) {
+      this.http.post(this.baseURL + 'refreshToken', '', {headers: this.headers})
+        .map(this.checkForError)
+        .catch( err => {
+          this.check401(err);
+          this.check403(err);
+          return Observable.throw(err);
+        })
+        .subscribe( (response: Response) => {
+          this.user.token = response.json()['token'];
+          localStorage.setItem('currentUser', JSON.stringify(this.user));
+        });
+    }
+  }
+
+  private startRefresh(startInmediately: Boolean = false) {
+    if (!isNullOrUndefined(this.timerSubscription)) {
+      this.timerSubscription.unsubscribe();
+    }
+    if (startInmediately) {
+      this.refreshToken();
+    }
+    // refrescar el token cada 50 mins mientras la aplicación esté activa
+    this.timer = Observable.timer(1000 * 60 * 50, 1000 * 60 * 50);
+    this.timerSubscription = this.timer.subscribe(() => {
+      this.refreshToken();
+    });
+  }
+
+  public logout() {
+    if (!isNullOrUndefined(this.timerSubscription)) {
+      this.timerSubscription.unsubscribe();
+    }
+    this.useJwt();
+    if (!isNullOrUndefined(this.user)) {
+      this.user = null;
+      this.http.post(this.baseURL + 'logout', '', {headers: this.headers})
+        .subscribe(() => {
+          localStorage.removeItem('currentUser');
+        });
     }
   }
 }

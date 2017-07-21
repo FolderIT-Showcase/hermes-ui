@@ -40,6 +40,9 @@ export class AuthenticationService {
   }
 
   logout() {
+    // call the api to invalidate the token
+    this.api.logout();
+
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.currentUser$.emit(null);
