@@ -45,8 +45,6 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
       pageLength: 13,
       scrollY: '70vh',
       autoWidth: true,
-      pageLength: 13,
-      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
