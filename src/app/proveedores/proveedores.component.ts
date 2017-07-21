@@ -50,8 +50,6 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
       pageLength: 13,
       scrollY: '70vh',
       autoWidth: true,
-      pageLength: 13,
-      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
