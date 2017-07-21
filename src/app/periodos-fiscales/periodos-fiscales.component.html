@@ -7,19 +7,21 @@
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
   <tr>
-    <th>Mes</th>
-    <th>Año</th>
-    <th>Estado</th>
-    <th style="width:10%">Acciones</th>
+    <th class="text-center">aaaa-mm</th>
+    <th class="text-center">Año</th>
+    <th class="text-center">Mes</th>
+    <th class="text-center">Estado</th>
+    <th class="text-center" style="width:10%">Acciones</th>
   </tr>
   </thead>
   <tbody>
   <tr *ngFor="let periodofiscal of periodosFiscales">
-    <td>{{ periodofiscal.mes_str }}</td>
-    <td>{{ periodofiscal.anio }}</td>
-    <td>{{ periodofiscal.abierto ? 'Abierto' : 'Cerrado' }}</td>
-    <td>
-      <button [routerLink]="['/']" data-toggle="modal" class="glyphicon glyphicon-eye-open blue"></button >
+    <td class="text-center" style="width: 15%">{{ periodofiscal.anio }}-{{('0'+periodofiscal.mes).slice(-2)}}</td>
+    <td class="text-center">{{ periodofiscal.anio }}</td>
+    <td class="text-center">{{ periodofiscal.mes_str }}</td>
+    <td class="text-center">{{ periodofiscal.abierto ? 'Abierto' : 'Cerrado' }}</td>
+    <td class="text-center">
+      <!--<button [routerLink]="['/']" data-toggle="modal" class="glyphicon glyphicon-eye-open blue"></button >-->
       <button (click)="mostrarModalEditar(periodofiscal)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(periodofiscal)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
@@ -60,14 +62,14 @@
           <div class="form-group row">
             <label for="periodofiscal-mes" class="col-sm-2 required control-label">Mes</label>
             <div class="col-sm-8 has-feedback"
-                 [ngClass]="{'has-error': !mes.valid && (!mes.pristine || mes.touched || submitted),
-            'has-success': mes.valid}">
+                 [ngClass]="{'has-error': (!mes.valid && (!mes.pristine || mes.touched || submitted) || existe),
+            'has-success': mes.valid && !existe}">
               <div class="select-style">
-                <select class="form-control" id="periodofiscal-mes" [(ngModel)]="periodoFiscalSeleccionado.mes" name="mes" #mes="ngModel" required >
+                <select class="form-control" id="periodofiscal-mes" [(ngModel)]="periodoFiscalSeleccionado.mes" name="mes" #mes="ngModel" required (change)="checkExists(periodoFiscalSeleccionado)" >
                   <option *ngFor="let mes of meses" [ngValue]="mes.clave">{{mes.nombre}}</option>
                 </select>
               </div>
-              <span *ngIf="mes.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="mes.valid && !existe" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="mes.errors !== null && (!mes.pristine || mes.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!mes.valid && (!mes.pristine || mes.touched || submitted)" class="help-block">Seleccione un mes</div>
             </div>
@@ -76,14 +78,14 @@
           <div class="form-group row">
             <label for="periodofiscal-anio" class="col-sm-2 required control-label">Año</label>
             <div class="col-sm-8 has-feedback"
-                 [ngClass]="{'has-error': !anio.valid && (!anio.pristine || anio.touched || submitted),
-            'has-success': anio.valid}">
+                 [ngClass]="{'has-error': (!anio.valid && (!anio.pristine || anio.touched || submitted) || existe),
+            'has-success': anio.valid && !existe}">
               <div class="select-style">
                 <select class="form-control" id="periodofiscal-anio" [(ngModel)]="periodoFiscalSeleccionado.anio" name="anio" #anio="ngModel" required (change)="checkExists(periodoFiscalSeleccionado)" >
                   <option *ngFor="let anio of anios" [ngValue]="anio">{{anio}}</option>
                 </select>
               </div>
-              <span *ngIf="anio.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="anio.valid && !existe" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="anio.errors !== null && (!anio.pristine || anio.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!anio.valid && (!anio.pristine || anio.touched || submitted)" class="help-block">Seleccione un año</div>
             </div>

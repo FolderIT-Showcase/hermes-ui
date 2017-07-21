@@ -46,6 +46,9 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      aaSorting: [0, 'DESC'],
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       pageLength: 13,
       scrollY: '70vh',
@@ -73,11 +76,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           'sortDescending': ': Activar para ordenar la columna de manera descendente'
         }
       },
-      columnDefs: [ {
-        'targets': -1,
-        'searchable': false,
-        'orderable': false
-      } ],
+      columnDefs: [],
       dom: 'Bfrtip',
       buttons: [
         {
@@ -88,15 +87,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
             this.mostrarModalNuevo();
           }
         }
-        /*, {
-         text: 'Listado',
-         key: '2',
-         className: 'btn btn-default',
-         action: () => {
-         // TODO setear boton
-         }
-         }
-         */
       ]
     };
     this.navbarTitleService.setTitle('Gestión de Períodos Fiscales');

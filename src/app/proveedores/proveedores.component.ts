@@ -46,6 +46,9 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      // aaSorting: [1, 'DESC'],
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       pageLength: 13,
       scrollY: '70vh',
@@ -190,6 +193,7 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
           json => {
             json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === proveedorAEnviar.tipo_responsable).nombre;
             Object.assign(this.proveedorOriginal, json);
+            this.recargarTabla();
           }
         );
       }
@@ -224,5 +228,12 @@ export class ProveedoresComponent implements OnInit, AfterViewChecked, OnDestroy
   canDeactivate() {
     this.ocultarModals();
     return true;
+  }
+
+  cleanMotivo() {
+    // si es no-activo y el trigger fue un click, es porque acaba de pasar de activo -> no-activo
+    if (!this.proveedorSeleccionado.activo) {
+      this.proveedorSeleccionado.motivo = '';
+    }
   }
 }

@@ -8,7 +8,7 @@ import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
 import {TipoRetencion} from 'domain/tipoRetencion';
 import {isNullOrUndefined} from 'util';
-import { NumberValidatorsService } from '../../service/number-validator.service';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-tipo-retencion',
@@ -17,6 +17,7 @@ import { NumberValidatorsService } from '../../service/number-validator.service'
 })
 export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestroy {
   mostrarTabla = false;
+  mostrarBarraCarga = true;
   submitted = false;
   enNuevo: boolean;
   modalTitle: string;
@@ -28,7 +29,10 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
 
-  constructor(private apiService: ApiService, private cdRef: ChangeDetectorRef, private alertService: AlertService) {  }
+  constructor(private apiService: ApiService,
+              private cdRef: ChangeDetectorRef,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -38,6 +42,8 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
+      pageLength: 13,
+      scrollY: '70vh',
       autoWidth: true,
       pageLength: 13,
       scrollY: '70vh',
@@ -80,25 +86,22 @@ export class TipoRetencionComponent implements OnInit, AfterViewChecked, OnDestr
             this.mostrarModalNuevo();
           }
         }
-        /*, {
-         text: 'Listado',
-         key: '2',
-         className: 'btn btn-default',
-         action: () => {
-         // TODO setear boton
-         }
-         }
-         */
       ]
     };
+    this.navbarTitleService.setTitle('Gestión de Tipos de Retención');
 
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.apiService.get('tiporetenciones')
       .subscribe(json => {
         this.tiporetenciones = json;
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
         this.dtTrigger.next();
-      });
+      },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 
   mostrarModalNuevo() {

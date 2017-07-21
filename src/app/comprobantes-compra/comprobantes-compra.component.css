@@ -1,0 +1,40 @@
+.form-group-border {
+  padding: 0.8%;
+}
+
+.table-retenciones {
+  padding: 0;
+  margin-right: 0;
+}
+
+.tablecontainer {
+  padding: 0em;
+  height: 11em;
+  overflow-y: scroll;
+}
+
+.add-big {
+  font-size: 200%;
+}
+
+.sublabel {
+  font-size: 90%;
+  font-weight: lighter;
+}
+
+.tabpanel {
+  padding: 2% 2% 0em;
+  border-left: solid gainsboro 0.05em;
+  border-right: solid gainsboro 0.05em;
+}
+
+#comprobantecompra-proveedorcuit {
+  font-size: 0.85em;
+}
+
+.separator-monto {
+  padding-left: 0;
+  font-size: 1.25em;
+  font-weight: bold;
+  color: #8E8E8E;
+}
