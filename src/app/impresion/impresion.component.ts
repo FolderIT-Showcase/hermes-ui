@@ -59,9 +59,10 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
           'sortDescending': ': Activar para ordenar la columna de manera descendente'
         }
       },
-      dom: 'tp',
-      scrollY: '350px',
-      paging: false,
+      dom: 'frtip',
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      scrollY: '57vh',
       columnDefs: [ {
         'targets': 0,
         'width': '15%'
@@ -111,7 +112,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apiService.get('tipocomprobantes').subscribe( json => {
       this.tipos_comprobantes = json;
     });
-    setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
+    // setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
 
   }
 
@@ -141,8 +142,11 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.comprobantes.forEach( comprobante => {
           comprobante.ptoventaynumero = ('000' + comprobante.punto_venta).slice(-4) + '-' + ('0000000' + comprobante.numero).slice(-8);
         });
-        // setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
-        this.recargarTabla();
+        if (!this.mostrarTabla) {
+          setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
+        } else {
+          this.recargarTabla();
+        }
       });
     }
   }

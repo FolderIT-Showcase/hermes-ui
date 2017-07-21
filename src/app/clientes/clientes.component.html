@@ -156,9 +156,9 @@
 
             <label for="cliente-tipo-categoria" class="col-sm-1 control-label">Categoría</label>
             <div class="col-sm-5">
-              <select class="form-control" id="cliente-tipo-categoria" [ngModel]="clienteSeleccionado.tipo_categoria | json" name="tipo-categoria" (change)="onTipoCategoriaClienteChanged($event.target.value)">
+              <select class="form-control" id="cliente-tipo-categoria" [(ngModel)]="clienteSeleccionado.tipo_categoria_id" name="tipo-categoria">
                 <option value=0></option>
-                <option *ngFor="let tipoCategoriaCliente of tipoCategoriaClientes" [value]="tipoCategoriaCliente.id | json">{{tipoCategoriaCliente.nombre}}</option>
+                <option *ngFor="let tipoCategoriaCliente of tipoCategoriaClientes" [ngValue]="tipoCategoriaCliente.id">{{tipoCategoriaCliente.nombre}}</option>
               </select>
             </div>
           </div>
@@ -185,17 +185,17 @@
           <div class="form-group row">
             <label for="cliente-zona" class="col-sm-1 control-label">Zona</label>
             <div class="col-sm-5">
-              <select class="form-control" id="cliente-zona" [ngModel]="clienteSeleccionado.zona_id | json" name="zona" (change)="onZonaChanged($event.target.value)">
+              <select class="form-control" id="cliente-zona" [(ngModel)]="clienteSeleccionado.zona_id" name="zona">
                 <option value=0></option>
-                <option *ngFor="let zona of zonas" [value]="zona.id | json">{{zona.nombre}}</option>
+                <option *ngFor="let zona of zonas" [value]="zona.id">{{zona.nombre}}</option>
               </select>
             </div>
 
             <label for="cliente-vendedor" class="col-sm-1 control-label">Vendedor</label>
             <div class="col-sm-5">
-              <select class="form-control" id="cliente-vendedor" [ngModel]="clienteSeleccionado.vendedor_id | json" name="vendedor" (change)="onVendedorChanged($event.target.value)">
+              <select class="form-control" id="cliente-vendedor" [(ngModel)]="clienteSeleccionado.vendedor_id" name="vendedor">
                 <option value=0></option>
-                <option *ngFor="let vendedor of vendedores" [value]="vendedor.id | json">{{vendedor.nombre}}</option>
+                <option *ngFor="let vendedor of vendedores" [ngValue]="vendedor.id">{{vendedor.nombre}}</option>
               </select>
             </div>
           </div>
@@ -203,9 +203,9 @@
           <div class="form-group row">
             <label for="cliente-lista" class="col-sm-1 control-label">Lista Precios</label>
             <div class="col-sm-5">
-              <select class="form-control" id="cliente-lista" [ngModel]="clienteSeleccionado.lista_id | json" name="lista" (change)="onListaPreciosChanged($event.target.value)">
+              <select class="form-control" id="cliente-lista" [(ngModel)]="clienteSeleccionado.lista_id" name="lista">
                 <option value=0></option>
-                <option *ngFor="let lista of listasPrecios" [value]="lista.id | json">{{lista.nombre}}</option>
+                <option *ngFor="let lista of listasPrecios" [value]="lista.id">{{lista.nombre}}</option>
               </select>
             </div>
           </div>

@@ -41,6 +41,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      pageLength: 13,
+      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -181,7 +183,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   private recargarTabla() {
-    this.mostrarTabla = false;
+    // this.mostrarTabla = false;
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
       dtInstance.destroy();
