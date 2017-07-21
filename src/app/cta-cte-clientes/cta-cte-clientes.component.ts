@@ -70,7 +70,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         }
       },
       dom: 'tp',
-      scrollY: '350px',
+      scrollY: '60vh',
       paging: false,
       columnDefs: [ {
         'targets': 0,

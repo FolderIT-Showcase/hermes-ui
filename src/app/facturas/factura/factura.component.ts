@@ -130,7 +130,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       },
       dom: 'tp',
-      scrollY: '250px',
+      scrollY: '45vh',
       paging: false,
       columnDefs: [ {
         'targets': 0,
@@ -424,6 +424,10 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  customTrackBy(index: number, obj: any): any {
+    return index;
+  }
+
   generarFactura() {
     this.factura.cliente_id = this.cliente.id;
     this.factura.cliente_cuit = this.cliente.cuit;
@@ -601,15 +605,21 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   cambiarListaPrecios() {
     this.change.emit(true);
     this.listaAnterior = this.listaPreciosSeleccionada;
-    this.items = this.items.filter( item => {
-      if (!item.articulo_id) {
-        return true;
+    this.itemsABorrar.forEach( itemABorrar => {
+      const index: number = this.items.findIndex(x => x.articulo_id === itemABorrar.articulo_id);
+      if (index !== -1) {
+        this.items.splice(index, 1);
       }
-      if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
-        return false;
-      }
-      return this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
     });
+    // this.items = this.items.filter( item => {
+    //   if (!item.articulo_id) {
+    //     return true;
+    //   }
+    //   if (isNullOrUndefined(this.listaPreciosSeleccionada)) {
+    //     return false;
+    //   }
+    //   return this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === item.articulo_id);
+    // });
     this.items.forEach( item => {
       if (!!item.articulo_id) {
         this.calcularImporteUnitario(item);

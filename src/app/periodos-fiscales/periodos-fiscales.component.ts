@@ -47,6 +47,8 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
+      pageLength: 13,
+      scrollY: '70vh',
       language: {
         'processing':     'Procesando...',
         'lengthMenu':     'Mostrar _MENU_ registros',
@@ -216,7 +218,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   }
 
   private recargarTabla() {
-    this.mostrarTabla = false;
+    // this.mostrarTabla = false;
     this.completarStringsMeses();
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       // Destroy the table first
