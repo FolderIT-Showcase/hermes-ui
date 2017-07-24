@@ -47,6 +47,7 @@ import { ImpresionComponent } from './impresion/impresion.component';
 import {NavbarTitleService} from '../service/navbar-title.service';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
 import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
+import { LibroIvaComponent } from './libro-iva/libro-iva.component';
 
 
 @NgModule({
@@ -81,7 +82,8 @@ import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-
     PeriodosFiscalesComponent,
     ImpresionComponent,
     TipoRetencionComponent,
-    ComprobantesCompraComponent
+    ComprobantesCompraComponent,
+    LibroIvaComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
