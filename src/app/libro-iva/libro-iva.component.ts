@@ -24,11 +24,11 @@ export class LibroIvaComponent implements OnInit {
   imprimir(f: any) {
     this.submitted = true;
     if (f.valid) {
-        this.apiService.downloadPDF('', {
-          'tipo_iva': this.tipoIVA,
+        this.apiService.downloadPDF('libroiva', {
+          'page_init': this.primerpagina,
+          'tipo_libro_iva': this.tipoIVA,
           'periodo_month': this.periodo.substr(0, 2),
           'periodo_year': this.periodo.substr(3, 4),
-          'primer_pagina': this.primerpagina,
         }).subscribe(
           (res) => {
             const fileURL = URL.createObjectURL(res);
