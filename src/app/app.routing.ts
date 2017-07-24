@@ -24,6 +24,7 @@ import {PeriodosFiscalesComponent} from './periodos-fiscales/periodos-fiscales.c
 import {ImpresionComponent} from './impresion/impresion.component';
 import {TipoRetencionComponent} from './tipo-retencion/tipo-retencion.component';
 import {ComprobantesCompraComponent} from './comprobantes-compra/comprobantes-compra.component';
+import {LibroIvaComponent} from './libro-iva/libro-iva.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -49,6 +50,7 @@ const appRoutes: Routes = [
   {path: 'impresion', component: ImpresionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'tiporetenciones', component: TipoRetencionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'comprobantescompra', component: ComprobantesCompraComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'libroiva', component: LibroIvaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

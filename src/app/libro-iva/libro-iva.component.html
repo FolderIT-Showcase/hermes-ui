@@ -1,0 +1,38 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row radio">
+    <div class="col-sm-2 col-sm-offset-1">
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipoIVA" name="tipoIVA" value="ventas">VENTAS</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipoIVA" name="tipoIVA" value="compras">COMPRAS</label>
+      </div>
+    </div>
+
+    <div class="col-sm-4">
+      <label for="periodoinput" class="col-sm-3 required control-label">Período</label>
+      <div class="col-sm-8"
+           [ngClass]="{'has-error': !periodoinput.valid && (!periodoinput.pristine || periodoinput.touched || submitted),
+            'has-success': periodoinput.valid}">
+        <input [textMask]="{mask: periodomask, keepCharPositions:true}" class="form-control" id="periodoinput" [(ngModel)]="periodo" name="periodoinput" #periodoinput="ngModel" required [maxLength]="191" placeholder="MM/AAAA" pattern="^(1[0-2]|0[1-9])\/(20\d{2}|19\d{2})$">
+        <div *ngIf="periodoinput.errors !== null && !periodoinput.errors.required && (!periodoinput.pristine || periodoinput.touched || submitted)" class="help-block">Período inválido</div>
+        <div *ngIf="periodoinput.errors !== null && periodoinput.errors.required && (!periodoinput.pristine || periodoinput.touched || submitted)" class="help-block">Ingrese un período</div>
+      </div>
+    </div>
+
+    <div class="col-sm-3">
+      <label for="primerpaginainput" class="col-sm-7 required control-label">N° Primer Página</label>
+      <div class="col-sm-5"
+           [ngClass]="{'has-error': !primerpaginainput.valid && (!primerpaginainput.pristine || primerpaginainput.touched || submitted),
+            'has-success': primerpaginainput.valid && (!primerpaginainput.pristine || primerpaginainput.touched || submitted)}">
+        <input type="number" class="form-control text-center" id="primerpaginainput" [(ngModel)]="primerpagina" name="primerpaginainput" #primerpaginainput="ngModel" required [maxLength]="5" min="0" max="99999" pattern="^\d{1,5}$">
+        <div *ngIf="primerpaginainput.errors !== null && primerpaginainput.errors.required && (!primerpaginainput.pristine || primerpaginainput.touched || submitted)" class="help-block">Ingrese un n° de página</div>
+        <div *ngIf="primerpaginainput.errors !== null && !primerpaginainput.errors.required && (!primerpaginainput.pristine || primerpaginainput.touched || submitted)" class="help-block">Número de página inválido</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <button type="submit" (click)="imprimir(f)" class="btn btn-primary">Imprimir</button>
+  </div>
+</form>
