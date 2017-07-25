@@ -110,3 +110,52 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="modalReporte" tabindex="-1" role="dialog" aria-labelledby="modalReporte" #modalReporte>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Generar lista de periodos fiscales</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal">
+          <p>Filtros asociados a los periodos fiscales</p>
+          <div class="form-group row">
+            <div class="col-sm-11">
+              <div class="form-group row radio">
+                <div class="col-sm-5">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroFiltrarPorAnio" name="parametroReporteFiltrarPorAnio"> por Año</label>
+                </div>
+
+                <div class="col-sm-7">
+                  <select [disabled]="!parametroFiltrarPorAnio" class="form-control" [ngModel]="parametroFiltroAnio | json" name="parametroReporteAnio" >
+                    <option *ngFor="let periodo of periodosFiscales" [value]="periodo.anio | json">{{periodo.anio}}</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <div class="form-group row">
+                <div class="col-sm-6">
+                  <label class="control-label estado"><input type="checkbox" [(ngModel)]="parametroFiltrarPorAbierto" name="parametroReporteFiltrarPorAbierto" > por Estado</label>
+                </div>
+                <div class="col-sm-3">
+                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="1" >Abiertos</label>
+                </div>
+                <div class="col-sm-3">
+                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="0" >Cerrados</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="clearFilters()" class="btn btn-default clearfilters" data-dismiss="modal">Limpiar filtros</button>
+        <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="generarListaFiltrada()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

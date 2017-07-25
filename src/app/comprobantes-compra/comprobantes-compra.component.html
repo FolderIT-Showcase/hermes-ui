@@ -20,12 +20,11 @@
   <tr *ngFor="let comprobante of comprobantes">
     <td class="text-center">{{ comprobante.fecha }}</td>
     <td class="text-center">{{ comprobante.tipo_comp_compras.nombre }}</td>
-    <td class="text-center">{{ comprobante.numero }}</td>
+    <td class="text-center">{{('0000'+ (comprobante.punto_venta).toString()).slice(-4)}}-{{('00000000'+ (comprobante.numero).toString()).slice(-8)}}</td>
     <td class="text-center">{{ comprobante.proveedor_nombre }}</td>
-    <td class="text-center">{{ comprobante.periodo.mes }}-{{ comprobante.periodo.anio }}</td>
+    <td class="text-center">{{('0'+comprobante.periodo.mes).slice(-2)}}-{{ comprobante.periodo.anio }}</td>
     <td class="text-center">{{ comprobante.importe_total }}</td>
     <td style="width: 10%">
-      <!--<button class="glyphicon glyphicon-envelope blue"></button >-->
       <button title="Editar comprobante de compra" (click)="mostrarModalEditar(comprobante)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar comprobante de compra" (click)="mostrarModalEliminar(comprobante)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
