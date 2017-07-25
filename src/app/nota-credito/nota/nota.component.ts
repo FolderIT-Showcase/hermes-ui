@@ -137,7 +137,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nota.cliente_nombre = this.cliente.nombre;
     this.nota.cliente_tipo_resp = this.cliente.tipo_responsable;
     this.nota.tipo_comprobante_id = this.tipoComprobante.id;
-    this.nota.alicuota_iva = this.iva;
+    this.nota.alicuota_iva = 100 * this.iva;
     this.nota.saldo = 0;
     this.nota.lista_id = this.cliente.lista_id;
     this.nota.items = [];
