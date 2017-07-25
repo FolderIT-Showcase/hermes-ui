@@ -27,6 +27,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   periodoFiscalOriginal: PeriodoFiscal;
   meses = [];
   anios = [];
+  aniosFiltros = [];
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject;
   @ViewChild(DataTableDirective)
@@ -253,7 +254,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
     this.apiService.get('periodosfiscales').subscribe(
       json => {
-        console.log(json.toString());
         if (json === '') {
           this.existe = false;
         } else {
@@ -275,7 +275,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     this.parametroFiltroAbierto = true;
     this.parametroFiltrarPorAnio = false;
     this.parametroFiltrarPorAbierto = true;
-    // this.parametroReporteAnio = 0;
+    this.periodosFiscales.forEach(x => this.aniosFiltros.push(x.anio));
     (<any>$('#modalReporte')).modal('show');
     this.periodoFiscalSeleccionado = new PeriodoFiscal;
   }
