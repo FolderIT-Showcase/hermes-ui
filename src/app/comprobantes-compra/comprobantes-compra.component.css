@@ -24,6 +24,7 @@
 
 .tabpanel {
   padding: 2% 2% 0em;
+  height: 12.5em;
   border-left: solid gainsboro 0.05em;
   border-right: solid gainsboro 0.05em;
 }

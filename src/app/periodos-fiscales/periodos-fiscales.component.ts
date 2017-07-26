@@ -27,11 +27,19 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   periodoFiscalOriginal: PeriodoFiscal;
   meses = [];
   anios = [];
+  aniosFiltros = [];
   dtOptions: any = {};
   dtTrigger: Subject<any> = new Subject;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   mostrarBarraCarga = true;
+
+
+  // parametros filtrar comprobantes de compra
+  parametroFiltrarPorAnio = false;
+  parametroFiltroAnio: Number;
+  parametroFiltrarPorAbierto: Boolean;
+  parametroFiltroAbierto: Boolean;
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
@@ -83,6 +91,13 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           className: 'btn btn-success a-override',
           action: () => {
             this.mostrarModalNuevo();
+          }
+        }, {
+          text: 'Filtrar',
+          key: '2',
+          className: 'btn btn-default',
+          action: () => {
+            this.mostrarModalFiltrar();
           }
         }
       ]
@@ -239,7 +254,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
     // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
     this.apiService.get('periodosfiscales').subscribe(
       json => {
-        console.log(json.toString());
         if (json === '') {
           this.existe = false;
         } else {
@@ -255,5 +269,48 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           }
         }
     });
+  }
+
+  private mostrarModalFiltrar() {
+    this.parametroFiltroAbierto = true;
+    this.parametroFiltrarPorAnio = false;
+    this.parametroFiltrarPorAbierto = true;
+    this.periodosFiscales.forEach(x => this.aniosFiltros.push(x.anio));
+    (<any>$('#modalReporte')).modal('show');
+    this.periodoFiscalSeleccionado = new PeriodoFiscal;
+  }
+
+  generarListaFiltrada() {
+    if (!this.parametroFiltrarPorAnio) {
+      this.parametroFiltroAnio = 0;
+    }
+    if (!this.parametroFiltrarPorAbierto) {
+      this.parametroFiltroAbierto = false;
+    }
+    if (this.parametroFiltroAnio > 0 || this.parametroFiltroAbierto) {
+      this.apiService.get('periodosfiscales/filtrar', {
+        'anio': this.parametroFiltroAnio,
+        'abierto': this.parametroFiltroAbierto
+      })
+        .subscribe(json => {
+          this.periodosFiscales = json;
+          this.completarStringsMeses();
+          this.recargarTabla();
+        });
+    } else {
+      this.cerrar(null);
+    }
+  }
+
+  clearFilters() {
+    this.apiService.get('periodosfiscales')
+      .subscribe(json => {
+          this.periodosFiscales = json;
+          this.recargarTabla();
+          this.completarStringsMeses();
+        },
+        () => {
+          this.mostrarBarraCarga = false;
+        });
   }
 }

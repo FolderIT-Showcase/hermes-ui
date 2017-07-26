@@ -48,6 +48,7 @@ import {NavbarTitleService} from '../service/navbar-title.service';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
 import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
 import { LibroIvaComponent } from './libro-iva/libro-iva.component';
+import { UniquePipe } from './unique.pipe';
 import { RecuperarPasswordComponent } from './recuperar-password/recuperar-password.component';
 
 
@@ -85,6 +86,8 @@ import { RecuperarPasswordComponent } from './recuperar-password/recuperar-passw
     TipoRetencionComponent,
     ComprobantesCompraComponent,
     LibroIvaComponent,
+    LibroIvaCompras,
+    UniquePipe,
     RecuperarPasswordComponent
   ],
   imports: [
