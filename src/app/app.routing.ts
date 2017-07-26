@@ -1,5 +1,4 @@
 ﻿import {RouterModule, Routes} from '@angular/router';
-
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
 import {AuthGuard} from '../guard/auth.guard';
@@ -25,6 +24,7 @@ import {ImpresionComponent} from './impresion/impresion.component';
 import {TipoRetencionComponent} from './tipo-retencion/tipo-retencion.component';
 import {ComprobantesCompraComponent} from './comprobantes-compra/comprobantes-compra.component';
 import {LibroIvaComponent} from './libro-iva/libro-iva.component';
+import {CtaCteProveedoresComponent} from './cta-cte-proveedores/cta-cte-proveedores.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -51,6 +51,7 @@ const appRoutes: Routes = [
   {path: 'tiporetenciones', component: TipoRetencionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'comprobantescompra', component: ComprobantesCompraComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'libroiva', component: LibroIvaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'ctacteproveedores', component: CtaCteProveedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

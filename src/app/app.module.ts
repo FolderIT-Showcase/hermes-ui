@@ -49,6 +49,7 @@ import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.componen
 import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
 import { LibroIvaComponent } from './libro-iva/libro-iva.component';
 import { UniquePipe } from './unique.pipe';
+import { CtaCteProveedoresComponent } from './cta-cte-proveedores/cta-cte-proveedores.component';
 
 
 @NgModule({
@@ -85,7 +86,8 @@ import { UniquePipe } from './unique.pipe';
     TipoRetencionComponent,
     ComprobantesCompraComponent,
     LibroIvaComponent,
-    UniquePipe
+    UniquePipe,
+    CtaCteProveedoresComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
