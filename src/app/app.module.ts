@@ -48,6 +48,7 @@ import {NavbarTitleService} from '../service/navbar-title.service';
 import { TipoRetencionComponent } from './tipo-retencion/tipo-retencion.component';
 import { ComprobantesCompraComponent } from './comprobantes-compra/comprobantes-compra.component';
 import { LibroIvaComponent } from './libro-iva/libro-iva.component';
+import { RecuperarPasswordComponent } from './recuperar-password/recuperar-password.component';
 
 
 @NgModule({
@@ -83,7 +84,8 @@ import { LibroIvaComponent } from './libro-iva/libro-iva.component';
     ImpresionComponent,
     TipoRetencionComponent,
     ComprobantesCompraComponent,
-    LibroIvaComponent
+    LibroIvaComponent,
+    RecuperarPasswordComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
