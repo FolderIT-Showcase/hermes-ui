@@ -25,10 +25,12 @@ import {ImpresionComponent} from './impresion/impresion.component';
 import {TipoRetencionComponent} from './tipo-retencion/tipo-retencion.component';
 import {ComprobantesCompraComponent} from './comprobantes-compra/comprobantes-compra.component';
 import {LibroIvaComponent} from './libro-iva/libro-iva.component';
+import {RecuperarPasswordComponent} from './recuperar-password/recuperar-password.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'login', component: LoginComponent},
+  {path: 'recuperarpassword', component: RecuperarPasswordComponent},
   {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'proveedores', component: ProveedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'vendedores', component: VendedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
