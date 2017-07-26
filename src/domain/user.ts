@@ -6,6 +6,7 @@ export class User {
   firstName: string;
   lastName: string;
   name: string;
+  username: string;
   token?: string;
   rol_a_mostrar: string;
   rol_id;

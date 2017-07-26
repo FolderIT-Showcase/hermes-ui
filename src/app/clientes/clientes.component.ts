@@ -278,7 +278,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     }
 
     this.localidades = [];
-    if (!isNullOrUndefined(this.clienteSeleccionado)) {
+    if (!isNullOrUndefined(this.clienteSeleccionado) && !isNullOrUndefined(this.clienteSeleccionado.domicilios)) {
       this.clienteSeleccionado.domicilios.forEach(
         domicilio => {
           this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
