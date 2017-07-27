@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.loading = true;
     const user = new User();
-    user.name = this.model.name;
+    user.username = this.model.username;
     user.password = this.model.password;
     this.authenticationService.login(user)
       .then(() => {
@@ -42,5 +42,4 @@ export class LoginComponent implements OnInit {
         this.loading = false;
       });
   }
-
 }
