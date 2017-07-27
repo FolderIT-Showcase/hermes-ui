@@ -271,4 +271,32 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
     });
   }
 
+  imprimirReporteCtaCte() {
+    let fechaInicioAEnviar = this.fechaInicioCtaCte.date.year + '-' +
+      this.fechaInicioCtaCte.date.month + '-' +
+      this.fechaInicioCtaCte.date.day;
+    const fechaFinAEnviar = this.fechaFinCtaCte.date.year + '-' + this.fechaFinCtaCte.date.month + '-' + this.fechaFinCtaCte.date.day;
+    if (!this.fechaSeleccionadaCtaCte) {
+      const initialYear = new Date();
+      initialYear.setTime(0);
+      fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
+    }
+
+    this.apiService.downloadPDF('proveedores/cuentacorriente/reporte', {
+        'proveedor_id': this.proveedorCtaCteSeleccionado.id,
+        'fecha_inicio': fechaInicioAEnviar,
+        'fecha_fin': fechaFinAEnviar,
+      }
+    ).subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
+  }
 }
