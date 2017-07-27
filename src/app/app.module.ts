@@ -86,7 +86,6 @@ import { RecuperarPasswordComponent } from './recuperar-password/recuperar-passw
     TipoRetencionComponent,
     ComprobantesCompraComponent,
     LibroIvaComponent,
-    LibroIvaCompras,
     UniquePipe,
     RecuperarPasswordComponent
   ],
