@@ -235,7 +235,11 @@ export class ApiService {
         .subscribe(() => {
           localStorage.removeItem('currentUser');
           this.headers.delete('Authorization');
+        }, () => {
+          this.headers.delete('Authorization');
         });
+    } else {
+      this.headers.delete('Authorization');
     }
   }
 }
