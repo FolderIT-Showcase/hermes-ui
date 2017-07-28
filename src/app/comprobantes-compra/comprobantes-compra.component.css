@@ -7,6 +7,10 @@
   margin-right: 0;
 }
 
+.table-retenciones td {
+  font-size: 90%;
+}
+
 .tablecontainer {
   padding: 0em;
   height: 11em;
@@ -39,3 +43,5 @@
   font-weight: bold;
   color: #8E8E8E;
 }
+
+

@@ -23,7 +23,7 @@
     <td class="text-center">{{('0000'+ (comprobante.punto_venta).toString()).slice(-4)}}-{{('00000000'+ (comprobante.numero).toString()).slice(-8)}}</td>
     <td class="text-center">{{ comprobante.proveedor_nombre }}</td>
     <td class="text-center">{{('0'+comprobante.periodo.mes).slice(-2)}}-{{ comprobante.periodo.anio }}</td>
-    <td class="text-center">{{ comprobante.importe_total }}</td>
+    <td class="text-center">${{ comprobante.importe_total | number: '1.2-2' }}</td>
     <td style="width: 10%">
       <button title="Editar comprobante de compra" (click)="mostrarModalEditar(comprobante)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar comprobante de compra" (click)="mostrarModalEliminar(comprobante)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
@@ -261,20 +261,20 @@
                             <table class="row-border hover table table-retenciones">
                               <thead>
                               <tr>
-                                <th>Tipo</th>
-                                <th>Base imp</th>
-                                <th>Alicuota</th>
-                                <th>Importe</th>
-                                <th style="width:10%"> </th>
+                                <th class="text-center">Tipo</th>
+                                <th class="text-center">Base imp</th>
+                                <th class="text-center">Alicuota</th>
+                                <th class="text-center">Importe</th>
+                                <th class="text-center" style="width:10%"> </th>
                               </tr>
                               </thead>
                               <tbody>
                               <tr *ngFor="let retencion of retenciones">
-                                <td width="35%">{{ retencion.tipoRetencion.nombre }}</td>
-                                <td width="20%">{{ retencion.base_imponible }}</td>
-                                <td width="10%">{{ retencion.alicuota }}</td>
-                                <td width="20%">{{ retencion.importe }}</td>
-                                <td width="15%">
+                                <td class="text-center" width="36%">{{ retencion.tipoRetencion.nombre }}</td>
+                                <td class="text-center" width="22%">$ {{ retencion.base_imponible | number: '1.2-2' }}</td>
+                                <td class="text-center" width="10%">{{ retencion.alicuota }}%</td>
+                                <td class="text-center" width="22%">$ {{ retencion.importe | number: '1.2-2' }}</td>
+                                <td class="text-center" width="10%">
                                   <button (click)="eliminarRetencion(retencion)" data-toggle="modal" class="glyphicon glyphicon-remove red"></button >
                                 </td>
                               </tr>

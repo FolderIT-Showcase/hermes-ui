@@ -141,10 +141,10 @@
                   <label class="control-label estado"><input type="checkbox" [(ngModel)]="parametroFiltrarPorAbierto" name="parametroReporteFiltrarPorAbierto" > por Estado</label>
                 </div>
                 <div class="col-sm-3">
-                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="1" >Abiertos</label>
+                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="true" >Abiertos</label>
                 </div>
                 <div class="col-sm-3">
-                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="0" >Cerrados</label>
+                  <label class="radio-inline"><input type="radio" [disabled]="!parametroFiltrarPorAbierto" [(ngModel)]="parametroFiltroAbierto" name="parametroReporteSoloActivos" [value]="false" >Cerrados</label>
                 </div>
               </div>
             </div>
