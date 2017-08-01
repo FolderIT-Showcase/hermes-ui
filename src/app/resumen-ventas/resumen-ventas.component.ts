@@ -82,7 +82,9 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
     const fechaFinAEnviar = this.fechaFin.date.year + '-' + this.fechaFin.date.month + '-' + this.fechaFin.date.day;
     let codigos = '';
     this.tiposComprobantes.forEach( tipo => {
-      codigos += tipo.codigo + ',';
+      if (tipo.enlista) {
+        codigos += tipo.codigo + ',';
+      }
     });
     codigos = codigos.slice(0, -1);
 
