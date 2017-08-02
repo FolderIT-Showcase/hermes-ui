@@ -51,6 +51,7 @@ import { LibroIvaComponent } from './libro-iva/libro-iva.component';
 import { UniquePipe } from './unique.pipe';
 import { RecuperarPasswordComponent } from './recuperar-password/recuperar-password.component';
 import { CtaCteProveedoresComponent } from './cta-cte-proveedores/cta-cte-proveedores.component';
+import { ResumenVentasComponent } from './resumen-ventas/resumen-ventas.component';
 
 
 @NgModule({
@@ -89,7 +90,8 @@ import { CtaCteProveedoresComponent } from './cta-cte-proveedores/cta-cte-provee
     LibroIvaComponent,
     UniquePipe,
     RecuperarPasswordComponent,
-    CtaCteProveedoresComponent
+    CtaCteProveedoresComponent,
+    ResumenVentasComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

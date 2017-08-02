@@ -32,12 +32,12 @@
 
       <li data-toggle="collapse" data-target="#ventas"
           [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive ||
-            rlactacteclientes.isActive || rlaimpresion.isActive || rlalibroiva.isActive" class="collapsed">
+            rlactacteclientes.isActive || rlaimpresion.isActive || rlalibroiva.isActive || rlaresventas.isActive" class="collapsed">
         <a class="dropdown-toggle"><i class="fa fa-briefcase fa-lg"></i> Ventas<span class="arrow"></span></a>
       </li>
       <ul id="ventas" class="sub-menu collapse" role="menu">
         <li data-toggle="collapse" data-target="#comprobantes"
-            [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive || rlalibroiva.isActive" class="collapsed">
+            [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive" class="collapsed">
           <a class="dropdown-toggle" ><i class="fa fa-file-o"></i> Comprobantes<span class="arrow"></span></a>
         </li>
         <ul class="sub-menu collapse" id="comprobantes" role="menu">
@@ -49,6 +49,7 @@
         <li [routerLinkActive]="['active']" [routerLink]="['/ctacteclientes']" #rlactacteclientes="routerLinkActive"><a><i class="fa fa-list-ol"></i> Cuenta Corriente</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/impresion']" #rlaimpresion="routerLinkActive"><a><i class="fa fa-print"></i> Impresión por Pedido</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/libroiva']" #rlalibroiva="routerLinkActive"><a><i class="fa fa-book"></i> Libro IVA</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/resumenventas']" #rlaresventas="routerLinkActive"><a><i class="fa fa-file-text-o"></i> Resumen de Ventas</a></li>
       </ul>
 
       <li data-toggle="collapse" data-target="#compras"

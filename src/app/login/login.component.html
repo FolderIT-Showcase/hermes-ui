@@ -18,6 +18,12 @@
                  id="form-password" [(ngModel)]="model.password" #password="ngModel" required>
           <div *ngIf="f.submitted && !password.valid" class="help-block">Ingrese su contraseña</div>
         </div>
+        <div class="form-group" [ngClass]="{'has-error': f.submitted && !empresa.valid}">
+          <label class="sr-only" for="form-empresa">Empresa</label>
+          <input type="text" name="form-empresa" placeholder="Empresa" class="form-empresa form-control form-control-lg"
+                 id="form-empresa" [(ngModel)]="model.tenant" #empresa="ngModel" required>
+          <div *ngIf="f.submitted && !empresa.valid" class="help-block">Ingrese su empresa</div>
+        </div>
         <button type="submit" class="btn btn-primary btn-md btn-block">Ingresar</button>
         <button type="button" [routerLink]="['/recuperarpassword']" class="btn btn-default btn-md btn-block">Recuperar Contraseña</button>
       </form>

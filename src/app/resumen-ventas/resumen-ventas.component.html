@@ -1,0 +1,73 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row radio">
+    <div class="col-sm-2 col-sm-offset-1">
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipo" name="tipo" value="fecha">DETALLADO POR FECHA Y TIPO</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipo" name="tipo" value="tipo">DETALLADO POR TIPO</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipo" name="tipo" value="resumen">RESUMIDO</label>
+      </div>
+      <div class="radio">
+        <label><input type="radio" [(ngModel)]="tipo" name="tipo" value="jurisdiccion">POR JURISDICCIÓN</label>
+      </div>
+    </div>
+
+    <div class="col-sm-5">
+      <label class="col-sm-2 control-label">Desde</label>
+      <div  class="col-sm-4">
+        <my-date-picker id="fecha-inicio" [(ngModel)]="fechaInicio" name="fecha-inicio" [options]="myDatePickerOptions"></my-date-picker>
+      </div>
+
+      <label class="col-sm-2 control-label">hasta</label>
+      <div class="col-sm-4">
+        <my-date-picker id="fecha-fin" [(ngModel)]="fechaFin" name="fecha-fin" [options]="myDatePickerOptions"></my-date-picker>
+      </div>
+    </div>
+    <div *ngIf="(rangoFechaInvalido())" class="help-block col-sm-12">La fecha de inicio no puede ser posterior a la fecha de fin</div>
+
+    <div class="col-sm-4">
+      <button title="Tipos de Comprobante" (click)="mostrarModalTiposComprobantes()" data-toggle="modal" data-target="#modalItems" class="btn btn-default">Tipos de Comprobante</button>
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <button type="submit" (click)="imprimir(f)" class="btn btn-primary">Imprimir</button>
+  </div>
+</form>
+
+
+<div class="modal fade" id="modalItems" tabindex="-1" role="dialog" aria-labelledby="modalItems" #modalItems>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Tipos de Comoprobantes</h4>
+      </div>
+      <div class="modal-body" style="height: 450px;overflow-y: auto;">
+        <table id="tabla-articulos" class="row-border hover table">
+          <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th><input type="checkbox" (click)="toggleAll($event.target.checked)"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let tipoComprobante of tiposComprobantesCopy" class='clickable-row'>
+            <td>{{ tipoComprobante.codigo }}</td>
+            <td>{{ tipoComprobante.nombre }}</td>
+            <td><input type="checkbox" id="lista-item-enlista" [(ngModel)]="tipoComprobante.enlista" name="activo"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="submit" (click)="editarItems()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

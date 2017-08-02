@@ -50,7 +50,7 @@ export class ApiService {
   useJwt() {
     this.user = JSON.parse(localStorage.getItem('currentUser'));
     if (!isNullOrUndefined(this.user)) {
-      this.headers.set('Authorization', 'Bearer' + this.user.token);
+      this.headers.set('Authorization', 'Bearer ' + this.user.token);
     }
   }
 
@@ -132,7 +132,7 @@ export class ApiService {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
     const headers = new Headers({
       'Accept': 'application/json',
-      'Authorization':  'Bearer' + user.token
+      'Authorization':  'Bearer ' + user.token
     });
     const  formData: FormData = new FormData();
     formData.append('file', file, file.name);
@@ -162,7 +162,7 @@ export class ApiService {
     const user: User = JSON.parse(localStorage.getItem('currentUser'));
     const headers = new Headers({
       'Accept': 'application/pdf',
-      'Authorization':  'Bearer' + user.token,
+      'Authorization':  'Bearer ' + user.token,
     });
     return this.http
       .get(
@@ -234,7 +234,12 @@ export class ApiService {
       this.http.post(this.baseURL + 'logout', '', {headers: this.headers})
         .subscribe(() => {
           localStorage.removeItem('currentUser');
+          this.headers.delete('Authorization');
+        }, () => {
+          this.headers.delete('Authorization');
         });
+    } else {
+      this.headers.delete('Authorization');
     }
   }
 }

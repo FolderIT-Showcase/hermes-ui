@@ -7,6 +7,7 @@ export class User {
   lastName: string;
   name: string;
   username: string;
+  tenant: string;
   token?: string;
   rol_a_mostrar: string;
   rol_id;
