@@ -27,6 +27,7 @@ import {ComprobantesCompraComponent} from './comprobantes-compra/comprobantes-co
 import {LibroIvaComponent} from './libro-iva/libro-iva.component';
 import {RecuperarPasswordComponent} from './recuperar-password/recuperar-password.component';
 import {CtaCteProveedoresComponent} from './cta-cte-proveedores/cta-cte-proveedores.component';
+import {ResumenVentasComponent} from 'app/resumen-ventas/resumen-ventas.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -55,6 +56,7 @@ const appRoutes: Routes = [
   {path: 'comprobantescompra', component: ComprobantesCompraComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'libroiva', component: LibroIvaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'ctacteproveedores', component: CtaCteProveedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'resumenventas', component: ResumenVentasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
