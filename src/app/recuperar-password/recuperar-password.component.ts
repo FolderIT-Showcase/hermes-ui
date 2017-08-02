@@ -36,7 +36,9 @@ export class RecuperarPasswordComponent implements OnInit {
   enviarCodigo(f1: HTMLFormElement) {
     this.submitted1 = true;
     if (f1.valid) {
-      this.apiService.post('password/forgot', {'email': this.model.email}).subscribe( res => {
+      this.apiService.post('password/forgot', {
+        'email': this.model.email,
+        'tenant': this.model.tenant}).subscribe( res => {
         this.mostrarCodigo = false;
         this.mostrarRecuperar = true;
       }, error => {
