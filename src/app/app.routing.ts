@@ -28,6 +28,9 @@ import {LibroIvaComponent} from './libro-iva/libro-iva.component';
 import {RecuperarPasswordComponent} from './recuperar-password/recuperar-password.component';
 import {CtaCteProveedoresComponent} from './cta-cte-proveedores/cta-cte-proveedores.component';
 import {ResumenVentasComponent} from 'app/resumen-ventas/resumen-ventas.component';
+import {BancoComponent} from './banco/banco.component';
+import {CuentaBancariaComponent} from './cuenta-bancaria/cuenta-bancaria.component';
+import {TipoTarjetaComponent} from './tipo-tarjeta/tipo-tarjeta.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -57,6 +60,9 @@ const appRoutes: Routes = [
   {path: 'libroiva', component: LibroIvaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'ctacteproveedores', component: CtaCteProveedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'resumenventas', component: ResumenVentasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'bancos', component: BancoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'cuentasbancarias', component: CuentaBancariaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'tipostarjeta', component: TipoTarjetaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
