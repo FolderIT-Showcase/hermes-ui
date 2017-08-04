@@ -66,10 +66,17 @@ export class CarteraValoresComponent implements OnInit {
         this.filter.cliente = this.cliente;
       }
       if (this.filtrarFechaIngreso) {
-        this.filter.fecha_ingreso_inicio = this.fechaIngresoInicio.date.year + '-'
-          + this.fechaIngresoInicio.date.month
-          + '-' + this.fechaIngresoInicio.date.day;
-        this.filter.fecha_ingreso_fin = this.fechaIngresoFin.date.year + '-' + this.fechaIngresoFin.date.month + '-' + this.fechaIngresoFin.date.day;
+        if (this.medioPago === 0) {
+          this.filter.fecha_ingreso_inicio = this.fechaIngresoInicio.date.year + '-'
+            + this.fechaIngresoInicio.date.month
+            + '-' + this.fechaIngresoInicio.date.day;
+          this.filter.fecha_ingreso_fin = this.fechaIngresoFin.date.year + '-' + this.fechaIngresoFin.date.month + '-' + this.fechaIngresoFin.date.day;
+        } else {
+          this.filter.fecha_inicio = this.fechaIngresoInicio.date.year + '-'
+            + this.fechaIngresoInicio.date.month
+            + '-' + this.fechaIngresoInicio.date.day;
+          this.filter.fecha_fin = this.fechaIngresoFin.date.year + '-' + this.fechaIngresoFin.date.month + '-' + this.fechaIngresoFin.date.day;
+        }
       }
 
       switch (this.medioPago) {
