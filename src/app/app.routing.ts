@@ -1,4 +1,6 @@
-﻿﻿import {RouterModule, Routes} from '@angular/router';
+﻿import {CarteraValoresComponent} from './cartera-valores/cartera-valores.component';
+
+﻿import {RouterModule, Routes} from '@angular/router';
 
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
@@ -63,6 +65,7 @@ const appRoutes: Routes = [
   {path: 'bancos', component: BancoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'cuentasbancarias', component: CuentaBancariaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'tipostarjeta', component: TipoTarjetaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'carteravalores', component: CarteraValoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

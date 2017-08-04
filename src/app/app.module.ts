@@ -55,6 +55,10 @@ import { ResumenVentasComponent } from './resumen-ventas/resumen-ventas.componen
 import { BancoComponent } from './banco/banco.component';
 import { CuentaBancariaComponent } from './cuenta-bancaria/cuenta-bancaria.component';
 import { TipoTarjetaComponent } from './tipo-tarjeta/tipo-tarjeta.component';
+import { CarteraValoresComponent } from './cartera-valores/cartera-valores.component';
+import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
+import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
+import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
 
 
 @NgModule({
@@ -97,7 +101,11 @@ import { TipoTarjetaComponent } from './tipo-tarjeta/tipo-tarjeta.component';
     ResumenVentasComponent,
     BancoComponent,
     CuentaBancariaComponent,
-    TipoTarjetaComponent
+    TipoTarjetaComponent,
+    CarteraValoresComponent,
+    ChequesComponent,
+    DepositosComponent,
+    TarjetasComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

@@ -1,0 +1,103 @@
+<form class="form-horizontal">
+  <div class="form-group row">
+    <label for="tipo" class="col-sm-2 control-label">Medio de pago:</label>
+    <div class="col-sm-3">
+      <select class="form-control" id="tipo" [(ngModel)]="medioPago" name="tipo">
+        <option [ngValue]="0">Cheques de Terceros</option>
+        <option [ngValue]="1">Depósitos</option>
+        <option [ngValue]="2">Tarjetas</option>
+      </select>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-default" data-toggle="collapse" data-target="#collapse">Mostrar Filtros</button>
+    </div>
+    <div class="col-sm-2">
+      <button class="btn btn-default" (click)="filtrar()">Filtrar</button>
+    </div>
+  </div>
+  <div class="collapse" id="collapse">
+    <div class="form-group row">
+      <div class="col-sm-5">
+        <h5>Fecha de Ingreso</h5>
+        <div class="col-sm-12" [ngClass]="{'has-error': rangoFechaInvalido() && filtrarFechaIngreso}">
+          <label class="col-sm-3 control-label" style="padding-left: 0; padding-right: 0; text-align: left">
+            <input type="radio" [(ngModel)]="filtrarFechaIngreso" name="filtrarFechaIngreso" [value]="true">
+            Desde
+          </label>
+          <div  class="col-sm-3" style="padding-left: 0; padding-right: 0">
+            <my-date-picker id="fecha-ingreso-inicio" [(ngModel)]="fechaIngresoInicio" name="fecha-ingreso-inicio" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
+          </div>
+
+          <label class="col-sm-2 control-label">Hasta</label>
+          <div class="col-sm-3" style="padding-left: 0; padding-right: 0">
+            <my-date-picker id="fecha-ingreso-fin" [(ngModel)]="fechaIngresoFin" name="fecha-ingreso-fin" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
+          </div>
+
+          <div *ngIf="(rangoFechaInvalido() && filtrarFechaIngreso)" class="help-block col-sm-12">La fecha de inicio no puede ser posterior a la fecha de fin</div>
+        </div>
+
+        <div class="col-sm-12">
+          <label>
+            <input type="radio" [(ngModel)]="filtrarFechaIngreso" name="filtrarFechaIngreso" [value]="false">
+            Sin Fecha
+          </label>
+        </div>
+      </div>
+
+      <div class="col-sm-5">
+        <h5>Cliente</h5>
+        <div class="col-sm-12">
+          <label class="col-sm-4 control-label" style="padding-left: 0; padding-right: 0; text-align: left">
+            <input type="radio" [(ngModel)]="filtrarCliente" name="filtrarCliente" [value]="true">
+            Seleccione uno
+          </label>
+          <div class="col-sm-7">
+            <select class="form-control" id="cliente" [(ngModel)]="cliente" name="cliente" [disabled]="!filtrarCliente">
+              <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label>
+            <input type="radio" [(ngModel)]="filtrarCliente" name="filtrarCliente" [value]="false">
+            Todos
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <div class="col-sm-5" *ngIf="medioPago !== 1">
+        <h5>Estado</h5>
+        <div class="col-sm-12">
+          <label class="col-sm-5 control-label" style="padding-left: 0; padding-right: 0; text-align: left">
+            <input type="radio" [(ngModel)]="filtrarEstado" name="filtrarEstado" [value]="true">
+            Seleccione uno
+          </label>
+          <div class="col-sm-7">
+            <select class="form-control" id="estado" [(ngModel)]="estado" name="estado" [disabled]="!filtrarEstado">
+              <option *ngIf="medioPago === 0" [ngValue]="'I'">Ingresado</option>
+              <option *ngIf="medioPago === 0" [ngValue]="'D'">Depositado</option>
+              <option *ngIf="medioPago === 0" [ngValue]="'T'">Transferido</option>
+              <option *ngIf="medioPago === 0" [ngValue]="'R'">Rechazado</option>
+              <option *ngIf="medioPago === 0" [ngValue]="'V'">Vencido</option>
+              <option *ngIf="medioPago === 2" [ngValue]="'I'">Ingresado</option>
+              <option *ngIf="medioPago === 2" [ngValue]="'A'">Aceptado</option>
+              <option *ngIf="medioPago === 2" [ngValue]="'R'">Rechazado</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <label>
+            <input type="radio" [(ngModel)]="filtrarEstado" name="filtrarEstado" [value]="false">
+            Todos
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-tarjetas *ngIf="mostrarTarjetas" [filter]="filter"></app-tarjetas>
+  <app-depositos *ngIf="mostrarDepositos" [filter]="filter"></app-depositos>
+  <app-cheques *ngIf="mostrarCheques" [filter]="filter"></app-cheques>
+</form>
