@@ -100,16 +100,16 @@
             <div class="col-sm-10 has-feedback"
                  [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
             'has-success': numero.valid}">
-              <input type="text" class="form-control" id="deposito-numero" [(ngModel)]="depositoSeleccionada.numero" name="numero" #numero="ngModel" required [maxLength]="20" placeholder="Numero">
+              <input type="text" class="form-control" id="deposito-numero" [(ngModel)]="depositoSeleccionada.numero" name="numero" #numero="ngModel" required [maxLength]="20" placeholder="Número">
               <span *ngIf="numero.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="numero.errors !== null && (!numero.pristine || numero.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!numero.valid && (!numero.pristine || numero.touched || submitted)" class="help-block">Ingrese un numero de depósito</div>
+              <div *ngIf="!numero.valid && (!numero.pristine || numero.touched || submitted)" class="help-block">Ingrese un número de depósito</div>
             </div>
           </div>
 
           <div class="form-group row">
             <label for="deposito-importe" class="col-sm-2 required control-label">Importe</label>
-            <div class="col-sm-5 has-feedback"
+            <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
             'has-success': importe.valid}">
               <input type="number" class="form-control text-right" id="deposito-importe" [(ngModel)]="depositoSeleccionada.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
@@ -122,14 +122,12 @@
 
           <div class="form-group row">
             <label for="deposito-fecha" class="col-sm-2 required control-label">Fecha</label>
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <my-date-picker id="deposito-fecha" [(ngModel)]="depositoSeleccionada.fecha" [options]="myDatePickerOptions" name="fecha"></my-date-picker>
             </div>
-          </div>
 
-          <div class="form-group row">
             <label for="deposito-fechaacr" class="col-sm-2 required control-label">Fecha Acreditación</label>
-            <div class="col-sm-5">
+            <div class="col-sm-4">
               <my-date-picker id="deposito-fechaacr" [(ngModel)]="depositoSeleccionada.fecha_acreditacion" [options]="myDatePickerOptions" name="fechaacr"></my-date-picker>
             </div>
           </div>
@@ -156,10 +154,10 @@
             <div class="col-sm-10 has-feedback"
                  [ngClass]="{'has-error': !descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted),
             'has-success': descripcion.valid}">
-              <input type="text" class="form-control" id="deposito-descripcion" [(ngModel)]="depositoSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" required [maxLength]="500" placeholder="Descripcion">
+              <input type="text" class="form-control" id="deposito-descripcion" [(ngModel)]="depositoSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" required [maxLength]="500" placeholder="Descripción">
               <span *ngIf="descripcion.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="descripcion.errors !== null && (!descripcion.pristine || descripcion.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted)" class="help-block">Ingrese una descripcion</div>
+              <div *ngIf="!descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted)" class="help-block">Ingrese una descripción</div>
             </div>
           </div>
         </form>
