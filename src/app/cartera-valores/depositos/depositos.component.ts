@@ -197,7 +197,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
         this.enNuevo = false;
         this.apiService.post('depositos', depositoAEnviar).subscribe(
           json => {
-            if (!!json.client_id) {
+            if (!!json.cliente_id) {
               json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
             }
             this.depositos.push(json);
@@ -208,7 +208,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
       } else {
         this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
           json => {
-            if (!!json.client_id) {
+            if (!!json.cliente_id) {
               json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
             }
             Object.assign(this.depositoOriginal, json);

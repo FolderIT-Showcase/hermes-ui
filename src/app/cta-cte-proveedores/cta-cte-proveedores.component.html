@@ -102,8 +102,8 @@
         <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Comprobante Compra</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
           <div class="form-group row">
             <div class="col-sm-12">
               <label for="comprobante-proveedor-nombre" class="col-sm-2 control-label">Proveedor</label>
@@ -202,12 +202,12 @@
               <input class="form-control ver-total" type="number" name="comprobante-total" id="comprobante-total" [ngModel]="comprobante.importe_total" readonly>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        <!--<button type="button" (click)="imprimirPDF(ctaCteClienteSeleccionada)" class="btn btn-primary">Imprimir</button >-->
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <!--<button type="button" (click)="imprimirPDF(ctaCteClienteSeleccionada)" class="btn btn-primary">Imprimir</button >-->
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -56,8 +56,8 @@
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
 
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
 
           <div class="form-group row">
             <label for="periodofiscal-mes" class="col-sm-2 required control-label">Mes</label>
@@ -101,12 +101,12 @@
           <div class="form-group row">
             <div *ngIf="existe" class="error-block">El periodo fiscal ya existe!</div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -118,8 +118,8 @@
         <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Generar lista de periodos fiscales</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal">
+      <form class="form-horizontal">
+        <div class="modal-body">
           <p>Filtros asociados a los periodos fiscales</p>
           <div class="form-group row">
             <div class="col-sm-11">
@@ -149,13 +149,13 @@
               </div>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="clearFilters()" class="btn btn-default clearfilters" data-dismiss="modal">Limpiar filtros</button>
-        <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="generarListaFiltrada()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="clearFilters()" class="btn btn-default clearfilters" data-dismiss="modal">Limpiar filtros</button>
+          <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="generarListaFiltrada()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

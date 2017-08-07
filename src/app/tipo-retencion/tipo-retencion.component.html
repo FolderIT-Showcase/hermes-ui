@@ -51,8 +51,8 @@
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
 
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
 
           <div class="form-group row">
             <label for="tiporetencion-nombre" class="col-sm-2 required control-label">Nombre</label>
@@ -78,13 +78,12 @@
             </div>
           </div>
 
-          <div class="modal-footer">
-            <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-          </div>
-
-        </form>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
 
     </div>
   </div>

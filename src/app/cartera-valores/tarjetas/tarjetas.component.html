@@ -57,8 +57,8 @@
         <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
           <div class="form-group row">
             <label for="tarjeta-cliente" class="col-sm-2 control-label">Cliente</label>
             <div class="col-sm-10">
@@ -135,12 +135,13 @@
               <input type="text" class="form-control" id="tarjeta-descripcion" [(ngModel)]="tarjetaSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="500" placeholder="Descripción">
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-      </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
