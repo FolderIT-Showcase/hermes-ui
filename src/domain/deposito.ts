@@ -4,9 +4,10 @@ export class Deposito {
   cliente_nombre: string;
   cuenta_id: number;
   numero: string;
-  importe: number;
-  fecha: any;
+  importe: string | number;
+  fecha_ingreso: any;
   fecha_acreditacion: any;
+  fecha_deposito: any;
   tipo: string;
   descripcion: string;
 }

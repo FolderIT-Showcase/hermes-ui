@@ -22,7 +22,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
   dtOptions: any = {};
   cheques: Cheque[] = [];
   dtTrigger: Subject<any> = new Subject();
-  chequeSeleccionada: Cheque = new Cheque();
+  chequeSeleccionado: Cheque = new Cheque();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   modalTitle: string;
@@ -112,75 +112,83 @@ export class ChequesComponent implements OnInit, OnDestroy {
     this.modalTitle = 'Editar Cheque';
     this.enNuevo = false;
     this.chequeOriginal = cheque;
-    this.chequeSeleccionada = JSON.parse(JSON.stringify(cheque));
+    this.chequeSeleccionado = JSON.parse(JSON.stringify(cheque));
 
-    let month = this.chequeSeleccionada.fecha_emision.toString().split('-')[1];
+    let month, day;
+
+    if (!!this.chequeSeleccionado.fecha_emision) {
+      month = this.chequeSeleccionado.fecha_emision.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
+      }
+      day = this.chequeSeleccionado.fecha_emision.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      this.chequeSeleccionado.fecha_emision =  {
+        date: {
+          year: this.chequeSeleccionado.fecha_emision.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
+
+    month = this.chequeSeleccionado.fecha_ingreso.toString().split('-')[1];
     if (month[0] === '0') {
       month = month.slice(1, 2);
     }
-    let day = this.chequeSeleccionada.fecha_emision.toString().split('-')[2];
+    day = this.chequeSeleccionado.fecha_ingreso.toString().split('-')[2];
     if (day[0] === '0') {
       day = day.slice(1, 2);
     }
-    this.chequeSeleccionada.fecha_emision =  {
+    this.chequeSeleccionado.fecha_ingreso =  {
       date: {
-        year: this.chequeSeleccionada.fecha_emision.toString().slice(0, 4),
+        year: this.chequeSeleccionado.fecha_ingreso.toString().slice(0, 4),
         month: month,
         day: day
       }
     };
 
-    month = this.chequeSeleccionada.fecha_ingreso.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.chequeSeleccionada.fecha_ingreso.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.chequeSeleccionada.fecha_ingreso =  {
-      date: {
-        year: this.chequeSeleccionada.fecha_ingreso.toString().slice(0, 4),
-        month: month,
-        day: day
+    if (!!this.chequeSeleccionado.fecha_vencimiento) {
+      month = this.chequeSeleccionado.fecha_vencimiento.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
       }
-    };
+      day = this.chequeSeleccionado.fecha_vencimiento.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      this.chequeSeleccionado.fecha_vencimiento =  {
+        date: {
+          year: this.chequeSeleccionado.fecha_vencimiento.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
 
-    month = this.chequeSeleccionada.fecha_vencimiento.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.chequeSeleccionada.fecha_vencimiento.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.chequeSeleccionada.fecha_vencimiento =  {
-      date: {
-        year: this.chequeSeleccionada.fecha_vencimiento.toString().slice(0, 4),
-        month: month,
-        day: day
+    if (!!this.chequeSeleccionado.fecha_cobro) {
+      month = this.chequeSeleccionado.fecha_cobro.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
       }
-    };
-
-    month = this.chequeSeleccionada.fecha_cobro.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.chequeSeleccionada.fecha_cobro.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.chequeSeleccionada.fecha_cobro =  {
-      date: {
-        year: this.chequeSeleccionada.fecha_cobro.toString().slice(0, 4),
-        month: month,
-        day: day
+      day = this.chequeSeleccionado.fecha_cobro.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
       }
-    };
+      this.chequeSeleccionado.fecha_cobro =  {
+        date: {
+          year: this.chequeSeleccionado.fecha_cobro.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
   }
 
   mostrarModalEliminar(cheque: Cheque) {
-    this.chequeSeleccionada = cheque;
+    this.chequeSeleccionado = cheque;
   }
 
   editarONuevo(f: any) {
@@ -188,12 +196,23 @@ export class ChequesComponent implements OnInit, OnDestroy {
     if (f.valid) {
       this.submitted = false;
       (<any>$('#modalEditar')).modal('hide');
+
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.chequeSeleccionado.importe;
+      this.chequeSeleccionado.importe = !isNaN(+num) ? (+num).toFixed(2) : num;
+
       const chequeAEnviar = new Cheque();
-      Object.assign(chequeAEnviar, this.chequeSeleccionada);
-      chequeAEnviar.fecha_emision = chequeAEnviar.fecha_emision.date.year + '-' + chequeAEnviar.fecha_emision.date.month + '-' + chequeAEnviar.fecha_emision.date.day;
+      Object.assign(chequeAEnviar, this.chequeSeleccionado);
+      if (!!chequeAEnviar.fecha_emision) {
+        chequeAEnviar.fecha_emision = chequeAEnviar.fecha_emision.date.year + '-' + chequeAEnviar.fecha_emision.date.month + '-' + chequeAEnviar.fecha_emision.date.day;
+      }
       chequeAEnviar.fecha_ingreso = chequeAEnviar.fecha_ingreso.date.year + '-' + chequeAEnviar.fecha_ingreso.date.month + '-' + chequeAEnviar.fecha_ingreso.date.day;
-      chequeAEnviar.fecha_vencimiento = chequeAEnviar.fecha_vencimiento.date.year + '-' + chequeAEnviar.fecha_vencimiento.date.month + '-' + chequeAEnviar.fecha_vencimiento.date.day;
-      chequeAEnviar.fecha_cobro = chequeAEnviar.fecha_cobro.date.year + '-' + chequeAEnviar.fecha_cobro.date.month + '-' + chequeAEnviar.fecha_cobro.date.day;
+      if (!!chequeAEnviar.fecha_vencimiento) {
+        chequeAEnviar.fecha_vencimiento = chequeAEnviar.fecha_vencimiento.date.year + '-' + chequeAEnviar.fecha_vencimiento.date.month + '-' + chequeAEnviar.fecha_vencimiento.date.day;
+      }
+      if (!!chequeAEnviar.fecha_cobro) {
+        chequeAEnviar.fecha_cobro = chequeAEnviar.fecha_cobro.date.year + '-' + chequeAEnviar.fecha_cobro.date.month + '-' + chequeAEnviar.fecha_cobro.date.day;
+      }
       setTimeout(() => { this.cerrar(); }, 100);
 
       if (this.enNuevo) {
@@ -201,7 +220,9 @@ export class ChequesComponent implements OnInit, OnDestroy {
         this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
           json => {
             json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.cliente_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             this.cheques.push(json);
             this.recargarTabla();
             f.form.reset();
@@ -211,7 +232,9 @@ export class ChequesComponent implements OnInit, OnDestroy {
         this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
           json => {
             json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.cliente_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             Object.assign(this.chequeOriginal, json);
             f.form.reset();
           }
@@ -223,12 +246,9 @@ export class ChequesComponent implements OnInit, OnDestroy {
   mostrarModalNuevo() {
     this.modalTitle = 'Nuevo Cheque';
     this.enNuevo = true;
-    this.chequeSeleccionada = new Cheque;
+    this.chequeSeleccionado = new Cheque;
     const today = new Date();
-    this.chequeSeleccionada.fecha_emision =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    this.chequeSeleccionada.fecha_ingreso =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    this.chequeSeleccionada.fecha_vencimiento =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    this.chequeSeleccionada.fecha_cobro =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
+    this.chequeSeleccionado.fecha_ingreso =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
     (<any>$('#modalEditar')).modal('show');
   }
 
@@ -238,9 +258,9 @@ export class ChequesComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.submitted = false;
-    this.apiService.delete('chequesterceros/' + this.chequeSeleccionada.id).subscribe( json => {
+    this.apiService.delete('chequesterceros/' + this.chequeSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
-        const index: number = this.cheques.indexOf(this.chequeSeleccionada);
+        const index: number = this.cheques.indexOf(this.chequeSeleccionado);
         if (index !== -1) {
           this.cheques.splice(index, 1);
         }
@@ -268,7 +288,9 @@ export class ChequesComponent implements OnInit, OnDestroy {
         json => {
           this.clientes = json;
           this.cheques.forEach(element => {
-            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            if (!!element.cliente_id) {
+              element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            }
           });
         }
       );

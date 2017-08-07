@@ -4,9 +4,10 @@ export class Tarjeta {
   cliente_nombre: string;
   tarjeta_id: number;
   tarjeta_nombre: string;
-  importe: number;
-  fecha: any;
+  importe: string | number;
+  fecha_ingreso: any;
   fecha_acreditacion: any;
+  fecha_deposito: any;
   estado: string;
   descripcion: string;
 }

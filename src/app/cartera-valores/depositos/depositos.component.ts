@@ -22,7 +22,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
   dtOptions: any = {};
   depositos: Deposito[] = [];
   dtTrigger: Subject<any> = new Subject();
-  depositoSeleccionada: Deposito = new Deposito();
+  depositoSeleccionado: Deposito = new Deposito();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   modalTitle: string;
@@ -113,61 +113,93 @@ export class DepositosComponent implements OnInit, OnDestroy {
     this.modalTitle = 'Editar Depósito';
     this.enNuevo = false;
     this.depositoOriginal = deposito;
-    this.depositoSeleccionada = JSON.parse(JSON.stringify(deposito));
+    this.depositoSeleccionado = JSON.parse(JSON.stringify(deposito));
 
-    let month = this.depositoSeleccionada.fecha.toString().split('-')[1];
+    let month = this.depositoSeleccionado.fecha_ingreso.toString().split('-')[1];
     if (month[0] === '0') {
       month = month.slice(1, 2);
     }
-    let day = this.depositoSeleccionada.fecha.toString().split('-')[2];
+    let day = this.depositoSeleccionado.fecha_ingreso.toString().split('-')[2];
     if (day[0] === '0') {
       day = day.slice(1, 2);
     }
-    this.depositoSeleccionada.fecha =  {
+    this.depositoSeleccionado.fecha_ingreso =  {
       date: {
-        year: this.depositoSeleccionada.fecha.toString().slice(0, 4),
+        year: this.depositoSeleccionado.fecha_ingreso.toString().slice(0, 4),
         month: month,
         day: day
       }
     };
 
-    month = this.depositoSeleccionada.fecha_acreditacion.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.depositoSeleccionada.fecha_acreditacion.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.depositoSeleccionada.fecha_acreditacion =  {
-      date: {
-        year: this.depositoSeleccionada.fecha_acreditacion.toString().slice(0, 4),
-        month: month,
-        day: day
+    if (!!this.depositoSeleccionado.fecha_acreditacion) {
+      month = this.depositoSeleccionado.fecha_acreditacion.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
       }
-    };
+      day = this.depositoSeleccionado.fecha_acreditacion.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      this.depositoSeleccionado.fecha_acreditacion =  {
+        date: {
+          year: this.depositoSeleccionado.fecha_acreditacion.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
+
+    if (!!this.depositoSeleccionado.fecha_deposito) {
+      month = this.depositoSeleccionado.fecha_deposito.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
+      }
+      day = this.depositoSeleccionado.fecha_deposito.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      this.depositoSeleccionado.fecha_deposito =  {
+        date: {
+          year: this.depositoSeleccionado.fecha_deposito.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
   }
 
   mostrarModalEliminar(deposito: Deposito) {
-    this.depositoSeleccionada = deposito;
+    this.depositoSeleccionado = deposito;
   }
 
   editarONuevo(f: any) {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;
+
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.depositoSeleccionado.importe;
+      this.depositoSeleccionado.importe = !isNaN(+num) ? (+num).toFixed(2) : num;
+
       (<any>$('#modalEditar')).modal('hide');
       const depositoAEnviar = new Deposito();
-      Object.assign(depositoAEnviar, this.depositoSeleccionada);
-      depositoAEnviar.fecha = depositoAEnviar.fecha.date.year + '-' + depositoAEnviar.fecha.date.month + '-' + depositoAEnviar.fecha.date.day;
-      depositoAEnviar.fecha_acreditacion = depositoAEnviar.fecha_acreditacion.date.year + '-' + depositoAEnviar.fecha_acreditacion.date.month + '-' + depositoAEnviar.fecha_acreditacion.date.day;
+      Object.assign(depositoAEnviar, this.depositoSeleccionado);
+      depositoAEnviar.fecha_ingreso = depositoAEnviar.fecha_ingreso.date.year + '-' + depositoAEnviar.fecha_ingreso.date.month + '-' + depositoAEnviar.fecha_ingreso.date.day;
+      if (!!depositoAEnviar.fecha_acreditacion) {
+        depositoAEnviar.fecha_acreditacion = depositoAEnviar.fecha_acreditacion.date.year + '-' + depositoAEnviar.fecha_acreditacion.date.month + '-' + depositoAEnviar.fecha_acreditacion.date.day;
+      }
+      if (!!depositoAEnviar.fecha_deposito) {
+        depositoAEnviar.fecha_deposito = depositoAEnviar.fecha_deposito.date.year + '-' + depositoAEnviar.fecha_deposito.date.month + '-' + depositoAEnviar.fecha_deposito.date.day;
+      }
       setTimeout(() => { this.cerrar(); }, 100);
 
       if (this.enNuevo) {
         this.enNuevo = false;
         this.apiService.post('depositos', depositoAEnviar).subscribe(
           json => {
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.client_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             this.depositos.push(json);
             this.recargarTabla();
             f.form.reset();
@@ -176,7 +208,9 @@ export class DepositosComponent implements OnInit, OnDestroy {
       } else {
         this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
           json => {
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.client_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             Object.assign(this.depositoOriginal, json);
             f.form.reset();
           }
@@ -188,10 +222,9 @@ export class DepositosComponent implements OnInit, OnDestroy {
   mostrarModalNuevo() {
     this.modalTitle = 'Nuevo Depósito';
     this.enNuevo = true;
-    this.depositoSeleccionada = new Deposito;
+    this.depositoSeleccionado = new Deposito;
     const today = new Date();
-    this.depositoSeleccionada.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    this.depositoSeleccionada.fecha_acreditacion =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
+    this.depositoSeleccionado.fecha_ingreso =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
     (<any>$('#modalEditar')).modal('show');
   }
 
@@ -201,9 +234,9 @@ export class DepositosComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.submitted = false;
-    this.apiService.delete('depositos/' + this.depositoSeleccionada.id).subscribe( json => {
+    this.apiService.delete('depositos/' + this.depositoSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
-        const index: number = this.depositos.indexOf(this.depositoSeleccionada);
+        const index: number = this.depositos.indexOf(this.depositoSeleccionado);
         if (index !== -1) {
           this.depositos.splice(index, 1);
         }
@@ -231,7 +264,9 @@ export class DepositosComponent implements OnInit, OnDestroy {
         json => {
           this.clientes = json;
           this.depositos.forEach(element => {
-            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            if (!!element.cliente_id) {
+              element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            }
           });
         }
       );

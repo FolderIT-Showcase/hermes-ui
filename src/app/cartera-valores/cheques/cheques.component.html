@@ -62,18 +62,13 @@
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="cheque-cliente" class="col-sm-1 required control-label">Cliente</label>
-            <div class="col-sm-5 has-feedback"
-                 [ngClass]="{'has-error': !cliente.valid && (!cliente.pristine || cliente.touched || submitted),
-            'has-success': cliente.valid}">
+            <label for="cheque-cliente" class="col-sm-1 control-label">Cliente</label>
+            <div class="col-sm-5 has-feedback">
               <div class="select-style">
-                <select class="form-control" id="cheque-cliente" [(ngModel)]="chequeSeleccionada.cliente_id" name="cliente" #cliente="ngModel" required >
+                <select class="form-control" id="cheque-cliente" [(ngModel)]="chequeSeleccionado.cliente_id" name="cliente" #cliente="ngModel" >
                   <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
                 </select>
               </div>
-              <span *ngIf="cliente.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="cliente.errors !== null && (!cliente.pristine || cliente.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!cliente.valid && (!cliente.pristine || cliente.touched || submitted)" class="help-block">Seleccione un cliente</div>
             </div>
 
             <label for="cheque-banco" class="col-sm-1 required control-label">Banco</label>
@@ -81,7 +76,7 @@
                  [ngClass]="{'has-error': !banco.valid && (!banco.pristine || banco.touched || submitted),
             'has-success': banco.valid}">
               <div class="select-style">
-                <select class="form-control" id="cheque-banco" [(ngModel)]="chequeSeleccionada.banco_id" name="banco" #banco="ngModel" required >
+                <select class="form-control" id="cheque-banco" [(ngModel)]="chequeSeleccionado.banco_id" name="banco" #banco="ngModel" required >
                   <option *ngFor="let banco of bancos" [ngValue]="banco.id">{{banco.nombre}}</option>
                 </select>
               </div>
@@ -92,43 +87,28 @@
           </div>
 
           <div class="form-group row">
-            <label for="cheque-sucursal" class="col-sm-1 required control-label">Sucursal</label>
-            <div class="col-sm-4 has-feedback"
-                 [ngClass]="{'has-error': !sucursal.valid && (!sucursal.pristine || sucursal.touched || submitted),
-            'has-success': sucursal.valid}">
-              <input type="text" class="form-control" id="cheque-sucursal" [(ngModel)]="chequeSeleccionada.sucursal" name="sucursal" #sucursal="ngModel" required [maxLength]="50" placeholder="Sucursal">
-              <span *ngIf="sucursal.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="sucursal.errors !== null && (!sucursal.pristine || sucursal.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!sucursal.valid && (!sucursal.pristine || sucursal.touched || submitted)" class="help-block">Ingrese una sucursal</div>
+            <label for="cheque-sucursal" class="col-sm-1 control-label">Sucursal</label>
+            <div class="col-sm-4 has-feedback">
+              <input type="text" class="form-control" id="cheque-sucursal" [(ngModel)]="chequeSeleccionado.sucursal" name="sucursal" #sucursal="ngModel" [maxLength]="50" placeholder="Sucursal">
             </div>
           </div>
 
           <div class="form-group row">
-            <label for="cheque-numero" class="col-sm-1 required control-label">Número</label>
-            <div class="col-sm-3 has-feedback"
-                 [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
-            'has-success': numero.valid}">
-              <input type="text" class="form-control" id="cheque-numero" [(ngModel)]="chequeSeleccionada.numero" name="numero" #numero="ngModel" required [maxLength]="20" placeholder="Número">
-              <span *ngIf="numero.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="numero.errors !== null && (!numero.pristine || numero.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!numero.valid && (!numero.pristine || numero.touched || submitted)" class="help-block">Ingrese un numero</div>
+            <label for="cheque-numero" class="col-sm-1 control-label">Número</label>
+            <div class="col-sm-3 has-feedback">
+              <input type="text" class="form-control" id="cheque-numero" [(ngModel)]="chequeSeleccionado.numero" name="numero" #numero="ngModel" [maxLength]="20" placeholder="Número">
             </div>
 
-            <label for="cheque-nro_interno" class="col-sm-1 required control-label">Nro. Interno</label>
-            <div class="col-sm-3 has-feedback"
-                 [ngClass]="{'has-error': !nro_interno.valid && (!nro_interno.pristine || nro_interno.touched || submitted),
-            'has-success': nro_interno.valid}">
-              <input type="text" class="form-control" id="cheque-nro_interno" [(ngModel)]="chequeSeleccionada.nro_interno" name="nro_interno" #nro_interno="ngModel" required [maxLength]="10" placeholder="Nro. interno">
-              <span *ngIf="nro_interno.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="nro_interno.errors !== null && (!nro_interno.pristine || nro_interno.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!nro_interno.valid && (!nro_interno.pristine || nro_interno.touched || submitted)" class="help-block">Ingrese un nro. interno</div>
+            <label for="cheque-nro_interno" class="col-sm-1 control-label">Nro. Interno</label>
+            <div class="col-sm-3 has-feedback">
+              <input type="text" class="form-control" id="cheque-nro_interno" [(ngModel)]="chequeSeleccionado.nro_interno" name="nro_interno" #nro_interno="ngModel" [maxLength]="10" placeholder="Nro. interno">
             </div>
 
             <label for="cheque-importe" class="col-sm-1 required control-label">Importe</label>
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
             'has-success': importe.valid}">
-              <input type="number" class="form-control text-right" id="cheque-importe" [(ngModel)]="chequeSeleccionada.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
+              <input type="number" class="form-control text-right" id="cheque-importe" [(ngModel)]="chequeSeleccionado.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
               <span *ngIf="importe.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="importe.errors !== null && (!importe.pristine || importe.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="importe.errors !== null && importe.errors.required != null && (!importe.pristine || importe.touched || submitted)" class="help-block">Ingrese un importe</div>
@@ -137,46 +117,36 @@
           </div>
 
           <div class="form-group row">
-            <label for="cheque-fechaemision" class="col-sm-1 required control-label">Fecha Emisión</label>
+            <label for="cheque-fechaemision" class="col-sm-1 control-label">Fecha Emisión</label>
             <div class="col-sm-2">
-              <my-date-picker id="cheque-fechaemision" [(ngModel)]="chequeSeleccionada.fecha_emision" [options]="myDatePickerOptions" name="fechaemision"></my-date-picker>
+              <my-date-picker id="cheque-fechaemision" [(ngModel)]="chequeSeleccionado.fecha_emision" [options]="myDatePickerOptions" name="fechaemision"></my-date-picker>
             </div>
 
             <label for="cheque-fechaingreso" class="col-sm-1 required control-label">Fecha Ingreso</label>
             <div class="col-sm-2">
-              <my-date-picker id="cheque-fechaingreso" [(ngModel)]="chequeSeleccionada.fecha_ingreso" [options]="myDatePickerOptions" name="fechaingreso"></my-date-picker>
+              <my-date-picker id="cheque-fechaingreso" [(ngModel)]="chequeSeleccionado.fecha_ingreso" [options]="myDatePickerOptions" name="fechaingreso"></my-date-picker>
             </div>
 
-            <label for="cheque-fechavencimiento" class="col-sm-1 required control-label">Fecha Venc.</label>
+            <label for="cheque-fechavencimiento" class="col-sm-1 control-label">Fecha Venc.</label>
             <div class="col-sm-2">
-              <my-date-picker id="cheque-fechavencimiento" [(ngModel)]="chequeSeleccionada.fecha_vencimiento" [options]="myDatePickerOptions" name="fechavencimiento"></my-date-picker>
+              <my-date-picker id="cheque-fechavencimiento" [(ngModel)]="chequeSeleccionado.fecha_vencimiento" [options]="myDatePickerOptions" name="fechavencimiento"></my-date-picker>
             </div>
 
-            <label for="cheque-fechacobro" class="col-sm-1 required control-label">Fecha Cobro</label>
+            <label for="cheque-fechacobro" class="col-sm-1 control-label">Fecha Cobro</label>
             <div class="col-sm-2">
-              <my-date-picker id="cheque-fechacobro" [(ngModel)]="chequeSeleccionada.fecha_cobro" [options]="myDatePickerOptions" name="fechacobro"></my-date-picker>
+              <my-date-picker id="cheque-fechacobro" [(ngModel)]="chequeSeleccionado.fecha_cobro" [options]="myDatePickerOptions" name="fechacobro"></my-date-picker>
             </div>
           </div>
 
           <div class="form-group row">
-            <label for="cheque-origen" class="col-sm-1 required control-label">Origen</label>
-            <div class="col-sm-3 has-feedback"
-                 [ngClass]="{'has-error': !origen.valid && (!origen.pristine || origen.touched || submitted),
-            'has-success': origen.valid}">
-              <input type="text" class="form-control" id="cheque-origen" [(ngModel)]="chequeSeleccionada.origen" name="origen" #origen="ngModel" required [maxLength]="100" placeholder="Origen">
-              <span *ngIf="origen.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="origen.errors !== null && (!origen.pristine || origen.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!origen.valid && (!origen.pristine || origen.touched || submitted)" class="help-block">Ingrese un origen</div>
+            <label for="cheque-origen" class="col-sm-1 control-label">Origen</label>
+            <div class="col-sm-3 has-feedback">
+              <input type="text" class="form-control" id="cheque-origen" [(ngModel)]="chequeSeleccionado.origen" name="origen" #origen="ngModel" [maxLength]="100" placeholder="Origen">
             </div>
 
-            <label for="cheque-destinatario" class="col-sm-1 required control-label">Dest.</label>
-            <div class="col-sm-3 has-feedback"
-                 [ngClass]="{'has-error': !destinatario.valid && (!destinatario.pristine || destinatario.touched || submitted),
-            'has-success': destinatario.valid}">
-              <input type="text" class="form-control" id="cheque-destinatario" [(ngModel)]="chequeSeleccionada.destinatario" name="destinatario" #destinatario="ngModel" required [maxLength]="100" placeholder="Destinatario">
-              <span *ngIf="destinatario.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="destinatario.errors !== null && (!destinatario.pristine || destinatario.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!destinatario.valid && (!destinatario.pristine || destinatario.touched || submitted)" class="help-block">Ingrese un destinatario</div>
+            <label for="cheque-destinatario" class="col-sm-1  control-label">Dest.</label>
+            <div class="col-sm-3 has-feedback">
+              <input type="text" class="form-control" id="cheque-destinatario" [(ngModel)]="chequeSeleccionado.destinatario" name="destinatario" #destinatario="ngModel" [maxLength]="100" placeholder="Destinatario">
             </div>
 
             <label for="cheque-estado" class="col-sm-1 required control-label">Estado</label>
@@ -184,7 +154,7 @@
                  [ngClass]="{'has-error': !estado.valid && (!estado.pristine || estado.touched || submitted),
             'has-success': estado.valid}">
               <div class="select-style">
-                <select class="form-control" id="cheque-estado" [(ngModel)]="chequeSeleccionada.estado" name="estado" #estado="ngModel" required >
+                <select class="form-control" id="cheque-estado" [(ngModel)]="chequeSeleccionado.estado" name="estado" #estado="ngModel" required >
                   <option [ngValue]="'I'">Ingresado</option>
                   <option [ngValue]="'D'">Depositado</option>
                   <option [ngValue]="'T'">Transferido</option>
@@ -199,14 +169,9 @@
           </div>
 
           <div class="form-group row">
-            <label for="cheque-descripcion" class="col-sm-1 required control-label">Descr.</label>
-            <div class="col-sm-11 has-feedback"
-                 [ngClass]="{'has-error': !descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted),
-            'has-success': descripcion.valid}">
-              <input type="text" class="form-control" id="cheque-descripcion" [(ngModel)]="chequeSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" required [maxLength]="100" placeholder="Descripción">
-              <span *ngIf="descripcion.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="descripcion.errors !== null && (!descripcion.pristine || descripcion.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted)" class="help-block">Ingrese una descripción</div>
+            <label for="cheque-descripcion" class="col-sm-1 control-label">Descr.</label>
+            <div class="col-sm-11 has-feedback">
+              <input type="text" class="form-control" id="cheque-descripcion" [(ngModel)]="chequeSeleccionado.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="100" placeholder="Descripción">
             </div>
           </div>
         </form>

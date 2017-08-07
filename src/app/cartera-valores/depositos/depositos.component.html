@@ -11,7 +11,7 @@
     <th>Cuenta</th>
     <th>Número</th>
     <th>Importe</th>
-    <th>Fecha</th>
+    <th>Fecha Ingreso</th>
     <th>Fecha Acr.</th>
     <th>Tipo</th>
     <th>Descripción</th>
@@ -24,7 +24,7 @@
     <td>{{ deposito.cuenta_id }}</td>
     <td>{{ deposito.numero }}</td>
     <td>{{ deposito.importe }}</td>
-    <td>{{ deposito.fecha }}</td>
+    <td>{{ deposito.fecha_ingreso }}</td>
     <td>{{ deposito.fecha_acreditacion }}</td>
     <td>{{ deposito.tipo === 'D'? 'Depósito' : 'Transferencia'}}</td>
     <td>{{ deposito.descripcion }}</td>
@@ -64,18 +64,13 @@
       <div class="modal-body">
         <form class="form-horizontal" #f="ngForm">
           <div class="form-group row">
-            <label for="deposito-cliente" class="col-sm-2 required control-label">Cliente</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !cliente.valid && (!cliente.pristine || cliente.touched || submitted),
-            'has-success': cliente.valid}">
+            <label for="deposito-cliente" class="col-sm-2 control-label">Cliente</label>
+            <div class="col-sm-10">
               <div class="select-style">
-                <select class="form-control" id="deposito-cliente" [(ngModel)]="depositoSeleccionada.cliente_id" name="cliente" #cliente="ngModel" required >
+                <select class="form-control" id="deposito-cliente" [(ngModel)]="depositoSeleccionado.cliente_id" name="cliente" #cliente="ngModel">
                   <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
                 </select>
               </div>
-              <span *ngIf="cliente.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="cliente.errors !== null && (!cliente.pristine || cliente.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!cliente.valid && (!cliente.pristine || cliente.touched || submitted)" class="help-block">Seleccione un cliente</div>
             </div>
           </div>
 
@@ -85,7 +80,7 @@
                  [ngClass]="{'has-error': !cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted),
             'has-success': cuenta.valid}">
               <div class="select-style">
-                <select class="form-control" id="deposito-cuenta" [(ngModel)]="depositoSeleccionada.cuenta_id" name="cuenta" #cuenta="ngModel" required >
+                <select class="form-control" id="deposito-cuenta" [(ngModel)]="depositoSeleccionado.cuenta_id" name="cuenta" #cuenta="ngModel" required >
                   <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">{{cuenta.numero}}</option>
                 </select>
               </div>
@@ -96,14 +91,9 @@
           </div>
 
           <div class="form-group row">
-            <label for="deposito-numero" class="col-sm-2 required control-label">Número</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
-            'has-success': numero.valid}">
-              <input type="text" class="form-control" id="deposito-numero" [(ngModel)]="depositoSeleccionada.numero" name="numero" #numero="ngModel" required [maxLength]="20" placeholder="Número">
-              <span *ngIf="numero.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="numero.errors !== null && (!numero.pristine || numero.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!numero.valid && (!numero.pristine || numero.touched || submitted)" class="help-block">Ingrese un número de depósito</div>
+            <label for="deposito-numero" class="col-sm-2 control-label">Número</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="deposito-numero" [(ngModel)]="depositoSeleccionado.numero" name="numero" #numero="ngModel" [maxLength]="20" placeholder="Número">
             </div>
           </div>
 
@@ -112,7 +102,7 @@
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
             'has-success': importe.valid}">
-              <input type="number" class="form-control text-right" id="deposito-importe" [(ngModel)]="depositoSeleccionada.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
+              <input type="number" class="form-control text-right" id="deposito-importe" [(ngModel)]="depositoSeleccionado.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
               <span *ngIf="importe.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="importe.errors !== null && (!importe.pristine || importe.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="importe.errors !== null && importe.errors.required != null && (!importe.pristine || importe.touched || submitted)" class="help-block">Ingrese un importe</div>
@@ -121,43 +111,40 @@
           </div>
 
           <div class="form-group row">
-            <label for="deposito-fecha" class="col-sm-2 required control-label">Fecha</label>
+            <label for="deposito-fecha" class="col-sm-2 required control-label">Fecha ingreso</label>
             <div class="col-sm-4">
-              <my-date-picker id="deposito-fecha" [(ngModel)]="depositoSeleccionada.fecha" [options]="myDatePickerOptions" name="fecha"></my-date-picker>
+              <my-date-picker id="deposito-fecha" [(ngModel)]="depositoSeleccionado.fecha_ingreso" [options]="myDatePickerOptions" name="fecha"></my-date-picker>
             </div>
 
-            <label for="deposito-fechaacr" class="col-sm-2 required control-label">Fecha Acreditación</label>
+            <label for="deposito-fechaacr" class="col-sm-2 control-label">Fecha Acreditación</label>
             <div class="col-sm-4">
-              <my-date-picker id="deposito-fechaacr" [(ngModel)]="depositoSeleccionada.fecha_acreditacion" [options]="myDatePickerOptions" name="fechaacr"></my-date-picker>
+              <my-date-picker id="deposito-fechaacr" [(ngModel)]="depositoSeleccionado.fecha_acreditacion" [options]="myDatePickerOptions" name="fechaacr"></my-date-picker>
             </div>
           </div>
 
           <div class="form-group row">
-            <label for="deposito-tipo" class="col-sm-2 required control-label">Tipo</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
-            'has-success': tipo.valid}">
+            <label for="deposito-fechadep" class="col-sm-2 control-label">Fecha Depósito</label>
+            <div class="col-sm-4">
+              <my-date-picker id="deposito-fechadep" [(ngModel)]="depositoSeleccionado.fecha_deposito" [options]="myDatePickerOptions" name="fechadep"></my-date-picker>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="deposito-tipo" class="col-sm-2 control-label">Tipo</label>
+            <div class="col-sm-10">
               <div class="select-style">
-                <select class="form-control" id="deposito-tipo" [(ngModel)]="depositoSeleccionada.tipo" name="tipo" #tipo="ngModel" required >
+                <select class="form-control" id="deposito-tipo" [(ngModel)]="depositoSeleccionado.tipo" name="tipo" #tipo="ngModel" >
                   <option [ngValue]="'D'">Depósito</option>
                   <option [ngValue]="'T'">Transferencia</option>
                 </select>
               </div>
-              <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="tipo.errors !== null && (!tipo.pristine || tipo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!tipo.valid && (!tipo.pristine || tipo.touched || submitted)" class="help-block">Seleccione un tipo</div>
             </div>
           </div>
 
           <div class="form-group row">
-            <label for="deposito-descripcion" class="col-sm-2 required control-label">Descripción</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted),
-            'has-success': descripcion.valid}">
-              <input type="text" class="form-control" id="deposito-descripcion" [(ngModel)]="depositoSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" required [maxLength]="500" placeholder="Descripción">
-              <span *ngIf="descripcion.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="descripcion.errors !== null && (!descripcion.pristine || descripcion.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!descripcion.valid && (!descripcion.pristine || descripcion.touched || submitted)" class="help-block">Ingrese una descripción</div>
+            <label for="deposito-descripcion" class="col-sm-2 control-label">Descripción</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="deposito-descripcion" [(ngModel)]="depositoSeleccionado.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="500" placeholder="Descripción">
             </div>
           </div>
         </form>

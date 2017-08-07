@@ -115,37 +115,39 @@ export class TarjetasComponent implements OnInit, OnDestroy {
     this.tarjetaOriginal = tarjeta;
     this.tarjetaSeleccionada = JSON.parse(JSON.stringify(tarjeta));
 
-    let month = this.tarjetaSeleccionada.fecha.toString().split('-')[1];
+    let month = this.tarjetaSeleccionada.fecha_ingreso.toString().split('-')[1];
     if (month[0] === '0') {
       month = month.slice(1, 2);
     }
-    let day = this.tarjetaSeleccionada.fecha.toString().split('-')[2];
+    let day = this.tarjetaSeleccionada.fecha_ingreso.toString().split('-')[2];
     if (day[0] === '0') {
       day = day.slice(1, 2);
     }
-    this.tarjetaSeleccionada.fecha =  {
+    this.tarjetaSeleccionada.fecha_ingreso =  {
       date: {
-        year: this.tarjetaSeleccionada.fecha.toString().slice(0, 4),
+        year: this.tarjetaSeleccionada.fecha_ingreso.toString().slice(0, 4),
         month: month,
         day: day
       }
     };
 
-    month = this.tarjetaSeleccionada.fecha_acreditacion.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.tarjetaSeleccionada.fecha_acreditacion.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.tarjetaSeleccionada.fecha_acreditacion =  {
-      date: {
-        year: this.tarjetaSeleccionada.fecha_acreditacion.toString().slice(0, 4),
-        month: month,
-        day: day
+    if (!!this.tarjetaSeleccionada.fecha_acreditacion) {
+      month = this.tarjetaSeleccionada.fecha_acreditacion.toString().split('-')[1];
+      if (month[0] === '0') {
+        month = month.slice(1, 2);
       }
-    };
+      day = this.tarjetaSeleccionada.fecha_acreditacion.toString().split('-')[2];
+      if (day[0] === '0') {
+        day = day.slice(1, 2);
+      }
+      this.tarjetaSeleccionada.fecha_acreditacion =  {
+        date: {
+          year: this.tarjetaSeleccionada.fecha_acreditacion.toString().slice(0, 4),
+          month: month,
+          day: day
+        }
+      };
+    }
   }
 
   mostrarModalEliminar(tarjeta: Tarjeta) {
@@ -157,10 +159,17 @@ export class TarjetasComponent implements OnInit, OnDestroy {
     if (f.valid) {
       this.submitted = false;
       (<any>$('#modalEditar')).modal('hide');
+
+      // Máscara para mostrar siempre 2 decimales
+      const num = this.tarjetaSeleccionada.importe;
+      this.tarjetaSeleccionada.importe = !isNaN(+num) ? (+num).toFixed(2) : num;
+
       const tarjetaAEnviar = new Tarjeta();
       Object.assign(tarjetaAEnviar, this.tarjetaSeleccionada);
-      tarjetaAEnviar.fecha = tarjetaAEnviar.fecha.date.year + '-' + tarjetaAEnviar.fecha.date.month + '-' + tarjetaAEnviar.fecha.date.day;
-      tarjetaAEnviar.fecha_acreditacion = tarjetaAEnviar.fecha_acreditacion.date.year + '-' + tarjetaAEnviar.fecha_acreditacion.date.month + '-' + tarjetaAEnviar.fecha_acreditacion.date.day;
+      tarjetaAEnviar.fecha_ingreso = tarjetaAEnviar.fecha_ingreso.date.year + '-' + tarjetaAEnviar.fecha_ingreso.date.month + '-' + tarjetaAEnviar.fecha_ingreso.date.day;
+      if (!!tarjetaAEnviar.fecha_acreditacion) {
+        tarjetaAEnviar.fecha_acreditacion = tarjetaAEnviar.fecha_acreditacion.date.year + '-' + tarjetaAEnviar.fecha_acreditacion.date.month + '-' + tarjetaAEnviar.fecha_acreditacion.date.day;
+      }
       setTimeout(() => { this.cerrar(); }, 100);
 
       if (this.enNuevo) {
@@ -168,7 +177,9 @@ export class TarjetasComponent implements OnInit, OnDestroy {
         this.apiService.post('tarjetas', tarjetaAEnviar).subscribe(
           json => {
             json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.cliente_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             this.tarjetas.push(json);
             this.recargarTabla();
             f.form.reset();
@@ -178,7 +189,9 @@ export class TarjetasComponent implements OnInit, OnDestroy {
         this.apiService.put('tarjetas/' + tarjetaAEnviar.id, tarjetaAEnviar).subscribe(
           json => {
             json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
-            json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            if (!!json.cliente_id) {
+              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+            }
             Object.assign(this.tarjetaOriginal, json);
             f.form.reset();
           }
@@ -192,8 +205,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
     this.enNuevo = true;
     this.tarjetaSeleccionada = new Tarjeta;
     const today = new Date();
-    this.tarjetaSeleccionada.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    this.tarjetaSeleccionada.fecha_acreditacion =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
+    this.tarjetaSeleccionada.fecha_ingreso =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
     (<any>$('#modalEditar')).modal('show');
   }
 
@@ -233,7 +245,9 @@ export class TarjetasComponent implements OnInit, OnDestroy {
         json => {
           this.clientes = json;
           this.tarjetas.forEach(element => {
-            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            if (!!element.cliente_id) {
+              element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+            }
           });
         }
       );

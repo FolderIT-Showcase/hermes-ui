@@ -7,7 +7,7 @@ export class Cheque {
   sucursal: string;
   numero: string;
   nro_interno: string;
-  importe: number;
+  importe: string | number;
   fecha_emision: any;
   fecha_ingreso: any;
   fecha_vencimiento: any;
