@@ -7,6 +7,7 @@ import {DataTableDirective} from 'angular-datatables';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../service/api.service';
 import {AlertService} from '../../../service/alert.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-depositos',
@@ -81,19 +82,27 @@ export class DepositosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.apiService.get('depositos/buscar', this.filter)
-      .subscribe(json => {
-          this.depositos = json;
-          this.cargarClientes();
-          this.cargarCuentasBancarias();
-          this.mostrarBarraCarga = false;
-          this.mostrarTabla = true;
-          this.dtTrigger.next();
-        },
-        () => {
-          this.mostrarBarraCarga = false;
+
+    const observableCheques = this.apiService.get('depositos/buscar', this.filter);
+    const observableClientes = this.apiService.get('clientes');
+    const zip = Observable.zip(observableCheques, observableClientes);
+    zip.subscribe(data => {
+        this.depositos = data[0];
+        this.clientes = data[1];
+
+        this.depositos.forEach(element => {
+          if (!!element.cliente_id) {
+            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+          }
         });
 
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
+        this.dtTrigger.next();
+      },
+      () => {
+        this.mostrarBarraCarga = false;
+      });
 
     this.myDatePickerOptions = {
       // other options...

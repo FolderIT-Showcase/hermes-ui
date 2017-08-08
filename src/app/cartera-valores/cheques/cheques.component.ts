@@ -7,6 +7,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../service/api.service';
 import {AlertService} from '../../../service/alert.service';
 import {Banco} from '../../../domain/banco';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-cheques',
@@ -81,18 +82,33 @@ export class ChequesComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.apiService.get('chequesterceros/buscar', this.filter)
-      .subscribe(json => {
-          this.cheques = json;
-          this.cargarClientes();
-          this.cargarBancos();
-          this.mostrarBarraCarga = false;
-          this.mostrarTabla = true;
-          this.dtTrigger.next();
-        },
-        () => {
-          this.mostrarBarraCarga = false;
+
+    const observableCheques = this.apiService.get('chequesterceros/buscar', this.filter);
+    const observableClientes = this.apiService.get('clientes');
+    const observableBancos = this.apiService.get('bancos');
+    const zip = Observable.zip(observableCheques, observableClientes, observableBancos);
+    zip.subscribe(data => {
+        this.cheques = data[0];
+        this.clientes = data[1];
+        this.bancos = data[2];
+
+        this.cheques.forEach(element => {
+          element.banco_nombre = this.bancos.find(x => x.id === element.banco_id).nombre;
         });
+
+        this.cheques.forEach(element => {
+          if (!!element.cliente_id) {
+            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+          }
+        });
+
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
+        this.dtTrigger.next();
+      },
+      () => {
+        this.mostrarBarraCarga = false;
+      });
 
     this.myDatePickerOptions = {
       // other options...
@@ -280,34 +296,6 @@ export class ChequesComponent implements OnInit, OnDestroy {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
-  }
-
-  cargarClientes() {
-    if (this.clientes.length === 0) {
-      this.apiService.get('clientes').subscribe(
-        json => {
-          this.clientes = json;
-          this.cheques.forEach(element => {
-            if (!!element.cliente_id) {
-              element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
-            }
-          });
-        }
-      );
-    }
-  }
-
-  cargarBancos() {
-    if (this.bancos.length === 0) {
-      this.apiService.get('bancos').subscribe(
-        json => {
-          this.bancos = json;
-          this.cheques.forEach(element => {
-            element.banco_nombre = this.bancos.find(x => x.id === element.banco_id).nombre;
-          });
-        }
-      );
-    }
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean

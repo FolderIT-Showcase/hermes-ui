@@ -3,6 +3,7 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../service/api.service';
 import {Cliente} from '../../domain/cliente';
+import {Banco} from '../../domain/banco';
 
 @Component({
   selector: 'app-cartera-valores',
@@ -16,13 +17,15 @@ export class CarteraValoresComponent implements OnInit {
   mostrarDepositos = false;
   myDatePickerOptions: IMyDpOptions;
   filtrarFechaIngreso = false;
+  filtrarNumero = false;
   fechaIngresoInicio: any;
   fechaIngresoFin: any;
-  filtrarEstado = false;
+  bancos: Banco[] = [];
   clientes: Cliente[] = [];
-  estado = 0;
+  estado = '0';
   cliente = 0;
-  filtrarCliente = false;
+  banco = 0;
+  numero = '';
   filter: any;
 
   constructor(private apiService: ApiService,
@@ -44,6 +47,7 @@ export class CarteraValoresComponent implements OnInit {
       openSelectorOnInputClick: true,
     };
     this.cargarClientes();
+    this.cargarBancos();
     const date = new Date();
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
@@ -59,12 +63,17 @@ export class CarteraValoresComponent implements OnInit {
 
     if ((this.filtrarFechaIngreso && !this.rangoFechaInvalido()) || !this.filtrarFechaIngreso) {
       this.filter = {};
-      if (this.filtrarEstado) {
+      if (this.estado !== '0') {
         this.filter.estado = this.estado;
       }
-      if (this.filtrarCliente) {
-        this.filter.cliente = this.cliente;
+
+      this.filter.cliente = this.cliente;
+      this.filter.banco = this.banco;
+
+      if (this.filtrarNumero) {
+        this.filter.numero = this.numero;
       }
+
       if (this.filtrarFechaIngreso) {
         this.filter.fecha_ingreso_inicio = this.fechaIngresoInicio.date.year + '-'
           + this.fechaIngresoInicio.date.month
@@ -92,6 +101,16 @@ export class CarteraValoresComponent implements OnInit {
       this.apiService.get('clientes').subscribe(
         json => {
           this.clientes = json;
+        }
+      );
+    }
+  }
+
+  cargarBancos() {
+    if (this.bancos.length === 0) {
+      this.apiService.get('bancos').subscribe(
+        json => {
+          this.bancos = json;
         }
       );
     }

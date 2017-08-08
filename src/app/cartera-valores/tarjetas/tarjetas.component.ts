@@ -8,6 +8,7 @@ import {NavbarTitleService} from '../../../service/navbar-title.service';
 import {Cliente} from '../../../domain/cliente';
 import {TipoTarjeta} from '../../../domain/tipoTarjeta';
 import {IMyDpOptions} from 'mydatepicker';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-tarjetas',
@@ -82,18 +83,33 @@ export class TarjetasComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.apiService.get('tarjetas/buscar', this.filter)
-      .subscribe(json => {
-          this.tarjetas = json;
-          this.cargarClientes();
-          this.cargarTipos();
-          this.mostrarBarraCarga = false;
-          this.mostrarTabla = true;
-          this.dtTrigger.next();
-        },
-        () => {
-          this.mostrarBarraCarga = false;
+
+    const observableTarjetas = this.apiService.get('tarjetas/buscar', this.filter);
+    const observableClientes = this.apiService.get('clientes');
+    const observableTipos = this.apiService.get('tipostarjeta');
+    const zip = Observable.zip(observableTarjetas, observableClientes, observableTipos);
+    zip.subscribe(data => {
+        this.tarjetas = data[0];
+        this.clientes = data[1];
+        this.tipos = data[2];
+
+        this.tarjetas.forEach(element => {
+          element.tarjeta_nombre = this.tipos.find(x => x.id === element.tarjeta_id).nombre;
         });
+
+        this.tarjetas.forEach(element => {
+          if (!!element.cliente_id) {
+            element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
+          }
+        });
+
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
+        this.dtTrigger.next();
+      },
+      () => {
+        this.mostrarBarraCarga = false;
+      });
 
     this.myDatePickerOptions = {
       // other options...
@@ -237,34 +253,6 @@ export class TarjetasComponent implements OnInit, OnDestroy {
       this.dtTrigger.next();
       setTimeout(() => { this.mostrarTabla = true; }, 350);
     });
-  }
-
-  cargarClientes() {
-    if (this.clientes.length === 0) {
-      this.apiService.get('clientes').subscribe(
-        json => {
-          this.clientes = json;
-          this.tarjetas.forEach(element => {
-            if (!!element.cliente_id) {
-              element.cliente_nombre = this.clientes.find(x => x.id === element.cliente_id).nombre;
-            }
-          });
-        }
-      );
-    }
-  }
-
-  cargarTipos() {
-    if (this.tipos.length === 0) {
-      this.apiService.get('tipostarjeta').subscribe(
-        json => {
-          this.tipos = json;
-          this.tarjetas.forEach(element => {
-            element.tarjeta_nombre = this.tipos.find(x => x.id === element.tarjeta_id).nombre;
-          });
-        }
-      );
-    }
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
