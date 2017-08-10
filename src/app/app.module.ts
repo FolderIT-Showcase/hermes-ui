@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
@@ -59,6 +59,7 @@ import { CarteraValoresComponent } from './cartera-valores/cartera-valores.compo
 import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
 import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
 import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
+import { AbmComponent } from './abm/abm.component';
 
 
 @NgModule({
@@ -105,7 +106,8 @@ import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component
     CarteraValoresComponent,
     ChequesComponent,
     DepositosComponent,
-    TarjetasComponent
+    TarjetasComponent,
+    AbmComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
@@ -127,7 +129,8 @@ import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component
     DeactivateGuardService,
     NavbarTitleService,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA]
 })
 export class AppModule {
 }
