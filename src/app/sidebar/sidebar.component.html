@@ -4,7 +4,7 @@
       <li data-toggle="collapse" data-target="#general"
           [class.active]="rlaclientes.isActive || rlavendedores.isActive || rlazonas.isActive ||
                 rlaarticulos.isActive || rlarubros.isActive || rlasubrubros.isActive || rlamarcas.isActive ||
-                rlalistaprecios.isActive" class="collapsed">
+                rlalistaprecios.isActive || rlabancos.isActive || rlacuentasbancarias.isActive || rlatipostarjeta.isActive" class="collapsed">
         <a class="dropdown-toggle" ><i class="fa fa-folder-open fa-lg"></i> General<span class="arrow"></span></a>
       </li>
       <ul class="sub-menu collapse" id="general" role="menu">
@@ -27,6 +27,17 @@
           <li [routerLinkActive]="['active']" [routerLink]="['/subrubros']" #rlasubrubros="routerLinkActive"><a>Subrubros</a></li>
           <li [routerLinkActive]="['active']" [routerLink]="['/marcas']" #rlamarcas="routerLinkActive"><a>Marcas</a></li>
         </ul>
+
+        <li data-toggle="collapse" data-target="#bancos"
+            [class.active]="rlabancos.isActive || rlacuentasbancarias.isActive || rlatipostarjeta.isActive" class="collapsed" #rlamenubancos>
+          <a class="dropdown-toggle" ><i class="fa fa-bank"></i> Bancos<span class="arrow"></span></a>
+        </li>
+        <ul class="sub-menu collapse" id="bancos" role="menu">
+          <li [routerLinkActive]="['active']" [routerLink]="['/bancos']" #rlabancos="routerLinkActive"><a>Bancos</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/cuentasbancarias']" #rlacuentasbancarias="routerLinkActive"><a>Cuentas Bancarias</a></li>
+          <li [routerLinkActive]="['active']" [routerLink]="['/tipostarjeta']" #rlatipostarjeta="routerLinkActive"><a>Tipos de Tarjeta</a></li>
+        </ul>
+
         <li [routerLinkActive]="['active']" [routerLink]="['/listaprecios']" #rlalistaprecios="routerLinkActive"><a><i class="glyphicon glyphicon-list-alt"></i> Lista de Precios</a></li>
       </ul>
 

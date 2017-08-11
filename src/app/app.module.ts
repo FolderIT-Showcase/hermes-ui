@@ -52,6 +52,9 @@ import { UniquePipe } from './unique.pipe';
 import { RecuperarPasswordComponent } from './recuperar-password/recuperar-password.component';
 import { CtaCteProveedoresComponent } from './cta-cte-proveedores/cta-cte-proveedores.component';
 import { ResumenVentasComponent } from './resumen-ventas/resumen-ventas.component';
+import { BancoComponent } from './banco/banco.component';
+import { CuentaBancariaComponent } from './cuenta-bancaria/cuenta-bancaria.component';
+import { TipoTarjetaComponent } from './tipo-tarjeta/tipo-tarjeta.component';
 
 
 @NgModule({
@@ -91,7 +94,10 @@ import { ResumenVentasComponent } from './resumen-ventas/resumen-ventas.componen
     UniquePipe,
     RecuperarPasswordComponent,
     CtaCteProveedoresComponent,
-    ResumenVentasComponent
+    ResumenVentasComponent,
+    BancoComponent,
+    CuentaBancariaComponent,
+    TipoTarjetaComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
