@@ -284,7 +284,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
       return !this.itemsCobro.find(item => item.comprobante.id === reg.id);
     });
     const anticipo = new Comprobante();
-    anticipo.saldo = 0.00;
+    anticipo.saldo = 999999999;
     anticipo.importe_total = 0.00;
     anticipo.tipo_comprobante = new TipoComprobante();
     anticipo.tipo_comprobante.nombre = 'Anticipo';
@@ -315,13 +315,15 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   agregarItem(comprobante: Comprobante) {
     const item = new ItemCobro();
     item.comprobante = comprobante;
-    if (!!comprobante.id) {
+    if (comprobante.tipo_comprobante.nombre !== 'Anticipo') {
       item.comprobante_id = comprobante.id;
+      item.importe = (+comprobante.saldo).toFixed(2);
+    } else {
+      item.importe = (0).toFixed(2);
     }
     item.descuento = (0).toFixed(2);
     item.porcentaje_descuento = (0).toFixed(2);
     item.descripcion = '';
-    item.importe = (+comprobante.saldo).toFixed(2);
     item.importe_total = item.importe;
     item.anticipo = !comprobante.id;
     this.itemsCobro.push(item);
