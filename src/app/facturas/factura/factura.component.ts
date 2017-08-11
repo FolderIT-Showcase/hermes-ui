@@ -435,7 +435,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.factura.cliente_tipo_resp = this.cliente.tipo_responsable;
     this.factura.tipo_comprobante_id = this.tipoComprobante.id;
     this.factura.alicuota_iva = 100 * this.iva;
-    this.factura.saldo = 0;
+    this.factura.saldo = +this.factura.importe_total;
     this.factura.lista_id = this.cliente.lista_id;
     this.factura.items = this.items.filter(item => item.articulo_id && item.cantidad && +item.importe_unitario);
 

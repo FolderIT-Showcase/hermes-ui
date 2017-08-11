@@ -1,0 +1,21 @@
+.typeaheadcontainer {
+  margin-right: auto;
+  margin-left: auto;
+  height: 100%;
+  padding: 0;
+}
+
+.typeaheadcontrol {
+  border: transparent;
+  padding: 8px;
+  width: 100%;
+  height: 100%;
+}
+
+table.dataTable thead .sorting_asc:after {
+  content: none;
+}
+
+tr th {
+  text-align: center;
+}

@@ -59,6 +59,7 @@ import { CarteraValoresComponent } from './cartera-valores/cartera-valores.compo
 import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
 import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
 import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
+import { CobrosComponent } from './cobros/cobros.component';
 
 
 @NgModule({
@@ -105,7 +106,8 @@ import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component
     CarteraValoresComponent,
     ChequesComponent,
     DepositosComponent,
-    TarjetasComponent
+    TarjetasComponent,
+    CobrosComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

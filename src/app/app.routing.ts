@@ -1,6 +1,4 @@
-﻿import {CarteraValoresComponent} from './cartera-valores/cartera-valores.component';
-
-﻿import {RouterModule, Routes} from '@angular/router';
+﻿﻿import {RouterModule, Routes} from '@angular/router';
 
 import {HomeComponent} from './home/home.component';
 import {LoginComponent} from './login/login.component';
@@ -13,6 +11,7 @@ import { RubrosComponent } from 'app/rubros/rubros.component';
 import { SubrubrosComponent } from 'app/subrubros/subrubros.component';
 import { MarcasComponent } from 'app/marcas/marcas.component';
 import { FacturasComponent } from 'app/facturas/facturas.component';
+import {CarteraValoresComponent} from './cartera-valores/cartera-valores.component';
 import {ListaPreciosComponent} from './lista-precios/lista-precios.component';
 import {PresupuestosComponent} from './presupuestos/presupuestos.component';
 import {PresupuestoComponent} from './presupuestos/presupuesto/presupuesto.component';
@@ -33,6 +32,7 @@ import {ResumenVentasComponent} from 'app/resumen-ventas/resumen-ventas.componen
 import {BancoComponent} from './banco/banco.component';
 import {CuentaBancariaComponent} from './cuenta-bancaria/cuenta-bancaria.component';
 import {TipoTarjetaComponent} from './tipo-tarjeta/tipo-tarjeta.component';
+import {CobrosComponent} from './cobros/cobros.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -66,6 +66,7 @@ const appRoutes: Routes = [
   {path: 'cuentasbancarias', component: CuentaBancariaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'tipostarjeta', component: TipoTarjetaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'carteravalores', component: CarteraValoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'cobros', component: CobrosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}
