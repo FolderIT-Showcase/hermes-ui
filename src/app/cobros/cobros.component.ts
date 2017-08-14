@@ -1,17 +1,14 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Cliente} from '../../domain/cliente';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
-import {Router} from '@angular/router';
 import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
-import {AuthenticationService} from '../../service/authentication.service';
 import {Observable} from 'rxjs/Observable';
 import {ItemCobro} from '../../domain/itemCobro';
 import {Cobro} from '../../domain/cobro';
 import {TipoComprobante} from '../../domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
 import {Comprobante} from '../../domain/comprobante';
-import {CompileReflector} from '@angular/compiler';
 
 @Component({
   selector: 'app-cobros',
@@ -380,6 +377,10 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         this.tabla.nativeElement.children[2].children[index].children[3].children[0].value = item.importe;
       }
     }
+    if (item.importe <= item.descuento) {
+      item.descuento = item.importe;
+    }
+    item.porcentaje_descuento = (+item.descuento * 100 / +item.importe).toFixed(2);
     this.calcularImportesItem(item);
   }
 
@@ -406,7 +407,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         this.tabla.nativeElement.children[2].children[index].children[5].children[0].value = item.descuento;
       }
     }
-    item.porcentaje_descuento = (+item.importe / +item.descuento * 100).toFixed(2);
+    item.porcentaje_descuento = (+item.descuento * 100 / +item.importe).toFixed(2);
     this.calcularImportesItem(item);
   }
 
