@@ -8,6 +8,7 @@ import {Cliente} from '../../../domain/cliente';
 import {TipoTarjeta} from '../../../domain/tipoTarjeta';
 import {Observable} from 'rxjs/Observable';
 import {ModalTarjetaComponent} from './modal-tarjeta/modal-tarjeta.component';
+import {HelperService} from '../../../service/helper.service';
 
 @Component({
   selector: 'app-tarjetas',
@@ -38,30 +39,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
       autoWidth: true,
       pageLength: 12,
       scrollY: '63.5vh',
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,

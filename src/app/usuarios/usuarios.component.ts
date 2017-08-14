@@ -7,6 +7,7 @@ import { AlertService } from '../../service/alert.service';
 import { Rubro } from 'domain/rubro';
 import {UserService} from '../../service/user.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -43,30 +44,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       autoWidth: true,
       pageLength: 13,
       scrollY: '70vh',
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,
@@ -122,14 +100,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
             this.recargarTabla();
           },
           error => {
-            let mensaje = '';
-            const json = error.json()['error'];
-            for (const key in json) {
-              if (json.hasOwnProperty(key)) {
-                mensaje = mensaje === '' ? json[key] : mensaje + '\n' + json[key];
-              }
-            }
-            this.alertService.error(mensaje);
+            this.handleError(error);
           }
         );
       } else {
@@ -141,18 +112,22 @@ export class UsuariosComponent implements OnInit, OnDestroy {
             Object.assign(this.usuarioOriginal, user);
           },
           error => {
-            let mensaje = '';
-            const json = error.json()['error'];
-            for (const key in json) {
-              if (json.hasOwnProperty(key)) {
-                mensaje = mensaje === '' ? json[key] : mensaje + '\n' + json[key];
-              }
-            }
-            this.alertService.error(mensaje);
+            this.handleError(error);
           }
         );
       }
     }
+  }
+
+  private handleError(error) {
+    let mensaje = '';
+    const json = error.json()['error'];
+    for (const key in json) {
+      if (json.hasOwnProperty(key)) {
+        mensaje = mensaje === '' ? json[key] : mensaje + '\n' + json[key];
+      }
+    }
+    this.alertService.error(mensaje);
   }
 
   mostrarModalNuevo() {

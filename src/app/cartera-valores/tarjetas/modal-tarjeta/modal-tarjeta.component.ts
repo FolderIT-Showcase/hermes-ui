@@ -4,6 +4,7 @@ import {Cliente} from '../../../../domain/cliente';
 import {TipoTarjeta} from '../../../../domain/tipoTarjeta';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../../service/api.service';
+import {HelperService} from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-modal-tarjeta',
@@ -32,18 +33,7 @@ export class ModalTarjetaComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
   nuevaTarjeta() {
@@ -113,9 +103,9 @@ export class ModalTarjetaComponent implements OnInit {
 
       const tarjetaAEnviar = new Tarjeta();
       Object.assign(tarjetaAEnviar, this.tarjeta);
-      tarjetaAEnviar.fecha_ingreso = tarjetaAEnviar.fecha_ingreso.date.year + '-' + tarjetaAEnviar.fecha_ingreso.date.month + '-' + tarjetaAEnviar.fecha_ingreso.date.day;
+      tarjetaAEnviar.fecha_ingreso = HelperService.myDatePickerDateToString(tarjetaAEnviar.fecha_ingreso);
       if (!!tarjetaAEnviar.fecha_acreditacion) {
-        tarjetaAEnviar.fecha_acreditacion = tarjetaAEnviar.fecha_acreditacion.date.year + '-' + tarjetaAEnviar.fecha_acreditacion.date.month + '-' + tarjetaAEnviar.fecha_acreditacion.date.day;
+        tarjetaAEnviar.fecha_acreditacion = HelperService.myDatePickerDateToString(tarjetaAEnviar.fecha_acreditacion);
       }
 
       if (this.enNuevo) {

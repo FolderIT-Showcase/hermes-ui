@@ -4,6 +4,7 @@ import {Banco} from '../../../../domain/banco';
 import {Cheque} from '../../../../domain/cheque';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../../service/api.service';
+import {HelperService} from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-modal-cheque',
@@ -32,18 +33,7 @@ export class ModalChequeComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
   nuevoCheque() {
@@ -152,14 +142,14 @@ export class ModalChequeComponent implements OnInit {
       const chequeAEnviar = new Cheque();
       Object.assign(chequeAEnviar, this.cheque);
       if (!!chequeAEnviar.fecha_emision) {
-        chequeAEnviar.fecha_emision = chequeAEnviar.fecha_emision.date.year + '-' + chequeAEnviar.fecha_emision.date.month + '-' + chequeAEnviar.fecha_emision.date.day;
+        chequeAEnviar.fecha_emision = HelperService.myDatePickerDateToString(chequeAEnviar.fecha_emision);
       }
-      chequeAEnviar.fecha_ingreso = chequeAEnviar.fecha_ingreso.date.year + '-' + chequeAEnviar.fecha_ingreso.date.month + '-' + chequeAEnviar.fecha_ingreso.date.day;
+      chequeAEnviar.fecha_ingreso = HelperService.myDatePickerDateToString(chequeAEnviar.fecha_ingreso);
       if (!!chequeAEnviar.fecha_vencimiento) {
-        chequeAEnviar.fecha_vencimiento = chequeAEnviar.fecha_vencimiento.date.year + '-' + chequeAEnviar.fecha_vencimiento.date.month + '-' + chequeAEnviar.fecha_vencimiento.date.day;
+        chequeAEnviar.fecha_vencimiento = HelperService.myDatePickerDateToString(chequeAEnviar.fecha_vencimiento);
       }
       if (!!chequeAEnviar.fecha_cobro) {
-        chequeAEnviar.fecha_cobro = chequeAEnviar.fecha_cobro.date.year + '-' + chequeAEnviar.fecha_cobro.date.month + '-' + chequeAEnviar.fecha_cobro.date.day;
+        chequeAEnviar.fecha_cobro = HelperService.myDatePickerDateToString(chequeAEnviar.fecha_cobro);
       }
       setTimeout(() => { this.cerrar(); }, 100);
 

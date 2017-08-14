@@ -9,6 +9,7 @@ import {AlertService} from '../../service/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../service/navbar-title.service';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -110,17 +111,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
       } ]
     };
     this.navbarTitleService.setTitle('Cuentas Corrientes de Clientes');
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-                    7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.clienteCtaCteSeleccionado = new Cliente;
     this.fechaSeleccionadaCtaCte = false;
@@ -152,10 +143,8 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         this.clienteCtaCteSeleccionado = this.listaClientes[0];
         this.clienteCtaCteAsync = this.clienteCtaCteSeleccionado.nombre;
       }
-      let fechaInicioAEnviar = this.fechaInicioCtaCte.date.year + '-'
-        + this.fechaInicioCtaCte.date.month
-        + '-' + this.fechaInicioCtaCte.date.day;
-      const fechaFinAEnviar = this.fechaFinCtaCte.date.year + '-' + this.fechaFinCtaCte.date.month + '-' + this.fechaFinCtaCte.date.day;
+      let fechaInicioAEnviar = HelperService.myDatePickerDateToString(this.fechaInicioCtaCte);
+      const fechaFinAEnviar = HelperService.myDatePickerDateToString(this.fechaFinCtaCte);
       if (!this.fechaSeleccionadaCtaCte) {
         const initialYear = new Date();
         initialYear.setTime(0);
@@ -248,12 +237,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   rangoFechaInvalido(): boolean {
-    return (this.fechaInicioCtaCte.date.year > this.fechaFinCtaCte.date.year)
-      ||  ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
-      (this.fechaInicioCtaCte.date.month > this.fechaFinCtaCte.date.month))
-      || ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
-      (this.fechaInicioCtaCte.date.month === this.fechaFinCtaCte.date.month)
-      && this.fechaInicioCtaCte.date.day > this.fechaFinCtaCte.date.day);
+    return HelperService.rangoFechaInvalido(this.fechaInicioCtaCte, this.fechaFinCtaCte);
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {

@@ -4,6 +4,7 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {AlertService} from '../../service/alert.service';
 import {ApiService} from '../../service/api.service';
 import {TipoComprobante} from '../../domain/tipocomprobante';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-resumen-ventas',
@@ -24,17 +25,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.navbarTitleService.setTitle('Imprimir Reportes Resumen de Ventas');
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     const date = new Date();
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -57,12 +48,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
 
 
   rangoFechaInvalido(): boolean {
-    return (this.fechaInicio.date.year > this.fechaFin.date.year)
-      ||  ((this.fechaInicio.date.year === this.fechaFin.date.year) &&
-        (this.fechaInicio.date.month > this.fechaFin.date.month))
-      || ((this.fechaInicio.date.year === this.fechaFin.date.year) &&
-        (this.fechaInicio.date.month === this.fechaFin.date.month)
-        && this.fechaInicio.date.day > this.fechaFin.date.day);
+    return HelperService.rangoFechaInvalido(this.fechaInicio, this.fechaFin);
   }
 
   editarItems() {

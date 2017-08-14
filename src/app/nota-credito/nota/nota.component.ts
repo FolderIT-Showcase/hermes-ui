@@ -7,6 +7,7 @@ import {Observable} from 'rxjs/Observable';
 import {Comprobante} from '../../../domain/comprobante';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
+import {HelperService} from '../../../service/helper.service';
 
 @Component({
   selector: 'app-nota',
@@ -69,18 +70,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nota.importe_total = 0;
     this.nota.punto_venta = '0001';
     this.nota.anulado = false;
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     const today = new Date();
     this.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
   }

@@ -20,6 +20,7 @@ import {isNullOrUndefined} from 'util';
 import {Router} from '@angular/router';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {TooltipConfig} from 'ngx-bootstrap/tooltip';
+import {HelperService} from '../../../service/helper.service';
 
 export function getAlertConfig(): TooltipConfig {
   return Object.assign(new TooltipConfig(), {placement: 'left', container: 'body'});
@@ -175,18 +176,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       }]
     };
 
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.inicializar();
   }
@@ -439,7 +429,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.factura.lista_id = this.cliente.lista_id;
     this.factura.items = this.items.filter(item => item.articulo_id && item.cantidad && +item.importe_unitario);
 
-    this.factura.fecha =  this.fecha.date.year + '-' + this.fecha.date.month + '-' + this.fecha.date.day;
+    this.factura.fecha =  HelperService.myDatePickerDateToString(this.fecha);
 
     if (this.nuevoOEditar === 'nuevo') {
       this.apiService.post('comprobantes', this.factura).subscribe( (json) => {

@@ -3,6 +3,7 @@ import {Cliente} from '../../../../domain/cliente';
 import {Deposito} from '../../../../domain/deposito';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from 'service/api.service';
+import {HelperService} from '../../../../service/helper.service';
 
 @Component({
   selector: 'app-modal-deposito',
@@ -31,18 +32,7 @@ export class ModalDepositoComponent implements OnInit {
   constructor(private apiService: ApiService) { }
 
   ngOnInit() {
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
   nuevoDeposito() {
@@ -128,12 +118,12 @@ export class ModalDepositoComponent implements OnInit {
 
       const depositoAEnviar = new Deposito();
       Object.assign(depositoAEnviar, this.deposito);
-      depositoAEnviar.fecha_ingreso = depositoAEnviar.fecha_ingreso.date.year + '-' + depositoAEnviar.fecha_ingreso.date.month + '-' + depositoAEnviar.fecha_ingreso.date.day;
+      depositoAEnviar.fecha_ingreso =  HelperService.myDatePickerDateToString(depositoAEnviar.fecha_ingreso);
       if (!!depositoAEnviar.fecha_acreditacion) {
-        depositoAEnviar.fecha_acreditacion = depositoAEnviar.fecha_acreditacion.date.year + '-' + depositoAEnviar.fecha_acreditacion.date.month + '-' + depositoAEnviar.fecha_acreditacion.date.day;
+        depositoAEnviar.fecha_acreditacion = HelperService.myDatePickerDateToString(depositoAEnviar.fecha_acreditacion);
       }
       if (!!depositoAEnviar.fecha_deposito) {
-        depositoAEnviar.fecha_deposito = depositoAEnviar.fecha_deposito.date.year + '-' + depositoAEnviar.fecha_deposito.date.month + '-' + depositoAEnviar.fecha_deposito.date.day;
+        depositoAEnviar.fecha_deposito = HelperService.myDatePickerDateToString(depositoAEnviar.fecha_deposito);
       }
 
       if (this.enNuevo) {

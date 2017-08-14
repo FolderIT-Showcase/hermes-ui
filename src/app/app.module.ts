@@ -63,6 +63,7 @@ import { CobrosComponent } from './cobros/cobros.component';
 import { ModalTarjetaComponent } from './cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
 import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposito/modal-deposito.component';
 import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
+import {HelperService} from '../service/helper.service';
 
 
 @NgModule({
@@ -134,6 +135,7 @@ import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/mod
     ApiService,
     DeactivateGuardService,
     NavbarTitleService,
+    HelperService
   ],
   bootstrap: [AppComponent]
 })

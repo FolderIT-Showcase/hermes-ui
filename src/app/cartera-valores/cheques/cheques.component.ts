@@ -9,6 +9,7 @@ import {AlertService} from '../../../service/alert.service';
 import {Banco} from '../../../domain/banco';
 import {Observable} from 'rxjs/Observable';
 import {ModalChequeComponent} from './modal-cheque/modal-cheque.component';
+import {HelperService} from '../../../service/helper.service';
 
 @Component({
   selector: 'app-cheques',
@@ -41,30 +42,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
       autoWidth: true,
       pageLength: 12,
       scrollY: '63.5vh',
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,
@@ -111,18 +89,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
         this.mostrarBarraCarga = false;
       });
 
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
   mostrarModalEditar(cheque: Cheque) {
