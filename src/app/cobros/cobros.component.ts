@@ -9,6 +9,7 @@ import {Cobro} from '../../domain/cobro';
 import {TipoComprobante} from '../../domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
 import {Comprobante} from '../../domain/comprobante';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-cobros',
@@ -42,7 +43,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   comprobantes: Comprobante[];
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService) {
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) {
     this.clientes = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -95,8 +97,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
       columnDefs: [ {
         'targets': 0,
         'searchable': false,
-        'orderable': true,
-        'width': '11%'
+        'orderable': false,
+        'width': '12%'
       }, {
         'targets': 1,
         'searchable': false,
@@ -111,7 +113,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         'targets': 3,
         'searchable': false,
         'orderable': false,
-        'width': '10%'
+        'width': '12%'
       }, {
         'targets': 4,
         'searchable': false,
@@ -121,7 +123,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         'targets': 5,
         'searchable': false,
         'orderable': false,
-        'width': '15%'
+        'width': '12%'
       }, {
         'targets': 6,
         'searchable': false,
@@ -165,6 +167,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cobro = new Cobro;
     this.cobro.importe = 0;
     this.cobro.punto_venta = '0001';
+    this.navbarTitleService.setTitle('Cobro');
   }
 
   onClienteChanged(event) {
@@ -179,6 +182,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         reg.ptoventaynumero = ('000' + reg.punto_venta).slice(-4) + '-' + ('0000000' + reg.numero).slice(-8);
       });
 
+      this.itemsCobro = [];
       this.mostrarModalComprobantes();
     });
     this.apiService.get('tipocomprobantes/' + 'recibo' + '/' + this.cliente.tipo_responsable).subscribe( json => {
@@ -210,8 +214,6 @@ export class CobrosComponent implements OnInit, AfterViewInit {
         } else {
           this.cobro.numero = +contador.ultimo_generado + 1;
           this.cobro.numero = ('0000000' + this.cobro.numero).slice(-8);
-
-          this.itemsCobro = [];
 
           // // Se selecciona el input de código de artículo
           // setTimeout(() => {

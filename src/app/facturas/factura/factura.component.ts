@@ -135,7 +135,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       columnDefs: [ {
         'targets': 0,
         'searchable': false,
-        'orderable': true,
+        'orderable': false,
         'width': '10%'
       }, {
         'targets': 1,

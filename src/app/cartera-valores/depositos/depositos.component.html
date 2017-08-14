@@ -29,7 +29,7 @@
     <td>{{ deposito.tipo === 'D'? 'Depósito' : 'Transferencia'}}</td>
     <td>{{ deposito.descripcion }}</td>
     <td>
-      <button title="Editar deposito" (click)="mostrarModalEditar(deposito)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button title="Editar deposito" (click)="mostrarModalEditar(deposito)" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar deposito" (click)="mostrarModalEliminar(deposito)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
@@ -40,7 +40,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Eliminar Depósito</h4>
       </div>
       <div class="modal-body">
@@ -54,105 +54,4 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
-      </div>
-      <form class="form-horizontal" #f="ngForm">
-        <div class="modal-body">
-          <div class="form-group row">
-            <label for="deposito-cliente" class="col-sm-2 control-label">Cliente</label>
-            <div class="col-sm-10">
-              <div class="select-style">
-                <select class="form-control" id="deposito-cliente" [(ngModel)]="depositoSeleccionado.cliente_id" name="cliente" #cliente="ngModel">
-                  <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-cuenta" class="col-sm-2 required control-label">Cuenta Bancaria</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted),
-            'has-success': cuenta.valid}">
-              <div class="select-style">
-                <select class="form-control" id="deposito-cuenta" [(ngModel)]="depositoSeleccionado.cuenta_id" name="cuenta" #cuenta="ngModel" required >
-                  <option *ngFor="let cuenta of cuentas" [ngValue]="cuenta.id">{{cuenta.numero}}</option>
-                </select>
-              </div>
-              <span *ngIf="cuenta.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="cuenta.errors !== null && (!cuenta.pristine || cuenta.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted)" class="help-block">Seleccione una cuenta bancaria</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-numero" class="col-sm-2 control-label">Número</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="deposito-numero" [(ngModel)]="depositoSeleccionado.numero" name="numero" #numero="ngModel" [maxLength]="20" placeholder="Número">
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-importe" class="col-sm-2 required control-label">Importe</label>
-            <div class="col-sm-4 has-feedback"
-                 [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
-            'has-success': importe.valid}">
-              <input type="number" class="form-control text-right" id="deposito-importe" [(ngModel)]="depositoSeleccionado.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
-              <span *ngIf="importe.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="importe.errors !== null && (!importe.pristine || importe.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="importe.errors !== null && importe.errors.required != null && (!importe.pristine || importe.touched || submitted)" class="help-block">Ingrese un importe</div>
-              <div *ngIf="importe.errors !== null && importe.errors.required == null && (!importe.pristine || submitted)" class="help-block">Ingrese un número con dos decimales</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-fecha" class="col-sm-2 required control-label">Fecha ingreso</label>
-            <div class="col-sm-4">
-              <my-date-picker id="deposito-fecha" [(ngModel)]="depositoSeleccionado.fecha_ingreso" [options]="myDatePickerOptions" name="fecha"></my-date-picker>
-            </div>
-
-            <label for="deposito-fechaacr" class="col-sm-2 control-label">Fecha Acreditación</label>
-            <div class="col-sm-4">
-              <my-date-picker id="deposito-fechaacr" [(ngModel)]="depositoSeleccionado.fecha_acreditacion" [options]="myDatePickerOptions" name="fechaacr"></my-date-picker>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-fechadep" class="col-sm-2 control-label">Fecha Depósito</label>
-            <div class="col-sm-4">
-              <my-date-picker id="deposito-fechadep" [(ngModel)]="depositoSeleccionado.fecha_deposito" [options]="myDatePickerOptions" name="fechadep"></my-date-picker>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-tipo" class="col-sm-2 control-label">Tipo</label>
-            <div class="col-sm-10">
-              <div class="select-style">
-                <select class="form-control" id="deposito-tipo" [(ngModel)]="depositoSeleccionado.tipo" name="tipo" #tipo="ngModel" >
-                  <option [ngValue]="'D'">Depósito</option>
-                  <option [ngValue]="'T'">Transferencia</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="deposito-descripcion" class="col-sm-2 control-label">Descripción</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="deposito-descripcion" [(ngModel)]="depositoSeleccionado.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="500" placeholder="Descripción">
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<app-modal-deposito [clientes]="clientes" [cuentas]="cuentas" (eventNew)="handleNew($event)" (eventEdit)="handleEdit($event)"></app-modal-deposito>

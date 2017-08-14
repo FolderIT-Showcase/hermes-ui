@@ -211,7 +211,7 @@
             <td class="text-center">{{ comprobante.tipo_comprobante.nombre }}</td>
             <td class="text-center">{{ comprobante.ptoventaynumero }}</td>
             <td class="text-right">{{ comprobante.importe_total }}</td>
-            <td class="text-right">{{ comprobante.saldo }}</td>
+            <td class="text-right">{{ comprobante.tipo_comprobante.nombre === 'Anticipo'? 0 : comprobante.saldo }}</td>
             <td class="text-center"><input type="checkbox" id="lista-comprobante-enlista" [(ngModel)]="comprobante.en_lista" name="activo"></td>
           </tr>
           </tbody>

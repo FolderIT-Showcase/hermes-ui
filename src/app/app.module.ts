@@ -60,6 +60,9 @@ import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
 import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
 import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
 import { CobrosComponent } from './cobros/cobros.component';
+import { ModalTarjetaComponent } from './cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
+import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposito/modal-deposito.component';
+import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
 
 
 @NgModule({
@@ -107,7 +110,10 @@ import { CobrosComponent } from './cobros/cobros.component';
     ChequesComponent,
     DepositosComponent,
     TarjetasComponent,
-    CobrosComponent
+    CobrosComponent,
+    ModalTarjetaComponent,
+    ModalDepositoComponent,
+    ModalChequeComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
