@@ -14,6 +14,7 @@ import {HelperService} from '../../../../service/helper.service';
 export class ModalTarjetaComponent implements OnInit {
   @Input() clientes: Cliente[];
   @Input() tipos: TipoTarjeta[];
+  @Input() shouldSendApiRequest = true;
   @Output() eventNew = new EventEmitter<Tarjeta>();
   @Output() eventEdit = new EventEmitter<Tarjeta>();
   myDatePickerOptions: IMyDpOptions;
@@ -110,27 +111,37 @@ export class ModalTarjetaComponent implements OnInit {
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('tarjetas', tarjetaAEnviar).subscribe(
-          json => {
-            json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.post('tarjetas', tarjetaAEnviar).subscribe(
+            json => {
+              json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventNew.emit(json);
+              f.form.reset();
             }
-            this.eventNew.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventNew.emit(tarjetaAEnviar);
+          f.form.reset();
+        }
       } else {
-        this.apiService.put('tarjetas/' + tarjetaAEnviar.id, tarjetaAEnviar).subscribe(
-          json => {
-            json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.put('tarjetas/' + tarjetaAEnviar.id, tarjetaAEnviar).subscribe(
+            json => {
+              json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventEdit.emit(json);
+              f.form.reset();
             }
-            this.eventEdit.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventEdit.emit(tarjetaAEnviar);
+          f.form.reset();
+        }
       }
     }
   }

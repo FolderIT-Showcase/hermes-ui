@@ -13,6 +13,7 @@ import {HelperService} from '../../../../service/helper.service';
 export class ModalDepositoComponent implements OnInit {
   @Input() clientes: Cliente[];
   @Input() cuentas: Cliente[];
+  @Input() shouldSendApiRequest = true;
   @Output() eventNew = new EventEmitter<Deposito>();
   @Output() eventEdit = new EventEmitter<Deposito>();
   myDatePickerOptions: IMyDpOptions;
@@ -128,25 +129,36 @@ export class ModalDepositoComponent implements OnInit {
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('depositos', depositoAEnviar).subscribe(
-          json => {
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.post('depositos', depositoAEnviar).subscribe(
+            json => {
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventNew.emit(json);
+              f.form.reset();
             }
-            this.eventNew.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventNew.emit(depositoAEnviar);
+          f.form.reset();
+        }
+
       } else {
-        this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
-          json => {
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
+            json => {
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventEdit.emit(json);
+              f.form.reset();
             }
-            this.eventEdit.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventEdit.emit(depositoAEnviar);
+          f.form.reset();
+        }
       }
     }
   }

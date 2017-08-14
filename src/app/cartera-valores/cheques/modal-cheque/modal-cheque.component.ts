@@ -14,6 +14,7 @@ import {HelperService} from '../../../../service/helper.service';
 export class ModalChequeComponent implements OnInit {
   @Input() clientes: Cliente[];
   @Input() bancos: Banco[];
+  @Input() shouldSendApiRequest = true;
   @Output() eventNew = new EventEmitter<Cheque>();
   @Output() eventEdit = new EventEmitter<Cheque>();
   myDatePickerOptions: IMyDpOptions;
@@ -151,31 +152,41 @@ export class ModalChequeComponent implements OnInit {
       if (!!chequeAEnviar.fecha_cobro) {
         chequeAEnviar.fecha_cobro = HelperService.myDatePickerDateToString(chequeAEnviar.fecha_cobro);
       }
-      setTimeout(() => { this.cerrar(); }, 100);
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
-          json => {
-            json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
+            json => {
+              json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventNew.emit(json);
+              f.form.reset();
             }
-            this.eventNew.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventNew.emit(chequeAEnviar);
+          f.form.reset();
+        }
+
       } else {
-        this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
-          json => {
-            json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+        if (this.shouldSendApiRequest) {
+          this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
+            json => {
+              json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
+              if (!!json.cliente_id) {
+                json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
+              }
+              this.eventEdit.emit(json);
+              f.form.reset();
             }
-            this.eventEdit.emit(json);
-            f.form.reset();
-          }
-        );
+          );
+        } else {
+          this.eventEdit.emit(chequeAEnviar);
+          f.form.reset();
+        }
       }
     }
   }
