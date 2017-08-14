@@ -11,6 +11,7 @@ import {isNullOrUndefined} from 'util';
 import {Comprobante} from '../../domain/comprobante';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
+import {Subject} from 'rxjs/Subject';
 
 @Component({
   selector: 'app-cobros',
@@ -42,6 +43,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   tipoComprobante: TipoComprobante;
   comprobantesAMostrar: Comprobante[];
   comprobantes: Comprobante[];
+  modificado = false;
+  puedeSalir: Subject<Boolean> = new Subject;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -161,6 +164,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   }
 
   onClienteChanged(event) {
+    this.modificado = true;
     this.typeaheadNombreClienteNoResults = false;
     this.typeaheadCodigoClienteNoResults = false;
     this.cliente = event;
@@ -456,5 +460,22 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     // if (index !== -1) {
     //   this.tabla.nativeElement.children[2].children[index].children[7].children[0].select();
     // }
+  }
+
+  canDeactivate() {
+    if (this.modificado) {
+      (<any>$('#modalPuedeSalir')).modal('show');
+      return this.puedeSalir;
+    } else {
+      return true;
+    }
+  }
+
+  continuar() {
+    this.puedeSalir.next(true);
+  }
+
+  cancelar() {
+    this.puedeSalir.next(false);
   }
 }
