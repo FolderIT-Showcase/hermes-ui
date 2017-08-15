@@ -1,9 +1,11 @@
-import {Component, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {Component, ComponentFactoryResolver, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {DataTableDirective} from 'angular-datatables';
 import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
+import {ModalAbmComponent} from './modal-abm/modal-abm.component';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-abm',
@@ -11,18 +13,19 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
   styleUrls: ['./abm.component.css']
 })
 export class AbmComponent implements OnInit, OnDestroy {
+  @Input() data: any;
   @Input() dtOptions: any = {};
   @Input() femenino = false;
   @Input() nombreElemento = 'elemento';
-  @Input() articuloElemento = 'el';
   @Input() pluralElemento = this.nombreElemento + 's';
   @Input() path: string;
   @Input() elementClass: any;
-  @Input()  tableHeader: TemplateRef<any>;
-  @Input()  tableBody: TemplateRef<any>;
-  @Input()  modalBody: TemplateRef<any>;
+  @Input() modalComponent: any;
+  @Input() tableHeader: TemplateRef<any>;
+  @Input() tableBody: TemplateRef<any>;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
+  @ViewChild('modalContainer', { read: ViewContainerRef }) container;
   elements: any[] = [];
   dtTrigger: Subject<any> = new Subject();
   elementSeleccionado = {id: '0'};
@@ -32,41 +35,22 @@ export class AbmComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   mostrarBarraCarga = true;
   submitted = false;
+  componentRef: any;
+  articuloElemento = 'el';
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {}
+              private navbarTitleService: NavbarTitleService,
+              private resolver: ComponentFactoryResolver) {}
 
   ngOnInit(): void {
+    this.articuloElemento = this.femenino ? 'la' : 'el';
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
       pageLength: 13,
       scrollY: '70vh',
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,
@@ -96,64 +80,42 @@ export class AbmComponent implements OnInit, OnDestroy {
         () => {
           this.mostrarBarraCarga = false;
         });
+
+    this.container.clear();
+    const factory = this.resolver.resolveComponentFactory(this.modalComponent);
+    this.componentRef = this.container.createComponent(factory);
+    this.componentRef.instance.path = this.path;
+    this.componentRef.instance.femenino = this.femenino;
+    this.componentRef.instance.nombreElemento = this.nombreElemento;
+    this.componentRef.instance.data = this.data;
+    this.componentRef.instance.eventNew.subscribe( (event) => this.handleNew(event));
+    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEdit(event));
+  }
+
+  handleNew(element: any) {
+    this.elements.push(element);
+    this.recargarTabla();
+  }
+
+  handleEdit(element: any) {
+    Object.assign(this.elementOriginal, element);
   }
 
 
   mostrarModalNuevo() {
-    this.modalTitle = (this.femenino ? 'Nueva ' : 'Nuevo ') + this.nombreElemento;
-    this.enNuevo = true;
-    this.elementSeleccionado = new this.elementClass();
-    (<any>$('#modalEditar')).modal('show');
+    this.componentRef.instance.nuevo();
   }
 
   mostrarModalEditar(element: any) {
-    this.modalTitle = 'Editar ' + this.nombreElemento;
-    this.enNuevo = false;
     this.elementOriginal = element;
-    this.elementSeleccionado = JSON.parse(JSON.stringify(element));
+    this.componentRef.instance.editar(element);
   }
 
   mostrarModalEliminar(element: any) {
     this.elementSeleccionado = element;
   }
 
-  editarONuevo(f: any) {
-    this.submitted = true;
-    if (f.valid) {
-      this.submitted = false;
-      (<any>$('#modalEditar')).modal('hide');
-      const elementAEnviar = {id: ''};
-      Object.assign(elementAEnviar, this.elementSeleccionado);
-      setTimeout(() => { this.cerrar(); }, 100);
-
-      if (this.enNuevo) {
-        this.enNuevo = false;
-        this.apiService.post(this.path, elementAEnviar).subscribe(
-          json => {
-            // TODO callback to parent
-            this.elements.push(json);
-            this.recargarTabla();
-            f.form.reset();
-          }
-        );
-      } else {
-        this.apiService.put(this.path + '/' + elementAEnviar.id, elementAEnviar).subscribe(
-          json => {
-            // TODO callback to parent
-            Object.assign(this.elementOriginal, json);
-            f.form.reset();
-          }
-        );
-      }
-    }
-  }
-
-  cerrar() {
-    this.submitted = false;
-  }
-
   eliminar() {
-    this.submitted = false;
     this.apiService.delete(this.path + '/' + this.elementSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.elements.indexOf(this.elementSeleccionado);
@@ -178,9 +140,10 @@ export class AbmComponent implements OnInit, OnDestroy {
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  // noinspection JSMethodCanBeStatic
   @HostListener('window:popstate', ['$event'])
   ocultarModals() {
-    (<any>$('#modalEditar')).modal('hide');
+    ModalAbmComponent.close();
     (<any>$('#modalEliminar')).modal('hide');
   }
 
@@ -188,7 +151,6 @@ export class AbmComponent implements OnInit, OnDestroy {
     this.ocultarModals();
   }
 
-  // noinspection JSUnusedGlobalSymbols
   canDeactivate() {
     this.ocultarModals();
     return true;

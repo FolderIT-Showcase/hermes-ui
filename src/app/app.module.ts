@@ -65,6 +65,8 @@ import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposi
 import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
 import {HelperService} from '../service/helper.service';
 import { AbmComponent } from './abm/abm.component';
+import { ModalAbmComponent } from './abm/modal-abm/modal-abm.component';
+import { ModalZonaComponent } from './zonas/modal-zona/modal-zona.component';
 
 
 @NgModule({
@@ -116,7 +118,9 @@ import { AbmComponent } from './abm/abm.component';
     ModalTarjetaComponent,
     ModalDepositoComponent,
     ModalChequeComponent,
-    AbmComponent
+    AbmComponent,
+    ModalAbmComponent,
+    ModalZonaComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
@@ -140,7 +144,8 @@ import { AbmComponent } from './abm/abm.component';
     HelperService
   ],
   bootstrap: [AppComponent],
-  schemas: [NO_ERRORS_SCHEMA]
+  schemas: [NO_ERRORS_SCHEMA],
+  entryComponents: [ ModalZonaComponent ],
 })
 export class AppModule {
 }

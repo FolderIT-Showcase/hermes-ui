@@ -14,7 +14,7 @@
   <tr *ngFor="let element of elements">
     <ng-template [ngTemplateOutlet]="tableBody" [ngOutletContext]="{element: element}"></ng-template>
     <td>
-      <button title="Editar" (click)="mostrarModalEditar(element)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button title="Editar" (click)="mostrarModalEditar(element)" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar" (click)="mostrarModalEliminar(element)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
@@ -39,22 +39,4 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
-        <h4 class="modal-title" id="modalLabel">{{modalTitle}}</h4>
-      </div>
-      <form class="form-horizontal" #f="ngForm">
-        <div class="modal-body">
-          <ng-container [ngTemplateOutlet]="modalBody" [ngOutletContext]="{elementSeleccionado: elementSeleccionado}"></ng-container>
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<ng-template #modalContainer></ng-template>
