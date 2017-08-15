@@ -12,7 +12,7 @@
       <button type="button" class="btn btn-default" data-toggle="collapse" data-target="#collapse">Mostrar Filtros</button>
     </div>
     <div class="col-sm-2">
-      <button type="submit" class="btn btn-default" (click)="filtrar()">Filtrar</button>
+      <button class="btn btn-default" (click)="filtrar()">Filtrar</button>
     </div>
   </div>
   <div class="collapse" id="collapse">
@@ -25,10 +25,10 @@
             Intervalo
           </label>
           <div  class="col-sm-4" style="margin-left:10px; padding-left: 0; padding-right: 0">
-            <my-date-picker id="fecha-ingreso-inicio" [(ngModel)]="fechaIngresoInicio" name="fecha-ingreso-inicio" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
+            <my-date-picker id="fecha-ingreso-inicio" [(ngModel)]="fechaIngresoInicio" [name]="'fecha-ingreso-inicio'" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
           </div>
           <div class="col-sm-4" style="margin-left:10px; padding-left: 0; padding-right: 0">
-            <my-date-picker id="fecha-ingreso-fin" [(ngModel)]="fechaIngresoFin" name="fecha-ingreso-fin" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
+            <my-date-picker id="fecha-ingreso-fin" [(ngModel)]="fechaIngresoFin" [name]="'fecha-ingreso-fin'" [options]="myDatePickerOptions" [disabled]="!filtrarFechaIngreso"></my-date-picker>
           </div>
 
           <div *ngIf="(rangoFechaInvalido() && filtrarFechaIngreso)" class="help-block col-sm-12">La fecha de inicio no puede ser posterior a la fecha de fin</div>
@@ -42,7 +42,7 @@
             Seleccionar
           </label>
           <div class="col-sm-9">
-            <select class="form-control" id="cliente" [(ngModel)]="cliente" name="cliente">
+            <select class="form-control" id="cliente" [(ngModel)]="cliente" name="cliente" title="cliente">
               <option [ngValue]="0">Todos</option>
               <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
             </select>
@@ -57,7 +57,7 @@
             Seleccionar
           </label>
           <div class="col-sm-9">
-            <select class="form-control" id="banco" [(ngModel)]="banco" name="banco">
+            <select class="form-control" id="banco" [(ngModel)]="banco" name="banco" title="banco">
               <option [ngValue]="0">Todos</option>
               <option *ngFor="let banco of bancos" [ngValue]="banco.id">{{banco.nombre}}</option>
             </select>
@@ -72,16 +72,11 @@
             Seleccionar
           </label>
           <div class="col-sm-9">
-            <select class="form-control" id="estado1" [(ngModel)]="estado" name="estado">
+            <select class="form-control" id="estado1" [(ngModel)]="estado" name="estado" title="estado">
               <option [ngValue]="'0'">Todos</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'I'">Ingresado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'D'">Depositado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'T'">Transferido</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'R'">Rechazado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'V'">Vencido</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'I'">Ingresado</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'A'">Aceptado</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'R'">Rechazado</option>
+              <option [ngValue]="'I'">Ingresado</option>
+              <option [ngValue]="'A'">Acreditado</option>
+              <option [ngValue]="'R'">Rechazado</option>
             </select>
           </div>
         </div>
@@ -90,11 +85,11 @@
       <div class="col-sm-4 box" *ngIf="medioPago === 1">
         <h5>Número</h5>
         <div class="col-sm-12">
-          <label class="col-sm-1 control-label" for="numero" style="padding-left: 0; padding-right: 0; text-align: left">
+          <label class="col-sm-1 control-label" for="numero1" style="padding-left: 0; padding-right: 0; text-align: left">
             <input type="checkbox" [(ngModel)]="filtrarNumero" name="filtrarNumero" [value]="true">
           </label>
           <div class="col-sm-11">
-            <input class="form-control" [(ngModel)]="numero" name="numero" [disabled]="!filtrarNumero" id="numero" maxlength="20">
+            <input class="form-control" [(ngModel)]="numero" name="numero" [disabled]="!filtrarNumero" id="numero1" maxlength="20">
           </div>
         </div>
       </div>
@@ -108,16 +103,13 @@
             Seleccionar
           </label>
           <div class="col-sm-9">
-            <select class="form-control" id="estado2" [(ngModel)]="estado" name="estado">
+            <select class="form-control" id="estado2" [(ngModel)]="estado" name="estado" title="estado">
               <option [ngValue]="'0'">Todos</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'I'">Ingresado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'D'">Depositado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'T'">Transferido</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'R'">Rechazado</option>
-              <option *ngIf="medioPago === 0" [ngValue]="'V'">Vencido</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'I'">Ingresado</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'A'">Aceptado</option>
-              <option *ngIf="medioPago === 2" [ngValue]="'R'">Rechazado</option>
+              <option [ngValue]="'I'">Ingresado</option>
+              <option [ngValue]="'D'">Depositado</option>
+              <option [ngValue]="'T'">Transferido</option>
+              <option [ngValue]="'R'">Rechazado</option>
+              <option [ngValue]="'V'">Vencido</option>
             </select>
           </div>
         </div>
@@ -126,11 +118,11 @@
       <div class="col-sm-4 box" *ngIf="medioPago === 0">
         <h5>Número</h5>
         <div class="col-sm-12">
-          <label class="col-sm-1 control-label" for="numero" style="padding-left: 0; padding-right: 0; text-align: left">
+          <label class="col-sm-1 control-label" for="numero2" style="padding-left: 0; padding-right: 0; text-align: left">
             <input type="checkbox" [(ngModel)]="filtrarNumero" name="filtrarNumero" [value]="true">
           </label>
           <div class="col-sm-11">
-            <input class="form-control" [(ngModel)]="numero" name="numero" [disabled]="!filtrarNumero" id="numero" maxlength="20">
+            <input class="form-control" [(ngModel)]="numero" name="numero" [disabled]="!filtrarNumero" id="numero2" maxlength="20">
           </div>
         </div>
       </div>

@@ -59,6 +59,11 @@ import { CarteraValoresComponent } from './cartera-valores/cartera-valores.compo
 import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
 import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
 import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
+import { CobrosComponent } from './cobros/cobros.component';
+import { ModalTarjetaComponent } from './cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
+import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposito/modal-deposito.component';
+import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
+import {HelperService} from '../service/helper.service';
 import { AbmComponent } from './abm/abm.component';
 
 
@@ -107,6 +112,10 @@ import { AbmComponent } from './abm/abm.component';
     ChequesComponent,
     DepositosComponent,
     TarjetasComponent,
+    CobrosComponent,
+    ModalTarjetaComponent,
+    ModalDepositoComponent,
+    ModalChequeComponent,
     AbmComponent
   ],
   imports: [
@@ -128,6 +137,7 @@ import { AbmComponent } from './abm/abm.component';
     ApiService,
     DeactivateGuardService,
     NavbarTitleService,
+    HelperService
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA]

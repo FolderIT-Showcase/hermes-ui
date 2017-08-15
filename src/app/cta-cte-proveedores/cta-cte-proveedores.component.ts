@@ -12,6 +12,7 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {ComprobanteCompraImportes} from '../../domain/comprobanteCompraImportes';
 import {ComprobanteCompraRetencion} from '../../domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../domain/tipoRetencion';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-cta-cte-proveedores',
@@ -123,17 +124,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
       } ]
     };
     this.navbarTitleService.setTitle('Cuentas Corrientes de Proveedores');
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
@@ -195,12 +186,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
   }
 
   rangoFechaInvalido(): boolean {
-    return (this.fechaInicioCtaCte.date.year > this.fechaFinCtaCte.date.year)
-      ||  ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
-        (this.fechaInicioCtaCte.date.month > this.fechaFinCtaCte.date.month))
-      || ((this.fechaInicioCtaCte.date.year === this.fechaFinCtaCte.date.year) &&
-        (this.fechaInicioCtaCte.date.month === this.fechaFinCtaCte.date.month)
-        && this.fechaInicioCtaCte.date.day > this.fechaFinCtaCte.date.day);
+    return HelperService.rangoFechaInvalido(this.fechaInicioCtaCte, this.fechaFinCtaCte);
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
@@ -226,10 +212,8 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
         this.proveedorCtaCteSeleccionado = this.listaProveedores[0];
         this.proveedorCtaCteAsync = this.proveedorCtaCteSeleccionado.nombre;
       }
-      let fechaInicioAEnviar = this.fechaInicioCtaCte.date.year + '-'
-        + this.fechaInicioCtaCte.date.month
-        + '-' + this.fechaInicioCtaCte.date.day;
-      const fechaFinAEnviar = this.fechaFinCtaCte.date.year + '-' + this.fechaFinCtaCte.date.month + '-' + this.fechaFinCtaCte.date.day;
+      let fechaInicioAEnviar = HelperService.myDatePickerDateToString(this.fechaInicioCtaCte);
+      const fechaFinAEnviar = HelperService.myDatePickerDateToString(this.fechaFinCtaCte);
       if (!this.fechaSeleccionadaCtaCte) {
         const initialYear = new Date();
         initialYear.setTime(0);

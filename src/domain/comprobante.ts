@@ -26,4 +26,5 @@ export class Comprobante {
   lista_id: number;
   cliente: Cliente;
   ptoventaynumero: string;
+  en_lista: boolean;
 }
