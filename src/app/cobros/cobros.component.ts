@@ -12,6 +12,7 @@ import {Comprobante} from '../../domain/comprobante';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
 import {Subject} from 'rxjs/Subject';
+import {ModalChequeComponent} from 'app/cartera-valores/cheques/modal-cheque/modal-cheque.component';
 
 @Component({
   selector: 'app-cobros',
@@ -35,6 +36,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   private typeaheadNombreClienteElement: ElementRef;
   @ViewChild('tabla')
   private tabla: ElementRef;
+  @ViewChild(ModalChequeComponent)
+  modalCheque: ModalChequeComponent;
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
   fecha: any;
@@ -477,5 +480,14 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
   cancelar() {
     this.puedeSalir.next(false);
+  }
+
+  mostrarModalMediosPago() {
+    (<any>$('#modalMediosPago')).modal('show');
+
+  }
+
+  abrirModalCheque() {
+    this.modalCheque.nuevoCheque();
   }
 }

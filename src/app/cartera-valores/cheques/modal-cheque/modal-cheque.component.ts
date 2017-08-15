@@ -12,8 +12,8 @@ import {HelperService} from '../../../../service/helper.service';
   styleUrls: ['./modal-cheque.component.css']
 })
 export class ModalChequeComponent implements OnInit {
-  @Input() clientes: Cliente[];
-  @Input() bancos: Banco[];
+  @Input() clientes: Cliente[] = [];
+  @Input() bancos: Banco[] = [];
   @Input() shouldSendApiRequest = true;
   @Output() eventNew = new EventEmitter<Cheque>();
   @Output() eventEdit = new EventEmitter<Cheque>();
