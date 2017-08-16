@@ -84,18 +84,17 @@ export class AbmComponent implements OnInit, OnDestroy {
       ]
     };
     this.navbarTitleService.setTitle('Gestión de ' + this.pluralElemento);
-    this.beforeElementLoad(this.data).subscribe( () => {
-      this.apiService.get(this.path)
-        .subscribe(json => {
-            this.elements = json;
-            this.onElementLoad(json, this.data);
-            this.mostrarBarraCarga = false;
-            this.mostrarTabla = true;
-            this.dtTrigger.next();
-          },
-          () => {
-            this.mostrarBarraCarga = false;
-          });
+    const observable1 = this.apiService.get(this.path);
+    const observable2 = this.beforeElementLoad(this.data);
+    Observable.zip(observable1, observable2).subscribe( result => {
+        this.elements = result[0];
+        this.onElementLoad(this.elements, this.data);
+        this.mostrarBarraCarga = false;
+        this.mostrarTabla = true;
+        this.dtTrigger.next();
+      },
+      () => {
+        this.mostrarBarraCarga = false;
     });
 
     this.container.clear();

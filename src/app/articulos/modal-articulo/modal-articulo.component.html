@@ -96,7 +96,7 @@
             <div class="col-sm-3"
                  [ngClass]="{'has-error': !puntopedido.valid && !puntopedido.pristine,
             'has-success': puntopedido.valid && !puntopedido.pristine}">
-              <input type="number" class="form-control text-center" #puntopedido="ngModel" id="articulo-punto-pedido" [(ngModel)]="element.punto_pedido" name="punto_pedido"  min="0" step="1" placeholder="0" pattern="^\d*$">
+              <input type="number" class="form-control text-center" #puntopedido="ngModel" id="articulo-punto-pedido" [(ngModel)]="element.punto_pedido" name="punto_pedido"  min="0" step="1" placeholder="0" pattern="^\d{0,9}$">
               <div *ngIf="!puntopedido.valid && !puntopedido.pristine" class="help-block">Ingrese un número entero</div>
             </div>
 
@@ -104,7 +104,7 @@
             <div class="col-sm-3"
                  [ngClass]="{'has-error': !bajominimo.valid && !bajominimo.pristine,
             'has-success': bajominimo.valid && !bajominimo.pristine}">
-              <input type="number" class="form-control text-center" id="articulo-bajo-minimo" #bajominimo="ngModel" [(ngModel)]="element.bajo_minimo" name="bajo_minimo"  min="0" step="1" placeholder="0" pattern="^\d*$">
+              <input type="number" class="form-control text-center" id="articulo-bajo-minimo" #bajominimo="ngModel" [(ngModel)]="element.bajo_minimo" name="bajo_minimo"  min="0" step="1" placeholder="0" pattern="^\d{0,9}$">
               <div *ngIf="!bajominimo.valid && !bajominimo.pristine" class="help-block">Ingrese un número entero</div>
             </div>
 
@@ -112,7 +112,7 @@
             <div class="col-sm-3"
                  [ngClass]="{'has-error': !costo.valid && !costo.pristine,
             'has-success': costo.valid && !costo.pristine}">
-              <input type="number" class="form-control text-right" id="articulo-costo" [(ngModel)]="element.costo" name="costo"  #costo="ngModel" min="0" step="0.01" pattern="^\d+([\.\,]\d{1,2})?$" placeholder="0.00">
+              <input type="number" class="form-control text-right" id="articulo-costo" [(ngModel)]="element.costo" name="costo"  #costo="ngModel" min="0" step="0.01" pattern="^\d{1,12}([\.\,]\d{1,2})?$" placeholder="0.00">
               <div *ngIf="!costo.valid && !costo.pristine" class="help-block">Ingrese un número con dos decimales</div>
             </div>
           </div>
