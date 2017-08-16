@@ -6,6 +6,7 @@ import {AlertService} from '../../service/alert.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {ModalAbmComponent} from './modal-abm/modal-abm.component';
 import {HelperService} from '../../service/helper.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-abm',
@@ -13,16 +14,22 @@ import {HelperService} from '../../service/helper.service';
   styleUrls: ['./abm.component.css']
 })
 export class AbmComponent implements OnInit, OnDestroy {
-  @Input() data: any;
+  @Input() data: any = {};
   @Input() dtOptions: any = {};
   @Input() femenino = false;
   @Input() nombreElemento = 'elemento';
-  @Input() pluralElemento = this.nombreElemento + 's';
+  @Input() pluralElemento;
   @Input() path: string;
   @Input() elementClass: any;
   @Input() modalComponent: any;
   @Input() tableHeader: TemplateRef<any>;
   @Input() tableBody: TemplateRef<any>;
+  @Input() beforeElementLoad: Function;
+  @Input() beforeElementNew: Function;
+  @Input() beforeElementEdit: Function;
+  @Input() onElementLoad: Function;
+  @Input() onElementNew: Function;
+  @Input() onElementEdit: Function;
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   @ViewChild('modalContainer', { read: ViewContainerRef }) container;
@@ -41,10 +48,18 @@ export class AbmComponent implements OnInit, OnDestroy {
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private navbarTitleService: NavbarTitleService,
-              private resolver: ComponentFactoryResolver) {}
+              private resolver: ComponentFactoryResolver) {
+    this.beforeElementLoad = (data) => Observable.of(data);
+    this.beforeElementNew = (element, data) => Observable.of(element);
+    this.beforeElementEdit = (element, data) => Observable.of(element);
+    this.onElementLoad = (json, data) => Observable.of(json);
+    this.onElementNew = (element, data) => Observable.of(element);
+    this.onElementEdit = (element, data) => Observable.of(element);
+  }
 
   ngOnInit(): void {
     this.articuloElemento = this.femenino ? 'la' : 'el';
+    this.pluralElemento = this.pluralElemento ? this.pluralElemento : this.nombreElemento + 's';
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
@@ -69,17 +84,19 @@ export class AbmComponent implements OnInit, OnDestroy {
       ]
     };
     this.navbarTitleService.setTitle('Gestión de ' + this.pluralElemento);
-    this.apiService.get(this.path)
-      .subscribe(json => {
-          this.elements = json;
-          // TODO callback to parent
-          this.mostrarBarraCarga = false;
-          this.mostrarTabla = true;
-          this.dtTrigger.next();
-        },
-        () => {
-          this.mostrarBarraCarga = false;
-        });
+    this.beforeElementLoad(this.data).subscribe( () => {
+      this.apiService.get(this.path)
+        .subscribe(json => {
+            this.elements = json;
+            this.onElementLoad(json, this.data);
+            this.mostrarBarraCarga = false;
+            this.mostrarTabla = true;
+            this.dtTrigger.next();
+          },
+          () => {
+            this.mostrarBarraCarga = false;
+          });
+    });
 
     this.container.clear();
     const factory = this.resolver.resolveComponentFactory(this.modalComponent);
@@ -88,16 +105,22 @@ export class AbmComponent implements OnInit, OnDestroy {
     this.componentRef.instance.femenino = this.femenino;
     this.componentRef.instance.nombreElemento = this.nombreElemento;
     this.componentRef.instance.data = this.data;
+    this.componentRef.instance.beforeElementEdit = this.beforeElementEdit;
+    this.componentRef.instance.beforeElementNew = this.beforeElementNew;
+    this.componentRef.instance.onElementEdit = this.onElementEdit;
+    this.componentRef.instance.onElementNew = this.onElementNew;
     this.componentRef.instance.eventNew.subscribe( (event) => this.handleNew(event));
     this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEdit(event));
   }
 
   handleNew(element: any) {
+    this.onElementNew(element, this.data);
     this.elements.push(element);
     this.recargarTabla();
   }
 
   handleEdit(element: any) {
+    this.onElementEdit(element, this.data);
     Object.assign(this.elementOriginal, element);
   }
 

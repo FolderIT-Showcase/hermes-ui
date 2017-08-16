@@ -1,5 +1,5 @@
 import {
-  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
+  Component, HostListener, OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
 import { Articulo } from 'domain/articulo';
@@ -17,7 +17,7 @@ import {HelperService} from '../../service/helper.service';
   templateUrl: './articulos.component.html',
   styleUrls: ['./articulos.component.css']
 })
-export class ArticulosComponent implements OnInit, AfterViewChecked, OnDestroy {
+export class ArticulosComponent implements OnInit,  OnDestroy {
   mostrarBarraCarga = true;
   enNuevo: boolean;
   articuloOriginal: Articulo;
@@ -33,13 +33,8 @@ export class ArticulosComponent implements OnInit, AfterViewChecked, OnDestroy {
   subrubros: Subrubro[] = [];
   submitted = false;
   constructor(private apiService: ApiService,
-              private cdRef: ChangeDetectorRef,
               private navbarTitleService: NavbarTitleService) {}
 
-  ngAfterViewChecked() {
-// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
-    this.cdRef.detectChanges();
-  }
 
   ngOnInit(): void {
     this.dtOptions = {
