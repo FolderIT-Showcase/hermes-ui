@@ -1,108 +1,26 @@
-<div class="progress" *ngIf="mostrarBarraCarga">
-  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-    <span>Cargando<span class="dotdotdot"></span></span>
-  </div>
-</div>
+<ng-template #tableHeader>
+  <th>Banco</th>
+  <th>Tipo</th>
+  <th>Número</th>
+  <th style="width:10%">Acciones</th>
+</ng-template>
 
-<table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
-  <thead>
-  <tr>
-    <th>Banco</th>
-    <th>Tipo</th>
-    <th>Número</th>
-    <th style="width:10%">Acciones</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let cuentaBancaria of cuentaBancarias">
-    <td>{{ cuentaBancaria.banco_nombre }}</td>
-    <td>{{ cuentaBancaria.tipo }}</td>
-    <td>{{ cuentaBancaria.numero }}</td>
-    <td>
-      <button title="Editar cuentaBancaria" (click)="mostrarModalEditar(cuentaBancaria)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
-      <button title="Eliminar cuentaBancaria" (click)="mostrarModalEliminar(cuentaBancaria)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
-    </td>
-  </tr>
-  </tbody>
-</table>
+<ng-template #tableBody let-element="element">
+  <td>{{ element.banco_nombre }}</td>
+  <td>{{ element.tipo }}</td>
+  <td>{{ element.numero }}</td>
+</ng-template>
 
-<div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="modalEliminar">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Eliminar Cuenta Bancaria</h4>
-      </div>
-      <div class="modal-body">
-        <p>¿Está seguro de que desea eliminar la cuenta bancaria {{cuentaBancariaSeleccionada.nombre}}?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-danger">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
-      </div>
-      <form class="form-horizontal" #f="ngForm">
-        <div class="modal-body">
-          <div class="form-group row">
-            <label for="cuentaBancaria-banco" class="col-sm-2 required control-label">Banco</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !banco.valid && (!banco.pristine || banco.touched || submitted),
-            'has-success': banco.valid}">
-              <div class="select-style">
-                <select class="form-control" id="cuentaBancaria-banco" [(ngModel)]="cuentaBancariaSeleccionada.banco_id" name="banco" #banco="ngModel" required >
-                  <option *ngFor="let banco of bancos" [ngValue]="banco.id">{{banco.nombre}}</option>
-                </select>
-              </div>
-              <span *ngIf="banco.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="banco.errors !== null && (!banco.pristine || banco.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!banco.valid && (!banco.pristine || banco.touched || submitted)" class="help-block">Seleccione un banco</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="cuentaBancaria-tipo" class="col-sm-2 required control-label">Tipo</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
-            'has-success': tipo.valid}">
-              <div class="select-style">
-                <select class="form-control" id="cuentaBancaria-tipo" [(ngModel)]="cuentaBancariaSeleccionada.tipo" name="tipo" #tipo="ngModel" required >
-                  <option [ngValue]="'Cuenta Corriente'">Cuenta Corriente</option>
-                  <option [ngValue]="'Caja Ahorro'">Caja Ahorro</option>
-                </select>
-              </div>
-              <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="tipo.errors !== null && (!tipo.pristine || tipo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!tipo.valid && (!tipo.pristine || tipo.touched || submitted)" class="help-block">Seleccione un tipo</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="cuentaBancaria-numero" class="col-sm-2 required control-label">Número</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
-            'has-success': numero.valid}">
-              <input type="text" class="form-control" id="cuentaBancaria-numero" [(ngModel)]="cuentaBancariaSeleccionada.numero" name="numero" #numero="ngModel" required [maxLength]="50" placeholder="Numero">
-              <span *ngIf="numero.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="numero.errors !== null && (!numero.pristine || numero.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!numero.valid && (!numero.pristine || numero.touched || submitted)" class="help-block">Ingrese un numero</div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<app-abm
+  [femenino]="true"
+  [nombreElemento]="'Cuenta Bancaria'"
+  [pluralElemento]="'Cuentas Bancarias'"
+  [path]="'cuentasbancarias'"
+  [elementClass]="cuentaBancaria"
+  [tableHeader]="tableHeader"
+  [tableBody]="tableBody"
+  [modalComponent]="modal"
+  [beforeElementLoad]="cargarBancos"
+  [onElementLoad]="asignarNombreBancos"
+  [onElementEdit]="asignarNombreBanco"
+  [onElementNew]="asignarNombreBanco"></app-abm>

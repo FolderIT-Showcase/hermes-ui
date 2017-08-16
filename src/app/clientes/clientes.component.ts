@@ -189,9 +189,6 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     this.modalTitle = 'Nuevo Cliente';
     this.enNuevo = true;
     this.clienteSeleccionado = new Cliente;
-    this.clienteSeleccionado.domicilios = [];
-    this.clienteSeleccionado.tipo_responsable = 'RI';
-    this.clienteSeleccionado.activo = true;
     this.nuevoDomicilio();
     this.cargarProvincias();
     this.cargarVendedores();

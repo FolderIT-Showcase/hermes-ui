@@ -167,7 +167,19 @@ import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articul
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],
-  entryComponents: [ ModalZonaComponent, ModalVendedorComponent ],
+  entryComponents: [
+    ModalZonaComponent,
+    ModalVendedorComponent,
+    ModalTipoTarjetaComponent,
+    ModalTipoRetencionComponent,
+    ModalSubrubroComponent,
+    ModalRubroComponent,
+    ModalProveedorComponent,
+    ModalMarcaComponent,
+    ModalCuentaBancariaComponent,
+    ModalBancoComponent,
+    ModalArticuloComponent
+  ],
 })
 export class AppModule {
 }
