@@ -1,210 +1,55 @@
-import {
-  AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
-  ViewChild
-} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Articulo } from 'domain/articulo';
-import { Subject } from 'rxjs/Subject';
-import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../service/api.service';
-import { Marca } from 'domain/marca';
-import { Subrubro } from 'domain/subrubro';
-import {isNullOrUndefined} from 'util';
-import {NavbarTitleService} from '../../service/navbar-title.service';
-import {HelperService} from '../../service/helper.service';
+import {ModalArticuloComponent} from './modal-articulo/modal-articulo.component';
+import {AbmComponent} from 'app/abm/abm.component';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-articulos',
   templateUrl: './articulos.component.html',
   styleUrls: ['./articulos.component.css']
 })
-export class ArticulosComponent implements OnInit, AfterViewChecked, OnDestroy {
-  mostrarBarraCarga = true;
-  enNuevo: boolean;
-  articuloOriginal: Articulo;
-  dtOptions: any = {};
-  articulos: Articulo[] = [];
-  dtTrigger: Subject<any> = new Subject();
-  articuloSeleccionado: Articulo = new Articulo();
-  @ViewChild(DataTableDirective)
-  dtElement: DataTableDirective;
-  modalTitle: string;
-  mostrarTabla = false;
-  marcas: Marca[] = [];
-  subrubros: Subrubro[] = [];
-  submitted = false;
-  constructor(private apiService: ApiService,
-              private cdRef: ChangeDetectorRef,
-              private navbarTitleService: NavbarTitleService) {}
+export class ArticulosComponent {
+  articulo = Articulo;
+  modal = ModalArticuloComponent;
+  @ViewChild(AbmComponent)
+  abmComponent: AbmComponent;
 
-  ngAfterViewChecked() {
-// explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
-    this.cdRef.detectChanges();
+  constructor(private apiService: ApiService) {}
+
+  cargarMarcaSubrubro(data) {
+    const obs1 = this.apiService.get('marcas').map(
+      json => {
+        data.marcas = json;
+        return data;
+      });
+    const obs2 = this.apiService.get('subrubros').map(
+      json => {
+        data.subrubros = json;
+        return data;
+      });
+    return Observable.zip(obs1, obs2);
   }
 
-  ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      autoWidth: true,
-      pageLength: 13,
-      scrollY: '70vh',
-      language: HelperService.defaultDataTablesLanguage(),
-      columnDefs: [ {
-        'targets': -1,
-        'searchable': false,
-        'orderable': false
-      } ],
-      dom: 'Bfrtip',
-      buttons: [
-        {
-          text: 'Nuevo Artículo',
-          key: '1',
-          className: 'btn btn-success a-override',
-          action: () => {
-            this.mostrarModalNuevo();
-          }
-        }
-      ]
-    };
-
-    this.navbarTitleService.setTitle('Gestión de Artículos');
-    this.apiService.get('articulos')
-      .subscribe(json => {
-          this.articulos = json;
-          this.cargarMarcas();
-          this.cargarSubrubros();
-          this.mostrarBarraCarga = false;
-          this.mostrarTabla = true;
-          this.dtTrigger.next();
-        },
-        () => {
-          this.mostrarBarraCarga = false;
-        });
-
-  }
-
-  mostrarModalEditar(articulo: Articulo) {
-    this.modalTitle = 'Editar Artículo';
-    this.enNuevo = false;
-    this.articuloOriginal = articulo;
-    this.articuloSeleccionado = JSON.parse(JSON.stringify(articulo));
-  }
-
-  mostrarModalEliminar(articulo: Articulo) {
-    this.articuloSeleccionado = articulo;
-  }
-
-  editarONuevo(f: any) {
-    this.submitted = true;
-    if (f.valid) {
-      this.submitted = false;
-      (<any>$('#modalEditar')).modal('hide');
-      // Máscara para mostrar siempre 2 decimales
-      const num = this.articuloSeleccionado.costo;
-      this.articuloSeleccionado.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
-
-      const articuloAEnviar = new Articulo();
-      Object.assign(articuloAEnviar, this.articuloSeleccionado);
-      setTimeout(() => { this.cerrar(f); }, 100);
-
-      if (this.enNuevo) {
-        this.enNuevo = false;
-        this.apiService.post('articulos', articuloAEnviar).subscribe(
-          json => {
-            json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
-            json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
-            this.articulos.push(json);
-            this.recargarTabla();
-          }
-        );
-      } else {
-        this.apiService.put('articulos/' + articuloAEnviar.id, articuloAEnviar).subscribe(
-          json => {
-            json.subrubro_nombre = this.subrubros.find(x => x.id === json.subrubro_id).nombre;
-            json.marca_nombre = this.marcas.find(x => x.id === json.marca_id).nombre;
-            Object.assign(this.articuloOriginal, json);
-          }
-        );
-      }
-    }
-  }
-
-  mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Artículo';
-    this.enNuevo = true;
-    this.articuloSeleccionado = new Articulo;
-
-    (<any>$('#modalEditar')).modal('show');
-  }
-
-  eliminar() {
-    this.submitted = false;
-    const index: number = this.articulos.indexOf(this.articuloSeleccionado);
-    if (index !== -1) {
-      this.articulos.splice(index, 1);
-    }
-    this.recargarTabla();
-    this.apiService.delete('articulos/' + this.articuloSeleccionado.id).subscribe();
-  }
-
-  cerrar(f: any) {
-    this.submitted = false;
-    if (!isNullOrUndefined(f)) {
-      setTimeout(() => {  f.form.reset(); }, 100);
-    }
-  }
-
-  private recargarTabla() {
-// TODO buscar otra forma de reflejar los cambios en la tabla
-//     this.mostrarTabla = false;
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 350);
+  asignarNombreMarcasSubrubros(articulos, data) {
+    articulos.forEach(element => {
+      element.marca_nombre = data.marcas.find(x => x.id === element.marca_id).nombre;
+      element.subrubro_nombre = data.subrubros.find(x => x.id === element.subrubro_id).nombre;
     });
+    return Observable.of(articulos);
   }
 
-  cargarSubrubros() {
-    if (this.subrubros.length === 0) {
-      this.apiService.get('subrubros').subscribe(
-        json => {
-          this.subrubros = json;
-          this.articulos.forEach(element => {
-            element.subrubro_nombre = this.subrubros.find(x => x.id === element.subrubro_id).nombre;
-          });
-        }
-      );
-    }
+  asignarNombreMarcaSubrubro(articulo, data) {
+    const num = articulo.costo;
+    articulo.costo = !isNaN(+num) ? (+num).toFixed(2) : num;
+
+    articulo.marca_nombre = data.marcas.find(x => x.id === articulo.marca_id).nombre;
+    articulo.subrubro_nombre = data.subrubros.find(x => x.id === articulo.subrubro_id).nombre;
+    return Observable.of(articulo);
   }
 
-  cargarMarcas() {
-    if (this.marcas.length === 0) {
-      this.apiService.get('marcas').subscribe(
-        json => {
-          this.marcas = json;
-          this.articulos.forEach(element => {
-            element.marca_nombre = this.marcas.find(x => x.id === element.marca_id).nombre;
-          });
-        }
-      );
-    }
-  }
-
-  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
-  @HostListener('window:popstate', ['$event'])
-  ocultarModals() {
-    (<any>$('#modalEditar')).modal('hide');
-    (<any>$('#modalEliminar')).modal('hide');
-  }
-
-  ngOnDestroy() {
-    this.ocultarModals();
-  }
-
-  // noinspection JSUnusedGlobalSymbols
   canDeactivate() {
-    this.ocultarModals();
-    return true;
+    return this.abmComponent.canDeactivate();
   }
 }

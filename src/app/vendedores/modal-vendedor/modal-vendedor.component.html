@@ -1,0 +1,58 @@
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="vendedor-nombre" class="col-sm-2 required control-label">Nombre</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
+            'has-success': nombre.valid}">
+              <input class="form-control" id="vendedor-nombre" [(ngModel)]="element.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
+              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="vendedor-zona" class="col-sm-2 required control-label">Zona</label>
+            <div class="col-sm-10 has-feedback"
+                 [ngClass]="{'has-error': !zona.valid && (!zona.pristine || zona.touched || submitted),
+            'has-success': zona.valid}">
+              <div class="select-style">
+                <select class="form-control" id="vendedor-zona" [(ngModel)]="element.zona_id" name="zona" #zona="ngModel" required >
+                  <option *ngFor="let zona of data.zonas" [ngValue]="zona.id">{{zona.nombre}}</option>
+                </select>
+              </div>
+              <span *ngIf="zona.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="zona.errors !== null && (!zona.pristine || zona.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!zona.valid && (!zona.pristine || zona.touched || submitted)" class="help-block">Seleccione una zona</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="vendedor-comision" class="col-sm-2 required control-label">Comisión</label>
+            <div class="col-sm-5 has-feedback"
+                 [ngClass]="{'has-error': !comision.valid && (!comision.pristine || comision.touched || submitted),
+            'has-success': comision.valid}">
+              <input type="number" class="form-control text-right" id="vendedor-comision" [(ngModel)]="element.comision" name="comision" #comision="ngModel" required min="0" step="0.01" pattern="^\d{1,5}([\.\,]\d{1,2})?$" placeholder="0.00">
+              <span *ngIf="comision.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="comision.errors !== null && (!comision.pristine || comision.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="comision.errors !== null && comision.errors.required != null && (!comision.pristine || comision.touched || submitted)" class="help-block">Ingrese una comisión</div>
+              <div *ngIf="comision.errors !== null && comision.errors.required == null && (!comision.pristine || submitted)" class="help-block">Ingrese un número con dos decimales</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
@@ -64,6 +64,20 @@ import { ModalTarjetaComponent } from './cartera-valores/tarjetas/modal-tarjeta/
 import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposito/modal-deposito.component';
 import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
 import {HelperService} from '../service/helper.service';
+import { AbmComponent } from './abm/abm.component';
+import { ModalAbmComponent } from './abm/modal-abm/modal-abm.component';
+import { ModalZonaComponent } from './zonas/modal-zona/modal-zona.component';
+import { ModalVendedorComponent } from './vendedores/modal-vendedor/modal-vendedor.component';
+import { ModalTipoTarjetaComponent } from './tipo-tarjeta/modal-tipo-tarjeta/modal-tipo-tarjeta.component';
+import { ModalTipoRetencionComponent } from './tipo-retencion/modal-tipo-retencion/modal-tipo-retencion.component';
+import { ModalSubrubroComponent } from './subrubros/modal-subrubro/modal-subrubro.component';
+import { ModalRubroComponent } from './rubros/modal-rubro/modal-rubro.component';
+import { ModalProveedorComponent } from './proveedores/modal-proveedor/modal-proveedor.component';
+import { ModalMarcaComponent } from './marcas/modal-marca/modal-marca.component';
+import { ModalCuentaBancariaComponent } from './cuenta-bancaria/modal-cuenta-bancaria/modal-cuenta-bancaria.component';
+import { ModalClienteComponent } from './clientes/modal-cliente/modal-cliente.component';
+import { ModalBancoComponent } from './banco/modal-banco/modal-banco.component';
+import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articulo.component';
 
 
 @NgModule({
@@ -114,7 +128,21 @@ import {HelperService} from '../service/helper.service';
     CobrosComponent,
     ModalTarjetaComponent,
     ModalDepositoComponent,
-    ModalChequeComponent
+    ModalChequeComponent,
+    AbmComponent,
+    ModalAbmComponent,
+    ModalZonaComponent,
+    ModalVendedorComponent,
+    ModalTipoTarjetaComponent,
+    ModalTipoRetencionComponent,
+    ModalSubrubroComponent,
+    ModalRubroComponent,
+    ModalProveedorComponent,
+    ModalMarcaComponent,
+    ModalCuentaBancariaComponent,
+    ModalClienteComponent,
+    ModalBancoComponent,
+    ModalArticuloComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
@@ -137,7 +165,21 @@ import {HelperService} from '../service/helper.service';
     NavbarTitleService,
     HelperService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA],
+  entryComponents: [
+    ModalZonaComponent,
+    ModalVendedorComponent,
+    ModalTipoTarjetaComponent,
+    ModalTipoRetencionComponent,
+    ModalSubrubroComponent,
+    ModalRubroComponent,
+    ModalProveedorComponent,
+    ModalMarcaComponent,
+    ModalCuentaBancariaComponent,
+    ModalBancoComponent,
+    ModalArticuloComponent
+  ],
 })
 export class AppModule {
 }
