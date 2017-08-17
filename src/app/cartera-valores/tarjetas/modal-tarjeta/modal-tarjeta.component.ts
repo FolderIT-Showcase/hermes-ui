@@ -24,11 +24,11 @@ export class ModalTarjetaComponent implements OnInit {
   tarjeta: Tarjeta = new Tarjeta();
 
   static open() {
-    (<any>$('#modalEditar')).modal('show');
+    (<any>$('#modalEditarTarjeta')).modal('show');
   }
 
   static close() {
-    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEditarTarjeta')).modal('hide');
   }
 
   constructor(private apiService: ApiService) { }

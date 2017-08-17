@@ -13,6 +13,14 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
 import {Subject} from 'rxjs/Subject';
 import {ModalChequeComponent} from 'app/cartera-valores/cheques/modal-cheque/modal-cheque.component';
+import {Banco} from '../../domain/banco';
+import {Cheque} from '../../domain/cheque';
+import {TipoTarjeta} from '../../domain/tipoTarjeta';
+import {CuentaBancaria} from '../../domain/cuentaBancaria';
+import {ModalTarjetaComponent} from '../cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
+import {ModalDepositoComponent} from '../cartera-valores/depositos/modal-deposito/modal-deposito.component';
+import {Tarjeta} from '../../domain/tarjeta';
+import {Deposito} from '../../domain/deposito';
 
 @Component({
   selector: 'app-cobros',
@@ -20,6 +28,10 @@ import {ModalChequeComponent} from 'app/cartera-valores/cheques/modal-cheque/mod
   styleUrls: ['./cobros.component.css']
 })
 export class CobrosComponent implements OnInit, AfterViewInit {
+  depositos: Deposito[] = [];
+  listaTiposTarjeta: TipoTarjeta[] = [];
+  total: string | number = 0;
+  cheques: Cheque[] = [];
   cobro: Cobro;
   itemsCobro: ItemCobro[] = [];
   cliente: Cliente;
@@ -38,6 +50,10 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   private tabla: ElementRef;
   @ViewChild(ModalChequeComponent)
   modalCheque: ModalChequeComponent;
+  @ViewChild(ModalTarjetaComponent)
+  modalTarjeta: ModalTarjetaComponent;
+  @ViewChild(ModalDepositoComponent)
+  modalDeposito: ModalDepositoComponent;
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
   fecha: any;
@@ -48,6 +64,15 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   comprobantes: Comprobante[];
   modificado = false;
   puedeSalir: Subject<Boolean> = new Subject;
+  listaBancos: Banco[] = [];
+  allClientes: Cliente[] = [];
+  totalCheques = 0;
+  redondeo: string | number = 0;
+  listaCuentas: CuentaBancaria[] = [];
+  tarjetas: Tarjeta[] = [];
+  totalTarjetas = 0;
+  totalDepositos = 0;
+  totalEfectivo = 0;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -164,6 +189,10 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cobro.importe = 0;
     this.cobro.punto_venta = '0001';
     this.navbarTitleService.setTitle('Cobro');
+    this.cargarBancos();
+    this.cargarClientes();
+    this.cargarCuentas();
+    this.cargarTiposTarjeta();
   }
 
   onClienteChanged(event) {
@@ -484,10 +513,92 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
   mostrarModalMediosPago() {
     (<any>$('#modalMediosPago')).modal('show');
-
+    this.calcularSaldo();
   }
 
   abrirModalCheque() {
+    this.modalCheque.clientes = this.allClientes;
+    this.modalCheque.bancos = this.listaBancos;
+    this.modalCheque.shouldSendApiRequest = false;
+    this.modalCheque.eventNew.subscribe( (event) => this.handleNewCheque(event));
     this.modalCheque.nuevoCheque();
+    this.modalCheque.cheque.cliente_id = this.cliente.id;
+  }
+
+  abrirModalTarjeta() {
+    this.modalTarjeta.clientes = this.allClientes;
+    this.modalTarjeta.tipos = this.listaTiposTarjeta;
+    this.modalTarjeta.shouldSendApiRequest = false;
+    this.modalTarjeta.eventNew.subscribe( (event) => this.handleNewtarjeta(event));
+    this.modalTarjeta.nuevaTarjeta();
+    this.modalTarjeta.tarjeta.cliente_id = this.cliente.id;
+  }
+
+  abrirModalDeposito() {
+    this.modalDeposito.clientes = this.allClientes;
+    this.modalDeposito.cuentas = this.listaCuentas;
+    this.modalDeposito.shouldSendApiRequest = false;
+    this.modalDeposito.eventNew.subscribe( (event) => this.handleNewDeposito(event));
+    this.modalDeposito.nuevoDeposito();
+    this.modalDeposito.deposito.cliente_id = this.cliente.id;
+  }
+
+  handleNewCheque(cheque: Cheque) {
+    this.cheques.push(cheque);
+    this.calcularSaldo();
+  }
+
+  cargarBancos() {
+    this.apiService.get('bancos').subscribe(json => {
+      this.listaBancos = json;
+    });
+  }
+
+  cargarClientes() {
+    this.apiService.get('clientes').subscribe(json => {
+      this.allClientes = json;
+    });
+  }
+
+  cargarTiposTarjeta() {
+    this.apiService.get('tipostarjeta').subscribe(json => {
+      this.listaTiposTarjeta = json;
+    });
+  }
+
+  cargarCuentas() {
+    this.apiService.get('cuentasbancarias').subscribe(json => {
+      this.listaCuentas = json;
+    });
+  }
+
+  calcularSaldo() {
+    this.total = 0;
+    this.totalCheques = 0;
+    this.cheques.forEach(cheque => {
+      this.totalCheques = this.totalCheques + +cheque.importe;
+    });
+    this.totalTarjetas = 0;
+    this.tarjetas.forEach(tarjeta => {
+      this.totalTarjetas = this.totalTarjetas + +tarjeta.importe;
+    });
+    this.totalDepositos = 0;
+    this.depositos.forEach(deposito => {
+      this.totalDepositos = this.totalDepositos + +deposito.importe;
+    });
+    this.total = +this.total + +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo;
+    this.redondeo = +this.cobro.importe - +this.total;
+    this.total = this.total.toFixed(2);
+    this.redondeo = this.redondeo.toFixed(2);
+  }
+
+  handleNewtarjeta(tarjeta: Tarjeta) {
+    this.tarjetas.push(tarjeta);
+    this.calcularSaldo();
+  }
+
+  private handleNewDeposito(deposito: Deposito) {
+    this.depositos.push(deposito);
+    this.calcularSaldo();
   }
 }

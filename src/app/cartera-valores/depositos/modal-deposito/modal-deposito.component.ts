@@ -4,6 +4,7 @@ import {Deposito} from '../../../../domain/deposito';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from 'service/api.service';
 import {HelperService} from '../../../../service/helper.service';
+import {CuentaBancaria} from '../../../../domain/cuentaBancaria';
 
 @Component({
   selector: 'app-modal-deposito',
@@ -12,7 +13,7 @@ import {HelperService} from '../../../../service/helper.service';
 })
 export class ModalDepositoComponent implements OnInit {
   @Input() clientes: Cliente[];
-  @Input() cuentas: Cliente[];
+  @Input() cuentas: CuentaBancaria[];
   @Input() shouldSendApiRequest = true;
   @Output() eventNew = new EventEmitter<Deposito>();
   @Output() eventEdit = new EventEmitter<Deposito>();
@@ -23,11 +24,11 @@ export class ModalDepositoComponent implements OnInit {
   deposito: Deposito = new Deposito();
 
   static open() {
-    (<any>$('#modalEditar')).modal('show');
+    (<any>$('#modalEditarDeposito')).modal('show');
   }
 
   static close() {
-    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalEditarDeposito')).modal('hide');
   }
 
   constructor(private apiService: ApiService) { }
