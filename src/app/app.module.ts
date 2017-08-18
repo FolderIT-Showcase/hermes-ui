@@ -78,6 +78,7 @@ import { ModalCuentaBancariaComponent } from './cuenta-bancaria/modal-cuenta-ban
 import { ModalClienteComponent } from './clientes/modal-cliente/modal-cliente.component';
 import { ModalBancoComponent } from './banco/modal-banco/modal-banco.component';
 import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articulo.component';
+import { ProgressBarComponent } from './abm/progress-bar/progress-bar.component';
 
 
 @NgModule({
@@ -142,7 +143,8 @@ import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articul
     ModalCuentaBancariaComponent,
     ModalClienteComponent,
     ModalBancoComponent,
-    ModalArticuloComponent
+    ModalArticuloComponent,
+    ProgressBarComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

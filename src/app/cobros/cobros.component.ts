@@ -98,31 +98,11 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    const language = HelperService.defaultDataTablesLanguage();
+    language.zeroRecords = '';
+    language.emptyTable = '';
     this.dtOptions = {
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    '',
-        'emptyTable':     '',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: language,
       dom: 'tp',
       scrollY: '57vh',
       paging: false,
@@ -529,7 +509,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.modalTarjeta.clientes = this.allClientes;
     this.modalTarjeta.tipos = this.listaTiposTarjeta;
     this.modalTarjeta.shouldSendApiRequest = false;
-    this.modalTarjeta.eventNew.subscribe( (event) => this.handleNewtarjeta(event));
+    this.modalTarjeta.eventNew.subscribe( (event) => this.handleNewTarjeta(event));
     this.modalTarjeta.nuevaTarjeta();
     this.modalTarjeta.tarjeta.cliente_id = this.cliente.id;
   }
@@ -592,7 +572,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.redondeo = this.redondeo.toFixed(2);
   }
 
-  handleNewtarjeta(tarjeta: Tarjeta) {
+  handleNewTarjeta(tarjeta: Tarjeta) {
     this.tarjetas.push(tarjeta);
     this.calcularSaldo();
   }
