@@ -57,12 +57,12 @@ export class ModalAbmComponent<T> implements OnInit {
     ModalAbmComponent.open();
   }
 
-  private cerrar() {
+  protected cerrar() {
     this.submitted = false;
     ModalAbmComponent.close();
   }
 
-  editarONuevo(f: any) {
+  protected editarONuevo(f: any) {
     this.submitted = true;
     if (f.valid) {
       this.cerrar();

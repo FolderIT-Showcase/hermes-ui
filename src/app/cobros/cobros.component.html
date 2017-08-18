@@ -286,7 +286,7 @@
           <div class="form-group row">
             <label for="redondeo" class="col-sm-2 control-label">Redondeo</label>
             <div class="col-sm-7">
-              <input readonly class="form-control text-right" [ngModel]="redondeo" id="redondeo" name="redondeo">
+              <input class="form-control text-right" [(ngModel)]="redondeo" id="redondeo" name="redondeo">
             </div>
           </div>
 
@@ -306,6 +306,4 @@
   </div>
 </div>
 
-<app-modal-cheque></app-modal-cheque>
-<app-modal-tarjeta></app-modal-tarjeta>
-<app-modal-deposito></app-modal-deposito>
+<ng-template #modalContainer></ng-template>

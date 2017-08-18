@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {Cliente} from '../../domain/cliente';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../service/api.service';
@@ -21,6 +21,10 @@ import {ModalTarjetaComponent} from '../cartera-valores/tarjetas/modal-tarjeta/m
 import {ModalDepositoComponent} from '../cartera-valores/depositos/modal-deposito/modal-deposito.component';
 import {Tarjeta} from '../../domain/tarjeta';
 import {Deposito} from '../../domain/deposito';
+import {FastAbmComponent} from '../fast-abm/fast-abm.component';
+import {FastAbmChequeComponent} from 'app/cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
+import {FastAbmDepositoComponent} from '../cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
+import {FastAbmTarjetaComponent} from '../cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
 
 @Component({
   selector: 'app-cobros',
@@ -54,6 +58,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   modalTarjeta: ModalTarjetaComponent;
   @ViewChild(ModalDepositoComponent)
   modalDeposito: ModalDepositoComponent;
+  @ViewChild('modalContainer', { read: ViewContainerRef }) container;
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
   fecha: any;
@@ -66,17 +71,19 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   puedeSalir: Subject<Boolean> = new Subject;
   listaBancos: Banco[] = [];
   allClientes: Cliente[] = [];
-  totalCheques = 0;
   redondeo: string | number = 0;
   listaCuentas: CuentaBancaria[] = [];
   tarjetas: Tarjeta[] = [];
-  totalTarjetas = 0;
-  totalDepositos = 0;
-  totalEfectivo = 0;
+  totalCheques: string | number = 0;
+  totalTarjetas: string | number = 0;
+  totalDepositos: string | number = 0;
+  totalEfectivo: string | number = 0;
+  componentRef: any;
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {
+              private navbarTitleService: NavbarTitleService,
+              private resolver: ComponentFactoryResolver) {
     this.clientes = Observable.create((observer: any) => {
       this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -493,39 +500,42 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
   mostrarModalMediosPago() {
     (<any>$('#modalMediosPago')).modal('show');
+    this.totalEfectivo = +this.cobro.importe;
+    this.totalTarjetas = (0).toFixed(2);
+    this.totalCheques = (0).toFixed(2);
+    this.totalDepositos = (0).toFixed(2);
     this.calcularSaldo();
+  }
+
+  loadComponent(component) {
+    this.container.clear();
+    const factory = this.resolver.resolveComponentFactory(component);
+    this.componentRef = this.container.createComponent(factory);
   }
 
   abrirModalCheque() {
-    this.modalCheque.clientes = this.allClientes;
-    this.modalCheque.bancos = this.listaBancos;
-    this.modalCheque.shouldSendApiRequest = false;
-    this.modalCheque.eventNew.subscribe( (event) => this.handleNewCheque(event));
-    this.modalCheque.nuevoCheque();
-    this.modalCheque.cheque.cliente_id = this.cliente.id;
+    this.loadComponent(FastAbmChequeComponent);
+    this.componentRef.instance.data.bancos = this.listaBancos;
+    this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event));
+    this.componentRef.instance.abrir();
   }
 
   abrirModalTarjeta() {
-    this.modalTarjeta.clientes = this.allClientes;
-    this.modalTarjeta.tipos = this.listaTiposTarjeta;
-    this.modalTarjeta.shouldSendApiRequest = false;
-    this.modalTarjeta.eventNew.subscribe( (event) => this.handleNewTarjeta(event));
-    this.modalTarjeta.nuevaTarjeta();
-    this.modalTarjeta.tarjeta.cliente_id = this.cliente.id;
+    this.loadComponent(FastAbmTarjetaComponent);
+    this.componentRef.instance.data.tipos = this.listaTiposTarjeta;
+    this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event));
+    this.componentRef.instance.abrir();
+
   }
 
   abrirModalDeposito() {
-    this.modalDeposito.clientes = this.allClientes;
-    this.modalDeposito.cuentas = this.listaCuentas;
-    this.modalDeposito.shouldSendApiRequest = false;
-    this.modalDeposito.eventNew.subscribe( (event) => this.handleNewDeposito(event));
-    this.modalDeposito.nuevoDeposito();
-    this.modalDeposito.deposito.cliente_id = this.cliente.id;
-  }
-
-  handleNewCheque(cheque: Cheque) {
-    this.cheques.push(cheque);
-    this.calcularSaldo();
+    this.loadComponent(FastAbmDepositoComponent);
+    this.componentRef.instance.data.cuentas  = this.listaCuentas;
+    this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditDeposito(event));
+    this.componentRef.instance.abrir();
   }
 
   cargarBancos() {
@@ -556,29 +566,37 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.total = 0;
     this.totalCheques = 0;
     this.cheques.forEach(cheque => {
-      this.totalCheques = this.totalCheques + +cheque.importe;
+      this.totalCheques = +this.totalCheques + +cheque.importe;
     });
     this.totalTarjetas = 0;
     this.tarjetas.forEach(tarjeta => {
-      this.totalTarjetas = this.totalTarjetas + +tarjeta.importe;
+      this.totalTarjetas = +this.totalTarjetas + +tarjeta.importe;
     });
     this.totalDepositos = 0;
     this.depositos.forEach(deposito => {
-      this.totalDepositos = this.totalDepositos + +deposito.importe;
+      this.totalDepositos = +this.totalDepositos + +deposito.importe;
     });
     this.total = +this.total + +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo;
     this.redondeo = +this.cobro.importe - +this.total;
     this.total = this.total.toFixed(2);
     this.redondeo = this.redondeo.toFixed(2);
+    this.totalDepositos = this.totalDepositos.toFixed(2);
+    this.totalCheques = this.totalCheques.toFixed(2);
+    this.totalTarjetas = this.totalTarjetas.toFixed(2);
   }
 
-  handleNewTarjeta(tarjeta: Tarjeta) {
-    this.tarjetas.push(tarjeta);
+  private handleEditTarjeta(tarjetas: Tarjeta[]) {
+    this.tarjetas = tarjetas;
     this.calcularSaldo();
   }
 
-  private handleNewDeposito(deposito: Deposito) {
-    this.depositos.push(deposito);
+  private handleEditDeposito(depositos: Deposito[]) {
+    this.depositos = depositos;
+    this.calcularSaldo();
+  }
+
+  protected handleEditCheques(cheques: Cheque[]) {
+    this.cheques = cheques;
     this.calcularSaldo();
   }
 }
