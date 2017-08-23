@@ -23,3 +23,15 @@ export function Enum(ids: Array<string | number>, names: Array<string>) {
     Reflect.defineMetadata(key, res, target, 'enum');
   };
 }
+
+export function Min(num: number) {
+  return function(target: any, key: string) {
+    Reflect.defineMetadata(key, num, target, 'min');
+  };
+}
+
+export function Decimal(total: number, decimal_places: number) {
+  return function(target: any, key: string) {
+    Reflect.defineMetadata(key, {total, decimal_places}, target, 'decimal');
+  };
+}

@@ -126,7 +126,7 @@ export class ModalChequeComponent implements OnInit {
     ModalChequeComponent.open();
   }
 
-  private cerrar() {
+  cerrar() {
     this.submitted = false;
     ModalChequeComponent.close();
   }

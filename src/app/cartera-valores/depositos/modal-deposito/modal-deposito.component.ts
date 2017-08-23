@@ -104,7 +104,7 @@ export class ModalDepositoComponent implements OnInit {
     }
   }
 
-  private cerrar() {
+  cerrar() {
     this.submitted = false;
     ModalDepositoComponent.close();
   }
