@@ -12,16 +12,12 @@ import {Comprobante} from '../../domain/comprobante';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
 import {Subject} from 'rxjs/Subject';
-import {ModalChequeComponent} from 'app/cartera-valores/cheques/modal-cheque/modal-cheque.component';
 import {Banco} from '../../domain/banco';
 import {Cheque} from '../../domain/cheque';
 import {TipoTarjeta} from '../../domain/tipoTarjeta';
 import {CuentaBancaria} from '../../domain/cuentaBancaria';
-import {ModalTarjetaComponent} from '../cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
-import {ModalDepositoComponent} from '../cartera-valores/depositos/modal-deposito/modal-deposito.component';
 import {Tarjeta} from '../../domain/tarjeta';
 import {Deposito} from '../../domain/deposito';
-import {FastAbmComponent} from '../fast-abm/fast-abm.component';
 import {FastAbmChequeComponent} from 'app/cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
 import {FastAbmDepositoComponent} from '../cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
 import {FastAbmTarjetaComponent} from '../cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
@@ -52,12 +48,6 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   private typeaheadNombreClienteElement: ElementRef;
   @ViewChild('tabla')
   private tabla: ElementRef;
-  @ViewChild(ModalChequeComponent)
-  modalCheque: ModalChequeComponent;
-  @ViewChild(ModalTarjetaComponent)
-  modalTarjeta: ModalTarjetaComponent;
-  @ViewChild(ModalDepositoComponent)
-  modalDeposito: ModalDepositoComponent;
   @ViewChild('modalContainer', { read: ViewContainerRef }) container;
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
@@ -527,7 +517,6 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.componentRef.instance.data.cliente_id = this.cliente.id;
     this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event));
     this.componentRef.instance.abrir();
-
   }
 
   abrirModalDeposito() {

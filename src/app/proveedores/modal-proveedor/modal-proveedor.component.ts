@@ -2,6 +2,7 @@ import {AfterViewChecked, ChangeDetectorRef, Component} from '@angular/core';
 import {ModalAbmComponent} from '../../abm/modal-abm/modal-abm.component';
 import {Proveedor} from '../../../domain/proveedor';
 import {ApiService} from '../../../service/api.service';
+import {FormBuilder} from '@angular/forms';
 
 @Component({
   selector: 'app-modal-proveedor',
@@ -15,8 +16,8 @@ export class ModalProveedorComponent extends ModalAbmComponent<Proveedor> implem
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
 
-  constructor(apiService: ApiService, private cdRef: ChangeDetectorRef) {
-    super(apiService);
+  constructor(apiService: ApiService, private cdRef: ChangeDetectorRef, fb: FormBuilder) {
+    super(apiService, fb);
   }
 
   ngAfterViewChecked() {

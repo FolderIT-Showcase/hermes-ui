@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
@@ -83,6 +83,7 @@ import { FastAbmComponent } from './fast-abm/fast-abm.component';
 import { FastAbmChequeComponent } from './cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
 import { FastAbmDepositoComponent } from './cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
 import { FastAbmTarjetaComponent } from './cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
+import { FormFieldComponent } from './abm/form-field/form-field.component';
 
 @NgModule({
   declarations: [
@@ -151,13 +152,15 @@ import { FastAbmTarjetaComponent } from './cartera-valores/tarjetas/fast-abm-tar
     FastAbmComponent,
     FastAbmChequeComponent,
     FastAbmDepositoComponent,
-    FastAbmTarjetaComponent
+    FastAbmTarjetaComponent,
+    FormFieldComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
     TooltipModule.forRoot(),
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     routing,
     DataTablesModule,

@@ -1,0 +1,23 @@
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
+  <div class="modal-dialog {{modalsize}}" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="form.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+      <form class="form-horizontal" [formGroup]="form" (ngSubmit)="editarONuevo()">
+        <div class="modal-body">
+          <div *ngFor="let row of formRows" class="form-group row">
+            <ng-container *ngFor="let field of row">
+              <app-form-field [data]="data" [form]="form" [field]="field" [element]="element" [submitted]="submitted"></app-form-field>
+            </ng-container>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="form.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

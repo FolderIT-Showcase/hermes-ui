@@ -3,6 +3,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../service/api.service';
 import {HelperService} from '../../../service/helper.service';
 import {Observable} from 'rxjs/Observable';
+import {FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-modal-abm',
@@ -18,12 +19,15 @@ export class ModalAbmComponent<T> implements OnInit {
   @Output() eventEdit = new EventEmitter<T>();
   @Input() beforeElementNew: Function;
   @Input() beforeElementEdit: Function;
+  modalsize = '';
   elementClass: any;
   element: T;
   myDatePickerOptions: IMyDpOptions;
   submitted = false;
   enNuevo = false;
   modalTitle: string;
+  form: FormGroup;
+  formRows = [];
 
   static open() {
     (<any>$('#modalEditar')).modal('show');
@@ -33,12 +37,13 @@ export class ModalAbmComponent<T> implements OnInit {
     (<any>$('#modalEditar')).modal('hide');
   }
 
-  constructor(private apiService: ApiService) {
+  constructor(protected apiService: ApiService, protected formBuilder: FormBuilder) {
     this.beforeElementEdit = (element, data) => Observable.of(element);
     this.beforeElementNew = (element, data) => Observable.of(element);
   }
 
   ngOnInit() {
+    this.makeForm();
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
@@ -62,9 +67,9 @@ export class ModalAbmComponent<T> implements OnInit {
     ModalAbmComponent.close();
   }
 
-  protected editarONuevo(f: any) {
+  protected editarONuevo() {
     this.submitted = true;
-    if (f.valid) {
+    if (this.form.valid) {
       this.cerrar();
 
       const elementAEnviar = new this.elementClass();
@@ -77,12 +82,12 @@ export class ModalAbmComponent<T> implements OnInit {
             this.apiService.post(this.path, element).subscribe(
               json => {
                 this.eventNew.emit(json);
-                f.form.reset();
+                this.form.reset();
               }
             );
           } else {
             this.eventNew.emit(element);
-            f.form.reset();
+            this.form.reset();
           }
         });
       } else {
@@ -91,15 +96,75 @@ export class ModalAbmComponent<T> implements OnInit {
             this.apiService.put(this.path + '/' + element.id, element).subscribe(
               json => {
                 this.eventEdit.emit(json);
-                f.form.reset();
+                this.form.reset();
               }
             );
           } else {
             this.eventEdit.emit(element);
-            f.form.reset();
+            this.form.reset();
           }
         });
       }
     }
+  }
+
+  makeForm() {
+    let fields = [];
+    this.formRows.forEach( row => {
+      fields = fields.concat(row);
+    });
+    const controlsConfig = [];
+    fields.forEach( field => {
+      field.labelsize = 'col-sm-' + field.labelsize;
+      field.fieldsize = 'col-sm-' + field.fieldsize;
+      field.offset = 'col-sm-offset-' + (field.offset ? field.offset : 0);
+      field.placeholder = field.placeholder ? field.placeholder : field.label;
+      field.type = field.type ? field.type : 'text';
+      controlsConfig[field.name] = [this.element[field.name], this.composeValidators(field)];
+    });
+    this.form = this.formBuilder.group(controlsConfig);
+  }
+
+  protected composeValidators(field: any): Array<ValidatorFn> {
+    const validators: Array<ValidatorFn> = [];
+    if (Reflect.getMetadata(field.name, this.element, 'min')) {
+      validators.push(Validators.min(Reflect.getMetadata(field.name, this.element, 'min')));
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'max')) {
+      validators.push(Validators.max(Reflect.getMetadata(field.name, this.element, 'max')));
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'required')) {
+      field.required = 'required';
+      validators.push(Validators.required);
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'requiredTrue')) {
+      field.required = 'required';
+      validators.push(Validators.requiredTrue);
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'email')) {
+      validators.push(Validators.email);
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'minLength')) {
+      validators.push(Validators.minLength(Reflect.getMetadata(field.name, this.element, 'minLength')));
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'maxLength')) {
+      validators.push(Validators.maxLength(Reflect.getMetadata(field.name, this.element, 'maxLength')));
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'pattern')) {
+      validators.push(Validators.pattern(Reflect.getMetadata(field.name, this.element, 'pattern')));
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'null')) {
+      validators.push(Validators.nullValidator);
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'references')) {
+      field.type = 'select';
+      field.references = Reflect.getMetadata(field.name, this.element, 'references');
+    }
+    if (Reflect.getMetadata(field.name, this.element, 'enum')) {
+      field.type = 'select';
+      this.data[field.name] = Reflect.getMetadata(field.name, this.element, 'enum');
+      field.references = field.name;
+    }
+    return validators;
   }
 }

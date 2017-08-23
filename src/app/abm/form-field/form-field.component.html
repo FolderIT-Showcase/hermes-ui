@@ -1,0 +1,28 @@
+<ng-container [formGroup]="form">
+  <!--Label-->
+  <label [for]="field.name + field.label" class="control-label {{field.labelsize}} {{field.offset}} {{field.required}}">{{field.label}}</label>
+
+  <div class="has-feedback {{field.fieldsize}}" [ngClass]="{'has-error': !form.controls[field.name].valid && submitted}">
+    <!--Input-->
+    <ng-container [ngSwitch]="field.type">
+      <!--type text-->
+      <input *ngSwitchCase="'text'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
+
+      <!--type number-->
+      <input type="number" *ngSwitchCase="'number'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
+
+      <!--type select-->
+      <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]">
+        <option *ngFor="let datum of data[field.references]" [ngValue]="datum.id">{{datum.nombre}}</option>
+      </select>
+    </ng-container>
+
+    <!--Errors-->
+    <ng-container *ngIf="form.controls[field.name].errors !== null && submitted">
+      <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+      <div *ngIf="form.controls[field.name].errors['required']" class="help-block">Ingrese un {{field.label}}</div>
+      <div *ngIf="form.controls[field.name].errors['maxlength']" class="help-block">La longitud máxima es de {{form.controls[field.name].errors['maxlength']['requiredLength']}} caracteres</div>
+      <div *ngIf="form.controls[field.name].errors['minlength']" class="help-block">La longitud mínima es de {{form.controls[field.name].errors['minlength']['requiredLength']}} caracteres</div>
+    </ng-container>
+  </div>
+</ng-container>
