@@ -30,6 +30,12 @@ export function Min(num: number) {
   };
 }
 
+export function Max(num: number) {
+  return function(target: any, key: string) {
+    Reflect.defineMetadata(key, num, target, 'max');
+  };
+}
+
 export function Decimal(total: number, decimal_places: number) {
   return function(target: any, key: string) {
     Reflect.defineMetadata(key, {total, decimal_places}, target, 'decimal');

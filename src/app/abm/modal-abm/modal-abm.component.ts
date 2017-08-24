@@ -120,9 +120,7 @@ export class ModalAbmComponent<T> implements OnInit {
       field.offset = 'col-sm-offset-' + (field.offset ? field.offset : 0);
       field.placeholder = field.placeholder ? field.placeholder : field.label;
       field.type = field.type ? field.type : 'text';
-      console.log(field);
       controlsConfig[field.name] = [this.element[field.name], this.composeValidators(field)];
-      console.log(field);
     });
     this.form = this.formBuilder.group(controlsConfig);
   }
@@ -131,7 +129,6 @@ export class ModalAbmComponent<T> implements OnInit {
     const validators: Array<ValidatorFn> = [];
     if (Reflect.getMetadata(field.name, this.element, 'min') !== undefined) {
       field.type = 'number';
-      console.log(field);
       validators.push(Validators.min(Reflect.getMetadata(field.name, this.element, 'min')));
     }
     if (Reflect.getMetadata(field.name, this.element, 'max') !== undefined) {
@@ -172,9 +169,12 @@ export class ModalAbmComponent<T> implements OnInit {
     }
     if (Reflect.getMetadata(field.name, this.element, 'decimal') !== undefined) {
       const metadata = Reflect.getMetadata(field.name, this.element, 'decimal');
-      const max_number = Math.pow(10, (metadata['total'] - metadata['decimal'])) - 1 ;
       validators.push(HelperService.decimalPlacesValidator(metadata['decimal_places']));
-      validators.push(Validators.max(max_number));
+      if (validators.indexOf(Validators.max(0)) !== -1) {
+        const max_number = Math.pow(10, (metadata['total'] - metadata['decimal_places'])) -
+          Math.pow(0.1, metadata['decimal_places']);
+        validators.push(Validators.max(max_number));
+      }
     }
     return validators;
   }

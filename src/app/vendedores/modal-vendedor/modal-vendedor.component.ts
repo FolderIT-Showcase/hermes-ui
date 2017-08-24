@@ -13,6 +13,6 @@ export class ModalVendedorComponent extends ModalAbmComponent<Vendedor> implemen
   formRows = [
     [{name: 'nombre', label: 'Nombre', labelsize: 2, fieldsize: 10}],
     [{name: 'zona_id', label: 'Zona', labelsize: 2, fieldsize: 10, femenino: true}],
-    [{name: 'comision', label: 'Comisión', labelsize: 2, fieldsize: 10, femenino: true}]
+    [{name: 'comision', label: 'Comisión', labelsize: 2, fieldsize: 5, femenino: true, align: 'text-right', placeholder: '0,00'}]
   ];
 }

@@ -6,13 +6,13 @@
     <!--Input-->
     <ng-container [ngSwitch]="field.type">
       <!--type text-->
-      <input *ngSwitchCase="'text'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
+      <input *ngSwitchCase="'text'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
 
       <!--type number-->
-      <input [type]="'number'" *ngSwitchCase="'number'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
+      <input [type]="'number'" *ngSwitchCase="'number'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
 
       <!--type select-->
-      <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]">
+      <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]">
         <option [ngValue]="undefined">Seleccione {{field.femenino? 'una' : 'un'}} {{field.label}}</option>
         <option *ngFor="let datum of data[field.references]" [ngValue]="datum.id">{{datum.nombre}}</option>
       </select>

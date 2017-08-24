@@ -78,7 +78,7 @@ import { ModalCuentaBancariaComponent } from './cuenta-bancaria/modal-cuenta-ban
 import { ModalClienteComponent } from './clientes/modal-cliente/modal-cliente.component';
 import { ModalBancoComponent } from './banco/modal-banco/modal-banco.component';
 import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articulo.component';
-import { ProgressBarComponent } from './abm/progress-bar/progress-bar.component';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
 import { FastAbmComponent } from './fast-abm/fast-abm.component';
 import { FastAbmChequeComponent } from './cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
 import { FastAbmDepositoComponent } from './cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
