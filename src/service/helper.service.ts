@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import {AbstractControl, FormControl, ValidatorFn} from '@angular/forms';
 
 @Injectable()
 export class HelperService {
@@ -54,23 +53,6 @@ export class HelperService {
       'aria': {
         'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
         'sortDescending': ': Activar para ordenar la columna de manera descendente'
-      }
-    };
-  }
-
-  static decimalPlacesValidator(max_places: number): ValidatorFn  {
-    return function (c: AbstractControl) {
-      const num = ('' + c.value).replace(',', '');
-      const dec_pos = (num).indexOf('.');
-      if (dec_pos === -1 || (num.length - 1 - dec_pos <= max_places)) {
-        return null;
-      } else {
-        return {
-          decimalPlaces: {
-            decimalPlaces: max_places,
-            currentdecimalPlaces: num.length - 1 - dec_pos
-          }
-        };
       }
     };
   }

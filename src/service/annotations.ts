@@ -41,3 +41,9 @@ export function Decimal(total: number, decimal_places: number) {
     Reflect.defineMetadata(key, {total, decimal_places}, target, 'decimal');
   };
 }
+
+export function Async(path: string) {
+  return function(target: any, key: string) {
+    Reflect.defineMetadata(key, path, target, 'async');
+  };
+}

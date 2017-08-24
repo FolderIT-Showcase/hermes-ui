@@ -2,7 +2,7 @@
   <!--Label-->
   <label [for]="field.name + field.label" class="control-label {{field.labelsize}} {{field.offset}} {{field.required}}">{{field.label}}</label>
 
-  <div class="has-feedback {{field.fieldsize}}" [ngClass]="{'has-error': !form.controls[field.name].valid && submitted}">
+  <div class="{{field.fieldsize}}" [ngClass]="{'has-error': !form.controls[field.name].valid && submitted, 'checkbox-inline': field.type === 'checkbox', 'has-feedback': field.type !== 'checkbox'}">
     <!--Input-->
     <ng-container [ngSwitch]="field.type">
       <!--type text-->
@@ -16,8 +16,10 @@
         <option [ngValue]="undefined">Seleccione {{field.femenino? 'una' : 'un'}} {{field.label}}</option>
         <option *ngFor="let datum of data[field.references]" [ngValue]="datum.id">{{datum.nombre}}</option>
       </select>
-    </ng-container>
 
+      <!--type checkbox-->
+      <input [type]="'checkbox'" *ngSwitchCase="'checkbox'" title="{{field.label}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" (change)="toggle()" [checked]="element[field.name]">
+    </ng-container>
     <!--Errors-->
     <ng-container *ngIf="form.controls[field.name].errors !== null && submitted">
       <span class="glyphicon glyphicon-remove form-control-feedback"></span>
@@ -27,6 +29,7 @@
       <div *ngIf="form.controls[field.name].errors['min']" class="help-block">El número debe ser mayor a {{form.controls[field.name].errors['min']['min']}}</div>
       <div *ngIf="form.controls[field.name].errors['max']" class="help-block">El número debe ser menor a {{form.controls[field.name].errors['max']['max']}}</div>
       <div *ngIf="form.controls[field.name].errors['decimalPlaces']" class="help-block">El número debe tener {{form.controls[field.name].errors['decimalPlaces']['decimalPlaces']}} posiciones decimales</div>
+      <div *ngIf="form.controls[field.name].errors['uniqueCode']" class="help-block">Código repetido</div>
     </ng-container>
   </div>
 </ng-container>

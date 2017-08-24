@@ -84,6 +84,7 @@ import { FastAbmChequeComponent } from './cartera-valores/cheques/fast-abm-chequ
 import { FastAbmDepositoComponent } from './cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
 import { FastAbmTarjetaComponent } from './cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
 import { FormFieldComponent } from './abm/form-field/form-field.component';
+import {ValidatorsService} from '../service/validators.service';
 
 @NgModule({
   declarations: [
@@ -175,7 +176,8 @@ import { FormFieldComponent } from './abm/form-field/form-field.component';
     ApiService,
     DeactivateGuardService,
     NavbarTitleService,
-    HelperService
+    HelperService,
+    ValidatorsService
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],

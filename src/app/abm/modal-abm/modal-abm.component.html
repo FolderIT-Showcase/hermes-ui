@@ -9,7 +9,7 @@
         <div class="modal-body">
           <div *ngFor="let row of formRows" class="form-group row">
             <ng-container *ngFor="let field of row">
-              <app-form-field [data]="data" [form]="form" [field]="field" [element]="element" [submitted]="submitted"></app-form-field>
+              <app-form-field *ngIf="field.condition ? !element[field.condition] : true" [data]="data" [form]="form" [field]="field" [element]="element" [submitted]="submitted"></app-form-field>
             </ng-container>
           </div>
         </div>

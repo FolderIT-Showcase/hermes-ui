@@ -11,4 +11,10 @@ export class FormFieldComponent {
   @Input() form;
   @Input() submitted;
   @Input() data;
+
+
+
+  toggle() {
+    this.element[this.field.name] = !this.element[this.field.name];
+  }
 }

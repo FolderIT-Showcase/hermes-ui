@@ -1,15 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../service/api.service';
 import {HelperService} from '../../../service/helper.service';
 import {Observable} from 'rxjs/Observable';
-import {FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {AsyncValidatorFn, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {ValidatorsService} from '../../../service/validators.service';
 
 @Component({
   selector: 'app-modal-abm',
   template: ''
 })
-export class ModalAbmComponent<T> implements OnInit {
+export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
   @Input() femenino = false;
   @Input() nombreElemento = 'elemento';
   @Input() data: any;
@@ -37,9 +38,14 @@ export class ModalAbmComponent<T> implements OnInit {
     (<any>$('#modalEditar')).modal('hide');
   }
 
-  constructor(protected apiService: ApiService, protected formBuilder: FormBuilder) {
+  constructor(protected apiService: ApiService, protected formBuilder: FormBuilder, protected validatorsService: ValidatorsService, protected cdRef: ChangeDetectorRef) {
     this.beforeElementEdit = (element, data) => Observable.of(element);
     this.beforeElementNew = (element, data) => Observable.of(element);
+  }
+
+
+  ngAfterViewChecked() {
+    this.cdRef.detectChanges();
   }
 
   ngOnInit() {
@@ -120,7 +126,7 @@ export class ModalAbmComponent<T> implements OnInit {
       field.offset = 'col-sm-offset-' + (field.offset ? field.offset : 0);
       field.placeholder = field.placeholder ? field.placeholder : field.label;
       field.type = field.type ? field.type : 'text';
-      controlsConfig[field.name] = [this.element[field.name], this.composeValidators(field)];
+      controlsConfig[field.name] = [this.element[field.name], this.composeValidators(field), this.composeAsyncValidators(field)];
     });
     this.form = this.formBuilder.group(controlsConfig);
   }
@@ -169,12 +175,21 @@ export class ModalAbmComponent<T> implements OnInit {
     }
     if (Reflect.getMetadata(field.name, this.element, 'decimal') !== undefined) {
       const metadata = Reflect.getMetadata(field.name, this.element, 'decimal');
-      validators.push(HelperService.decimalPlacesValidator(metadata['decimal_places']));
-      if (validators.indexOf(Validators.max(0)) !== -1) {
+      validators.push(this.validatorsService.decimalPlacesValidator(metadata['decimal_places']));
+      if (Reflect.getMetadata(field.name, this.element, 'max') === undefined) {
         const max_number = Math.pow(10, (metadata['total'] - metadata['decimal_places'])) -
           Math.pow(0.1, metadata['decimal_places']);
         validators.push(Validators.max(max_number));
       }
+    }
+
+    return validators;
+  }
+
+  protected composeAsyncValidators(field: any): Array<AsyncValidatorFn> {
+    const validators: Array<AsyncValidatorFn> = [];
+    if (Reflect.getMetadata(field.name, this.element, 'async') !== undefined) {
+      validators.push(this.validatorsService.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, this.element, 'async')).bind(this));
     }
     return validators;
   }
