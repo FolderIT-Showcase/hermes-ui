@@ -60,16 +60,17 @@ export class HelperService {
 
   static decimalPlacesValidator(max_places: number): ValidatorFn  {
     return function (c: AbstractControl) {
-      const decimal_places = ((+c.value).toFixed(20)).replace(/^-?\d*\.?|0+$/g, '').length;
-      if (decimal_places > max_places) {
+      const num = ('' + c.value).replace(',', '');
+      const dec_pos = (num).indexOf('.');
+      if (dec_pos === -1 || (num.length - 1 - dec_pos <= max_places)) {
+        return null;
+      } else {
         return {
           decimalPlaces: {
             decimalPlaces: max_places,
-            currentdecimalPlaces: decimal_places
+            currentdecimalPlaces: num.length - 1 - dec_pos
           }
         };
-      } else {
-        return null;
       }
     };
   }

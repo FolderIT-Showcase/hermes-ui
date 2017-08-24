@@ -13,6 +13,7 @@
 
       <!--type select-->
       <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]">
+        <option [ngValue]="undefined">Seleccione {{field.femenino? 'una' : 'un'}} {{field.label}}</option>
         <option *ngFor="let datum of data[field.references]" [ngValue]="datum.id">{{datum.nombre}}</option>
       </select>
     </ng-container>
@@ -20,12 +21,12 @@
     <!--Errors-->
     <ng-container *ngIf="form.controls[field.name].errors !== null && submitted">
       <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-      <div *ngIf="form.controls[field.name].errors['required']" class="help-block">Ingrese {{field.femenino? 'una' : 'un'}} {{field.label}}</div>
+      <div *ngIf="form.controls[field.name].errors['required']" class="help-block">{{field.type === 'select' ? 'Seleccione' : 'Ingrese'}} {{field.femenino? 'una' : 'un'}} {{field.label}}</div>
       <div *ngIf="form.controls[field.name].errors['maxlength']" class="help-block">La longitud máxima es de {{form.controls[field.name].errors['maxlength']['requiredLength']}} caracteres</div>
       <div *ngIf="form.controls[field.name].errors['minlength']" class="help-block">La longitud mínima es de {{form.controls[field.name].errors['minlength']['requiredLength']}} caracteres</div>
       <div *ngIf="form.controls[field.name].errors['min']" class="help-block">El número debe ser mayor a {{form.controls[field.name].errors['min']['min']}}</div>
       <div *ngIf="form.controls[field.name].errors['max']" class="help-block">El número debe ser menor a {{form.controls[field.name].errors['max']['max']}}</div>
-      {{form.controls[field.name].errors | json}}
+      <div *ngIf="form.controls[field.name].errors['decimalPlaces']" class="help-block">El número debe tener {{form.controls[field.name].errors['decimalPlaces']['decimalPlaces']}} posiciones decimales</div>
     </ng-container>
   </div>
 </ng-container>
