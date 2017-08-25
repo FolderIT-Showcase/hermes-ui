@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 
 @Component({
   selector: 'app-form-field',
@@ -11,10 +11,15 @@ export class FormFieldComponent {
   @Input() form;
   @Input() submitted;
   @Input() data;
+  @Output() change = new EventEmitter<any>();
 
-
-
-  toggle() {
+  toggle(event: any) {
     this.element[this.field.name] = !this.element[this.field.name];
+    event.target.value = this.element[this.field.name];
+    this.change.emit(event);
+  }
+
+  onChange(event: any) {
+    this.change.emit(event);
   }
 }

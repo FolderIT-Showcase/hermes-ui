@@ -5,20 +5,17 @@
   <div class="{{field.fieldsize}}" [ngClass]="{'has-error': !form.controls[field.name].valid && submitted, 'checkbox-inline': field.type === 'checkbox', 'has-feedback': field.type !== 'checkbox'}">
     <!--Input-->
     <ng-container [ngSwitch]="field.type">
-      <!--type text-->
-      <input *ngSwitchCase="'text'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
-
-      <!--type number-->
-      <input [type]="'number'" *ngSwitchCase="'number'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]">
+      <!--type text or number-->
+      <input [type]="field.type" *ngSwitchDefault title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" [placeholder]="field.placeholder" [(ngModel)]="element[field.name]" (change)="onChange($event)">
 
       <!--type select-->
-      <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]">
+      <select *ngSwitchCase="'select'" title="{{field.label}}" class="form-control {{field.align}}" [formControl]="form.controls[field.name]" id="cuentaBancaria-banco" [id]="field.name + field.label"  [(ngModel)]="element[field.name]" (change)="onChange($event)">
         <option [ngValue]="undefined">Seleccione {{field.femenino? 'una' : 'un'}} {{field.label}}</option>
         <option *ngFor="let datum of data[field.references]" [ngValue]="datum.id">{{datum.nombre}}</option>
       </select>
 
       <!--type checkbox-->
-      <input [type]="'checkbox'" *ngSwitchCase="'checkbox'" title="{{field.label}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" (change)="toggle()" [checked]="element[field.name]">
+      <input [type]="'checkbox'" *ngSwitchCase="'checkbox'" title="{{field.label}}" [formControl]="form.controls[field.name]" [id]="field.name + field.label" (change)="toggle($event)" [checked]="element[field.name]">
     </ng-container>
     <!--Errors-->
     <ng-container *ngIf="form.controls[field.name].errors !== null && submitted">

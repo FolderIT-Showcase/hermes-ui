@@ -1,5 +1,5 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import {LOCALE_ID, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
@@ -177,7 +177,8 @@ import {ValidatorsService} from '../service/validators.service';
     DeactivateGuardService,
     NavbarTitleService,
     HelperService,
-    ValidatorsService
+    ValidatorsService,
+    { provide: LOCALE_ID, useValue: 'es-AR' }
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],
