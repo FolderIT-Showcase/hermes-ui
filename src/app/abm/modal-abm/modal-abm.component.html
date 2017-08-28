@@ -5,7 +5,7 @@
         <button type="button" class="close" (click)="form.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
-      <form class="form-horizontal" [formGroup]="form" (ngSubmit)="editarONuevo()">
+      <form class="form-horizontal" [formGroup]="form" (ngSubmit)="editarONuevo()" [autocomplete]="'nope'">
         <div class="modal-body">
           <div *ngFor="let row of formRows" class="form-group row">
             <ng-container *ngFor="let field of row">

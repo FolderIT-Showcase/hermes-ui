@@ -43,7 +43,6 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
     this.beforeElementNew = (element, data) => Observable.of(element);
   }
 
-
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
