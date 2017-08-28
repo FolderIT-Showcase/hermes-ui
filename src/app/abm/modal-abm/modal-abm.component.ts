@@ -125,71 +125,10 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
       field.offset = 'col-sm-offset-' + (field.offset ? field.offset : 0);
       field.placeholder = field.placeholder ? field.placeholder : field.label;
       field.type = field.type ? field.type : 'text';
-      controlsConfig[field.name] = [this.element[field.name], this.composeValidators(field), this.composeAsyncValidators(field)];
+      const validators = this.validatorsService.composeValidatorsFromMetadata(field, this.element, this.data);
+      const asyncValidators = this.validatorsService.composeAsyncValidatorsFromMetadata(field, this.element);
+      controlsConfig[field.name] = [this.element[field.name], validators, asyncValidators];
     });
     this.form = this.formBuilder.group(controlsConfig);
-  }
-
-  protected composeValidators(field: any): Array<ValidatorFn> {
-    const validators: Array<ValidatorFn> = [];
-    if (Reflect.getMetadata(field.name, this.element, 'min') !== undefined) {
-      field.type = 'number';
-      validators.push(Validators.min(Reflect.getMetadata(field.name, this.element, 'min')));
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'max') !== undefined) {
-      field.type = 'number';
-      validators.push(Validators.max(Reflect.getMetadata(field.name, this.element, 'max')));
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'required') !== undefined) {
-      field.required = 'required';
-      validators.push(Validators.required);
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'requiredTrue') !== undefined) {
-      field.required = 'required';
-      validators.push(Validators.requiredTrue);
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'email') !== undefined) {
-      validators.push(Validators.email);
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'minLength') !== undefined) {
-      validators.push(Validators.minLength(Reflect.getMetadata(field.name, this.element, 'minLength')));
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'maxLength') !== undefined) {
-      validators.push(Validators.maxLength(Reflect.getMetadata(field.name, this.element, 'maxLength')));
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'pattern') !== undefined) {
-      validators.push(Validators.pattern(Reflect.getMetadata(field.name, this.element, 'pattern')));
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'null') !== undefined) {
-      validators.push(Validators.nullValidator);
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'references') !== undefined) {
-      field.type = 'select';
-      field.references = Reflect.getMetadata(field.name, this.element, 'references');
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'enum') !== undefined) {
-      field.type = 'select';
-      this.data[field.name] = Reflect.getMetadata(field.name, this.element, 'enum');
-      field.references = field.name;
-    }
-    if (Reflect.getMetadata(field.name, this.element, 'decimal') !== undefined) {
-      const metadata = Reflect.getMetadata(field.name, this.element, 'decimal');
-      validators.push(this.validatorsService.decimalPlacesValidator(metadata['decimal_places']));
-      if (Reflect.getMetadata(field.name, this.element, 'max') === undefined) {
-        const max_number = Math.pow(10, (metadata['total'] - metadata['decimal_places'])) -
-          Math.pow(0.1, metadata['decimal_places']);
-        validators.push(Validators.max(max_number));
-      }
-    }
-
-    return validators;
-  }
-
-  protected composeAsyncValidators(field: any): Array<AsyncValidatorFn> {
-    const validators: Array<AsyncValidatorFn> = [];
-    if (Reflect.getMetadata(field.name, this.element, 'async') !== undefined) {
-      validators.push(this.validatorsService.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, this.element, 'async')).bind(this));
-    }
-    return validators;
   }
 }
