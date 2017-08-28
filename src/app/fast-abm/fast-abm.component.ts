@@ -58,7 +58,7 @@ export class FastAbmComponent<T> implements OnInit {
     this.element = new this.elementClass();
   }
 
-  protected editarONuevo(f: any) {
+  editarONuevo(f: any) {
     this.submitted = true;
     if (f.valid) {
       this.submitted = false;

@@ -1,12 +1,12 @@
 <ng-template #tableHeader>
-  <th class="text-center">Nombre</th>
-  <th class="text-center">Alícuota</th>
-  <th class="text-center" style="width:20%">Acciones</th>
+  <th>Nombre</th>
+  <th>Alícuota</th>
+  <th style="width:10%">Acciones</th>
 </ng-template>
 
 <ng-template #tableBody let-element="element">
-  <td class="text-center">{{ element.nombre }}</td>
-  <td class="text-center">{{ element.alicuota }}%</td>
+  <td>{{ element.nombre }}</td>
+  <td>{{ element.alicuota }}%</td>
 </ng-template>
 
 <app-abm
@@ -17,4 +17,6 @@
   [elementClass]="tipoRetencion"
   [tableHeader]="tableHeader"
   [tableBody]="tableBody"
-  [modalComponent]="modal"></app-abm>
+  [modalComponent]="modal"
+  [onElementNew]="formatAlicuota"
+  [onElementEdit]="formatAlicuota"></app-abm>

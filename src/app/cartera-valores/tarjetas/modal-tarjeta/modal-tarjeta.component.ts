@@ -88,7 +88,7 @@ export class ModalTarjetaComponent implements OnInit {
     ModalTarjetaComponent.open();
   }
 
-  private cerrar() {
+  cerrar() {
     this.submitted = false;
     ModalTarjetaComponent.close();
   }

@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import {TipoRetencion} from 'domain/tipoRetencion';
 import {ModalTipoRetencionComponent} from './modal-tipo-retencion/modal-tipo-retencion.component';
 import {AbmComponent} from '../abm/abm.component';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-tipo-retencion',
@@ -16,5 +17,12 @@ export class TipoRetencionComponent {
 
   canDeactivate() {
     return this.abmComponent.canDeactivate();
+  }
+
+  formatAlicuota(retencion, data) {
+    const num = retencion.alicuota;
+    retencion.alicuota = !isNaN(+num) ? (+num).toFixed(2) : num;
+
+    return Observable.of(retencion);
   }
 }
