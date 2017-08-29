@@ -85,6 +85,7 @@ import { FastAbmDepositoComponent } from './cartera-valores/depositos/fast-abm-d
 import { FastAbmTarjetaComponent } from './cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
 import { FormFieldComponent } from './abm/form-field/form-field.component';
 import {ValidatorsService} from '../service/validators.service';
+import { ListadoClientesComponent } from './clientes/listado-clientes/listado-clientes.component';
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import {ValidatorsService} from '../service/validators.service';
     FastAbmChequeComponent,
     FastAbmDepositoComponent,
     FastAbmTarjetaComponent,
-    FormFieldComponent
+    FormFieldComponent,
+    ListadoClientesComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),

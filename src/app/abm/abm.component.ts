@@ -123,7 +123,6 @@ export class AbmComponent implements OnInit, OnDestroy {
     Object.assign(this.elementOriginal, element);
   }
 
-
   mostrarModalNuevo() {
     this.componentRef.instance.nuevo();
   }

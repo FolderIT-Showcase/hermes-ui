@@ -17,6 +17,7 @@ import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
 import {AlertService} from '../../service/alert.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
+import {ListadoClientesComponent} from './listado-clientes/listado-clientes.component';
 
 @Component({
   selector: 'app-clientes',
@@ -45,22 +46,12 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   tipoCategoriaClientes: TipoCategoriaCliente[];
   submitted = false;
-
-  // Reporte lista clientes
-  parametroReporteFiltrarPorVendedor = false;
-  parametroReporteVendedor: Number;
-  parametroReporteFiltrarPorZona = false;
-  parametroReporteZona: Number;
-  parametroReporteFiltrarPorProvincia = false;
-  parametroReporteProvincia: Number;
-  parametroReporteFiltrarPorLocalidad = false;
-  parametroReporteLocalidad: Number;
-  parametroReporteSoloActivos: Number;
   mostrarBarraCarga = true;
+  @ViewChild(ListadoClientesComponent)
+  listadoClientesComponent: ListadoClientesComponent;
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
-              private alertService: AlertService,
               private navbarTitleService: NavbarTitleService) {}
 
   ngAfterViewChecked() {
@@ -142,6 +133,10 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   mostrarModalEliminar(cliente: Cliente) {
     this.clienteSeleccionado = cliente;
+  }
+
+  mostrarModalReporte() {
+    this.listadoClientesComponent.mostrarModalReporte();
   }
 
   editarONuevo(f: any) {
@@ -307,70 +302,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
     });
   }
 
-  private mostrarModalReporte() {
-    this.parametroReporteFiltrarPorVendedor = false;
-    this.parametroReporteVendedor = 0;
-    this.parametroReporteFiltrarPorZona = false;
-    this.parametroReporteZona = 0;
-    this.parametroReporteFiltrarPorProvincia = false;
-    this.parametroReporteProvincia = 0;
-    this.parametroReporteFiltrarPorLocalidad = false;
-    this.parametroReporteLocalidad = 0;
-    this.parametroReporteSoloActivos = 1;
-    (<any>$('#modalReporte')).modal('show');
-    this.clienteSeleccionado = new Cliente;
-    this.cargarProvincias();
-    this.cargarVendedores();
-    this.cargarZonas();
-  }
 
-  onParametroReporteVendedorChanged(value) {
-    this.parametroReporteVendedor = +value;
-  }
-
-  onParametroReporteZonaChanged(value) {
-    this.parametroReporteZona = +value;
-  }
-
-  onParametroReporteProvinciaChanged(value) {
-    this.parametroReporteProvincia = +value;
-    this.parametroReporteLocalidad = 0;
-    this.cargarLocalidades(value);
-  }
-
-  generarReporteClientes() {
-    if (this.parametroReporteFiltrarPorVendedor === false) {
-      this.parametroReporteVendedor = 0;
-    }
-    if (this.parametroReporteFiltrarPorZona === false) {
-      this.parametroReporteZona = 0;
-    }
-    if (this.parametroReporteFiltrarPorProvincia === false) {
-      this.parametroReporteProvincia = 0;
-    }
-    if (this.parametroReporteFiltrarPorLocalidad   === false) {
-      this.parametroReporteLocalidad = 0;
-    }
-
-    this.apiService.downloadPDF('clientes/reporte', {
-        'vendedor': this.parametroReporteVendedor,
-        'zona': this.parametroReporteZona,
-        'provincia': this.parametroReporteProvincia,
-        'localidad': this.parametroReporteLocalidad,
-        'activos': this.parametroReporteSoloActivos
-      }
-    ).subscribe(
-      (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
-      }
-    );
-  }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
   @HostListener('window:popstate', ['$event'])

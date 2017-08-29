@@ -3,7 +3,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../service/api.service';
 import {HelperService} from '../../../service/helper.service';
 import {Observable} from 'rxjs/Observable';
-import {AsyncValidatorFn, FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {ValidatorsService} from '../../../service/validators.service';
 
 @Component({
@@ -53,10 +53,10 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
   }
 
   nuevo() {
+    this.submitted = false;
     this.modalTitle = (this.femenino ? 'Nueva ' : 'Nuevo ') + this.nombreElemento;
     this.enNuevo = true;
     this.element = new this.elementClass();
-    (<any>$('#modalEditar')).modal('show');
     ModalAbmComponent.open();
   }
 
