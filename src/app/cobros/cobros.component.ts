@@ -21,6 +21,7 @@ import {Deposito} from '../../domain/deposito';
 import {FastAbmChequeComponent} from 'app/cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
 import {FastAbmDepositoComponent} from '../cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
 import {FastAbmTarjetaComponent} from '../cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
+import {MedioPago} from 'domain/medioPago';
 
 @Component({
   selector: 'app-cobros',
@@ -69,6 +70,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   totalDepositos: string | number = 0;
   totalEfectivo: string | number = 0;
   componentRef: any;
+  mediosPago: MedioPago[] = [];
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -165,11 +167,20 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cobro = new Cobro;
     this.cobro.importe = 0;
     this.cobro.punto_venta = '0001';
+    this.totalCheques = 0;
+    this.totalTarjetas = 0;
+    this.totalDepositos = 0;
+    this.totalEfectivo = 0;
+    this.tarjetas = [];
+    this.cheques = [];
+    this.depositos = [];
+    this.submitted = false;
     this.navbarTitleService.setTitle('Cobro');
     this.cargarBancos();
     this.cargarClientes();
     this.cargarCuentas();
     this.cargarTiposTarjeta();
+    this.cargarMediosPago();
   }
 
   onClienteChanged(event) {
@@ -587,5 +598,80 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   protected handleEditCheques(cheques: Cheque[]) {
     this.cheques = cheques;
     this.calcularSaldo();
+  }
+
+  generarCobro() {
+    this.cobro.cliente_id = this.cliente.id;
+    this.cobro.items = this.itemsCobro;
+
+    const cobro_valores = [];
+    this.mediosPago.forEach( medioPago => {
+      switch (medioPago.nombre) {
+        case 'Efectivo':
+          if (+this.totalEfectivo !== 0) {
+            cobro_valores.push({
+              importe: this.totalEfectivo,
+              medios_pago_id: medioPago.id
+            });
+          }
+          break;
+
+        case 'Cheque':
+          if (+this.totalCheques !== 0) {
+            cobro_valores.push({
+              importe: this.totalCheques,
+              medios_pago_id: medioPago.id,
+              cheques: this.cheques
+            });
+          }
+          break;
+
+        case 'Tarjeta':
+          if (+this.totalTarjetas !== 0) {
+            cobro_valores.push({
+              importe: this.totalTarjetas,
+              medios_pago_id: medioPago.id,
+              tarjetas: this.tarjetas
+            });
+          }
+          break;
+
+        case 'Depósito':
+          if (+this.totalDepositos !== 0) {
+            cobro_valores.push({
+              importe: this.totalDepositos,
+              medios_pago_id: medioPago.id,
+              depositos: this.depositos
+            });
+          }
+          break;
+
+        case 'Redondeo':
+          if (+this.redondeo !== 0) {
+            cobro_valores.push({
+              importe: this.redondeo,
+              medios_pago_id: medioPago.id,
+            });
+          }
+          break;
+      }
+    });
+
+    this.cobro.cobro_valores = cobro_valores;
+    this.cobro.fecha = HelperService.myDatePickerDateToString(this.fecha);
+
+    this.apiService.post('cobros', this.cobro).subscribe( json => {
+      this.alertService.success('Se ha generado el cobro con éxito');
+      this.cliente = null;
+      this.inicializar();
+    }, error => {
+      this.alertService.error('No se ha podido generar el cobro');
+    });
+  }
+
+  private cargarMediosPago() {
+    this.apiService.get('mediospago').subscribe( json => {
+      this.mediosPago = json;
+    });
   }
 }

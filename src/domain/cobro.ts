@@ -1,3 +1,5 @@
+import {ItemCobro} from './itemCobro';
+
 export class Cobro {
   id: number;
   cliente_id: number;
@@ -7,4 +9,6 @@ export class Cobro {
   importe: number | string;
   importe_sub: number | string;
   descuentos: number | string;
+  items: ItemCobro[];
+  cobro_valores: any;
 }
