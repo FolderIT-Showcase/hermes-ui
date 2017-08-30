@@ -26,7 +26,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Eliminar Lista de Precios</h4>
       </div>
       <div class="modal-body">
@@ -44,7 +44,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <form class="form-horizontal" #f="ngForm">
@@ -54,7 +54,7 @@
             <div class="col-sm-10 has-feedback"
                  [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="lista-nombre" [(ngModel)]="listaPreciosSeleccionada.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
+              <input class="form-control" id="lista-nombre" [(ngModel)]="listaPreciosSeleccionada.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
@@ -83,7 +83,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+          <button (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
         </div>
       </form>
     </div>
@@ -94,7 +94,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Artículos en {{listaPreciosSeleccionada.nombre}}</h4>
       </div>
       <div class="modal-body" style="height: 450px;overflow-y: auto;">
@@ -131,7 +131,7 @@
             <th>Nombre</th>
             <th>Precio Costo</th>
             <th>Precio Venta</th>
-            <th><input type="checkbox" (click)="toggleAll($event.target.checked)">En lista</th>
+            <th><input title="" type="checkbox" (click)="toggleAll($event.target.checked)">En lista</th>
           </tr>
           </thead>
           <tbody>
@@ -140,14 +140,14 @@
             <td>{{ articulo.nombre }}</td>
             <td>{{ articulo.costo }}</td>
             <td>{{ (articulo.costo * (1 + listaPreciosSeleccionada.porcentaje / 100)).toFixed(2)}}</td>
-            <td><input type="checkbox" id="lista-item-enlista" [(ngModel)]="articulo.enlista" name="activo"></td>
+            <td><input title="" type="checkbox" id="lista-item-enlista" [(ngModel)]="articulo.enlista" name="activo"></td>
           </tr>
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarItems()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button (click)="editarItems()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>
@@ -157,7 +157,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Actualizar precios en {{listaPreciosSeleccionada.nombre}}</h4>
       </div>
       <div class="modal-body">
@@ -173,12 +173,12 @@
         <div class="radio">
           <label><input type="radio" [(ngModel)]="actualizarPor" name="actualizarPor" value="porcentaje">por Porcentaje</label>
           <label *ngIf="actualizarPor === 'porcentaje'">valor</label>
-          <input *ngIf="actualizarPor === 'porcentaje'" type="number" [(ngModel)]="valorActualizacion">
+          <input title="porcentaje" *ngIf="actualizarPor === 'porcentaje'" type="number" [(ngModel)]="valorActualizacion">
         </div>
         <div class="radio">
           <label><input type="radio" [(ngModel)]="actualizarPor" name="actualizarPor" value="importe">por Importe</label>
           <label *ngIf="actualizarPor === 'importe'">valor</label>
-          <input *ngIf="actualizarPor === 'importe'" type="number" [(ngModel)]="valorActualizacion">
+          <input title="importe" *ngIf="actualizarPor === 'importe'" type="number" [(ngModel)]="valorActualizacion">
         </div>
 
         <p>Vamos a actualizar todos los artículos de la lista de precios {{listaPreciosSeleccionada.nombre}}</p>
@@ -187,7 +187,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="actualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button (click)="actualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>
@@ -197,7 +197,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Actualizar precios en {{listaPreciosSeleccionada.nombre}}</h4>
       </div>
       <div class="modal-body" style="height: 450px;overflow-y: auto;">
@@ -219,7 +219,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="confirmarActualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Confirmar</button>
+        <button (click)="confirmarActualizarPrecios()" data-dismiss="modal" class="btn btn-primary">Confirmar</button>
       </div>
     </div>
   </div>
@@ -229,7 +229,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Importar lista de precios</h4>
       </div>
       <div class="modal-body">
@@ -264,7 +264,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="importarListaPrecios()" class="btn btn-primary">Importar</button>
+        <button (click)="importarListaPrecios()" class="btn btn-primary">Importar</button>
       </div>
     </div>
   </div>
@@ -274,7 +274,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Artículos no encontrados</h4>
       </div>
       <div class="modal-body" style="height: 400px;overflow-y: auto;">

@@ -35,12 +35,12 @@
     <div class="col-sm-9">
       <label for="cobro-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="cobro-punto-venta" id="cobro-punto-venta" [ngModel]="cobro.punto_venta" readonly>
+        <input class="form-control" name="cobro-punto-venta" id="cobro-punto-venta" [ngModel]="cobro.punto_venta" readonly>
       </div>
 
       <label for="cobro-numero" class="col-sm-1 control-label">Número</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="cobro-numero" id="cobro-numero" [(ngModel)]="cobro.numero" required placeholder="0" readonly>
+        <input class="form-control" name="cobro-numero" id="cobro-numero" [(ngModel)]="cobro.numero" required placeholder="0" readonly>
       </div>
 
       <label for="cobro-fecha" class="col-sm-1 control-label">Fecha</label>
@@ -98,7 +98,7 @@
       <td class="text-center">{{item.comprobante.tipo_comprobante.nombre}}</td>
       <td class="text-center">{{item.comprobante.ptoventaynumero}}</td>
       <td class="typeaheadcontainer">
-        <input class="typeaheadcontrol text-left" [(ngModel)]="item.descripcion" [name]="'item-descripcion' + i" (keydown.Enter)="onDescripcionEnterPressed(item)">
+        <input class="typeaheadcontrol text-left" [(ngModel)]="item.descripcion" [name]="'item-descripcion' + i" (keydown.Enter)="onDescripcionEnterPressed(item)" title="descripción">
       </td>
 
       <td class="typeaheadcontainer">
@@ -202,7 +202,7 @@
             <th>Número</th>
             <th>Importe</th>
             <th>Saldo</th>
-            <th><input type="checkbox" (click)="toggleAll($event.target.checked)"></th>
+            <th><input title="" type="checkbox" (click)="toggleAll($event.target['checked'])"></th>
           </tr>
           </thead>
           <tbody>
@@ -212,7 +212,7 @@
             <td class="text-center">{{ comprobante.ptoventaynumero }}</td>
             <td class="text-right">{{ comprobante.importe_total }}</td>
             <td class="text-right">{{ comprobante.tipo_comprobante.nombre === 'Anticipo'? 0 : comprobante.saldo }}</td>
-            <td class="text-center"><input type="checkbox" id="lista-comprobante-enlista" [(ngModel)]="comprobante.en_lista" name="activo"></td>
+            <td class="text-center"><input title="" type="checkbox" id="lista-comprobante-enlista" [(ngModel)]="comprobante.en_lista" name="activo"></td>
           </tr>
           </tbody>
         </table>

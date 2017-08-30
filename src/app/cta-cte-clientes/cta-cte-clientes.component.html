@@ -93,14 +93,14 @@
   </table>
 
 </form>
-<button type="submit" (click)="imprimirReporteCtaCte()" data-dismiss="modal" class="btn btn-default pull-right">Imprimir</button>
+<button (click)="imprimirReporteCtaCte()" data-dismiss="modal" class="btn btn-default pull-right">Imprimir</button>
 
 
 <div class="modal fade" id="modalVer" tabindex="-1" role="dialog" aria-labelledby="modalVer" #modalVer>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Comprobante</h4>
       </div>
       <form class="form-horizontal" #f="ngForm">
@@ -109,17 +109,17 @@
             <div class="col-sm-12">
               <label for="comprobante-tipo" class="col-sm-1 control-label">Tipo</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-tipo" id="comprobante-tipo" [ngModel]="comprobante.tipo_comprobante.nombre" readonly>
+                <input class="form-control" name="comprobante-tipo" id="comprobante-tipo" [ngModel]="comprobante.tipo_comprobante.nombre" readonly>
               </div>
 
               <label for="comprobante-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-punto-venta" id="comprobante-punto-venta" [ngModel]="comprobante.punto_venta" readonly>
+                <input class="form-control" name="comprobante-punto-venta" id="comprobante-punto-venta" [ngModel]="comprobante.punto_venta" readonly>
               </div>
 
               <label for="comprobante-numero" class="col-sm-1 control-label">Número</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-numero" id="comprobante-numero" [(ngModel)]="comprobante.numero" required placeholder="0" readonly>
+                <input class="form-control" name="comprobante-numero" id="comprobante-numero" [(ngModel)]="comprobante.numero" required placeholder="0" readonly>
               </div>
 
               <label for="comprobante-fecha" class="col-sm-1 control-label">Fecha</label>

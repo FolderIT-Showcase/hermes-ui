@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Router} from '@angular/router';
-import {AuthenticationService} from '../../service/authentication.service';
 import {AlertService} from '../../service/alert.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
-import {User} from '../../domain/user';
 import {ApiService} from '../../service/api.service';
 
 @Component({

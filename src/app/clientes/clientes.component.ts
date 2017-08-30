@@ -14,7 +14,6 @@ import { Zona } from 'domain/zona';
 import {ListaPrecios} from '../../domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../domain/tipoCategoriaCliente';
-import {AlertService} from '../../service/alert.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
 import {ListadoClientesComponent} from './listado-clientes/listado-clientes.component';

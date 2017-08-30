@@ -239,11 +239,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           if (periodofisc === undefined) {
             this.existe = false;
           } else {
-            if (periodofisc.id === pf.id) {
-              this.existe = false;
-            } else {
-              this.existe = true;
-            }
+            this.existe = periodofisc.id !== pf.id;
           }
         }
     });

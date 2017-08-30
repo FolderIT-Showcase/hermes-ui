@@ -376,11 +376,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   }
 
   OnBaseImponibleChange(value) {
-    if ((+value) >= this.comprobanteSeleccionado.importe_total) {
-      this.excedeImporteTotal = true;
-    } else {
-      this.excedeImporteTotal = false;
-    }
+    this.excedeImporteTotal = (+value) >= this.comprobanteSeleccionado.importe_total;
     this.ActualizarImporteRetencion();
   }
 
@@ -534,11 +530,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
             if (comprobante === undefined) {
               this.existeComprobanteDatos = false;
             } else {
-              if (comprobante.id === this.comprobanteSeleccionado.id) {
-                this.existeComprobanteDatos = false;
-              } else {
-                this.existeComprobanteDatos = true;
-              }
+              this.existeComprobanteDatos = comprobante.id !== this.comprobanteSeleccionado.id;
             }
           }
         });

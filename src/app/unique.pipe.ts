@@ -1,5 +1,4 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import * as _ from 'lodash';
 
 @Pipe({
   name: 'unique',
@@ -9,8 +8,6 @@ import * as _ from 'lodash';
 export class UniquePipe implements PipeTransform {
   transform(value: any, args?: any): any {
 
-    const uniqueArray = Array.from(new Set(value));
-
-    return uniqueArray;
+    return Array.from(new Set(value));
   }
 }

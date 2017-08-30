@@ -52,14 +52,14 @@
           <tr>
             <th>Código</th>
             <th>Nombre</th>
-            <th><input type="checkbox" (click)="toggleAll($event.target.checked)"></th>
+            <th><input title="" type="checkbox" (click)="toggleAll($event.target.checked)"></th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let tipoComprobante of tiposComprobantesCopy" class='clickable-row'>
             <td>{{ tipoComprobante.codigo }}</td>
             <td>{{ tipoComprobante.nombre }}</td>
-            <td><input type="checkbox" id="lista-item-enlista" [(ngModel)]="tipoComprobante.enlista" name="activo"></td>
+            <td><input title="" type="checkbox" id="lista-item-enlista" [(ngModel)]="tipoComprobante.enlista" name="activo"></td>
           </tr>
           </tbody>
         </table>

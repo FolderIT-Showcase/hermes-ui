@@ -8,6 +8,7 @@ import { Rubro } from 'domain/rubro';
 import {UserService} from '../../service/user.service';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
+import {Rol} from '../../domain/rol';
 
 @Component({
   selector: 'app-usuarios',
@@ -28,7 +29,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   modalTitle: string;
   mostrarTabla = false;
   submitted = false;
-  roles = [];
+  roles: Rol[] = [];
   mostrarBarraCarga = true;
   passwordNoCoincide = false;
 

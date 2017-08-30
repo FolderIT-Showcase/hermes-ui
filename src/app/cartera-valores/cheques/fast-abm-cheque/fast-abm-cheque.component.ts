@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component} from '@angular/core';
 import {Cheque} from '../../../../domain/cheque';
 import {FastAbmComponent} from '../../../fast-abm/fast-abm.component';
 import {isNullOrUndefined} from 'util';

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {TipoTarjeta} from '../../domain/tipoTarjeta';
 import {AbmComponent} from '../abm/abm.component';
 import {ModalTipoTarjetaComponent} from './modal-tipo-tarjeta/modal-tipo-tarjeta.component';

@@ -93,13 +93,13 @@
   </table>
 
 </form>
-<button type="submit" (click)="imprimirReporteCtaCte()" data-dismiss="modal" class="btn btn-default pull-right">Imprimir</button>
+<button (click)="imprimirReporteCtaCte()" data-dismiss="modal" class="btn btn-default pull-right">Imprimir</button>
 
 <div class="modal fade" id="modalVer" tabindex="-1" role="dialog" aria-labelledby="modalVer" #modalVer>
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Comprobante Compra</h4>
       </div>
       <form class="form-horizontal" #f="ngForm">
@@ -108,17 +108,17 @@
             <div class="col-sm-12">
               <label for="comprobante-proveedor-nombre" class="col-sm-2 control-label">Proveedor</label>
               <div class="col-sm-3">
-                <input class="form-control" type="text" name="comprobante-proveedor-nombre" id="comprobante-proveedor-nombre" [ngModel]="comprobante.proveedor_nombre" readonly>
+                <input class="form-control" name="comprobante-proveedor-nombre" id="comprobante-proveedor-nombre" [ngModel]="comprobante.proveedor_nombre" readonly>
               </div>
 
               <label for="comprobante-proveedor-tiporesp" class="col-sm-1 control-label">Tipo</label>
               <div class="col-sm-3">
-                <input class="form-control" type="text" name="comprobante-proveedor-tiporesp" id="comprobante-proveedor-tiporesp" [ngModel]="verComprProveedorTipoResp" readonly>
+                <input class="form-control" name="comprobante-proveedor-tiporesp" id="comprobante-proveedor-tiporesp" [ngModel]="verComprProveedorTipoResp" readonly>
               </div>
 
               <label for="comprobante-proveedor-cuit" class="col-sm-1 control-label">CUIT</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-proveedor-cuit" id="comprobante-proveedor-cuit" [ngModel]="comprobante.proveedor_cuit" readonly>
+                <input class="form-control" name="comprobante-proveedor-cuit" id="comprobante-proveedor-cuit" [ngModel]="comprobante.proveedor_cuit" readonly>
               </div>
             </div>
           </div>
@@ -127,17 +127,17 @@
             <div class="col-sm-12">
               <label for="comprobante-tipo" class="col-sm-2 control-label">Tipo de comprobante</label>
               <div class="col-sm-3">
-                <input class="form-control" type="text" name="comprobante-tipo" id="comprobante-tipo" [ngModel]="verComprTipo" readonly>
+                <input class="form-control" name="comprobante-tipo" id="comprobante-tipo" [ngModel]="verComprTipo" readonly>
               </div>
 
               <label for="comprobante-puntoventa" class="col-sm-2 control-label">Punto de venta</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-puntoventa" id="comprobante-puntoventa" [ngModel]="verComprPuntoVenta" readonly>
+                <input class="form-control" name="comprobante-puntoventa" id="comprobante-puntoventa" [ngModel]="verComprPuntoVenta" readonly>
               </div>
 
               <label for="comprobante-numero" class="col-sm-1 control-label">Numero</label>
               <div class="col-sm-2">
-                <input class="form-control" type="text" name="comprobante-numero" id="comprobante-numero" [ngModel]="verComprNumero" readonly>
+                <input class="form-control" name="comprobante-numero" id="comprobante-numero" [ngModel]="verComprNumero" readonly>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@
             <div class="col-sm-12">
               <label for="comprobante-periodo" class="col-sm-2 control-label">Periodo</label>
               <div class="col-sm-3">
-                <input class="form-control" type="text" name="comprobante-periodo" id="comprobante-periodo" [ngModel]="verComprPeriodo" readonly>
+                <input class="form-control" name="comprobante-periodo" id="comprobante-periodo" [ngModel]="verComprPeriodo" readonly>
               </div>
 
 

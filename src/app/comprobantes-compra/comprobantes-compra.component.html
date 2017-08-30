@@ -32,7 +32,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Eliminar Comprobante de Compra</h4>
       </div>
       <div class="modal-body">
@@ -51,7 +51,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
 
@@ -63,7 +63,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !proveedor.valid && (!proveedor.pristine || proveedor.touched || submitted),
             'has-success': proveedor.valid}">
-              <select class="form-control" id="comprobantecompra-proveedornombre" [(ngModel)]="proveedorSeleccionado.id"  name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-proveedornombre" [(ngModel)]="proveedorSeleccionado.id"  name="proveedor" #proveedor="ngModel" required (change)="OnProveedorChanged($event.target['value'])">
                 <option *ngFor="let proveedor of proveedores" [value]="proveedor.id">{{proveedor.nombre}}</option>
               </select>
               <span *ngIf="proveedor.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -73,12 +73,12 @@
 
             <label for="comprobantecompra-proveedortiporesponsable" class="col-sm-1 control-label">Tipo resp</label>
             <div class="col-sm-3">
-              <input type="tel" class="form-control" id="comprobantecompra-proveedortiporesponsable" name="proveedor-tipo" [(ngModel)]="proveedorSeleccionado.tipo_responsable_str" disabled="true" >
+              <input type="tel" class="form-control" id="comprobantecompra-proveedortiporesponsable" name="proveedor-tipo" [(ngModel)]="proveedorSeleccionado.tipo_responsable_str" disabled>
             </div>
 
             <label for="comprobantecompra-proveedorcuit" class="col-sm-1 control-label">Cuit</label>
             <div class="col-sm-2">
-              <input type="tel" class="form-control" id="comprobantecompra-proveedorcuit" name="proveedor-cuit" [(ngModel)]="proveedorSeleccionado.cuit" disabled="true" >
+              <input type="tel" class="form-control" id="comprobantecompra-proveedorcuit" name="proveedor-cuit" [(ngModel)]="proveedorSeleccionado.cuit" disabled>
             </div>
           </div>
 
@@ -87,7 +87,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
             'has-success': tipo.valid}">
-              <select class="form-control" id="comprobantecompra-tipo" [(ngModel)]="tipoComprobanteCompraSeleccionado.id" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-tipo" [(ngModel)]="tipoComprobanteCompraSeleccionado.id" name="tipo" #tipo="ngModel" required (change)="OnTipoComprChanged($event.target['value'])">
                 <option *ngFor="let tipos of tiposComprobanteCompra" [value]="tipos.id">{{tipos.nombre}}</option>
               </select>
               <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -97,7 +97,7 @@
 
             <label for="comprobantecompra-puntoventa" class="col-sm-2 required control-label">Punto de venta</label>
             <div class="col-sm-2 has-feedback"
-                  [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
+                 [ngClass]="{'has-error': !numero.valid && (!numero.pristine || numero.touched || submitted),
             'has-success': numero.valid}">
               <input type="number" class="form-control" id="comprobantecompra-puntoventa" [(ngModel)]="comprobanteSeleccionado.punto_venta" name="puntoventa" #puntoventa="ngModel" required (input)="checkExists()">
               <span *ngIf="puntoventa.valid && !puntoventa.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -125,7 +125,7 @@
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': (!periodo.valid || !periodoSeleccionado.abierto) && (!periodo.pristine || periodo.touched || submitted),
             'has-success': periodo.valid}">
-              <select class="form-control" id="comprobantecompra-periodo" [(ngModel)]="periodoSeleccionado.id" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target.value)">
+              <select class="form-control" id="comprobantecompra-periodo" [(ngModel)]="periodoSeleccionado.id" name="periodo" #periodo="ngModel" required (change)="OnPeriodoChanged($event.target['value'])">
                 <option *ngFor="let periodo of periodos" [value]="periodo.id">{{periodo.mes}}-{{periodo.anio}}</option>
               </select>
               <span *ngIf="periodo.valid && periodoSeleccionado.abierto" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -144,7 +144,7 @@
             <div class="col-sm-4 has-feedback"
                  [ngClass]="{'has-error': !importetotal.valid && (!importetotal.pristine || importetotal.touched || submitted),
             'has-success': importetotal.valid}">
-              <input type="number" class="form-control" id="comprobantecompra-importetotal" [(ngModel)]="comprobanteSeleccionado.importe_total" name="importetotal" #importetotal="ngModel" required placeholder="6421.46" (input)="OnImporteTotalChange($event.target.value)">
+              <input type="number" class="form-control" id="comprobantecompra-importetotal" [(ngModel)]="comprobanteSeleccionado.importe_total" name="importetotal" #importetotal="ngModel" required placeholder="6421.46" (input)="OnImporteTotalChange($event.target['value'])">
               <span *ngIf="importetotal.valid && !importetotal.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="importetotal.errors !== null && (!importetotal.pristine || importetotal.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!importetotal.valid && (!importetotal.pristine || importetotal.touched || submitted)" class="help-block">Ingrese un importe</div>
@@ -152,10 +152,10 @@
 
             <label for="comprobantecompra-saldo" class="col-sm-2 required control-label">Saldo</label>
             <div class="col-sm-4 has-feedback">
-                 <!-- Descomentar cuando se habilite este input
-                 [ngClass]="{'has-error': !saldo.valid && (!saldo.pristine || saldo.touched || submitted),
-            'has-success': saldo.valid}"
-            -->
+              <!-- Descomentar cuando se habilite este input
+              [ngClass]="{'has-error': !saldo.valid && (!saldo.pristine || saldo.touched || submitted),
+         'has-success': saldo.valid}"
+         -->
               <input type="number" class="form-control" id="comprobantecompra-saldo" [(ngModel)]="comprobanteSeleccionado.saldo" name="saldo" #saldo="ngModel" required disabled>
               <!-- Descomentar cuando se habilite este input
               <span *ngIf="saldo.valid && !saldo.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
@@ -166,129 +166,129 @@
           </div>
 
           <div> <!-- div de los tabs -->
-              <ul class="nav nav-tabs">
-                <li [ngClass]="{'active': activeTabImportes === true}"><a data-toggle="tab" href="tabimportes" (click)="OnTabImportesClicked()">Importes fiscales</a></li>
-                <li [ngClass]="{'active': activeTabRetenciones === true}"><a data-toggle="tab" href="tabretenciones" (click)="OnTabRetencionesClicked()">Otras retenciones</a></li>
-              </ul>
+            <ul class="nav nav-tabs">
+              <li [ngClass]="{'active': activeTabImportes === true}"><a data-toggle="tab" href="tabimportes" (click)="OnTabImportesClicked()">Importes fiscales</a></li>
+              <li [ngClass]="{'active': activeTabRetenciones === true}"><a data-toggle="tab" href="tabretenciones" (click)="OnTabRetencionesClicked()">Otras retenciones</a></li>
+            </ul>
 
-              <div class="tab-content tabpanel">
-                <div id="tabimportes" class="tab-pane fade in active" [ngClass]="{'in active': activeTabImportes === true}">
-                  <div class="form-group row">
-                    <label for="comprobantecompra-netonogravado" class="col-sm-2 required control-label">Importe neto no gravado</label>
-                    <div class="col-sm-4 has-feedback"
-                         [ngClass]="{'has-error': !netonogravado.valid && (!netonogravado.pristine || netonogravado.touched || submitted),
+            <div class="tab-content tabpanel">
+              <div id="tabimportes" class="tab-pane fade in active" [ngClass]="{'in active': activeTabImportes === true}">
+                <div class="form-group row">
+                  <label for="comprobantecompra-netonogravado" class="col-sm-2 required control-label">Importe neto no gravado</label>
+                  <div class="col-sm-4 has-feedback"
+                       [ngClass]="{'has-error': !netonogravado.valid && (!netonogravado.pristine || netonogravado.touched || submitted),
             'has-success': netonogravado.valid && netonogravado.touched}">
-                      <input type="number" class="form-control" id="comprobantecompra-netonogravado" [(ngModel)]="CCimportesSeleccionado.importe_neto_no_gravado" name="netonogravado" #netonogravado="ngModel" required placeholder="0" (input)="OnNetoNoGravadoChange($event.target.value)">
-                      <span *ngIf="netonogravado.valid && netonogravado.touched" class="glyphicon glyphicon-ok form-control-feedback"></span>
-                      <span *ngIf="netonogravado.errors !== null && (!netonogravado.pristine || netonogravado.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                      <div *ngIf="!netonogravado.valid && (!netonogravado.pristine || netonogravado.touched || submitted)" class="help-block">Ingrese un importe neto no gravado</div>
-                    </div>
-
-                    <label for="comprobantecompra-netogravado" class="col-sm-2 control-label">Importe neto gravado</label>
-                    <div class="col-sm-4">
-                      <input type="number" class="form-control" id="comprobantecompra-netogravado" [(ngModel)]="CCimportesSeleccionado.importe_neto_gravado" name="netogravado" #netogravado="ngModel" disabled="true">
-                    </div>
+                    <input type="number" class="form-control" id="comprobantecompra-netonogravado" [(ngModel)]="CCimportesSeleccionado.importe_neto_no_gravado" name="netonogravado" #netonogravado="ngModel" required placeholder="0" (input)="OnNetoNoGravadoChange($event.target['value'])">
+                    <span *ngIf="netonogravado.valid && netonogravado.touched" class="glyphicon glyphicon-ok form-control-feedback"></span>
+                    <span *ngIf="netonogravado.errors !== null && (!netonogravado.pristine || netonogravado.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    <div *ngIf="!netonogravado.valid && (!netonogravado.pristine || netonogravado.touched || submitted)" class="help-block">Ingrese un importe neto no gravado</div>
                   </div>
 
-                  <div class="form-group row">
-                    <label for="comprobantecompra-alicuotaiva" class="col-sm-2 required control-label">Alícuota IVA</label>
-                    <div class="col-sm-4 has-feedback"
-                         [ngClass]="{'has-error': !alicuotaiva.valid && (!alicuotaiva.pristine || alicuotaiva.touched || submitted),
-            'has-success': alicuotaiva.valid}">
-                      <input type="number" class="form-control" id="comprobantecompra-alicuotaiva" [(ngModel)]="CCimportesSeleccionado.alicuota_iva" name="alicuotaiva" #alicuotaiva="ngModel" required pattern="^(100(?:\.0(0)?)?|0(?:\.\d(\d)?)?|\d?\d(?:\.\d(\d)?)?)$" placeholder="10.5" (input)="OnAlicuotaIvaChange($event.target.value)">
-                      <span *ngIf="alicuotaiva.valid && !alicuotaiva.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
-                      <span *ngIf="alicuotaiva.errors !== null && (!alicuotaiva.pristine || alicuotaiva.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                      <div *ngIf="!alicuotaiva.valid && (!alicuotaiva.pristine || alicuotaiva.touched || submitted)" class="help-block">Ingrese la alícuota del IVA</div>
-                    </div>
-
-                    <label for="comprobantecompra-importeiva" class="col-sm-2 control-label">Importe IVA</label>
-                    <div class="col-sm-4">
-                      <input type="number" class="form-control" id="comprobantecompra-importeiva" [(ngModel)]="CCimportesSeleccionado.importe_iva" name="importeiva" #importeiva="ngModel" disabled="true">
-                    </div>
+                  <label for="comprobantecompra-netogravado" class="col-sm-2 control-label">Importe neto gravado</label>
+                  <div class="col-sm-4">
+                    <input type="number" class="form-control" id="comprobantecompra-netogravado" [(ngModel)]="CCimportesSeleccionado.importe_neto_gravado" name="netogravado" #netogravado="ngModel" disabled="true">
                   </div>
                 </div>
-                <div id="tabretenciones" class="tab-pane fade" [ngClass]="{'in active': activeTabRetenciones === true}">
-                  <div>
-                    <form class="form-horizontal" #fo="ngForm">
-                      <div class="form-group row">
-                        <div class="col-sm-6 form-group-border">
-                          <!-- este es el div de los inputs & boton -->
-                          <div class="form-group row">
-                            <!-- esta es la row del primer input -->
-                            <label for="comprobantecompraretencion-baseimponible" class="col-sm-4 required control-label">Base imponible</label>
-                            <div class="col-sm-6 has-feedback"
-                                 [ngClass]="{'has-error': !baseimponible.valid || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)}">
-                              <input type="number" class="form-control" id="comprobantecompraretencion-baseimponible" [(ngModel)]="CCretencionesSeleccionado.base_imponible" name="baseimponible" #baseimponible="ngModel" required (input)="OnBaseImponibleChange($event.target.value)">
-                              <span *ngIf="baseimponible.errors !== null || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                            </div>
-                          </div>
 
-                          <div class="form-group row">
-                            <!-- esta es la row del segundo input + "+"button -->
-                            <label for="comprobantecompraretencion-alicuota" class="col-sm-4 required control-label">Alicuota</label>
-                            <div class="col-sm-6 has-feedback"
-                                 [ngClass]="{'has-error': !alic.valid && (!alic.pristine || alic.touched || submittedInner)}">
+                <div class="form-group row">
+                  <label for="comprobantecompra-alicuotaiva" class="col-sm-2 required control-label">Alícuota IVA</label>
+                  <div class="col-sm-4 has-feedback"
+                       [ngClass]="{'has-error': !alicuotaiva.valid && (!alicuotaiva.pristine || alicuotaiva.touched || submitted),
+            'has-success': alicuotaiva.valid}">
+                    <input type="number" class="form-control" id="comprobantecompra-alicuotaiva" [(ngModel)]="CCimportesSeleccionado.alicuota_iva" name="alicuotaiva" #alicuotaiva="ngModel" required pattern="^(100(?:\.0(0)?)?|0(?:\.\d(\d)?)?|\d?\d(?:\.\d(\d)?)?)$" placeholder="10.5" (input)="OnAlicuotaIvaChange($event.target['value'])">
+                    <span *ngIf="alicuotaiva.valid && !alicuotaiva.pristine" class="glyphicon glyphicon-ok form-control-feedback"></span>
+                    <span *ngIf="alicuotaiva.errors !== null && (!alicuotaiva.pristine || alicuotaiva.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                    <div *ngIf="!alicuotaiva.valid && (!alicuotaiva.pristine || alicuotaiva.touched || submitted)" class="help-block">Ingrese la alícuota del IVA</div>
+                  </div>
 
-                              <select class="form-control" id="comprobantecompraretencion-alicuota" [ngModel]="CCretencionesSeleccionado.retencion_id | json" name="alic" #alic="ngModel" (change)="OnTipoRetencionChange($event.target.value)">
-                                <option value=0></option>
-                                <option *ngFor="let tiporetencion of tipoRetenciones" [value]="tiporetencion.id | json">{{tiporetencion.nombre}} ({{tiporetencion.alicuota}}%)</option>
-                              </select>
-
-                              <!--<input type="number" class="form-control" id="comprobantecompraretencion-alicuota" [(ngModel)]="CCretencionesSeleccionado.alicuota" name="alic" #alic="ngModel" required pattern="^(100(?:\.0(0)?)?|0(?:\.\d(\d)?)?|\d?\d(?:\.\d(\d)?)?)$" (input)="ActualizarImporteRetencion()">-->
-                              <span *ngIf="alic.errors !== null && (!alic.pristine || alic.touched || submittedInner)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-                            </div>
-                            <!-- TODO acomodar/cambiar este boton!!! -->
-                            <button type="submit" (click)="agregarRetencion(fo)" class="glyphicon glyphicon-plus green add-big"></button>
-                          </div>
-
-                          <div class="form-group row">
-                            <!-- esta es la row del tercer input -->
-                            <label for="comprobantecompraretencion-importe" class="col-sm-4 control-label">Importe</label>
-                            <div class="col-sm-6">
-                              <input type="number" class="form-control" id="comprobantecompraretencion-importe" [(ngModel)]="CCretencionesSeleccionado.importe" name="retencimporte" #retencimporte="ngModel" required disabled>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="col-sm-6">
-
-                          <div class="form-group row tablecontainer">
-                            <!-- este es el div de la tabla -->
-                            <table class="row-border hover table table-retenciones">
-                              <thead>
-                              <tr>
-                                <th class="text-center">Tipo</th>
-                                <th class="text-center">Base imp</th>
-                                <th class="text-center">Alicuota</th>
-                                <th class="text-center">Importe</th>
-                                <th class="text-center" style="width:10%"> </th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr *ngFor="let retencion of retenciones">
-                                <td class="text-center" width="36%">{{ retencion.tipoRetencion.nombre }}</td>
-                                <td class="text-center" width="22%">$ {{ retencion.base_imponible | number: '1.2-2' }}</td>
-                                <td class="text-center" width="10%">{{ retencion.alicuota }}%</td>
-                                <td class="text-center" width="22%">$ {{ retencion.importe | number: '1.2-2' }}</td>
-                                <td class="text-center" width="10%">
-                                  <button (click)="eliminarRetencion(retencion)" data-toggle="modal" class="glyphicon glyphicon-remove red"></button >
-                                </td>
-                              </tr>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-
+                  <label for="comprobantecompra-importeiva" class="col-sm-2 control-label">Importe IVA</label>
+                  <div class="col-sm-4">
+                    <input type="number" class="form-control" id="comprobantecompra-importeiva" [(ngModel)]="CCimportesSeleccionado.importe_iva" name="importeiva" #importeiva="ngModel" disabled>
                   </div>
                 </div>
               </div>
+              <div id="tabretenciones" class="tab-pane fade" [ngClass]="{'in active': activeTabRetenciones === true}">
+                <div>
+                  <form class="form-horizontal" #fo="ngForm">
+                    <div class="form-group row">
+                      <div class="col-sm-6 form-group-border">
+                        <!-- este es el div de los inputs & boton -->
+                        <div class="form-group row">
+                          <!-- esta es la row del primer input -->
+                          <label for="comprobantecompraretencion-baseimponible" class="col-sm-4 required control-label">Base imponible</label>
+                          <div class="col-sm-6 has-feedback"
+                               [ngClass]="{'has-error': !baseimponible.valid || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)}">
+                            <input type="number" class="form-control" id="comprobantecompraretencion-baseimponible" [(ngModel)]="CCretencionesSeleccionado.base_imponible" name="baseimponible" #baseimponible="ngModel" required (input)="OnBaseImponibleChange($event.target['value'])">
+                            <span *ngIf="baseimponible.errors !== null || excedeImporteTotal && (!baseimponible.pristine || baseimponible.touched || submittedInner)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <!-- esta es la row del segundo input + "+"button -->
+                          <label for="comprobantecompraretencion-alicuota" class="col-sm-4 required control-label">Alicuota</label>
+                          <div class="col-sm-6 has-feedback"
+                               [ngClass]="{'has-error': !alic.valid && (!alic.pristine || alic.touched || submittedInner)}">
+
+                            <select class="form-control" id="comprobantecompraretencion-alicuota" [ngModel]="CCretencionesSeleccionado.retencion_id | json" name="alic" #alic="ngModel" (change)="OnTipoRetencionChange($event.target['value'])">
+                              <option value=0></option>
+                              <option *ngFor="let tiporetencion of tipoRetenciones" [value]="tiporetencion.id | json">{{tiporetencion.nombre}} ({{tiporetencion.alicuota}}%)</option>
+                            </select>
+
+                            <!--<input type="number" class="form-control" id="comprobantecompraretencion-alicuota" [(ngModel)]="CCretencionesSeleccionado.alicuota" name="alic" #alic="ngModel" required pattern="^(100(?:\.0(0)?)?|0(?:\.\d(\d)?)?|\d?\d(?:\.\d(\d)?)?)$" (input)="ActualizarImporteRetencion()">-->
+                            <span *ngIf="alic.errors !== null && (!alic.pristine || alic.touched || submittedInner)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                          </div>
+                          <!-- TODO acomodar/cambiar este boton!!! -->
+                          <button (click)="agregarRetencion(fo)" class="glyphicon glyphicon-plus green add-big"></button>
+                        </div>
+
+                        <div class="form-group row">
+                          <!-- esta es la row del tercer input -->
+                          <label for="comprobantecompraretencion-importe" class="col-sm-4 control-label">Importe</label>
+                          <div class="col-sm-6">
+                            <input type="number" class="form-control" id="comprobantecompraretencion-importe" [(ngModel)]="CCretencionesSeleccionado.importe" name="retencimporte" #retencimporte="ngModel" required disabled>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-sm-6">
+
+                        <div class="form-group row tablecontainer">
+                          <!-- este es el div de la tabla -->
+                          <table class="row-border hover table table-retenciones">
+                            <thead>
+                            <tr>
+                              <th class="text-center">Tipo</th>
+                              <th class="text-center">Base imp</th>
+                              <th class="text-center">Alicuota</th>
+                              <th class="text-center">Importe</th>
+                              <th class="text-center" style="width:10%"> </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let retencion of retenciones">
+                              <td class="text-center" width="36%">{{ retencion.tipoRetencion.nombre }}</td>
+                              <td class="text-center" width="22%">$ {{ retencion.base_imponible | number: '1.2-2' }}</td>
+                              <td class="text-center" width="10%">{{ retencion.alicuota }}%</td>
+                              <td class="text-center" width="22%">$ {{ retencion.importe | number: '1.2-2' }}</td>
+                              <td class="text-center" width="10%">
+                                <button (click)="eliminarRetencion(retencion)" data-toggle="modal" class="glyphicon glyphicon-remove red"></button >
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="modal-footer">
             <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <button type="submit" (click)="editarONuevo(f, null)" class="btn btn-primary">Aceptar</button>
+            <button (click)="editarONuevo(f, null)" class="btn btn-primary">Aceptar</button>
           </div>
         </form>
       </div>
@@ -301,7 +301,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Generar lista de comprobantes de compra</h4>
       </div>
       <div class="modal-body">
@@ -315,7 +315,7 @@
                 </div>
 
                 <div class="col-sm-7">
-                  <select [disabled]="!parametroReporteFiltrarPorProveedor" class="form-control" [ngModel]="parametroReporteProveedor | json" name="parametroReporteProveedor" (change)="onParametroReporteProveedorChanged($event.target.value)">
+                  <select title="proveedor" [disabled]="!parametroReporteFiltrarPorProveedor" class="form-control" [ngModel]="parametroReporteProveedor | json" name="parametroReporteProveedor" (change)="onParametroReporteProveedorChanged($event.target['value'])">
                     <option *ngFor="let proveedor of proveedores" [value]="proveedor.id | json">{{proveedor.nombre}}</option>
                   </select>
                 </div>
@@ -327,7 +327,7 @@
                 </div>
 
                 <div class="col-sm-7">
-                  <select [disabled]="!parametroReporteFiltrarPorTipo" class="form-control" [ngModel]="parametroReporteTipo | json" name="parametroReporteTipo" (change)="onParametroReporteTipoChanged($event.target.value)">
+                  <select title="tipo" [disabled]="!parametroReporteFiltrarPorTipo" class="form-control" [ngModel]="parametroReporteTipo | json" name="parametroReporteTipo" (change)="onParametroReporteTipoChanged($event.target['value'])">
                     <option *ngFor="let tipo of tiposComprobanteCompra" [value]="tipo.id | json">{{tipo.nombre}}</option>
                   </select>
                 </div>
@@ -339,7 +339,7 @@
                 </div>
 
                 <div class="col-sm-7">
-                  <select [disabled]="!parametroReporteFiltrarPorPeriodo" class="form-control" [ngModel]="parametroReportePeriodo | json" name="parametroReportePeriodo" (change)="onParametroReportePeriodoChanged($event.target.value)" >
+                  <select title="período" [disabled]="!parametroReporteFiltrarPorPeriodo" class="form-control" [ngModel]="parametroReportePeriodo | json" name="parametroReportePeriodo" (change)="onParametroReportePeriodoChanged($event.target['value'])" >
                     <option *ngFor="let periodo of periodos" [value]= "periodo.id | json">{{periodo.mes}}-{{periodo.anio}}</option>
                   </select>
                 </div>
@@ -351,11 +351,11 @@
                 </div>
 
                 <div class="col-sm-3">
-                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMin" name="parametroReporteMontoMin" (change)="onParametroReporteMontoMinChanged($event.target.value)" placeholder="min">
+                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMin" name="parametroReporteMontoMin" (change)="onParametroReporteMontoMinChanged($event.target['value'])" placeholder="min">
                 </div>
                 <div class="col-sm-1"><label class="control-label separator-monto">--</label></div>
                 <div class="col-sm-3">
-                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMax" name="parametroReporteMontoMax" (change)="onParametroReporteMontoMaxChanged($event.target.value)" placeholder="max">
+                  <input type="number" [disabled]="!parametroReporteFiltrarPorMonto" class="form-control" [(ngModel)]="parametroReporteMontoMax" name="parametroReporteMontoMax" (change)="onParametroReporteMontoMaxChanged($event.target['value'])" placeholder="max">
                 </div>
               </div>
             </div>
@@ -364,7 +364,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="generarListaFiltrada()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button (click)="generarListaFiltrada()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>
