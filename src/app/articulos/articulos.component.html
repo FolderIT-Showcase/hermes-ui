@@ -55,8 +55,8 @@
         <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
           <div class="form-group row">
             <label for="articulo-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-3 has-feedback"
@@ -107,7 +107,7 @@
           <div class="form-group row">
             <label for="articulo-marca" class="col-sm-1 required control-label">Marca</label>
             <div class="col-sm-5 has-feedback"
-            [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched|| submitted),
+                 [ngClass]="{'has-error': !marca.valid && (!marca.pristine || marca.touched|| submitted),
             'has-success': marca.valid}">
               <div class="select-style">
                 <select class="form-control" id="articulo-marca" [(ngModel)]="articuloSeleccionado.marca_id" name="marca" #marca="ngModel" required >
@@ -121,7 +121,7 @@
 
             <label for="articulo-subrubro" class="col-sm-1 required control-label">Subrubro</label>
             <div class="col-sm-5 has-feedback"
-            [ngClass]="{'has-error': !subrubro.valid && (!subrubro.pristine || subrubro.touched || submitted),
+                 [ngClass]="{'has-error': !subrubro.valid && (!subrubro.pristine || subrubro.touched || submitted),
             'has-success': subrubro.valid}">
               <div class="select-style">
                 <select class="form-control" id="articulo-subrubro" [(ngModel)]="articuloSeleccionado.subrubro_id" name="subrubro" #subrubro="ngModel" required >
@@ -175,12 +175,12 @@
               </div>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="button" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

@@ -124,8 +124,8 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Buscar Clientes</h4>
       </div>
+      <form class="form-horizontal" #fb="ngForm">
       <div class="modal-body">
-        <form class="form-horizontal" #fb="ngForm">
           <div class="form-group row">
             <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
             <div class="col-sm-6">
@@ -151,12 +151,12 @@
             </tr>
             </tbody>
           </table>
-        </form>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="submit" (click)="confirmarBusquedaCliente()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaClienteSeleccionado === null || !fb.valid">Aceptar</button>
       </div>
+      </form>
     </div>
   </div>
 </div>

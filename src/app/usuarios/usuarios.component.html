@@ -51,8 +51,8 @@
         <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm" autocomplete="off">
+      <form class="form-horizontal" #f="ngForm" autocomplete="off">
+        <div class="modal-body">
           <!-- fake fields are a workaround for chrome autofill getting the wrong fields -->
           <input style="display:none" type="text" name="fakeusernameremembered"/>
           <input style="display:none" type="password" name="fakepasswordremembered"/>
@@ -136,13 +136,13 @@
               <div *ngIf="!rol.valid && (!rol.pristine || rol.touched || submitted)" class="help-block">Seleccione un rol</div>
             </div>
           </div>
-        </form>
-      </div>
+        </div>
 
-      <div class="modal-footer">
-        <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

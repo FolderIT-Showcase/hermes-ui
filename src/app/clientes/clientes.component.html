@@ -53,8 +53,8 @@
         <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal" #f="ngForm">
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
           <div class="form-group row">
             <label for="cliente-codigo" class="col-sm-1 required control-label">Código</label>
             <div class="col-sm-2 has-feedback"
@@ -211,12 +211,12 @@
           </div>
 
           <!--<button type="button" (click)="nuevoDomicilio()" class="btn btn-default">Agregar domicilio</button> -->
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -228,8 +228,8 @@
         <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Generar listado de clientes</h4>
       </div>
-      <div class="modal-body">
-        <form class="form-horizontal">
+      <form class="form-horizontal">
+        <div class="modal-body">
           <p>Filtros asociados a los clientes</p>
           <div class="form-group row">
             <div class="col-sm-7">
@@ -292,12 +292,12 @@
               </div>
             </div>
           </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="generarReporteClientes()" data-dismiss="modal" class="btn btn-primary">Generar</button>
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" (click)="generarReporteClientes()" data-dismiss="modal" class="btn btn-primary">Generar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
