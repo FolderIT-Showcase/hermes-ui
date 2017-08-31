@@ -4,7 +4,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Salir</h4>
       </div>
       <div class="modal-body">
@@ -12,7 +12,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" (click)="cancelar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="continuar()" data-dismiss="modal" class="btn btn-primary">Continuar</button>
+        <button (click)="continuar()" data-dismiss="modal" class="btn btn-primary">Continuar</button>
       </div>
     </div>
   </div>

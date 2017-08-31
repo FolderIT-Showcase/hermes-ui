@@ -4,6 +4,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../service/api.service';
 import {Cliente} from '../../domain/cliente';
 import {Banco} from '../../domain/banco';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-cartera-valores',
@@ -35,17 +36,7 @@ export class CarteraValoresComponent implements OnInit {
   ngOnInit() {
     this.navbarTitleService.setTitle('Cartera de Valores');
 
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     this.cargarClientes();
     this.cargarBancos();
     const date = new Date();

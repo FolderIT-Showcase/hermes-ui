@@ -7,7 +7,6 @@ export class Tarjeta {
   importe: string | number;
   fecha_ingreso: any;
   fecha_acreditacion: any;
-  fecha_deposito: any;
   estado: string;
   descripcion: string;
 }

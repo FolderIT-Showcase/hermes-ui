@@ -1,4 +1,6 @@
+import {MaxLength, Required} from '../service/annotations';
+
 export class Zona {
   id: number;
-  nombre: string;
+  @Required @MaxLength(191) nombre: string;
 }

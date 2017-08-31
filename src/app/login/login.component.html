@@ -5,11 +5,11 @@
         <h2> Ingresar</h2>
       </div>
 
-      <form role="form" class="login-form" name="form" (ngSubmit)="onSubmit()" #f="ngForm" novalidate>
+      <form class="login-form" name="form" (ngSubmit)="onSubmit()" #f="ngForm" novalidate>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !username.valid}">
           <label class="sr-only" for="form-username">Usuario</label>
-          <input type="text" name="form-username" placeholder="Usuario" class="form-username form-control form-control-lg"
-                 id="form-username"  [(ngModel)]="model.username" #username="ngModel" required>
+          <input name="form-username" placeholder="Usuario" class="form-username form-control form-control-lg"
+                 id="form-username" [(ngModel)]="model.username" #username="ngModel" required>
           <div *ngIf="f.submitted && !username.valid" class="help-block">Ingrese su usuario</div>
         </div>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !password.valid}">
@@ -20,11 +20,11 @@
         </div>
         <div class="form-group" [ngClass]="{'has-error': f.submitted && !empresa.valid}">
           <label class="sr-only" for="form-empresa">Empresa</label>
-          <input type="text" name="form-empresa" placeholder="Empresa" class="form-empresa form-control form-control-lg"
+          <input name="form-empresa" placeholder="Empresa" class="form-empresa form-control form-control-lg"
                  id="form-empresa" [(ngModel)]="model.tenant" #empresa="ngModel" required>
           <div *ngIf="f.submitted && !empresa.valid" class="help-block">Ingrese su empresa</div>
         </div>
-        <button type="submit" class="btn btn-primary btn-md btn-block">Ingresar</button>
+        <button class="btn btn-primary btn-md btn-block">Ingresar</button>
         <button type="button" [routerLink]="['/recuperarpassword']" class="btn btn-default btn-md btn-block">Recuperar Contraseña</button>
       </form>
     </div>

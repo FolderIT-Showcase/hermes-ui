@@ -32,7 +32,7 @@ export class NavbarComponent implements OnInit {
     this.titulo_navbar = title;
   }
 
-  private salir() {
+  salir() {
     this.authenticationService.logout();
     this.router.navigate(['/login']);
   }

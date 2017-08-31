@@ -14,7 +14,7 @@
   z-index: 1000;
   width: auto;
   height: 100%;
-  padding: 0px 20px 10px 1px;
+  padding: 0 20px 10px 1px;
   border-right: 1px solid #eee;
   /*color: #e1ffff;*/
 }
@@ -27,11 +27,11 @@
 .nav-side-menu ul {
   list-style: none;
   /*padding-right: 20px;*/
-  padding-left: 0px;
+  padding-left: 0;
 }
 .nav-side-menu li {
   list-style: none;
-  margin-right: 0px;
+  margin-right: 0;
   padding-left: 20px;
   padding-right: 10px;
   /*padding: 0;*/
@@ -186,8 +186,8 @@
   }
 }
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
 }
 
 

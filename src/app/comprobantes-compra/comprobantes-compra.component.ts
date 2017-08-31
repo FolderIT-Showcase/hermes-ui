@@ -16,6 +16,7 @@ import {ComprobanteCompraImportes} from '../../domain/comprobanteCompraImportes'
 import {ComprobanteCompraRetencion} from '../../domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../domain/tipoRetencion';
 import {NavbarTitleService} from '../../service/navbar-title.service';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-comprobantes-compra',
@@ -86,30 +87,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       pageLength: 13,
       scrollY: '70vh',
       aaSorting: [0, 'DESC'],
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,
@@ -136,18 +114,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     };
     setTimeout(() => { this.mostrarTabla = true; }, 350);
 
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
@@ -409,11 +376,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   }
 
   OnBaseImponibleChange(value) {
-    if ((+value) >= this.comprobanteSeleccionado.importe_total) {
-      this.excedeImporteTotal = true;
-    } else {
-      this.excedeImporteTotal = false;
-    }
+    this.excedeImporteTotal = (+value) >= this.comprobanteSeleccionado.importe_total;
     this.ActualizarImporteRetencion();
   }
 
@@ -567,11 +530,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
             if (comprobante === undefined) {
               this.existeComprobanteDatos = false;
             } else {
-              if (comprobante.id === this.comprobanteSeleccionado.id) {
-                this.existeComprobanteDatos = false;
-              } else {
-                this.existeComprobanteDatos = true;
-              }
+              this.existeComprobanteDatos = comprobante.id !== this.comprobanteSeleccionado.id;
             }
           }
         });

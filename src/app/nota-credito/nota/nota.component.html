@@ -35,17 +35,17 @@
     <div class="col-sm-9">
       <label for="nota-tipo" class="col-sm-1 control-label">Tipo</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="nota-tipo" id="nota-tipo" [ngModel]="tipoComprobante.nombre" readonly>
+        <input class="form-control" name="nota-tipo" id="nota-tipo" [ngModel]="tipoComprobante.nombre" readonly>
       </div>
 
       <label for="nota-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="nota-punto-venta" id="nota-punto-venta" [ngModel]="nota.punto_venta" readonly>
+        <input class="form-control" name="nota-punto-venta" id="nota-punto-venta" [ngModel]="nota.punto_venta" readonly>
       </div>
 
       <label for="nota-numero" class="col-sm-1 control-label">Número</label>
       <div class="col-sm-2">
-        <input class="form-control" type="text" name="nota-numero" id="nota-numero" [(ngModel)]="nota.numero" required placeholder="0" readonly>
+        <input class="form-control" name="nota-numero" id="nota-numero" [(ngModel)]="nota.numero" required placeholder="0" readonly>
       </div>
 
       <label for="nota-fecha" class="col-sm-1 control-label">Fecha</label>
@@ -85,7 +85,7 @@
   <div class="form-group row">
     <label for="nota-tipo" class="col-sm-1 control-label">Descripción</label>
     <div class="col-sm-7">
-      <input class="form-control" type="text" name="nota-descripcion" id="nota-descripcion">
+      <input title="descripción" class="form-control" name="nota-descripcion" id="nota-descripcion">
     </div>
     <label for="nota-tipo" class="col-sm-1 control-label">Importe</label>
     <div class="col-sm-3">
@@ -121,7 +121,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Buscar Clientes</h4>
       </div>
       <form class="form-horizontal" #fb="ngForm">
@@ -129,7 +129,7 @@
           <div class="form-group row">
             <label for="busqueda-cliente" class="col-sm-2 required control-label">Búsqueda</label>
             <div class="col-sm-6">
-              <input type="text" class="form-control" id="busqueda-cliente" [(ngModel)]="busquedaCliente" (input)="buscarClientes()" name="busqueda-cliente" placeholder="Búsqueda" required>
+              <input class="form-control" id="busqueda-cliente" [(ngModel)]="busquedaCliente" (input)="buscarClientes()" name="busqueda-cliente" placeholder="Búsqueda" required>
             </div>
           </div>
 
@@ -154,7 +154,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button type="submit" (click)="confirmarBusquedaCliente()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaClienteSeleccionado === null || !fb.valid">Aceptar</button>
+        <button (click)="confirmarBusquedaCliente()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaClienteSeleccionado === null || !fb.valid">Aceptar</button>
       </div>
       </form>
     </div>

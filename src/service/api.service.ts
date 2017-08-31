@@ -76,6 +76,7 @@ export class ApiService {
   }
 
   public post(path: string, body): Observable<any> {
+    this.useJwt();
     return this.http
       .post(
         `${this.baseURL}${path}`, JSON.stringify(body),
@@ -90,6 +91,7 @@ export class ApiService {
   }
 
   public put(path: string, body): Observable<any> {
+    this.useJwt();
     return this.http
       .put(
         `${this.baseURL}${path}`, JSON.stringify(body),
@@ -116,6 +118,7 @@ export class ApiService {
   }
 
   public loginPost(path: string, body): Observable<any> {
+    this.useJwt();
     return this.http
       .post(
         `${this.baseURL}${path}`, JSON.stringify(body),
@@ -206,6 +209,7 @@ export class ApiService {
         .subscribe( (response: Response) => {
           this.user.token = response.json()['token'];
           localStorage.setItem('currentUser', JSON.stringify(this.user));
+          this.useJwt();
         });
     }
   }

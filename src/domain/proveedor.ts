@@ -8,6 +8,6 @@ export class Proveedor {
   telefono: string;
   celular: string;
   email: string;
-  activo: Boolean;
+  activo: Boolean = true;
   motivo: string;
 }

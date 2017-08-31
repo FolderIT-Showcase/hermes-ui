@@ -1,4 +1,8 @@
+import {MaxLength, Required} from '../service/annotations';
+
 export class Banco {
   id: number;
-  nombre: string;
+  @Required @MaxLength(50) nombre: string;
 }
+
+

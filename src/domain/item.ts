@@ -15,4 +15,5 @@ export class Item {
   alicuota_iva = 0;
   importe_iva = 0;
   articulo: Articulo;
+  noResult: boolean;
 }

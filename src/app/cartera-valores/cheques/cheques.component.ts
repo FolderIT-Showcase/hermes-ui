@@ -8,6 +8,8 @@ import {ApiService} from '../../../service/api.service';
 import {AlertService} from '../../../service/alert.service';
 import {Banco} from '../../../domain/banco';
 import {Observable} from 'rxjs/Observable';
+import {ModalChequeComponent} from './modal-cheque/modal-cheque.component';
+import {HelperService} from '../../../service/helper.service';
 
 @Component({
   selector: 'app-cheques',
@@ -26,10 +28,10 @@ export class ChequesComponent implements OnInit, OnDestroy {
   chequeSeleccionado: Cheque = new Cheque();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
-  modalTitle: string;
+  @ViewChild(ModalChequeComponent)
+  modalCheque: ModalChequeComponent;
   mostrarTabla = false;
   mostrarBarraCarga = true;
-  submitted = false;
   myDatePickerOptions: IMyDpOptions;
   constructor(private apiService: ApiService,
               private alertService: AlertService) {}
@@ -40,30 +42,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
       autoWidth: true,
       pageLength: 12,
       scrollY: '63.5vh',
-      language: {
-        'processing':     'Procesando...',
-        'lengthMenu':     'Mostrar _MENU_ registros',
-        'zeroRecords':    'No se encontraron resultados',
-        'emptyTable':     'Ningún dato disponible en esta tabla',
-        'info':           'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-        'infoEmpty':      'Mostrando registros del 0 al 0 de un total de 0 registros',
-        'infoFiltered':   '(filtrado de un total de _MAX_ registros)',
-        'infoPostFix':    '',
-        'search':         'Buscar:',
-        'url':            '',
-        // 'infoThousands':  ',',
-        'loadingRecords': 'Cargando...',
-        'paginate': {
-          'first':    'Primero',
-          'last':     'Último',
-          'next':     'Siguiente',
-          'previous': 'Anterior'
-        },
-        'aria': {
-          'sortAscending':  ': Activar para ordenar la columna de manera ascendente',
-          'sortDescending': ': Activar para ordenar la columna de manera descendente'
-        }
-      },
+      language: HelperService.defaultDataTablesLanguage(),
       columnDefs: [ {
         'targets': -1,
         'searchable': false,
@@ -110,170 +89,23 @@ export class ChequesComponent implements OnInit, OnDestroy {
         this.mostrarBarraCarga = false;
       });
 
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-      alignSelectorRight: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
 
   mostrarModalEditar(cheque: Cheque) {
-    this.modalTitle = 'Editar Cheque';
-    this.enNuevo = false;
     this.chequeOriginal = cheque;
-    this.chequeSeleccionado = JSON.parse(JSON.stringify(cheque));
-
-    let month, day;
-
-    if (!!this.chequeSeleccionado.fecha_emision) {
-      month = this.chequeSeleccionado.fecha_emision.toString().split('-')[1];
-      if (month[0] === '0') {
-        month = month.slice(1, 2);
-      }
-      day = this.chequeSeleccionado.fecha_emision.toString().split('-')[2];
-      if (day[0] === '0') {
-        day = day.slice(1, 2);
-      }
-      this.chequeSeleccionado.fecha_emision =  {
-        date: {
-          year: this.chequeSeleccionado.fecha_emision.toString().slice(0, 4),
-          month: month,
-          day: day
-        }
-      };
-    }
-
-    month = this.chequeSeleccionado.fecha_ingreso.toString().split('-')[1];
-    if (month[0] === '0') {
-      month = month.slice(1, 2);
-    }
-    day = this.chequeSeleccionado.fecha_ingreso.toString().split('-')[2];
-    if (day[0] === '0') {
-      day = day.slice(1, 2);
-    }
-    this.chequeSeleccionado.fecha_ingreso =  {
-      date: {
-        year: this.chequeSeleccionado.fecha_ingreso.toString().slice(0, 4),
-        month: month,
-        day: day
-      }
-    };
-
-    if (!!this.chequeSeleccionado.fecha_vencimiento) {
-      month = this.chequeSeleccionado.fecha_vencimiento.toString().split('-')[1];
-      if (month[0] === '0') {
-        month = month.slice(1, 2);
-      }
-      day = this.chequeSeleccionado.fecha_vencimiento.toString().split('-')[2];
-      if (day[0] === '0') {
-        day = day.slice(1, 2);
-      }
-      this.chequeSeleccionado.fecha_vencimiento =  {
-        date: {
-          year: this.chequeSeleccionado.fecha_vencimiento.toString().slice(0, 4),
-          month: month,
-          day: day
-        }
-      };
-    }
-
-    if (!!this.chequeSeleccionado.fecha_cobro) {
-      month = this.chequeSeleccionado.fecha_cobro.toString().split('-')[1];
-      if (month[0] === '0') {
-        month = month.slice(1, 2);
-      }
-      day = this.chequeSeleccionado.fecha_cobro.toString().split('-')[2];
-      if (day[0] === '0') {
-        day = day.slice(1, 2);
-      }
-      this.chequeSeleccionado.fecha_cobro =  {
-        date: {
-          year: this.chequeSeleccionado.fecha_cobro.toString().slice(0, 4),
-          month: month,
-          day: day
-        }
-      };
-    }
+    this.modalCheque.editarCheque(cheque);
   }
 
   mostrarModalEliminar(cheque: Cheque) {
     this.chequeSeleccionado = cheque;
   }
 
-  editarONuevo(f: any) {
-    this.submitted = true;
-    if (f.valid) {
-      this.submitted = false;
-      (<any>$('#modalEditar')).modal('hide');
-
-      // Máscara para mostrar siempre 2 decimales
-      const num = this.chequeSeleccionado.importe;
-      this.chequeSeleccionado.importe = !isNaN(+num) ? (+num).toFixed(2) : num;
-
-      const chequeAEnviar = new Cheque();
-      Object.assign(chequeAEnviar, this.chequeSeleccionado);
-      if (!!chequeAEnviar.fecha_emision) {
-        chequeAEnviar.fecha_emision = chequeAEnviar.fecha_emision.date.year + '-' + chequeAEnviar.fecha_emision.date.month + '-' + chequeAEnviar.fecha_emision.date.day;
-      }
-      chequeAEnviar.fecha_ingreso = chequeAEnviar.fecha_ingreso.date.year + '-' + chequeAEnviar.fecha_ingreso.date.month + '-' + chequeAEnviar.fecha_ingreso.date.day;
-      if (!!chequeAEnviar.fecha_vencimiento) {
-        chequeAEnviar.fecha_vencimiento = chequeAEnviar.fecha_vencimiento.date.year + '-' + chequeAEnviar.fecha_vencimiento.date.month + '-' + chequeAEnviar.fecha_vencimiento.date.day;
-      }
-      if (!!chequeAEnviar.fecha_cobro) {
-        chequeAEnviar.fecha_cobro = chequeAEnviar.fecha_cobro.date.year + '-' + chequeAEnviar.fecha_cobro.date.month + '-' + chequeAEnviar.fecha_cobro.date.day;
-      }
-      setTimeout(() => { this.cerrar(); }, 100);
-
-      if (this.enNuevo) {
-        this.enNuevo = false;
-        this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
-          json => {
-            json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
-            }
-            this.cheques.push(json);
-            this.recargarTabla();
-            f.form.reset();
-          }
-        );
-      } else {
-        this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
-          json => {
-            json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
-            if (!!json.cliente_id) {
-              json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
-            }
-            Object.assign(this.chequeOriginal, json);
-            f.form.reset();
-          }
-        );
-      }
-    }
-  }
-
   mostrarModalNuevo() {
-    this.modalTitle = 'Nuevo Cheque';
-    this.enNuevo = true;
-    this.chequeSeleccionado = new Cheque;
-    const today = new Date();
-    this.chequeSeleccionado.fecha_ingreso =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
-    (<any>$('#modalEditar')).modal('show');
-  }
-
-  cerrar() {
-    this.submitted = false;
+    this.modalCheque.nuevoCheque();
   }
 
   eliminar() {
-    this.submitted = false;
     this.apiService.delete('chequesterceros/' + this.chequeSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.cheques.indexOf(this.chequeSeleccionado);
@@ -285,6 +117,15 @@ export class ChequesComponent implements OnInit, OnDestroy {
         this.alertService.error(json['error']);
       }
     });
+  }
+
+  handleNew(cheque: Cheque) {
+    this.cheques.push(cheque);
+    this.recargarTabla();
+  }
+
+  handleEdit(cheque: Cheque) {
+    Object.assign(this.chequeOriginal, cheque);
   }
 
   private recargarTabla() {
@@ -299,9 +140,10 @@ export class ChequesComponent implements OnInit, OnDestroy {
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  // noinspection JSMethodCanBeStatic
   @HostListener('window:popstate', ['$event'])
   ocultarModals() {
-    (<any>$('#modalEditar')).modal('hide');
+    ModalChequeComponent.close();
     (<any>$('#modalEliminar')).modal('hide');
   }
 

@@ -7,6 +7,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Subject} from 'rxjs/Subject';
+import {HelperService} from '../../service/helper.service';
 
 @Component({
   selector: 'app-impresion',
@@ -86,17 +87,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
       }]
     };
     this.navbarTitleService.setTitle('Impresión de Comprobantes');
-    this.myDatePickerOptions = {
-      // other options...
-      dateFormat: 'dd/mm/yyyy',
-      dayLabels: {su: 'Dom', mo: 'Lun', tu: 'Mar', we: 'Mié', th: 'Jue', fr: 'Vie', sa: 'Sáb'},
-      monthLabels: {1: 'Ene', 2: 'Feb', 3: 'Mar', 4: 'Abr', 5: 'May', 6: 'Jun',
-        7: 'Jul', 8: 'Ago', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dic'},
-      todayBtnTxt: 'Hoy',
-      showClearDateBtn: false,
-      editableDateField: false,
-      openSelectorOnInputClick: true,
-    };
+    this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.fechaSeleccionada = false;
     this.comprobantes = [];
@@ -155,12 +146,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   rangoFechaInvalido(): boolean {
-    return (this.fechaInicio.date.year > this.fechaFin.date.year)
-      ||  ((this.fechaInicio.date.year === this.fechaFin.date.year) &&
-        (this.fechaInicio.date.month > this.fechaFin.date.month))
-      || ((this.fechaInicio.date.year === this.fechaFin.date.year) &&
-        (this.fechaInicio.date.month === this.fechaFin.date.month)
-        && this.fechaInicio.date.day > this.fechaFin.date.day);
+    return HelperService.rangoFechaInvalido(this.fechaInicio, this.fechaFin);
   }
 
   imprimirPDF(comprobante: Comprobante) {

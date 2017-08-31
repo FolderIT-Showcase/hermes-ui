@@ -1,8 +1,4 @@
-<div class="progress" *ngIf="mostrarBarraCarga">
-  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-    <span>Cargando<span class="dotdotdot"></span></span>
-  </div>
-</div>
+<app-progress-bar *ngIf="mostrarBarraCarga"></app-progress-bar>
 
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
@@ -25,7 +21,7 @@
     <td>{{ tarjeta.estado === 'A'? 'Acreditado' : tarjeta.estado === 'I'? 'Ingresado' : 'Rechazado' }}</td>
     <td>{{ tarjeta.descripcion }}</td>
     <td>
-      <button title="Editar tarjeta" (click)="mostrarModalEditar(tarjeta)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
+      <button title="Editar tarjeta" (click)="mostrarModalEditar(tarjeta)" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar tarjeta" (click)="mostrarModalEliminar(tarjeta)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
@@ -36,112 +32,18 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar()" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Eliminar Tarjeta</h4>
       </div>
       <div class="modal-body">
         <p>¿Está seguro de que desea eliminar la tarjeta?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" (click)="eliminar()" data-dismiss="modal" class="btn btn-danger">Aceptar</button>
       </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="f.reset(); cerrar()" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
-      </div>
-      <form class="form-horizontal" #f="ngForm">
-        <div class="modal-body">
-          <div class="form-group row">
-            <label for="tarjeta-cliente" class="col-sm-2 control-label">Cliente</label>
-            <div class="col-sm-10">
-              <div class="select-style">
-                <select class="form-control" id="tarjeta-cliente" [(ngModel)]="tarjetaSeleccionada.cliente_id" name="cliente" #cliente="ngModel">
-                  <option *ngFor="let cliente of clientes" [ngValue]="cliente.id">{{cliente.nombre}}</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="tarjeta-tipo" class="col-sm-2 required control-label">Tipo</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !tipo.valid && (!tipo.pristine || tipo.touched || submitted),
-            'has-success': tipo.valid}">
-              <div class="select-style">
-                <select class="form-control" id="tarjeta-tipo" [(ngModel)]="tarjetaSeleccionada.tarjeta_id" name="tipo" #tipo="ngModel" required>
-                  <option *ngFor="let tipo of tipos" [ngValue]="tipo.id">{{tipo.nombre}}</option>
-                </select>
-              </div>
-              <span *ngIf="tipo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="tipo.errors !== null && (!tipo.pristine || tipo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!tipo.valid && (!tipo.pristine || tipo.touched || submitted)" class="help-block">Seleccione un tipo de tarjeta</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="tarjeta-importe" class="col-sm-2 required control-label">Importe</label>
-            <div class="col-sm-4 has-feedback"
-                 [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
-            'has-success': importe.valid}">
-              <input type="number" class="form-control text-right" id="tarjeta-importe" [(ngModel)]="tarjetaSeleccionada.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
-              <span *ngIf="importe.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="importe.errors !== null && (!importe.pristine || importe.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="importe.errors !== null && importe.errors.required != null && (!importe.pristine || importe.touched || submitted)" class="help-block">Ingrese un importe</div>
-              <div *ngIf="importe.errors !== null && importe.errors.required == null && (!importe.pristine || submitted)" class="help-block">Ingrese un número con dos decimales</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="tarjeta-fecha" class="col-sm-2 required control-label">Fecha Ingreso</label>
-            <div class="col-sm-4">
-              <my-date-picker id="tarjeta-fecha" [(ngModel)]="tarjetaSeleccionada.fecha_ingreso" [options]="myDatePickerOptions" name="fecha"></my-date-picker>
-            </div>
-
-            <label for="tarjeta-fechaacr" class="col-sm-2 control-label">Fecha Acreditación</label>
-            <div class="col-sm-4">
-              <my-date-picker id="tarjeta-fechaacr" [(ngModel)]="tarjetaSeleccionada.fecha_acreditacion" [options]="myDatePickerOptions" name="fechaacr"></my-date-picker>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="tarjeta-estado" class="col-sm-2 required control-label">Estado</label>
-            <div class="col-sm-10 has-feedback"
-                 [ngClass]="{'has-error': !estado.valid && (!estado.pristine || estado.touched || submitted),
-            'has-success': estado.valid}">
-              <div class="select-style">
-                <select class="form-control" id="tarjeta-estado" [(ngModel)]="tarjetaSeleccionada.estado" name="estado" #estado="ngModel" required>
-                  <option [ngValue]="'I'">Ingresado</option>
-                  <option [ngValue]="'A'">Aceptado</option>
-                  <option [ngValue]="'R'">Rechazado</option>
-                </select>
-              </div>
-              <span *ngIf="estado.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-              <span *ngIf="estado.errors !== null && (!estado.pristine || estado.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
-              <div *ngIf="!estado.valid && (!estado.pristine || estado.touched || submitted)" class="help-block">Seleccione un estado</div>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="tarjeta-descripcion" class="col-sm-2 control-label">Descripción</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="tarjeta-descripcion" [(ngModel)]="tarjetaSeleccionada.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="500" placeholder="Descripción">
-            </div>
-          </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<app-modal-tarjeta [clientes]="clientes" [tipos]="tipos" (eventNew)="handleNew($event)" (eventEdit)="handleEdit($event)"></app-modal-tarjeta>

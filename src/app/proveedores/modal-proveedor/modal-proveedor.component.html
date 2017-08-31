@@ -1,0 +1,101 @@
+<div class="modal fade" id="modalEditar" tabindex="-1" role="dialog" aria-labelledby="modalEditarONuevo" #modalEditar>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
+      </div>
+
+      <form class="form-horizontal" #f="ngForm">
+        <div class="modal-body">
+
+          <div class="form-group row">
+            <label for="proveedor-codigo" class="col-sm-2 required control-label">Código</label>
+            <div class="col-sm-4 has-feedback"
+                 [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
+             'has-success': codigo.valid}" required>
+              <input class="form-control" id="proveedor-codigo" [(ngModel)]="element.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="element" [path]="'proveedores'" placeholder="Código">
+              <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+              <div *ngIf="codigo.errors !== null && codigo.errors.asyncInvalid" class="help-block">Código repetido</div>
+            </div>
+
+            <label for="proveedor-activo" class="col-sm-2 col-sm-offset-3 control-label">Activo</label>
+            <div class="col-sm-1 checkbox-inline">
+              <input type="checkbox" id="proveedor-activo" [(ngModel)]="element.activo" name="activo" (click)="cleanMotivo()">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <div>
+              <label for="proveedor-motivo" class="col-sm-2 control-label">Motivo</label>
+              <div class="col-sm-10">
+                <input [disabled]="element.activo" class="form-control" id="proveedor-motivo" [(ngModel)]="element.motivo" name="direccion" [maxLength]="191" placeholder="Motivo de la inactividad">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="proveedor-nombre" class="col-sm-2 required control-label">Nombre</label>
+            <div class="col-sm-4 has-feedback"
+                 [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
+            'has-success': nombre.valid}">
+              <input class="form-control" id="proveedor-nombre" [(ngModel)]="element.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
+              <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+            </div>
+
+            <label for="proveedor-email" class="col-sm-2 control-label">Email</label>
+            <div class="col-sm-4 has-feedback"
+                 [ngClass]="{'has-error': !email.valid && (!email.pristine || email.touched || submitted),
+            'has-success': email.valid && email.value !== '' && email.value !== undefined}">
+              <input type="email" class="form-control" id="proveedor-email" [(ngModel)]="element.email" name="email" #email="ngModel" pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" placeholder="email@gmail.com">
+              <span *ngIf="email.valid && email.value !== '' && email.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="email.errors !== null && (!email.pristine || email.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!email.valid && (!email.pristine || email.touched || submitted)" class="help-block">Email inválido</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="proveedor-tipo-responsable" class="col-sm-2 control-label">Tipo responsable</label>
+            <div class="col-sm-4">
+              <select class="form-control" id="proveedor-tipo-responsable" [(ngModel)]="element.tipo_responsable" name="tipo-responsable">
+                <option *ngFor="let tipo of data.tipos_responsable" [ngValue]="tipo.clave">{{tipo.nombre}}</option>
+              </select>
+            </div>
+
+            <label for="proveedor-cuit" class="col-sm-2 control-label" [ngClass]="{required: element.tipo_responsable === 'RI' || element.tipo_responsable === 'M'}">CUIT</label>
+            <div class="col-sm-4 has-feedback"
+                 [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched || submitted),
+            'has-success': cuit.valid && cuit.value !== '' && cuit.value !== undefined}">
+              <input class="form-control" id="proveedor-cuit" [(ngModel)]="element.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="element.tipo_responsable === 'RI' || element.tipo_responsable === 'M'">
+              <span *ngIf="cuit.valid && cuit.value !== '' && cuit.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
+              <span *ngIf="cuit.errors !== null && (!cuit.pristine || cuit.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
+              <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched || submitted)" class="help-block">Ingrese un CUIT</div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="proveedor-telefono" class="col-sm-2 control-label">Teléfono</label>
+            <div class="col-sm-4">
+              <input type="tel" class="form-control" id="proveedor-telefono" [(ngModel)]="element.telefono" name="telefono" [maxLength]="191" placeholder="(0342) 4000000" [textMask]="{mask: telmask, keepCharPositions: true }">
+            </div>
+
+            <label for="proveedor-celular" class="col-sm-2 control-label">Celular</label>
+            <div class="col-sm-4">
+              <input type="tel" class="form-control" id="proveedor-celular" [(ngModel)]="element.celular" name="celular" [maxLength]="191" placeholder="(0342) 150000000" [textMask]="{mask: celmask, keepCharPositions: true}">
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="f.reset(); cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

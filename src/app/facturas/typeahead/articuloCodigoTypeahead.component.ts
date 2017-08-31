@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Articulo} from '../../../domain/articulo';
 import {ApiService} from '../../../service/api.service';
 import {Observable} from 'rxjs/Observable';
-import {isNullOrUndefined} from "util";
+import {isNullOrUndefined} from 'util';
 
 @Component({
   selector: 'app-articulo-codigo-typeahead',

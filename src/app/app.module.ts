@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {LOCALE_ID, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpModule} from '@angular/http';
 
 import {AppComponent} from './app.component';
@@ -59,7 +59,33 @@ import { CarteraValoresComponent } from './cartera-valores/cartera-valores.compo
 import { ChequesComponent } from './cartera-valores/cheques/cheques.component';
 import { DepositosComponent } from './cartera-valores/depositos/depositos.component';
 import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component';
-
+import { CobrosComponent } from './cobros/cobros.component';
+import { ModalTarjetaComponent } from './cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
+import { ModalDepositoComponent } from './cartera-valores/depositos/modal-deposito/modal-deposito.component';
+import { ModalChequeComponent } from './cartera-valores/cheques/modal-cheque/modal-cheque.component';
+import {HelperService} from '../service/helper.service';
+import { AbmComponent } from './abm/abm.component';
+import { ModalAbmComponent } from './abm/modal-abm/modal-abm.component';
+import { ModalZonaComponent } from './zonas/modal-zona/modal-zona.component';
+import { ModalVendedorComponent } from './vendedores/modal-vendedor/modal-vendedor.component';
+import { ModalTipoTarjetaComponent } from './tipo-tarjeta/modal-tipo-tarjeta/modal-tipo-tarjeta.component';
+import { ModalTipoRetencionComponent } from './tipo-retencion/modal-tipo-retencion/modal-tipo-retencion.component';
+import { ModalSubrubroComponent } from './subrubros/modal-subrubro/modal-subrubro.component';
+import { ModalRubroComponent } from './rubros/modal-rubro/modal-rubro.component';
+import { ModalProveedorComponent } from './proveedores/modal-proveedor/modal-proveedor.component';
+import { ModalMarcaComponent } from './marcas/modal-marca/modal-marca.component';
+import { ModalCuentaBancariaComponent } from './cuenta-bancaria/modal-cuenta-bancaria/modal-cuenta-bancaria.component';
+import { ModalClienteComponent } from './clientes/modal-cliente/modal-cliente.component';
+import { ModalBancoComponent } from './banco/modal-banco/modal-banco.component';
+import { ModalArticuloComponent } from './articulos/modal-articulo/modal-articulo.component';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+import { FastAbmComponent } from './fast-abm/fast-abm.component';
+import { FastAbmChequeComponent } from './cartera-valores/cheques/fast-abm-cheque/fast-abm-cheque.component';
+import { FastAbmDepositoComponent } from './cartera-valores/depositos/fast-abm-deposito/fast-abm-deposito.component';
+import { FastAbmTarjetaComponent } from './cartera-valores/tarjetas/fast-abm-tarjeta/fast-abm-tarjeta.component';
+import { FormFieldComponent } from './abm/form-field/form-field.component';
+import {ValidatorsService} from '../service/validators.service';
+import { ListadoClientesComponent } from './clientes/listado-clientes/listado-clientes.component';
 
 @NgModule({
   declarations: [
@@ -105,13 +131,39 @@ import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component
     CarteraValoresComponent,
     ChequesComponent,
     DepositosComponent,
-    TarjetasComponent
+    TarjetasComponent,
+    CobrosComponent,
+    ModalTarjetaComponent,
+    ModalDepositoComponent,
+    ModalChequeComponent,
+    AbmComponent,
+    ModalAbmComponent,
+    ModalZonaComponent,
+    ModalVendedorComponent,
+    ModalTipoTarjetaComponent,
+    ModalTipoRetencionComponent,
+    ModalSubrubroComponent,
+    ModalRubroComponent,
+    ModalProveedorComponent,
+    ModalMarcaComponent,
+    ModalCuentaBancariaComponent,
+    ModalClienteComponent,
+    ModalBancoComponent,
+    ModalArticuloComponent,
+    ProgressBarComponent,
+    FastAbmComponent,
+    FastAbmChequeComponent,
+    FastAbmDepositoComponent,
+    FastAbmTarjetaComponent,
+    FormFieldComponent,
+    ListadoClientesComponent
   ],
   imports: [
     TypeaheadModule.forRoot(),
     TooltipModule.forRoot(),
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpModule,
     routing,
     DataTablesModule,
@@ -126,8 +178,28 @@ import { TarjetasComponent } from './cartera-valores/tarjetas/tarjetas.component
     ApiService,
     DeactivateGuardService,
     NavbarTitleService,
+    HelperService,
+    ValidatorsService,
+    { provide: LOCALE_ID, useValue: 'es-AR' }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  schemas: [NO_ERRORS_SCHEMA],
+  entryComponents: [
+    ModalZonaComponent,
+    ModalVendedorComponent,
+    ModalTipoTarjetaComponent,
+    ModalTipoRetencionComponent,
+    ModalSubrubroComponent,
+    ModalRubroComponent,
+    ModalProveedorComponent,
+    ModalMarcaComponent,
+    ModalCuentaBancariaComponent,
+    ModalBancoComponent,
+    ModalArticuloComponent,
+    FastAbmChequeComponent,
+    FastAbmDepositoComponent,
+    FastAbmTarjetaComponent
+  ],
 })
 export class AppModule {
 }

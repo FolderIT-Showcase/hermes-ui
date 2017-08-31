@@ -6,14 +6,14 @@ export class Cliente {
   tipo_categoria_id: Number;
   codigo: string;
   nombre: string;
-  tipo_responsable: string;
+  tipo_responsable = 'RI';
   tipo_responsable_str: string;
   cuit: string;
   telefono: string;
   celular: string;
   email: string;
-  activo: Boolean;
+  activo: Boolean = true;
   motivo: string;
-  domicilios: Domicilio[];
+  domicilios: Domicilio[] = [];
   lista_id: number;
 }

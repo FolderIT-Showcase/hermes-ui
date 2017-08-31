@@ -2,7 +2,7 @@ import {Proveedor} from './proveedor';
 import {TipoComprobanteCompra} from './tipoComprobanteCompra';
 import {PeriodoFiscal} from './periodoFiscal';
 import {ComprobanteCompraImportes} from './comprobanteCompraImportes';
-import {ComprobanteCompraRetencion} from "./comprobanteCompraRetencion";
+import {ComprobanteCompraRetencion} from './comprobanteCompraRetencion';
 
 export class ComprobanteCompra {
   id: number;

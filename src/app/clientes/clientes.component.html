@@ -1,8 +1,4 @@
-<div class="progress" *ngIf="mostrarBarraCarga">
-  <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-    <span>Cargando<span class="dotdotdot"></span></span>
-  </div>
-</div>
+<app-progress-bar *ngIf="mostrarBarraCarga"></app-progress-bar>
 
 <table datatable id="table" [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="row-border hover table" [hidden]="!mostrarTabla">
   <thead>
@@ -32,7 +28,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" (click)="cerrar(null)" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title">Eliminar Cliente</h4>
       </div>
       <div class="modal-body">
@@ -50,7 +46,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" class="close" (click)="cerrar(f)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
         <h4 class="modal-title" id="exampleModalLabel">{{modalTitle}}</h4>
       </div>
       <form class="form-horizontal" #f="ngForm">
@@ -60,7 +56,7 @@
             <div class="col-sm-2 has-feedback"
                  [ngClass]="{'has-error': (codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)) || (codigo.errors !== null && codigo.errors.asyncInvalid),
              'has-success': codigo.valid}" required>
-              <input type="text" class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'" placeholder="Código">
+              <input class="form-control" id="cliente-codigo" [(ngModel)]="clienteSeleccionado.codigo" name="codigo" #codigo="ngModel" required [maxLength]="10" app-asyncValidator [objeto]="clienteSeleccionado" [path]="'clientes'" placeholder="Código">
               <span *ngIf="codigo.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="codigo.errors !== null && (!codigo.pristine || codigo.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="codigo.errors !== null && codigo.errors.required && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
@@ -77,7 +73,7 @@
             <div *ngIf="!clienteSeleccionado.activo">
               <label for="cliente-motivo" class="col-sm-1 control-label">Motivo</label>
               <div class="col-sm-11">
-                <input type="text" class="form-control" id="cliente-motivo" [(ngModel)]="clienteSeleccionado.motivo" name="direccion" [maxLength]="191" placeholder="Motivo">
+                <input class="form-control" id="cliente-motivo" [(ngModel)]="clienteSeleccionado.motivo" name="direccion" [maxLength]="191" placeholder="Motivo">
               </div>
             </div>
           </div>
@@ -87,7 +83,7 @@
             <div class="col-sm-11 has-feedback"
                  [ngClass]="{'has-error': !nombre.valid && (!nombre.pristine || nombre.touched || submitted),
             'has-success': nombre.valid}">
-              <input type="text" class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
+              <input class="form-control" id="cliente-nombre" [(ngModel)]="clienteSeleccionado.nombre" name="nombre" #nombre="ngModel" required [maxLength]="191" placeholder="Nombre">
               <span *ngIf="nombre.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="nombre.errors !== null && (!nombre.pristine || nombre.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
@@ -103,7 +99,7 @@
             <div class="form-group row">
               <label for="cliente-domicilio-direccion" class="col-sm-1 control-label">Dirección</label>
               <div class="col-sm-11">
-                <input type="text" class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion" [maxLength]="191">
+                <input class="form-control" id="cliente-domicilio-direccion" [(ngModel)]="domicilio.direccion" name="direccion" [maxLength]="191">
               </div>
               <!--
               <label for="cliente-domicilio-tipo" class="col-sm-1 control-label">Tipo:</label>
@@ -116,7 +112,7 @@
             <div class="form-group row">
               <label for="cliente-provincia" class="col-sm-1 control-label">Provincia</label>
               <div class="col-sm-5">
-                <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target.value)" >
+                <select class="form-control" id="cliente-provincia" [ngModel]="domicilio.provincia_id | json" name="id_localidad" (change)="cargarLocalidades($event.target['value'])" >
                   <option *ngIf="provincias.length === 0">Cargando...</option>
                   <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
                 </select>
@@ -175,7 +171,7 @@
             <div class="col-sm-3 has-feedback"
                  [ngClass]="{'has-error': !cuit.valid && (!cuit.pristine || cuit.touched || submitted),
             'has-success': cuit.valid && cuit.value !== '' && cuit.value !== undefined}">
-              <input type="text" class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'">
+              <input class="form-control" id="cliente-cuit" [(ngModel)]="clienteSeleccionado.cuit" name="cuit" #cuit="ngModel" [maxLength]="191" placeholder="00-00000000-0" [textMask]="{mask: cuitmask}" [required]="clienteSeleccionado.tipo_responsable === 'RI' || clienteSeleccionado.tipo_responsable === 'M'">
               <span *ngIf="cuit.valid && cuit.value !== '' && cuit.value !== undefined" class="glyphicon glyphicon-ok form-control-feedback"></span>
               <span *ngIf="cuit.errors !== null && (!cuit.pristine || cuit.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
               <div *ngIf="!cuit.valid && (!cuit.pristine || cuit.touched || submitted)" class="help-block">Ingrese un CUIT</div>
@@ -214,90 +210,11 @@
         </div>
         <div class="modal-footer">
           <button type="button" (click)="cerrar(f)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
+          <button (click)="editarONuevo(f)" class="btn btn-primary">Aceptar</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="modalReporte" tabindex="-1" role="dialog" aria-labelledby="modalReporte" #modalReporte>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Generar listado de clientes</h4>
-      </div>
-      <form class="form-horizontal">
-        <div class="modal-body">
-          <p>Filtros asociados a los clientes</p>
-          <div class="form-group row">
-            <div class="col-sm-7">
-              <div class="form-group row radio">
-                <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorVendedor" name="parametroReporteFiltrarPorVendedor">por Vendedor</label>
-                </div>
-
-                <div class="col-sm-6">
-                  <select [hidden]="!parametroReporteFiltrarPorVendedor" class="form-control" [ngModel]="parametroReporteVendedor | json" name="parametroReporteVendedor" (change)="onParametroReporteVendedorChanged($event.target.value)">
-                    <option *ngFor="let vendedor of vendedores" [value]="vendedor.id | json">{{vendedor.nombre}}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group row radio">
-                <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorZona" name="parametroReporteFiltrarPorZona">por Zona</label>
-                </div>
-
-                <div class="col-sm-6">
-                  <select [hidden]="!parametroReporteFiltrarPorZona" class="form-control" [ngModel]="parametroReporteZona | json" name="parametroReporteZona" (change)="onParametroReporteZonaChanged($event.target.value)">
-                    <option *ngFor="let zona of zonas" [value]="zona.id | json">{{zona.nombre}}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group row radio">
-                <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorProvincia" name="parametroReporteFiltrarPorProvincia">por Provincia</label>
-                </div>
-
-                <div class="col-sm-6">
-                  <select [hidden]="!parametroReporteFiltrarPorProvincia" class="form-control" [ngModel]="parametroReporteProvincia | json" name="parametroReporteProvincia" (change)="onParametroReporteProvinciaChanged($event.target.value)" >
-                    <option *ngIf="provincias.length === 0">Cargando...</option>
-                    <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div [hidden]="parametroReporteProvincia === 0" class="form-group row radio">
-                <div class="col-sm-6">
-                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorLocalidad" name="parametroReporteFiltrarPorLocalidad">por Localidad</label>
-                </div>
-
-                <div class="col-sm-6">
-                  <select [hidden]="!parametroReporteFiltrarPorLocalidad" class="form-control" [(ngModel)]="parametroReporteLocalidad" name="parametroReporteLocalidad">
-                    <option *ngFor="let localidad of localidades" [ngValue]="localidad.id">{{localidad.nombre}}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-sm-5">
-              <div class="radio">
-                <label><input type="radio" [(ngModel)]="parametroReporteSoloActivos" name="parametroReporteSoloActivos" [value]="1" >Solo Clientes Activos</label>
-              </div>
-              <div class="radio">
-                <label><input type="radio" [(ngModel)]="parametroReporteSoloActivos" name="parametroReporteSoloActivos" [value]="0" >Incluir Clientes dados de baja</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" (click)="cerrar(null)" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-          <button type="submit" (click)="generarReporteClientes()" data-dismiss="modal" class="btn btn-primary">Generar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<app-listado-clientes></app-listado-clientes>
