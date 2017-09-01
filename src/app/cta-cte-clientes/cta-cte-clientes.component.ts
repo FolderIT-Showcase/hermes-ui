@@ -159,7 +159,11 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         this.registrosCtaCte = json;
         this.saldo = 0.0;
         this.registrosCtaCte.forEach( reg => {
-          reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
+          if (!isNullOrUndefined(reg.comprobante)) {
+            reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
+          } else if (!isNullOrUndefined(reg.cobro)){
+            reg.ptoventaynumero = ('000' + reg.cobro.punto_venta).slice(-4) + '-' + ('0000000' + reg.cobro.numero).slice(-8);
+          }
           this.saldo += +reg.debe;
           this.saldo -= +reg.haber;
           reg.saldo = this.saldo.toFixed(2);
@@ -241,17 +245,31 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {
-    this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
-      (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+    if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
+      this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
+        (res) => {
+          const fileURL = URL.createObjectURL(res);
+          try {
+            const win = window.open(fileURL, '_blank');
+            win.print();
+          } catch (e) {
+            this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+          }
         }
-      }
-    );
+      );
+    } else if (!isNullOrUndefined(ctaCteCliente.cobro_id)) {
+      this.apiService.downloadPDF('cobros/imprimir/' + ctaCteCliente.cobro_id, {}).subscribe(
+        (res) => {
+          const fileURL = URL.createObjectURL(res);
+          try {
+            const win = window.open(fileURL, '_blank');
+            win.print();
+          } catch (e) {
+            this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+          }
+        }
+      );
+    }
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean

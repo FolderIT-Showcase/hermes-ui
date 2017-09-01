@@ -55,7 +55,7 @@
     <td width="15%">{{comprobante.tipo_comprobante.nombre}}</td>
     <td class="text-center" width="20%">{{comprobante.ptoventaynumero}}</td>
     <td class="text-left" width="20%">{{comprobante.cliente_nombre}}</td>
-    <td class="text-right" width="20%">{{comprobante.importe_total}}</td>
+    <td class="text-right" width="20%">{{comprobante.importe_total? comprobante.importe_total : comprobante.importe}}</td>
     <td class="text-center" width="10%">
       <button title="Imprimir comprobante" (click)="imprimirPDF(comprobante)" class="glyphicon glyphicon-print blue"></button >
     </td>

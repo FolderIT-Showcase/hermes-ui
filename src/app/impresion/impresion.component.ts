@@ -8,6 +8,9 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Subject} from 'rxjs/Subject';
 import {HelperService} from '../../service/helper.service';
+import {Cliente} from "../../domain/cliente";
+import {isNullOrUndefined} from "util";
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'app-impresion',
@@ -16,7 +19,7 @@ import {HelperService} from '../../service/helper.service';
 })
 export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   tipoComprobanteSeleccionadoId: number;
-  comprobantes: Comprobante[];
+  comprobantes: any[];
   fechaInicio: any;
   fechaFin: any;
   fechaSeleccionada: false;
@@ -29,7 +32,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   dtElement: DataTableDirective;
   dtTrigger: Subject<any> = new Subject();
   mostrarTabla = false;
-
+  clientes: Cliente[] = [];
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private navbarTitleService: NavbarTitleService) {}
@@ -103,8 +106,9 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.apiService.get('tipocomprobantes').subscribe( json => {
       this.tipos_comprobantes = json;
     });
-    // setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
-
+    this.apiService.get('clientes').subscribe( json => {
+      this.clientes = json;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -132,6 +136,9 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         this.comprobantes = json;
         this.comprobantes.forEach( comprobante => {
           comprobante.ptoventaynumero = ('000' + comprobante.punto_venta).slice(-4) + '-' + ('0000000' + comprobante.numero).slice(-8);
+          if (isNullOrUndefined(comprobante.cliente_nombre)) {
+            comprobante.cliente_nombre = this.clientes.find(cliente => cliente.id === comprobante.cliente_id).nombre;
+          }
         });
         if (!this.mostrarTabla) {
           setTimeout(() => { this.mostrarTabla = true; this.dtTrigger.next(); }, 350);
@@ -150,7 +157,13 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   imprimirPDF(comprobante: Comprobante) {
-    this.apiService.downloadPDF('comprobantes/imprimir/' + comprobante.id, {}).subscribe(
+    let observable: Observable<any>;
+    if (comprobante.tipo_comprobante.codigo !== 'REC') {
+      observable = this.apiService.downloadPDF('comprobantes/imprimir/' + comprobante.id, {});
+    } else {
+      observable = this.apiService.downloadPDF('cobros/imprimir/' + comprobante.id, {})
+    }
+    observable.subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
@@ -173,7 +186,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+// Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
   @HostListener('window:popstate', ['$event'])
   ocultarModals() {}
 
@@ -181,7 +194,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ocultarModals();
   }
 
-  // noinspection JSUnusedGlobalSymbols
+// noinspection JSUnusedGlobalSymbols
   canDeactivate() {
     this.ocultarModals();
     return true;

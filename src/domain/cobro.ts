@@ -11,4 +11,6 @@ export class Cobro {
   descuentos: number | string;
   items: ItemCobro[];
   cobro_valores: any;
+  ptoventaynumero: string;
+  cliente_nombre: string;
 }
