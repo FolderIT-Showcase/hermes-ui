@@ -10,6 +10,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
+import {Cobro} from '../../domain/cobro';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -24,7 +25,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   fechaSeleccionadaCtaCte: false;
   clienteCtaCteAsync: string;
   clientesCtaCte: Cliente[];
-  comprobante: Comprobante;
+  comprobante: Comprobante | Cobro;
   iva = 0.21;
   saldo = 0.00;
   dtOptions: any;
@@ -35,7 +36,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   myDatePickerOptions: IMyDpOptions;
   @ViewChild('typeaheadNombreCliente')
   private typeaheadNombreClienteElement: ElementRef;
-  ctaCteClienteSeleccionada: CtaCteCliente;
+  ctaCteClienteSeleccionada: CtaCteCliente = new CtaCteCliente();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -161,7 +162,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         this.registrosCtaCte.forEach( reg => {
           if (!isNullOrUndefined(reg.comprobante)) {
             reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
-          } else if (!isNullOrUndefined(reg.cobro)){
+          } else if (!isNullOrUndefined(reg.cobro)) {
             reg.ptoventaynumero = ('000' + reg.cobro.punto_venta).slice(-4) + '-' + ('0000000' + reg.cobro.numero).slice(-8);
           }
           this.saldo += +reg.debe;
@@ -190,9 +191,9 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.apiService.downloadPDF('cuentacorriente/reporte', {
-      'cliente_id': this.clienteCtaCteSeleccionado.id,
-      'fecha_inicio': fechaInicioAEnviar,
-      'fecha_fin': fechaFinAEnviar,
+        'cliente_id': this.clienteCtaCteSeleccionado.id,
+        'fecha_inicio': fechaInicioAEnviar,
+        'fecha_fin': fechaFinAEnviar,
       }
     ).subscribe(
       (res) => {
@@ -209,18 +210,38 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
 
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
     this.ctaCteClienteSeleccionada = ctaCteCliente;
-    this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( json => {
-      this.comprobante = json;
-      this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
-      this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
-      this.comprobante.items.forEach( item => {
-        item.nombre = item.articulo.nombre;
-        item.codigo = item.articulo.codigo;
-        item.porcentaje_descuento = '0.00';
-        item.importe_descuento = '0.00';
+    if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
+      this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( (json: Comprobante) => {
+        this.comprobante = json;
+        this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+        this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
+       this.comprobante.items.forEach(item => {
+          item.nombre = item.articulo.nombre;
+          item.codigo = item.articulo.codigo;
+          item.porcentaje_descuento = '0.00';
+          item.importe_descuento = '0.00';
+        });
+        (<any>$('#modalVer')).modal('show');
       });
-      (<any>$('#modalVer')).modal('show');
-    });
+    } else {
+      this.apiService.get('cobros/' + ctaCteCliente.cobro_id).subscribe( (json: Cobro) => {
+        this.comprobante = json;
+        this.comprobante.tipo_comprobante = ctaCteCliente.tipo_comprobante;
+        this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+        this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
+        this.comprobante.importe_total = this.comprobante.importe;
+        this.comprobante.cobro_items.forEach(item => {
+          if (!item.anticipo) {
+            item.ptoventaynumero = ('000' + item.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + item.comprobante.numero).slice(-8);
+          }
+          // item.nombre = item.articulo.nombre;
+          // item.codigo = item.articulo.codigo;
+          // item.porcentaje_descuento = '0.00';
+          // item.importe_descuento = '0.00';
+        });
+        (<any>$('#modalVer')).modal('show');
+      });
+    }
   }
 
   cerrar() {
@@ -245,31 +266,23 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {
+    let obs;
     if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
-      this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
-        (res) => {
-          const fileURL = URL.createObjectURL(res);
-          try {
-            const win = window.open(fileURL, '_blank');
-            win.print();
-          } catch (e) {
-            this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-          }
-        }
-      );
-    } else if (!isNullOrUndefined(ctaCteCliente.cobro_id)) {
-      this.apiService.downloadPDF('cobros/imprimir/' + ctaCteCliente.cobro_id, {}).subscribe(
-        (res) => {
-          const fileURL = URL.createObjectURL(res);
-          try {
-            const win = window.open(fileURL, '_blank');
-            win.print();
-          } catch (e) {
-            this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-          }
-        }
-      );
+      obs = this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {});
+    } else {
+      obs = this.apiService.downloadPDF('cobros/imprimir/' + ctaCteCliente.cobro_id, {});
     }
+    obs.subscribe(
+      (res) => {
+        const fileURL = URL.createObjectURL(res);
+        try {
+          const win = window.open(fileURL, '_blank');
+          win.print();
+        } catch (e) {
+          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
+        }
+      }
+    );
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean

@@ -8,9 +8,9 @@ import {NavbarTitleService} from '../../service/navbar-title.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Subject} from 'rxjs/Subject';
 import {HelperService} from '../../service/helper.service';
-import {Cliente} from "../../domain/cliente";
-import {isNullOrUndefined} from "util";
-import {Observable} from "rxjs/Observable";
+import {Cliente} from '../../domain/cliente';
+import {isNullOrUndefined} from 'util';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-impresion',
@@ -161,7 +161,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     if (comprobante.tipo_comprobante.codigo !== 'REC') {
       observable = this.apiService.downloadPDF('comprobantes/imprimir/' + comprobante.id, {});
     } else {
-      observable = this.apiService.downloadPDF('cobros/imprimir/' + comprobante.id, {})
+      observable = this.apiService.downloadPDF('cobros/imprimir/' + comprobante.id, {});
     }
     observable.subscribe(
       (res) => {
