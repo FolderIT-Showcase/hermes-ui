@@ -189,8 +189,8 @@
                 <tbody>
                 <tr *ngFor="let item of comprobante.cobro_items">
                   <td class="text-left">{{item.anticipo? 'Anticipo' : item.comprobante.tipo_comprobante.nombre}}</td>
-                  <td class="text-center">{{item.ptoventaynumero}}</td>
-                  <td class="text-center">{{item.comprobante.fecha}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.ptoventaynumero}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.comprobante.fecha}}</td>
                   <td class="text-right">{{item.importe_total}}</td>
                 </tr>
                 </tbody>
