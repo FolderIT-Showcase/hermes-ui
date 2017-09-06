@@ -234,11 +234,43 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           if (!item.anticipo) {
             item.ptoventaynumero = ('000' + item.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + item.comprobante.numero).slice(-8);
           }
-          // item.nombre = item.articulo.nombre;
-          // item.codigo = item.articulo.codigo;
-          // item.porcentaje_descuento = '0.00';
-          // item.importe_descuento = '0.00';
         });
+        const flatCobroValores = [];
+        this.comprobante.cobro_valores.forEach(valor => {
+          valor.nombre = valor.medio_pago.nombre;
+          switch (valor.nombre) {
+            case 'Tarjeta':
+              valor.tarjetas.forEach( tarjeta => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + tarjeta.tipo_tarjeta.nombre;
+                newValor.importe = tarjeta.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            case 'Depósito':
+              valor.depositos.forEach( deposito => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + deposito.cuenta.banco.nombre;
+                newValor.numero = deposito.numero;
+                newValor.importe = deposito.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            case 'Cheque':
+              valor.cheques.forEach( cheque => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + cheque.banco.nombre;
+                newValor.numero = cheque.numero;
+                newValor.fecha = cheque.fecha_vencimiento;
+                newValor.importe = cheque.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            default:
+              flatCobroValores.push(valor);
+          }
+        });
+        this.comprobante.cobro_valores = flatCobroValores;
         (<any>$('#modalVer')).modal('show');
       });
     }

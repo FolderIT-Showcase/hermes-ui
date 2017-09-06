@@ -163,12 +163,16 @@
                 <thead>
                 <tr>
                   <th class="text-center">Valor</th>
+                  <th class="text-center">Número</th>
+                  <th class="text-center">Fecha</th>
                   <th class="text-center">Importe</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr *ngFor="let item of comprobante.cobro_valores">
-                  <td class="text-left">{{item.medio_pago.nombre}}</td>
+                  <td class="text-left">{{item.nombre}}</td>
+                  <td class="text-center">{{item.numero}}</td>
+                  <td class="text-center">{{item.fecha}}</td>
                   <td class="text-right">{{item.importe}}</td>
                 </tr>
                 </tbody>
