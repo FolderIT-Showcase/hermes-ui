@@ -25,7 +25,7 @@ export class ValidatorsService {
     };
   }
 
-  asyncUniqueCodeValidator(path: string): AsyncValidatorFn  {
+  asyncUniqueCodeValidator(path: string, element: any): AsyncValidatorFn  {
     return function (c: AbstractControl): Promise<ValidationErrors | null> {
       return new Promise(resolve => {
         if (!isNullOrUndefined(c.value)) {
@@ -34,8 +34,8 @@ export class ValidatorsService {
               if (json === '') {
                 resolve(null);
               } else {
-                console.log(this.element);
-                if (json.id === this.element.id) {
+                console.log(element);
+                if (json.id === element.id) {
                   resolve(null);
                 } else {
                   resolve({
@@ -111,7 +111,7 @@ export class ValidatorsService {
   composeAsyncValidatorsFromMetadata(field: any, element: any): Array<AsyncValidatorFn> {
     const validators: Array<AsyncValidatorFn> = [];
     if (Reflect.getMetadata(field.name, element, 'async') !== undefined) {
-      validators.push(this.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, element, 'async')).bind(this));
+      validators.push(this.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, element, 'async'), element).bind(this));
     }
     return validators;
   }

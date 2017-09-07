@@ -63,7 +63,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
   editar(elementAEditar: T) {
     this.modalTitle = 'Editar ' + this.nombreElemento;
     this.enNuevo = false;
-    this.element = JSON.parse(JSON.stringify(elementAEditar));
+    Object.assign(this.element, elementAEditar);
     ModalAbmComponent.open();
   }
 
