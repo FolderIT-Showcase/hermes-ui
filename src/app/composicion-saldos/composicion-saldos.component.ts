@@ -4,6 +4,7 @@ import {Vendedor} from '../../domain/vendedor';
 import {ApiService} from '../../service/api.service';
 import {AlertService} from '../../service/alert.service';
 import {Cliente} from '../../domain/cliente';
+import {NavbarTitleService} from '../../service/navbar-title.service';
 
 @Component({
   selector: 'app-composicion-saldos',
@@ -18,9 +19,12 @@ export class ComposicionSaldosComponent implements OnInit {
   zonas: Zona[] = [];
   clientes: Cliente[] = [];
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService,
+              private alertService: AlertService,
+              private navbarTitleService: NavbarTitleService) { }
 
   ngOnInit() {
+    this.navbarTitleService.setTitle('Imprimir Reporte Composición de Saldos');
     this.cargarVendedores();
     this.cargarZonas();
     this.cargarClientes();
