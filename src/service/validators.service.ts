@@ -34,6 +34,7 @@ export class ValidatorsService {
               if (json === '') {
                 resolve(null);
               } else {
+                console.log(this.element);
                 if (json.id === this.element.id) {
                   resolve(null);
                 } else {

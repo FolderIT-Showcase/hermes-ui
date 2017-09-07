@@ -13,7 +13,7 @@
   <tr *ngFor="let presupuesto of presupuestos">
     <td>{{ presupuesto.numero }}</td>
     <td>{{ presupuesto.cliente_nombre }}</td>
-    <td>{{ presupuesto.importe_total }}</td>
+    <td class="text-right">{{ presupuesto.importe_total | number:'1.2-2'}}</td>
     <td style="width: 15%">
       <button (click)="enviarPorMail(presupuesto)" class="glyphicon glyphicon-envelope blue"></button >
       <button (click)="imprimirPDF(presupuesto)" class="glyphicon glyphicon-print blue"></button >
