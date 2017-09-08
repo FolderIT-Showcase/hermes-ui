@@ -43,11 +43,12 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   cuitmask = [/\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, '-', /\d/];
   telmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
   celmask = ['(', '0', /\d/, /\d/, /\d/, ')', ' ', '1', '5', /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/];
-  tipoCategoriaClientes: TipoCategoriaCliente[];
+  tipoCategoriaClientes: TipoCategoriaCliente[] = [];
   submitted = false;
   mostrarBarraCarga = true;
   @ViewChild(ListadoClientesComponent)
   listadoClientesComponent: ListadoClientesComponent;
+  private clienteAEliminar: Cliente;
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
@@ -131,7 +132,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   mostrarModalEliminar(cliente: Cliente) {
-    this.clienteSeleccionado = cliente;
+    this.clienteAEliminar = cliente;
   }
 
   mostrarModalReporte() {
@@ -193,12 +194,12 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   eliminar() {
-    const index: number = this.clientes.indexOf(this.clienteSeleccionado);
+    const index: number = this.clientes.indexOf(this.clienteAEliminar);
     if (index !== -1) {
       this.clientes.splice(index, 1);
     }
     this.recargarTabla();
-    this.apiService.delete('clientes/' + this.clienteSeleccionado.id).subscribe();
+    this.apiService.delete('clientes/' + this.clienteAEliminar.id).subscribe();
     this.cerrar(null);
   }
 
@@ -290,15 +291,19 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   }
 
   private cargarListasPrecios() {
-    this.apiService.get('listaprecios').subscribe(json => {
-      this.listasPrecios = json;
-    });
+    if (this.listasPrecios.length === 0) {
+      this.apiService.get('listaprecios').subscribe(json => {
+        this.listasPrecios = json;
+      });
+    }
   }
 
   private cargarTipoCategoriaCliente() {
-    this.apiService.get('tipocategoriaclientes').subscribe( json => {
-      this.tipoCategoriaClientes = json;
-    });
+    if (this.tipoCategoriaClientes.length === 0) {
+      this.apiService.get('tipocategoriaclientes').subscribe(json => {
+        this.tipoCategoriaClientes = json;
+      });
+    }
   }
 
 
