@@ -12,7 +12,7 @@
   <td>{{ element.nombre }}</td>
   <td>{{ element.marca_nombre }}</td>
   <td>{{ element.subrubro_nombre }}</td>
-  <td>{{ element.costo }}</td>
+  <td class="text-right">{{ element.costo | number:'1.2-2'}}</td>
 </ng-template>
 
 <app-abm

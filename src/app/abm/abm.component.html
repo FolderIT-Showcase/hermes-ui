@@ -7,10 +7,10 @@
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let element of elements">
+  <tr *ngFor="let element of elements; let i = index">
     <ng-template [ngTemplateOutlet]="tableBody" [ngOutletContext]="{element: element}"></ng-template>
     <td>
-      <button title="Editar" (click)="mostrarModalEditar(element)" class="glyphicon glyphicon-pencil blue"></button >
+      <button title="Editar" (click)="mostrarModalEditar(element, i)" class="glyphicon glyphicon-pencil blue"></button >
       <button title="Eliminar" (click)="mostrarModalEliminar(element)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>

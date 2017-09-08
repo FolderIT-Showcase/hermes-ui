@@ -9,7 +9,7 @@ export class FormFieldComponent {
   @Input() field;
   @Input() element;
   @Input() form;
-  @Input() submitted;
+  @Input() submitted = false;
   @Input() data;
   @Output() change = new EventEmitter<any>();
 

@@ -60,6 +60,7 @@ export class AbmComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.articuloElemento = this.femenino ? 'la' : 'el';
     this.pluralElemento = this.pluralElemento ? this.pluralElemento : this.nombreElemento + 's';
+    // noinspection JSUnusedGlobalSymbols
     this.dtOptions = {
       pagingType: 'full_numbers',
       autoWidth: true,
@@ -120,16 +121,15 @@ export class AbmComponent implements OnInit, OnDestroy {
 
   handleEdit(element: any) {
     this.onElementEdit(element, this.data);
-    Object.assign(this.elementOriginal, element);
+    Object.assign(this.elements[element['__position']], element);
   }
 
   mostrarModalNuevo() {
     this.componentRef.instance.nuevo();
   }
 
-  mostrarModalEditar(element: any) {
-    this.elementOriginal = element;
-    this.componentRef.instance.editar(element);
+  mostrarModalEditar(element: any, index: number) {
+    this.componentRef.instance.editar(JSON.parse(JSON.stringify(element)), index);
   }
 
   mostrarModalEliminar(element: any) {

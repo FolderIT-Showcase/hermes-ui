@@ -70,9 +70,9 @@
       <td class="text-center" width="15%">{{reg.fecha}}</td>
       <td width="18%">{{reg.tipo_comprobante.nombre}}</td>
       <td class="text-center" width="12%">{{reg.ptoventaynumero}}</td>
-      <td class="text-right" width="15%">{{reg.debe}}</td>
-      <td class="text-right" width="15%">{{reg.haber}}</td>
-      <td class="text-right" width="15%">{{reg.saldo}}</td>
+      <td class="text-right" width="15%">{{reg.debe | number:'1.2-2'}}</td>
+      <td class="text-right" width="15%">{{reg.haber | number:'1.2-2'}}</td>
+      <td class="text-right" width="15%">{{reg.saldo | number:'1.2-2'}}</td>
       <td class="text-center" width="10%">
         <button title="Ver comprobante" (click)="mostrarModalVer(reg)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-eye-open blue"></button>
         <button title="Imprimir comprobante" (click)="imprimirPDF(reg)" class="glyphicon glyphicon-print blue"></button >
@@ -86,7 +86,7 @@
       <th width="12%"></th>
       <th width="15%"></th>
       <th class="text-center" width="15%">Saldo Total</th>
-      <th class="text-right" width="15%">{{saldo.toFixed(2)}}</th>
+      <th class="text-right" width="15%">{{saldo | number:'1.2-2'}}</th>
       <th width="10%"></th>
     </tr>
     </tfoot>
@@ -147,10 +147,10 @@
                 <td class="text-left">{{item.codigo}}</td>
                 <td class="text-left">{{item.nombre}}</td>
                 <td class="text-center">{{item.cantidad}}</td>
-                <td class="text-right">{{item.importe_unitario}}</td>
+                <td class="text-right">{{item.importe_unitario | number:'1.2-2'}}</td>
                 <td class="text-right">{{item.porcentaje_descuento}}</td>
-                <td class="text-right">{{item.importe_descuento}}</td>
-                <td class="text-right">{{item.importe_total}}</td>
+                <td class="text-right">{{item.importe_descuento | number:'1.2-2'}}</td>
+                <td class="text-right">{{item.importe_total | number:'1.2-2'}}</td>
               </tr>
               </tbody>
             </table>
@@ -173,7 +173,7 @@
                   <td class="text-left">{{item.nombre}}</td>
                   <td class="text-center">{{item.numero}}</td>
                   <td class="text-center">{{item.fecha}}</td>
-                  <td class="text-right">{{item.importe}}</td>
+                  <td class="text-right">{{item.importe | number:'1.2-2'}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -195,7 +195,7 @@
                   <td class="text-left">{{item.anticipo? 'Anticipo' : item.comprobante.tipo_comprobante.nombre}}</td>
                   <td class="text-center">{{item.anticipo? '' : item.ptoventaynumero}}</td>
                   <td class="text-center">{{item.anticipo? '' : item.comprobante.fecha}}</td>
-                  <td class="text-right">{{item.importe_total}}</td>
+                  <td class="text-right">{{item.importe_total | number:'1.2-2'}}</td>
                 </tr>
                 </tbody>
               </table>
@@ -205,19 +205,19 @@
           <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comprobante.codigo)">
             <label for="comprobante-subtotal" class="col-sm-2  col-sm-offset-8 control-label">Subtotal</label>
             <div class="col-sm-2">
-              <input class="form-control" type="number" name="comprobante-subtotal" id="comprobante-subtotal" [ngModel]="comprobante.importe_neto" readonly>
+              <input class="form-control text-right" name="comprobante-subtotal" id="comprobante-subtotal" [ngModel]="comprobante.importe_neto | number:'1.2-2'" readonly>
             </div>
           </div>
           <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comprobante.codigo)">
             <label for="comprobante-importe-iva" class="col-sm-2  col-sm-offset-8 control-label">IVA {{iva*100}}%</label>
             <div class="col-sm-2">
-              <input class="form-control" type="number" name="comprobante-importe-iva" id="comprobante-importe-iva" [ngModel]="comprobante.importe_iva" readonly>
+              <input class="form-control text-right" name="comprobante-importe-iva" id="comprobante-importe-iva" [ngModel]="comprobante.importe_iva | number:'1.2-2'" readonly>
             </div>
           </div>
           <div class="form-group row">
             <label for="comprobante-total" class="col-sm-2  col-sm-offset-8 control-label">Total</label>
             <div class="col-sm-2">
-              <input class="form-control" type="number" name="comprobante-total" id="comprobante-total" [ngModel]="comprobante.importe_total" readonly>
+              <input class="form-control text-right" name="comprobante-total" id="comprobante-total" [ngModel]="comprobante.importe_total | number:'1.2-2'" readonly>
             </div>
           </div>
         </div>

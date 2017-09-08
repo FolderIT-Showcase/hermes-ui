@@ -43,6 +43,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
               private navbarTitleService: NavbarTitleService) {
     this.comprobante = new Comprobante;
     this.comprobante.tipo_comprobante = new TipoComprobante;
+    this.comprobante.importe_total = 0;
   }
 
   ngOnInit() {
@@ -167,7 +168,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           }
           this.saldo += +reg.debe;
           this.saldo -= +reg.haber;
-          reg.saldo = this.saldo.toFixed(2);
+          reg.saldo = this.saldo;
         });
         setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
       });

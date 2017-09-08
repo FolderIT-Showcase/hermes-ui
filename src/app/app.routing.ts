@@ -33,6 +33,7 @@ import {BancoComponent} from './banco/banco.component';
 import {CuentaBancariaComponent} from './cuenta-bancaria/cuenta-bancaria.component';
 import {TipoTarjetaComponent} from './tipo-tarjeta/tipo-tarjeta.component';
 import {CobrosComponent} from './cobros/cobros.component';
+import {ComposicionSaldosComponent} from './composicion-saldos/composicion-saldos.component';
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent, canActivate: [AuthGuard]},
@@ -67,6 +68,7 @@ const appRoutes: Routes = [
   {path: 'tipostarjeta', component: TipoTarjetaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'carteravalores', component: CarteraValoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
   {path: 'cobros', component: CobrosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'composicionsaldos', component: ComposicionSaldosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

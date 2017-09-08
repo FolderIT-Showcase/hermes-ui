@@ -44,7 +44,7 @@
 
       <li data-toggle="collapse" data-target="#ventas"
           [class.active]="rlafacturas.isActive || rlanotadebito.isActive || rlanotacredito.isActive || rlapresupuestos.isActive || rlacobros.isActive ||
-            rlactacteclientes.isActive || rlaimpresion.isActive || rlalibroiva.isActive || rlaresventas.isActive" class="collapsed">
+            rlactacteclientes.isActive || rlaimpresion.isActive || rlalibroiva.isActive || rlaresventas.isActive || rlacompsaldos.isActive" class="collapsed">
         <a class="dropdown-toggle"><i class="fa fa-briefcase fa-lg"></i> Ventas<span class="arrow"></span></a>
       </li>
       <ul id="ventas" class="sub-menu collapse" role="menu">
@@ -63,6 +63,7 @@
         <li [routerLinkActive]="['active']" [routerLink]="['/impresion']" #rlaimpresion="routerLinkActive"><a><i class="fa fa-print"></i> Impresión por Pedido</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/libroiva']" #rlalibroiva="routerLinkActive"><a><i class="fa fa-book"></i> Libro IVA</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/resumenventas']" #rlaresventas="routerLinkActive"><a><i class="fa fa-file-text-o"></i> Resumen de Ventas</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/composicionsaldos']" #rlacompsaldos="routerLinkActive"><a><i class="glyphicon glyphicon-th-list"></i> Composición de Saldos</a></li>
       </ul>
 
       <li data-toggle="collapse" data-target="#compras"

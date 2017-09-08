@@ -25,32 +25,34 @@ export class ValidatorsService {
     };
   }
 
-  asyncUniqueCodeValidator(path: string): AsyncValidatorFn  {
+  asyncUniqueCodeValidator(path: string, element: any, fieldname: string): AsyncValidatorFn  {
     return function (c: AbstractControl): Promise<ValidationErrors | null> {
       return new Promise(resolve => {
         if (!isNullOrUndefined(c.value)) {
-          this.apiService.get(path + '/codigo/' + c.value).subscribe(
-            json => {
-              if (json === '') {
-                resolve(null);
-              } else {
-                if (json.id === this.element.id) {
+          if (element['__pristine'][fieldname] === c.value) {
+            resolve(null);
+          } else {
+            this.apiService.get(path + '/codigo/' + c.value).subscribe(json => {
+                if (json === '') {
                   resolve(null);
                 } else {
-                  resolve({
-                    uniqueCode: true
-                  });
+                  if (json.id === element.id) {
+                    resolve(null);
+                  } else {
+                    resolve({
+                      uniqueCode: true
+                    });
+                  }
                 }
               }
-            }
-          );
+            );
+          }
         } else {
           resolve(null);
         }
       });
     };
   }
-
 
   composeValidatorsFromMetadata(field: any, element: any, data: any = {}): Array<ValidatorFn> {
     const validators: Array<ValidatorFn> = [];
@@ -110,7 +112,7 @@ export class ValidatorsService {
   composeAsyncValidatorsFromMetadata(field: any, element: any): Array<AsyncValidatorFn> {
     const validators: Array<AsyncValidatorFn> = [];
     if (Reflect.getMetadata(field.name, element, 'async') !== undefined) {
-      validators.push(this.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, element, 'async')).bind(this));
+      validators.push(this.asyncUniqueCodeValidator(Reflect.getMetadata(field.name, element, 'async'), element, field.name).bind(this));
     }
     return validators;
   }
