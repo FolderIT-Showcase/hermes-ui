@@ -10,6 +10,7 @@ export class ItemCobro {
   porcentaje_descuento: number | string;
   importe_total: number | string;
   comprobante: Comprobante;
+  ptoventaynumero: string;
   tipoPtoVtaYNumero: string;
   anticipo: boolean;
 }

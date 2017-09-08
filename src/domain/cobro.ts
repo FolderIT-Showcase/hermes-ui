@@ -1,4 +1,5 @@
 import {ItemCobro} from './itemCobro';
+import {TipoComprobante} from './tipocomprobante';
 
 export class Cobro {
   id: number;
@@ -10,5 +11,10 @@ export class Cobro {
   importe_sub: number | string;
   descuentos: number | string;
   items: ItemCobro[];
+  cobro_items: ItemCobro[];
   cobro_valores: any;
+  ptoventaynumero: string;
+  cliente_nombre: string;
+  tipo_comprobante: TipoComprobante;
+  importe_total;
 }

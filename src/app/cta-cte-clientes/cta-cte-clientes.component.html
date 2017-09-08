@@ -129,7 +129,7 @@
             </div>
           </div>
           <!--TODO mostrar otra cosa si es nota de crédito o débito-->
-          <div style="height: 240px;overflow-y: auto;">
+          <div style="height: 240px;overflow-y: auto;" *ngIf="ctaCteClienteSeleccionada.comprobante_id">
             <table id="tablemodal" class="row-border hover table" >
               <thead>
               <tr>
@@ -155,6 +155,53 @@
               </tbody>
             </table>
           </div>
+
+          <ng-container *ngIf="ctaCteClienteSeleccionada.cobro_id">
+            <h4>Valores</h4>
+            <div style="height: 130px;overflow-y: auto;" >
+              <table id="tablemodalcobro" class="row-border hover table" >
+                <thead>
+                <tr>
+                  <th class="text-center">Valor</th>
+                  <th class="text-center">Número</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Importe</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of comprobante.cobro_valores">
+                  <td class="text-left">{{item.nombre}}</td>
+                  <td class="text-center">{{item.numero}}</td>
+                  <td class="text-center">{{item.fecha}}</td>
+                  <td class="text-right">{{item.importe}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>Comprobantes</h4>
+            <div style="height: 130px;overflow-y: auto;">
+              <table id="tablemodalcobroitems" class="row-border hover table" >
+                <thead>
+                <tr>
+                  <th class="text-center">Tipo</th>
+                  <th class="text-center">Número</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Importe Pagado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of comprobante.cobro_items">
+                  <td class="text-left">{{item.anticipo? 'Anticipo' : item.comprobante.tipo_comprobante.nombre}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.ptoventaynumero}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.comprobante.fecha}}</td>
+                  <td class="text-right">{{item.importe_total}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
           <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comprobante.codigo)">
             <label for="comprobante-subtotal" class="col-sm-2  col-sm-offset-8 control-label">Subtotal</label>
             <div class="col-sm-2">

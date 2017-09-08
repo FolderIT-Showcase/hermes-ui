@@ -10,6 +10,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../service/navbar-title.service';
 import {HelperService} from '../../service/helper.service';
+import {Cobro} from '../../domain/cobro';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -24,7 +25,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   fechaSeleccionadaCtaCte: false;
   clienteCtaCteAsync: string;
   clientesCtaCte: Cliente[];
-  comprobante: Comprobante;
+  comprobante: Comprobante | Cobro;
   iva = 0.21;
   saldo = 0.00;
   dtOptions: any;
@@ -35,7 +36,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   myDatePickerOptions: IMyDpOptions;
   @ViewChild('typeaheadNombreCliente')
   private typeaheadNombreClienteElement: ElementRef;
-  ctaCteClienteSeleccionada: CtaCteCliente;
+  ctaCteClienteSeleccionada: CtaCteCliente = new CtaCteCliente();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -159,7 +160,11 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         this.registrosCtaCte = json;
         this.saldo = 0.0;
         this.registrosCtaCte.forEach( reg => {
-          reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
+          if (!isNullOrUndefined(reg.comprobante)) {
+            reg.ptoventaynumero = ('000' + reg.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante.numero).slice(-8);
+          } else if (!isNullOrUndefined(reg.cobro)) {
+            reg.ptoventaynumero = ('000' + reg.cobro.punto_venta).slice(-4) + '-' + ('0000000' + reg.cobro.numero).slice(-8);
+          }
           this.saldo += +reg.debe;
           this.saldo -= +reg.haber;
           reg.saldo = this.saldo.toFixed(2);
@@ -186,9 +191,9 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
     }
 
     this.apiService.downloadPDF('cuentacorriente/reporte', {
-      'cliente_id': this.clienteCtaCteSeleccionado.id,
-      'fecha_inicio': fechaInicioAEnviar,
-      'fecha_fin': fechaFinAEnviar,
+        'cliente_id': this.clienteCtaCteSeleccionado.id,
+        'fecha_inicio': fechaInicioAEnviar,
+        'fecha_fin': fechaFinAEnviar,
       }
     ).subscribe(
       (res) => {
@@ -205,18 +210,70 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
 
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
     this.ctaCteClienteSeleccionada = ctaCteCliente;
-    this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( json => {
-      this.comprobante = json;
-      this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
-      this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
-      this.comprobante.items.forEach( item => {
-        item.nombre = item.articulo.nombre;
-        item.codigo = item.articulo.codigo;
-        item.porcentaje_descuento = '0.00';
-        item.importe_descuento = '0.00';
+    if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
+      this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( (json: Comprobante) => {
+        this.comprobante = json;
+        this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+        this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
+       this.comprobante.items.forEach(item => {
+          item.nombre = item.articulo.nombre;
+          item.codigo = item.articulo.codigo;
+          item.porcentaje_descuento = '0.00';
+          item.importe_descuento = '0.00';
+        });
+        (<any>$('#modalVer')).modal('show');
       });
-      (<any>$('#modalVer')).modal('show');
-    });
+    } else {
+      this.apiService.get('cobros/' + ctaCteCliente.cobro_id).subscribe( (json: Cobro) => {
+        this.comprobante = json;
+        this.comprobante.tipo_comprobante = ctaCteCliente.tipo_comprobante;
+        this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+        this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
+        this.comprobante.importe_total = this.comprobante.importe;
+        this.comprobante.cobro_items.forEach(item => {
+          if (!item.anticipo) {
+            item.ptoventaynumero = ('000' + item.comprobante.punto_venta).slice(-4) + '-' + ('0000000' + item.comprobante.numero).slice(-8);
+          }
+        });
+        const flatCobroValores = [];
+        this.comprobante.cobro_valores.forEach(valor => {
+          valor.nombre = valor.medio_pago.nombre;
+          switch (valor.nombre) {
+            case 'Tarjeta':
+              valor.tarjetas.forEach( tarjeta => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + tarjeta.tipo_tarjeta.nombre;
+                newValor.importe = tarjeta.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            case 'Depósito':
+              valor.depositos.forEach( deposito => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + deposito.cuenta.banco.nombre;
+                newValor.numero = deposito.numero;
+                newValor.importe = deposito.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            case 'Cheque':
+              valor.cheques.forEach( cheque => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + cheque.banco.nombre;
+                newValor.numero = cheque.numero;
+                newValor.fecha = cheque.fecha_vencimiento;
+                newValor.importe = cheque.importe;
+                flatCobroValores.push(newValor);
+              });
+              break;
+            default:
+              flatCobroValores.push(valor);
+          }
+        });
+        this.comprobante.cobro_valores = flatCobroValores;
+        (<any>$('#modalVer')).modal('show');
+      });
+    }
   }
 
   cerrar() {
@@ -241,7 +298,13 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   imprimirPDF(ctaCteCliente: CtaCteCliente) {
-    this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {}).subscribe(
+    let obs;
+    if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
+      obs = this.apiService.downloadPDF('comprobantes/imprimir/' + ctaCteCliente.comprobante_id, {});
+    } else {
+      obs = this.apiService.downloadPDF('cobros/imprimir/' + ctaCteCliente.cobro_id, {});
+    }
+    obs.subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {

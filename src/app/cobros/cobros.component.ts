@@ -29,6 +29,7 @@ import {MedioPago} from 'domain/medioPago';
   styleUrls: ['./cobros.component.css']
 })
 export class CobrosComponent implements OnInit, AfterViewInit {
+  marginRedondeo = 10;
   depositos: Deposito[] = [];
   listaTiposTarjeta: TipoTarjeta[] = [];
   total: string | number = 0;
@@ -175,6 +176,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cheques = [];
     this.depositos = [];
     this.submitted = false;
+    this.modificado = false;
     this.navbarTitleService.setTitle('Cobro');
     this.cargarBancos();
     this.cargarClientes();
@@ -505,6 +507,9 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.totalTarjetas = (0).toFixed(2);
     this.totalCheques = (0).toFixed(2);
     this.totalDepositos = (0).toFixed(2);
+    this.tarjetas = [];
+    this.depositos = [];
+    this.cheques = [];
     this.calcularSaldo();
   }
 
@@ -518,6 +523,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.loadComponent(FastAbmChequeComponent);
     this.componentRef.instance.data.bancos = this.listaBancos;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.elements = this.cheques;
     this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event));
     this.componentRef.instance.abrir();
   }
@@ -526,6 +532,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.loadComponent(FastAbmTarjetaComponent);
     this.componentRef.instance.data.tipos = this.listaTiposTarjeta;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.elements = this.tarjetas;
     this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event));
     this.componentRef.instance.abrir();
   }
@@ -534,6 +541,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.loadComponent(FastAbmDepositoComponent);
     this.componentRef.instance.data.cuentas  = this.listaCuentas;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
+    this.componentRef.instance.elements = this.depositos;
     this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditDeposito(event));
     this.componentRef.instance.abrir();
   }
@@ -564,39 +572,54 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
   calcularSaldo() {
     this.total = 0;
-    this.totalCheques = 0;
-    this.cheques.forEach(cheque => {
-      this.totalCheques = +this.totalCheques + +cheque.importe;
-    });
-    this.totalTarjetas = 0;
-    this.tarjetas.forEach(tarjeta => {
-      this.totalTarjetas = +this.totalTarjetas + +tarjeta.importe;
-    });
-    this.totalDepositos = 0;
-    this.depositos.forEach(deposito => {
-      this.totalDepositos = +this.totalDepositos + +deposito.importe;
-    });
-    this.total = +this.total + +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo;
+    this.total = +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo;
     this.redondeo = +this.cobro.importe - +this.total;
     this.total = this.total.toFixed(2);
     this.redondeo = this.redondeo.toFixed(2);
-    this.totalDepositos = this.totalDepositos.toFixed(2);
-    this.totalCheques = this.totalCheques.toFixed(2);
-    this.totalTarjetas = this.totalTarjetas.toFixed(2);
+    this.totalDepositos = (+this.totalDepositos).toFixed(2);
+    this.totalCheques = (+this.totalCheques).toFixed(2);
+    this.totalTarjetas = (+this.totalTarjetas).toFixed(2);
   }
 
   private handleEditTarjeta(tarjetas: Tarjeta[]) {
     this.tarjetas = tarjetas;
+    this.totalEfectivo = (+this.totalEfectivo + +this.totalTarjetas).toFixed(2);
+    this.totalTarjetas = 0;
+    this.tarjetas.forEach(tarjeta => {
+      this.totalTarjetas = +this.totalTarjetas + +tarjeta.importe;
+    });
+    this.totalEfectivo = (+this.totalEfectivo - +this.totalTarjetas).toFixed(2);
+    if (+this.totalEfectivo < this.marginRedondeo) {
+      this.totalEfectivo = (0).toFixed(2);
+    }
     this.calcularSaldo();
   }
 
   private handleEditDeposito(depositos: Deposito[]) {
     this.depositos = depositos;
+    this.totalEfectivo = (+this.totalEfectivo + +this.totalDepositos).toFixed(2);
+    this.totalDepositos = 0;
+    this.depositos.forEach(deposito => {
+      this.totalDepositos = +this.totalDepositos + +deposito.importe;
+    });
+    this.totalEfectivo = (+this.totalEfectivo - +this.totalDepositos).toFixed(2);
+    if (+this.totalEfectivo < this.marginRedondeo) {
+      this.totalEfectivo = (0).toFixed(2);
+    }
     this.calcularSaldo();
   }
 
   protected handleEditCheques(cheques: Cheque[]) {
     this.cheques = cheques;
+    this.totalEfectivo = (+this.totalEfectivo + +this.totalCheques).toFixed(2);
+    this.totalCheques = 0;
+    this.cheques.forEach(cheque => {
+      this.totalCheques = +this.totalCheques + +cheque.importe;
+    });
+    this.totalEfectivo = (+this.totalEfectivo - +this.totalCheques).toFixed(2);
+    if (+this.totalEfectivo < this.marginRedondeo) {
+      this.totalEfectivo = (0).toFixed(2);
+    }
     this.calcularSaldo();
   }
 
