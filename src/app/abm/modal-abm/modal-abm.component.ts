@@ -50,6 +50,9 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
   ngOnInit() {
     this.makeForm();
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
+    (<any>$('#modalEditar')).on('hidden.bs.modal', () => {
+      this.submitted = false;
+    });
   }
 
   nuevo() {
@@ -60,10 +63,11 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
     ModalAbmComponent.open();
   }
 
-  editar(elementAEditar: T) {
+  editar(elementAEditar: T, position: number) {
     this.modalTitle = 'Editar ' + this.nombreElemento;
     this.enNuevo = false;
     Object.assign(this.element, elementAEditar);
+    this.element['__position'] = position;
     ModalAbmComponent.open();
   }
 
@@ -79,6 +83,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
 
       const elementAEnviar = new this.elementClass();
       Object.assign(elementAEnviar, this.element);
+      this.form.reset();
 
       if (this.enNuevo) {
         this.enNuevo = false;
@@ -87,26 +92,23 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
             this.apiService.post(this.path, element).subscribe(
               json => {
                 this.eventNew.emit(json);
-                this.form.reset();
               }
             );
           } else {
             this.eventNew.emit(element);
-            this.form.reset();
           }
         });
       } else {
         this.beforeElementEdit(elementAEnviar, this.data).subscribe( (element) => {
           if (this.shouldSendApiRequest) {
             this.apiService.put(this.path + '/' + element.id, element).subscribe(
-              json => {
+              (json: T) => {
+                json['__position'] = element['__position'];
                 this.eventEdit.emit(json);
-                this.form.reset();
               }
             );
           } else {
             this.eventEdit.emit(element);
-            this.form.reset();
           }
         });
       }
