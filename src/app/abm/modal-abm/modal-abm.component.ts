@@ -59,15 +59,19 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
     this.submitted = false;
     this.modalTitle = (this.femenino ? 'Nueva ' : 'Nuevo ') + this.nombreElemento;
     this.enNuevo = true;
-    this.element = new this.elementClass();
+    Object.keys(this.element).forEach((key) => { delete this.element[key]; });
+    Object.assign(this.element, new this.elementClass());
+    this.element['__pristine'] = {};
     ModalAbmComponent.open();
   }
 
   editar(elementAEditar: T, position: number) {
     this.modalTitle = 'Editar ' + this.nombreElemento;
     this.enNuevo = false;
+    Object.keys(this.element).forEach((key) => { delete this.element[key]; });
     Object.assign(this.element, elementAEditar);
     this.element['__position'] = position;
+    this.element['__pristine'] = JSON.parse(JSON.stringify(this.element));
     ModalAbmComponent.open();
   }
 
@@ -101,6 +105,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
       } else {
         this.beforeElementEdit(elementAEnviar, this.data).subscribe( (element) => {
           if (this.shouldSendApiRequest) {
+            delete element['__pristine'];
             this.apiService.put(this.path + '/' + element.id, element).subscribe(
               (json: T) => {
                 json['__position'] = element['__position'];
