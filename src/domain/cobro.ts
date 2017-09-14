@@ -17,4 +17,6 @@ export class Cobro {
   cliente_nombre: string;
   tipo_comprobante: TipoComprobante;
   importe_total;
+  importe_neto;
+  importe_iva;
 }
