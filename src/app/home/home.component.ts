@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {User} from '../../domain/user';
-import {AuthenticationService} from '../../service/authentication.service';
+import {User} from '../shared/domain/user';
+import {AuthenticationService} from '../shared/services/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +10,6 @@ import {AuthenticationService} from '../../service/authentication.service';
 export class HomeComponent implements OnInit {
 
   currentUser: User;
-  users: User[] = [];
 
   constructor(private authenticationService: AuthenticationService) {
     this.currentUser = this.authenticationService.getCurrentUser();
