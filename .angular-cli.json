@@ -20,6 +20,7 @@
       "prefix": "app",
       "styles": [
         "styles.scss",
+        "styles.css",
         "../node_modules/datatables.net-bs/css/dataTables.bootstrap.css",
         "../node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.css",
         "../node_modules/font-awesome/scss/font-awesome.scss"
