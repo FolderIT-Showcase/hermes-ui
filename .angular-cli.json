@@ -19,18 +19,21 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "app",
       "styles": [
-        "styles.css",
+        "styles.scss",
         "../node_modules/datatables.net-bs/css/dataTables.bootstrap.css",
         "../node_modules/datatables.net-buttons-bs/css/buttons.bootstrap.css",
-        "../node_modules/font-awesome/css/font-awesome.css"
+        "../node_modules/font-awesome/scss/font-awesome.scss"
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.slim.min.js",
-        "../src/assets/bootstrap/bootstrap.min.js",
+        "../node_modules/bootstrap-sass/assets/javascripts/bootstrap.min.js",
         "../node_modules/datatables.net/js/jquery.dataTables.js",
         "../node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
         "../node_modules/datatables.net-buttons/js/dataTables.buttons.js",
         "../node_modules/datatables.net-buttons-bs/js/buttons.bootstrap.js"
+      ],
+      "addons": [
+        "../node_modules/font-awesome/fonts/*.+(otf|eot|svg|ttf|woff|woff2)"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
