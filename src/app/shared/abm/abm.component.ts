@@ -7,6 +7,7 @@ import {NavbarTitleService} from '../services/navbar-title.service';
 import {ModalAbmComponent} from './modal-abm/modal-abm.component';
 import {HelperService} from '../services/helper.service';
 import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-abm',
@@ -44,6 +45,7 @@ export class AbmComponent implements OnInit, OnDestroy {
   submitted = false;
   componentRef: any;
   articuloElemento = 'el';
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -87,7 +89,7 @@ export class AbmComponent implements OnInit, OnDestroy {
     this.navbarTitleService.setTitle('Gestión de ' + this.pluralElemento);
     const observable1 = this.apiService.get(this.path);
     const observable2 = this.beforeElementLoad(this.data);
-    Observable.zip(observable1, observable2).subscribe( result => {
+    this.subscriptions.add(Observable.zip(observable1, observable2).subscribe( result => {
         this.elements = result[0];
         this.onElementLoad(this.elements, this.data);
         this.mostrarBarraCarga = false;
@@ -96,7 +98,7 @@ export class AbmComponent implements OnInit, OnDestroy {
       },
       () => {
         this.mostrarBarraCarga = false;
-    });
+    }));
 
     this.container.clear();
     const factory = this.resolver.resolveComponentFactory(this.modalComponent);
@@ -109,8 +111,8 @@ export class AbmComponent implements OnInit, OnDestroy {
     this.componentRef.instance.beforeElementNew = this.beforeElementNew;
     this.componentRef.instance.onElementEdit = this.onElementEdit;
     this.componentRef.instance.onElementNew = this.onElementNew;
-    this.componentRef.instance.eventNew.subscribe( (event) => this.handleNew(event));
-    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEdit(event));
+    this.subscriptions.add(this.componentRef.instance.eventNew.subscribe( (event) => this.handleNew(event)));
+    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEdit(event)));
   }
 
   handleNew(element: any) {
@@ -137,7 +139,7 @@ export class AbmComponent implements OnInit, OnDestroy {
   }
 
   eliminar() {
-    this.apiService.delete(this.path + '/' + this.elementSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete(this.path + '/' + this.elementSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.elements.indexOf(this.elementSeleccionado);
         if (index !== -1) {
@@ -147,7 +149,7 @@ export class AbmComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   private recargarTabla() {
@@ -170,6 +172,7 @@ export class AbmComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   canDeactivate() {

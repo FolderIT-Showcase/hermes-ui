@@ -10,6 +10,7 @@ import {Banco} from '../../../shared/domain/banco';
 import {Observable} from 'rxjs/Observable';
 import {ModalChequeComponent} from './modal-cheque/modal-cheque.component';
 import {HelperService} from '../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cheques',
@@ -33,6 +34,8 @@ export class ChequesComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   mostrarBarraCarga = true;
   myDatePickerOptions: IMyDpOptions;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService) {}
 
@@ -66,7 +69,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
     const observableClientes = this.apiService.get('clientes');
     const observableBancos = this.apiService.get('bancos');
     const zip = Observable.zip(observableCheques, observableClientes, observableBancos);
-    zip.subscribe(data => {
+    this.subscriptions.add(zip.subscribe(data => {
         this.cheques = data[0];
         this.clientes = data[1];
         this.bancos = data[2];
@@ -87,7 +90,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
       },
       () => {
         this.mostrarBarraCarga = false;
-      });
+      }));
 
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
   }
@@ -106,7 +109,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
   }
 
   eliminar() {
-    this.apiService.delete('chequesterceros/' + this.chequeSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('chequesterceros/' + this.chequeSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.cheques.indexOf(this.chequeSeleccionado);
         if (index !== -1) {
@@ -116,7 +119,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   handleNew(cheque: Cheque) {
@@ -149,6 +152,7 @@ export class ChequesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

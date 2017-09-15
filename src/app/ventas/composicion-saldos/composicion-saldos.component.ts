@@ -1,23 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Zona} from '../../shared/domain/zona';
 import {Vendedor} from '../../shared/domain/vendedor';
 import {ApiService} from '../../shared/services/api.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {Cliente} from '../../shared/domain/cliente';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-composicion-saldos',
   templateUrl: './composicion-saldos.component.html',
   styleUrls: ['./composicion-saldos.component.css']
 })
-export class ComposicionSaldosComponent implements OnInit {
+export class ComposicionSaldosComponent implements OnInit, OnDestroy {
   parametroReporteCliente: Number = 0;
   parametroReporteVendedor: Number = 0;
   parametroReporteZona: Number = 0;
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
   clientes: Cliente[] = [];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -31,7 +33,7 @@ export class ComposicionSaldosComponent implements OnInit {
   }
 
   generarReporte() {
-    this.apiService.downloadPDF('composicionsaldo/imprimir', {
+    this.subscriptions.add(this.apiService.downloadPDF('composicionsaldo/imprimir', {
         'cliente': this.parametroReporteCliente,
         'vendedor': this.parametroReporteVendedor,
         'zona': this.parametroReporteZona,
@@ -46,36 +48,40 @@ export class ComposicionSaldosComponent implements OnInit {
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   cargarVendedores() {
     if (this.vendedores.length === 0) {
-      this.apiService.get('vendedores').subscribe(
+      this.subscriptions.add(this.apiService.get('vendedores').subscribe(
         json => {
           this.vendedores = json;
         }
-      );
+      ));
     }
   }
 
   cargarZonas() {
     if (this.zonas.length === 0) {
-      this.apiService.get('zonas').subscribe(
+      this.subscriptions.add(this.apiService.get('zonas').subscribe(
         json => {
           this.zonas = json;
         }
-      );
+      ));
     }
   }
 
   cargarClientes() {
     if (this.clientes.length === 0) {
-      this.apiService.get('clientes').subscribe(
+      this.subscriptions.add(this.apiService.get('clientes').subscribe(
         json => {
           this.clientes = json;
         }
-      );
+      ));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

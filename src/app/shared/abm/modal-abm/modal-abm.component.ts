@@ -1,16 +1,17 @@
-import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AfterViewChecked, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../services/api.service';
 import {HelperService} from '../../services/helper.service';
 import {Observable} from 'rxjs/Observable';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ValidatorsService} from '../../services/validators.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-modal-abm',
   template: ''
 })
-export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
+export class ModalAbmComponent<T> implements OnInit, AfterViewChecked, OnDestroy {
   @Input() femenino = false;
   @Input() nombreElemento = 'elemento';
   @Input() data: any;
@@ -29,6 +30,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
   modalTitle: string;
   form: FormGroup;
   formRows = [];
+  private subscriptions: Subscription = new Subscription();
 
   static open() {
     (<any>$('#modalEditar')).modal('show');
@@ -91,7 +93,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.beforeElementNew(elementAEnviar, this.data).subscribe( (element) => {
+        this.subscriptions.add(this.beforeElementNew(elementAEnviar, this.data).subscribe( (element) => {
           if (this.shouldSendApiRequest) {
             this.apiService.post(this.path, element).subscribe(
               json => {
@@ -101,9 +103,9 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
           } else {
             this.eventNew.emit(element);
           }
-        });
+        }));
       } else {
-        this.beforeElementEdit(elementAEnviar, this.data).subscribe( (element) => {
+        this.subscriptions.add(this.beforeElementEdit(elementAEnviar, this.data).subscribe( (element) => {
           if (this.shouldSendApiRequest) {
             delete element['__pristine'];
             this.apiService.put(this.path + '/' + element.id, element).subscribe(
@@ -115,7 +117,7 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
           } else {
             this.eventEdit.emit(element);
           }
-        });
+        }));
       }
     }
   }
@@ -137,5 +139,9 @@ export class ModalAbmComponent<T> implements OnInit, AfterViewChecked {
       controlsConfig[field.name] = [this.element[field.name], validators, asyncValidators];
     });
     this.form = this.formBuilder.group(controlsConfig);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

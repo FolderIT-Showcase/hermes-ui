@@ -10,6 +10,7 @@ import {AlertService} from '../../shared/services/alert.service';
 import {DataTableDirective} from 'angular-datatables';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-periodos-fiscales',
@@ -34,7 +35,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   mostrarBarraCarga = true;
-
+  private subscriptions: Subscription = new Subscription();
 
   // parametros filtrar comprobantes de compra
   parametroFiltrarPorAnio = false;
@@ -105,7 +106,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       anioActual + 3,
     ];
 
-    this.apiService.get('periodosfiscales')
+    this.subscriptions.add(this.apiService.get('periodosfiscales')
       .subscribe(json => {
         this.periodosFiscales = json;
         this.completarStringsMeses();
@@ -115,7 +116,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
         },
         () => {
           this.mostrarBarraCarga = false;
-      });
+      }));
   }
 
   completarStringsMeses() {
@@ -156,7 +157,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
   eliminar() {
     this.submitted = false;
-    this.apiService.delete('periodosfiscales/' + this.periodoFiscalSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('periodosfiscales/' + this.periodoFiscalSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.periodosFiscales.indexOf(this.periodoFiscalSeleccionado);
         if (index !== -1) {
@@ -167,7 +168,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   editarONuevo(f: any) {
@@ -179,21 +180,21 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('periodosfiscales', periodoFiscalAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.post('periodosfiscales', periodoFiscalAEnviar).subscribe(
           json => {
             this.periodosFiscales.push(json);
             this.completarStringsMeses();
             this.recargarTabla();
           }
-        );
+        ));
       } else {
-        this.apiService.put('periodosfiscales/' + periodoFiscalAEnviar.id, periodoFiscalAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.put('periodosfiscales/' + periodoFiscalAEnviar.id, periodoFiscalAEnviar).subscribe(
           json => {
             Object.assign(this.periodoFiscalOriginal, json);
             this.completarStringsMeses();
             this.recargarTabla();
           }
-        );
+        ));
       }
     }
   }
@@ -220,6 +221,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -230,7 +232,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
 
   checkExists(pf: PeriodoFiscal) {
     // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
-    this.apiService.get('periodosfiscales').subscribe(
+    this.subscriptions.add(this.apiService.get('periodosfiscales').subscribe(
       json => {
         if (json === '') {
           this.existe = false;
@@ -242,7 +244,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
             this.existe = periodofisc.id !== pf.id;
           }
         }
-    });
+    }));
   }
 
   private mostrarModalFiltrar() {
@@ -262,7 +264,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
       this.parametroFiltroAbierto = false;
     }
     if (this.parametroFiltroAnio > 0 || this.parametroFiltroAbierto) {
-      this.apiService.get('periodosfiscales/filtrar', {
+      this.subscriptions.add(this.apiService.get('periodosfiscales/filtrar', {
         'anio': this.parametroFiltroAnio,
         'abierto': this.parametroFiltroAbierto
       })
@@ -270,14 +272,14 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
           this.periodosFiscales = json;
           this.completarStringsMeses();
           this.recargarTabla();
-        });
+        }));
     } else {
       this.cerrar(null);
     }
   }
 
   clearFilters() {
-    this.apiService.get('periodosfiscales')
+    this.subscriptions.add(this.apiService.get('periodosfiscales')
       .subscribe(json => {
           this.periodosFiscales = json;
           this.recargarTabla();
@@ -285,6 +287,6 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
         },
         () => {
           this.mostrarBarraCarga = false;
-        });
+        }));
   }
 }

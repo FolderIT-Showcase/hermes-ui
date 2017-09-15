@@ -13,6 +13,7 @@ import {ComprobanteCompraImportes} from '../../shared/domain/comprobanteCompraIm
 import {ComprobanteCompraRetencion} from '../../shared/domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cta-cte-proveedores',
@@ -49,6 +50,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
   myDatePickerOptions: IMyDpOptions;
   @ViewChild('typeaheadNombreProveedor')
   private typeaheadNombreProveedorElement: ElementRef;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -146,16 +148,16 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
     const today = new Date();
     this.fechaFinCtaCte =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() }};
     this.proveedoresCtaCte = Observable.create((observer: any) => {
-      this.apiService.get('proveedores/nombre/' + this.proveedorCtaCteAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('proveedores/nombre/' + this.proveedorCtaCteAsync).subscribe(json => {
         this.listaProveedores = json;
         observer.next(json);
-      });
+      }));
     });
 
-    this.apiService.get('tiporetenciones')
+    this.subscriptions.add(this.apiService.get('tiporetenciones')
       .subscribe(resp => {
         this.verCompTipoRetencion = resp;
-      });
+      }));
   }
 
   ngAfterViewInit(): void {
@@ -164,6 +166,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
 
   ngOnDestroy(): void {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   onProveedorCtaCteChanged(event) {
@@ -220,7 +223,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
         fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
       }
 
-      this.apiService.get('proveedores/cuentacorriente', {
+      this.subscriptions.add( this.apiService.get('proveedores/cuentacorriente', {
         'proveedor_id': this.proveedorCtaCteSeleccionado.id,
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
@@ -233,13 +236,13 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
           reg.saldo = this.saldo.toFixed(2);
         });
         setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
-      });
+      }));
     }
   }
 
   mostrarModalVer(ctaCteProveedor: CtaCteProveedor) {
     this.ctaCteProveedorSeleccionada = ctaCteProveedor;
-    this.apiService.get('comprobantescompra/' + ctaCteProveedor.comprobante_compras_id).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('comprobantescompra/' + ctaCteProveedor.comprobante_compras_id).subscribe( json => {
       this.comprobante = json;
       this.verComprProveedorTipoResp = this.tipos_responsable.find(x => x.clave === this.comprobante.proveedor_tipo_resp).nombre;
       this.verComprTipo = this.comprobante.tipo_comp_compras.nombre;
@@ -252,7 +255,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
         x.tipoRetencion = this.verCompTipoRetencion.find(t => t.id === x.retencion_id);
       });
       (<any>$('#modalVer')).modal('show');
-    });
+    }));
   }
 
   imprimirReporteCtaCte() {
@@ -266,7 +269,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
       fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
     }
 
-    this.apiService.downloadPDF('proveedores/cuentacorriente/reporte', {
+    this.subscriptions.add(this.apiService.downloadPDF('proveedores/cuentacorriente/reporte', {
         'proveedor_id': this.proveedorCtaCteSeleccionado.id,
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
@@ -281,6 +284,6 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 }

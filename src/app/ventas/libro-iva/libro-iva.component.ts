@@ -1,19 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ApiService} from '../../shared/services/api.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-libro-iva',
   templateUrl: './libro-iva.component.html',
   styleUrls: ['./libro-iva.component.css']
 })
-export class LibroIvaComponent implements OnInit {
+export class LibroIvaComponent implements OnInit, OnDestroy {
   tipoIVA = 'ventas';
   periodo: string;
   periodomask = [/[0-1]/, /\d/, '/', /\d/, /\d/, /\d/, /\d/];
   submitted = false;
   primerpagina = 1;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService, private alertService: AlertService, private navbarTitleService: NavbarTitleService) { }
 
@@ -24,7 +26,7 @@ export class LibroIvaComponent implements OnInit {
   imprimir(f: any) {
     this.submitted = true;
     if (f.valid) {
-        this.apiService.downloadPDF('libroiva', {
+        this.subscriptions.add(this.apiService.downloadPDF('libroiva', {
           'page_init': this.primerpagina,
           'tipo_libro_iva': this.tipoIVA,
           'periodo_month': this.periodo.substr(0, 2),
@@ -39,7 +41,11 @@ export class LibroIvaComponent implements OnInit {
               this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
             }
           }
-        );
+        ));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

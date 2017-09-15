@@ -9,6 +9,7 @@ import {UserService} from '../../shared/services/user.service';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Rol} from '../../shared/domain/rol';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-usuarios',
@@ -32,6 +33,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   roles: Rol[] = [];
   mostrarBarraCarga = true;
   passwordNoCoincide = false;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -92,7 +94,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.userService.create(usuarioAEnviar).subscribe(
+        this.subscriptions.add(this.userService.create(usuarioAEnviar).subscribe(
           user => {
             if (user.roles[0] !== undefined) {
               user.rol_a_mostrar = user.roles[0].display_name;
@@ -103,9 +105,9 @@ export class UsuariosComponent implements OnInit, OnDestroy {
           error => {
             this.handleError(error);
           }
-        );
+        ));
       } else {
-        this.userService.update(usuarioAEnviar).subscribe(
+        this.subscriptions.add(this.userService.update(usuarioAEnviar).subscribe(
           user => {
             if (user.roles[0] !== undefined) {
               user.rol_a_mostrar = user.roles[0].display_name;
@@ -115,7 +117,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
           error => {
             this.handleError(error);
           }
-        );
+        ));
       }
     }
   }
@@ -145,7 +147,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.submitted = false;
-    this.userService.delete(this.usuarioSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.userService.delete(this.usuarioSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.usuarios.indexOf(this.usuarioSeleccionado);
         if (index !== -1) {
@@ -155,7 +157,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   private recargarTabla() {
@@ -170,7 +172,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   cargarUsuarios() {
-    this.userService.getAll()
+    this.subscriptions.add(this.userService.getAll()
       .subscribe(json => {
         json.forEach( user => {
           if (user.roles[0] !== undefined) {
@@ -185,13 +187,13 @@ export class UsuariosComponent implements OnInit, OnDestroy {
         },
         () => {
           this.mostrarBarraCarga = false;
-      });
+      }));
   }
 
   cargarRoles() {
-    this.apiService.get('roles').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('roles').subscribe( json => {
       this.roles = json;
-    });
+    }));
   }
 
   onPasswordChange(event) {
@@ -213,6 +215,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

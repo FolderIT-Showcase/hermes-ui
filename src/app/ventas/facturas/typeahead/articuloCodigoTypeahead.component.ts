@@ -1,15 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Articulo} from '../../../shared/domain/articulo';
 import {ApiService} from '../../../shared/services/api.service';
 import {Observable} from 'rxjs/Observable';
 import {isNullOrUndefined} from 'util';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-articulo-codigo-typeahead',
   templateUrl: './articuloCodigoTypeahead.component.html',
   styleUrls: ['./articuloTypeahead.component.css']
 })
-export class ArticuloCodigoTypeaheadComponent implements OnInit {
+export class ArticuloCodigoTypeaheadComponent implements OnDestroy {
   @Input() codigoArticulo: String;
   @Output() artSelected: EventEmitter<Articulo> = new EventEmitter<Articulo>();
   @Output() noResult: EventEmitter<Boolean> = new EventEmitter<Boolean>();
@@ -17,9 +18,11 @@ export class ArticuloCodigoTypeaheadComponent implements OnInit {
   articulos: any;
   listaArticulos: Articulo[];
   typeaheadNoResults: boolean;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService) {
     this.articulos = Observable.create((observer: any) => {
-      this.apiService.get('articulos/codigo/' + this.codigoArticulo).subscribe( json => {
+      this.subscriptions.add(this.apiService.get('articulos/codigo/' + this.codigoArticulo).subscribe( json => {
         if (json === '') {
           this.listaArticulos = [];
           observer.next([]);
@@ -27,11 +30,8 @@ export class ArticuloCodigoTypeaheadComponent implements OnInit {
           this.listaArticulos = [json];
           observer.next([json]);
         }
-      });
+      }));
     });
-  }
-
-  ngOnInit() {
   }
 
   onArticuloChanged(articulo: Articulo) {
@@ -52,5 +52,9 @@ export class ArticuloCodigoTypeaheadComponent implements OnInit {
       && !this.typeaheadNoResults) {
       this.onArticuloChanged(this.listaArticulos[0]);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

@@ -9,6 +9,7 @@ import {TipoTarjeta} from '../../../shared/domain/tipoTarjeta';
 import {Observable} from 'rxjs/Observable';
 import {ModalTarjetaComponent} from './modal-tarjeta/modal-tarjeta.component';
 import {HelperService} from '../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-tarjetas',
@@ -30,6 +31,8 @@ export class TarjetasComponent implements OnInit, OnDestroy {
   modalTarjeta: ModalTarjetaComponent;
   mostrarTabla = false;
   mostrarBarraCarga = true;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService) {}
 
@@ -63,7 +66,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
     const observableClientes = this.apiService.get('clientes');
     const observableTipos = this.apiService.get('tipostarjeta');
     const zip = Observable.zip(observableTarjetas, observableClientes, observableTipos);
-    zip.subscribe(data => {
+    this.subscriptions.add(zip.subscribe(data => {
         this.tarjetas = data[0];
         this.clientes = data[1];
         this.tipos = data[2];
@@ -84,7 +87,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
       },
       () => {
         this.mostrarBarraCarga = false;
-      });
+      }));
   }
 
   mostrarModalEditar(tarjeta: Tarjeta) {
@@ -101,7 +104,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
   }
 
   eliminar() {
-    this.apiService.delete('tarjetas/' + this.tarjetaSeleccionada.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('tarjetas/' + this.tarjetaSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.tarjetas.indexOf(this.tarjetaSeleccionada);
         if (index !== -1) {
@@ -111,7 +114,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   handleNew(tarjeta: Tarjeta) {
@@ -144,6 +147,7 @@ export class TarjetasComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -11,6 +11,7 @@ import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Cobro} from '../../shared/domain/cobro';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -36,6 +37,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   myDatePickerOptions: IMyDpOptions;
   @ViewChild('typeaheadNombreCliente')
   private typeaheadNombreClienteElement: ElementRef;
+  private subscriptions: Subscription = new Subscription();
   ctaCteClienteSeleccionada: CtaCteCliente = new CtaCteCliente();
 
   constructor(private apiService: ApiService,
@@ -125,10 +127,10 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
     const today = new Date();
     this.fechaFinCtaCte =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate() }};
     this.clientesCtaCte = Observable.create((observer: any) => {
-      this.apiService.get('clientes/nombre/' + this.clienteCtaCteAsync).subscribe(json => {
+      this.subscriptions.add( this.apiService.get('clientes/nombre/' + this.clienteCtaCteAsync).subscribe(json => {
         this.listaClientes = json;
         observer.next(json);
-      });
+      }));
     });
   }
 
@@ -153,7 +155,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
       }
 
-      this.apiService.get('cuentacorriente/buscar', {
+      this.subscriptions.add(this.apiService.get('cuentacorriente/buscar', {
         'cliente_id': this.clienteCtaCteSeleccionado.id,
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
@@ -171,7 +173,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           reg.saldo = this.saldo;
         });
         setTimeout(() => {$('#table').DataTable().columns.adjust(); }, 100);
-      });
+      }));
     }
   }
 
@@ -191,7 +193,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
       fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
     }
 
-    this.apiService.downloadPDF('cuentacorriente/reporte', {
+    this.subscriptions.add(this.apiService.downloadPDF('cuentacorriente/reporte', {
         'cliente_id': this.clienteCtaCteSeleccionado.id,
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
@@ -206,13 +208,13 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   mostrarModalVer(ctaCteCliente: CtaCteCliente) {
     this.ctaCteClienteSeleccionada = ctaCteCliente;
     if (!isNullOrUndefined(ctaCteCliente.comprobante_id)) {
-      this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( (json: Comprobante) => {
+      this.subscriptions.add(this.apiService.get('comprobantes/' + ctaCteCliente.comprobante_id).subscribe( (json: Comprobante) => {
         this.comprobante = json;
         this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
         this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
@@ -223,9 +225,9 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           item.importe_descuento = '0.00';
         });
         (<any>$('#modalVer')).modal('show');
-      });
+      }));
     } else {
-      this.apiService.get('cobros/' + ctaCteCliente.cobro_id).subscribe( (json: Cobro) => {
+      this.subscriptions.add(this.apiService.get('cobros/' + ctaCteCliente.cobro_id).subscribe( (json: Cobro) => {
         this.comprobante = json;
         this.comprobante.tipo_comprobante = ctaCteCliente.tipo_comprobante;
         this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
@@ -273,7 +275,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         });
         this.comprobante.cobro_valores = flatCobroValores;
         (<any>$('#modalVer')).modal('show');
-      });
+      }));
     }
   }
 
@@ -305,7 +307,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
     } else {
       obs = this.apiService.downloadPDF('cobros/imprimir/' + ctaCteCliente.cobro_id, {});
     }
-    obs.subscribe(
+    this.subscriptions.add(obs.subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
@@ -315,7 +317,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
@@ -326,6 +328,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

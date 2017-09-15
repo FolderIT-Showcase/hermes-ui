@@ -12,6 +12,7 @@ import {Rubro} from '../../shared/domain/rubro';
 import {Marca} from '../../shared/domain/marca';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-lista-precios',
@@ -54,6 +55,8 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
   private subrubroId = 0;
   private marcaId = 0;
   file: any;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private navbarTitleService: NavbarTitleService) {}
@@ -95,7 +98,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
       ]
     };
     this.navbarTitleService.setTitle('Gestión de Listas de Precios');
-    this.apiService.get('listaprecios')
+    this.subscriptions.add(this.apiService.get('listaprecios')
       .subscribe(json => {
           this.listasPrecios = json;
           this.mostrarBarraCarga = false;
@@ -104,7 +107,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         },
         () => {
           this.mostrarBarraCarga = false;
-        });
+        }));
   }
 
   mostrarModalEditar(listaPrecios: ListaPrecios) {
@@ -135,18 +138,18 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
 
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.post('listaprecios', listaPreciosAEnviar).subscribe(
           json => {
             this.listasPrecios.push(json);
             this.recargarTabla();
           }
-        );
+        ));
       } else {
-        this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe(
           json => {
             Object.assign(this.listaPreciosOriginal, json);
           }
-        );
+        ));
       }
     }
   }
@@ -179,7 +182,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.submitted = false;
-    this.apiService.delete('listaprecios/' + this.listaPreciosSeleccionada.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('listaprecios/' + this.listaPreciosSeleccionada.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.listasPrecios.indexOf(this.listaPreciosSeleccionada);
         if (index !== -1) {
@@ -189,7 +192,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   private recargarTabla() {
@@ -211,7 +214,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
     this.listaPreciosOriginal = lista;
     this.listaPreciosSeleccionada = JSON.parse(JSON.stringify(lista));
 
-    this.apiService.get('articulos').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('articulos').subscribe( json => {
       this.articulos = json;
       this.articulos.forEach( articulo => {
         if (this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id)) {
@@ -219,7 +222,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         }
       });
       this.articulosAMostrar = this.articulos;
-    });
+    }));
   }
 
   editarItems() {
@@ -249,10 +252,10 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     this.cerrar(null);
 
-    this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
+    this.subscriptions.add(this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
-    );
+    ));
   }
 
   toggleAll(value) {
@@ -262,22 +265,22 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
   }
 
   cargarRubros() {
-    this.apiService.get('rubros').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('rubros').subscribe( json => {
       this.rubros = json;
-    });
+    }));
   }
 
   cargarSubrubros() {
-    this.apiService.get('subrubros').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('subrubros').subscribe( json => {
       this.subrubros = json;
       this.subrubrosAMostrar = this.subrubros;
-    });
+    }));
   }
 
   cargarMarcas() {
-    this.apiService.get('marcas').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('marcas').subscribe( json => {
       this.marcas = json;
-    });
+    }));
   }
 
   onMarcaChanged(value) {
@@ -325,7 +328,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
   actualizarPrecios() {
     (<any>$('#modalConfirmarActualizarPrecios')).modal('show');
 
-    this.apiService.get('articulos').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('articulos').subscribe( json => {
       this.articulos = json;
       this.articulos = this.articulos.filter( articulo => {
         return !isNullOrUndefined(this.listaPreciosSeleccionada.lista_precio_item.find(x => x.articulo_id === articulo.id));
@@ -346,7 +349,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         }
         articulo.nuevo_precio_venta = articulo.nuevo_precio_venta.toFixed(2);
       });
-    });
+    }));
   }
 
   confirmarActualizarPrecios() {
@@ -357,10 +360,10 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
     Object.assign(listaPreciosAEnviar, this.listaPreciosSeleccionada);
     this.cerrar(null);
 
-    this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
+    this.subscriptions.add(this.apiService.put('listaprecios/' + listaPreciosAEnviar.id, listaPreciosAEnviar).subscribe( json => {
         Object.assign(this.listaPreciosOriginal, json);
       }
-    );
+    ));
   }
 
   importarListaPrecios() {
@@ -373,12 +376,12 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         campoCodigoAUtilizar: this.campoCodigoAUtilizar
       };
       (<any>$('#modalImportar')).modal('hide');
-      this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
+      this.subscriptions.add(this.apiService.postWithFile('listaprecios/importar', body, this.file).subscribe( json => {
         this.articulosNoEncontrados = json.no_encontrados;
         if (this.articulosNoEncontrados.length !== 0) {
           (<any>$('#modalNoEncontrados')).modal('show');
         }
-      });
+      }));
     }
   }
 
@@ -399,6 +402,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

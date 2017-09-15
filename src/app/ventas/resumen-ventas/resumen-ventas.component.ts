@@ -5,6 +5,7 @@ import {AlertService} from '../../shared/services/alert.service';
 import {ApiService} from '../../shared/services/api.service';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-resumen-ventas',
@@ -18,6 +19,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
   tipo = 'fecha';
   tiposComprobantes: TipoComprobante[];
   tiposComprobantesCopy: TipoComprobante[];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
@@ -33,13 +35,13 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
     this.fechaInicio = { date: { year: firstDay.getFullYear(), month: firstDay.getMonth() + 1, day: firstDay.getDate() }};
     this.fechaFin =  { date: { year: lastDay.getFullYear(), month: lastDay.getMonth() + 1, day: lastDay.getDate() }};
 
-    this.apiService.get('tipocomprobantes')
+    this.subscriptions.add(this.apiService.get('tipocomprobantes')
       .subscribe(json => {
         json.forEach( tipo => {
           tipo.enlista = tipo.codigo !== 'PRX';
         });
         this.tiposComprobantes = json;
-      });
+      }));
   }
 
   mostrarModalTiposComprobantes() {
@@ -74,7 +76,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
     });
     codigos = codigos.slice(0, -1);
 
-    this.apiService.downloadPDF('resumenventas', {
+    this.subscriptions.add(this.apiService.downloadPDF('resumenventas', {
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
         'tipo': this.tipo,
@@ -90,7 +92,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
@@ -101,6 +103,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

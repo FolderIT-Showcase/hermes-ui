@@ -11,6 +11,7 @@ import {HelperService} from '../../shared/services/helper.service';
 import {Cliente} from '../../shared/domain/cliente';
 import {isNullOrUndefined} from 'util';
 import {Observable} from 'rxjs/Observable';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-impresion',
@@ -33,6 +34,8 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   dtTrigger: Subject<any> = new Subject();
   mostrarTabla = false;
   clientes: Cliente[] = [];
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private navbarTitleService: NavbarTitleService) {}
@@ -103,12 +106,12 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.tipoComprobanteSeleccionadoId = 0;
 
     this.tipos_comprobantes = [];
-    this.apiService.get('tipocomprobantes').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('tipocomprobantes').subscribe( json => {
       this.tipos_comprobantes = json;
-    });
-    this.apiService.get('clientes').subscribe( json => {
+    }));
+    this.subscriptions.add(this.apiService.get('clientes').subscribe( json => {
       this.clientes = json;
-    });
+    }));
   }
 
   ngAfterViewInit(): void {
@@ -128,7 +131,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         fechaInicioAEnviar =  initialYear.getFullYear() + '-' + (initialYear.getMonth() + 1) + '-' + initialYear.getDate();
       }
 
-      this.apiService.get('comprobantes/buscar', {
+      this.subscriptions.add(this.apiService.get('comprobantes/buscar', {
         'tipo_comprobante': this.tipoComprobanteSeleccionadoId,
         'fecha_inicio': fechaInicioAEnviar,
         'fecha_fin': fechaFinAEnviar,
@@ -145,7 +148,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
           this.recargarTabla();
         }
-      });
+      }));
     }
   }
 
@@ -163,7 +166,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       observable = this.apiService.downloadPDF('cobros/imprimir/' + comprobante.id, {});
     }
-    observable.subscribe(
+    this.subscriptions.add(observable.subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
@@ -173,7 +176,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   private recargarTabla() {
@@ -192,6 +195,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
 // noinspection JSUnusedGlobalSymbols

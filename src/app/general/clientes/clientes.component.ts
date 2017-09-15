@@ -17,6 +17,7 @@ import {TipoCategoriaCliente} from '../../shared/domain/tipoCategoriaCliente';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {ListadoClientesComponent} from './listado-clientes/listado-clientes.component';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-clientes',
@@ -49,6 +50,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild(ListadoClientesComponent)
   listadoClientesComponent: ListadoClientesComponent;
   private clienteAEliminar: Cliente;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
@@ -101,7 +103,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
 
-    this.apiService.get('clientes')
+    this.subscriptions.add(this.apiService.get('clientes')
       .subscribe(json => {
           this.clientes = json;
           this.clientes.forEach(
@@ -116,7 +118,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
         },
         () => {
           this.mostrarBarraCarga = false;
-        });
+        }));
   }
 
   mostrarModalEditar(cliente: Cliente) {
@@ -162,20 +164,20 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('clientes', clienteAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.post('clientes', clienteAEnviar).subscribe(
           json => {
             json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
             this.clientes.push(json);
             this.recargarTabla();
           }
-        );
+        ));
       } else {
-        this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.put('clientes/' + clienteAEnviar.id, clienteAEnviar).subscribe(
           json => {
             json.tipo_responsable_str = this.tipos_responsable.find(x => x.clave === clienteAEnviar.tipo_responsable).nombre;
             Object.assign(this.clienteOriginal, json);
           }
-        );
+        ));
       }
     }
   }
@@ -199,7 +201,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
       this.clientes.splice(index, 1);
     }
     this.recargarTabla();
-    this.apiService.delete('clientes/' + this.clienteAEliminar.id).subscribe();
+    this.subscriptions.add(this.apiService.delete('clientes/' + this.clienteAEliminar.id).subscribe());
     this.cerrar(null);
   }
 
@@ -240,69 +242,69 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   cargarProvincias() {
     if (this.provincias.length === 0) {
-      this.apiService.get('provincias').subscribe(
+      this.subscriptions.add(this.apiService.get('provincias').subscribe(
         json => {
           this.provincias = json;
         }
-      );
+      ));
     }
 
     this.localidades = [];
     if (!isNullOrUndefined(this.clienteSeleccionado) && !isNullOrUndefined(this.clienteSeleccionado.domicilios)) {
       this.clienteSeleccionado.domicilios.forEach(
         domicilio => {
-          this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
+          this.subscriptions.add(this.apiService.get('localidades/' + domicilio.localidad_id).subscribe(
             json => {
               domicilio.provincia_id = json.provincia_id;
               this.cargarLocalidades(domicilio.provincia_id);
             }
-          );
+          ));
         }
       );
     }
   }
 
   cargarLocalidades(provinciaId: number) {
-    this.apiService.get('provincias/' + provinciaId).subscribe(
+    this.subscriptions.add(this.apiService.get('provincias/' + provinciaId).subscribe(
       json => {
         this.localidades = json.localidades;
       }
-    );
+    ));
   }
 
   cargarVendedores() {
     if (this.vendedores.length === 0) {
-      this.apiService.get('vendedores').subscribe(
+      this.subscriptions.add(this.apiService.get('vendedores').subscribe(
         json => {
           this.vendedores = json;
         }
-      );
+      ));
     }
   }
 
   cargarZonas() {
     if (this.zonas.length === 0) {
-      this.apiService.get('zonas').subscribe(
+      this.subscriptions.add(this.apiService.get('zonas').subscribe(
         json => {
           this.zonas = json;
         }
-      );
+      ));
     }
   }
 
   private cargarListasPrecios() {
     if (this.listasPrecios.length === 0) {
-      this.apiService.get('listaprecios').subscribe(json => {
+      this.subscriptions.add(this.apiService.get('listaprecios').subscribe(json => {
         this.listasPrecios = json;
-      });
+      }));
     }
   }
 
   private cargarTipoCategoriaCliente() {
     if (this.tipoCategoriaClientes.length === 0) {
-      this.apiService.get('tipocategoriaclientes').subscribe(json => {
+      this.subscriptions.add(this.apiService.get('tipocategoriaclientes').subscribe(json => {
         this.tipoCategoriaClientes = json;
-      });
+      }));
     }
   }
 
@@ -318,6 +320,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

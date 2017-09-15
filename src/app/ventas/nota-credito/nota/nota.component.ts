@@ -8,6 +8,7 @@ import {Comprobante} from '../../../shared/domain/comprobante';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {HelperService} from '../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-nota',
@@ -37,18 +38,19 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
   typeaheadNombreClienteNoResults: boolean;
   typeaheadCodigoClienteNoResults: boolean;
   submitted = false;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService, ) {
     this.clientes = Observable.create((observer: any) => {
-      this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
         observer.next(json);
-      });
+      }));
     });
 
     this.clientesCod = Observable.create((observer: any) => {
-      this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
         if (json === '') {
           this.listaClientes = [];
           observer.next([]);
@@ -56,7 +58,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
           this.listaClientes = [json];
           observer.next([json]);
         }
-      });
+      }));
     });
   }
 
@@ -85,7 +87,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cliente = event;
     this.clienteCodAsync = this.cliente.codigo;
     this.clienteAsync = this.cliente.nombre;
-    this.apiService.get('tipocomprobantes/' + this.tipoNota + '/' + this.cliente.tipo_responsable).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('tipocomprobantes/' + this.tipoNota + '/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       let month = this.tipoComprobante.ultima_fecha.slice(5, 7);
       if (month[0] === '0') {
@@ -109,16 +111,16 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.myDatePickerOptions = options;
 
-      this.apiService.get('contadores/' + this.nota.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
+      this.subscriptions.add(this.apiService.get('contadores/' + this.nota.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         if (contador === '') {
           this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.nota.punto_venta, false);
         } else {
           this.nota.numero = +contador.ultimo_generado + 1;
           this.nota.numero = ('0000000' + this.nota.numero).slice(-8);
         }
-      });
+      }));
       this.calcularImportes();
-    });
+    }));
   }
 
   generarNota() {
@@ -134,7 +136,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.nota.fecha =  this.fecha.date.year + '-' + this.fecha.date.month + '-' + this.fecha.date.day;
 
-    this.apiService.post('comprobantes', this.nota).subscribe( json => {
+    this.subscriptions.add(this.apiService.post('comprobantes', this.nota).subscribe( json => {
       if (json.hasOwnProperty('error')) {
         this.alertService.error(json['error']);
       } else {
@@ -142,14 +144,14 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.ngOnInit();
         this.typeaheadNombreClienteElement.nativeElement.focus();
       }
-    });
+    }));
   }
 
   buscarClientes() {
     this.busquedaClienteSeleccionado = null;
-    this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
       this.busquedaClientes = json;
-    });
+    }));
   }
 
   confirmarBusquedaCliente () {
@@ -228,6 +230,7 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

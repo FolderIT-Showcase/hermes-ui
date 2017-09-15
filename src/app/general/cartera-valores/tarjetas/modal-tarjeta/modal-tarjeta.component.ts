@@ -1,17 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Tarjeta} from '../../../../shared/domain/tarjeta';
 import {Cliente} from '../../../../shared/domain/cliente';
 import {TipoTarjeta} from '../../../../shared/domain/tipoTarjeta';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../../shared/services/api.service';
 import {HelperService} from '../../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-modal-tarjeta',
   templateUrl: './modal-tarjeta.component.html',
   styleUrls: ['./modal-tarjeta.component.css']
 })
-export class ModalTarjetaComponent implements OnInit {
+export class ModalTarjetaComponent implements OnInit, OnDestroy {
   @Input() clientes: Cliente[];
   @Input() tipos: TipoTarjeta[];
   @Input() shouldSendApiRequest = true;
@@ -22,6 +23,7 @@ export class ModalTarjetaComponent implements OnInit {
   enNuevo = false;
   modalTitle: string;
   tarjeta: Tarjeta = new Tarjeta();
+  private subscriptions: Subscription = new Subscription();
 
   static open() {
     (<any>$('#modalEditarTarjeta')).modal('show');
@@ -112,7 +114,7 @@ export class ModalTarjetaComponent implements OnInit {
       if (this.enNuevo) {
         this.enNuevo = false;
         if (this.shouldSendApiRequest) {
-          this.apiService.post('tarjetas', tarjetaAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.post('tarjetas', tarjetaAEnviar).subscribe(
             json => {
               json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
               if (!!json.cliente_id) {
@@ -121,14 +123,14 @@ export class ModalTarjetaComponent implements OnInit {
               this.eventNew.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventNew.emit(tarjetaAEnviar);
           f.form.reset();
         }
       } else {
         if (this.shouldSendApiRequest) {
-          this.apiService.put('tarjetas/' + tarjetaAEnviar.id, tarjetaAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.put('tarjetas/' + tarjetaAEnviar.id, tarjetaAEnviar).subscribe(
             json => {
               json.tarjeta_nombre = this.tipos.find(x => x.id === json.tarjeta_id).nombre;
               if (!!json.cliente_id) {
@@ -137,12 +139,16 @@ export class ModalTarjetaComponent implements OnInit {
               this.eventEdit.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventEdit.emit(tarjetaAEnviar);
           f.form.reset();
         }
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

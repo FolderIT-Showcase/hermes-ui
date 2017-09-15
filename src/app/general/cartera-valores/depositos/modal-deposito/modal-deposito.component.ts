@@ -1,17 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Cliente} from '../../../../shared/domain/cliente';
 import {Deposito} from '../../../../shared/domain/deposito';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from 'app/shared/services/api.service';
 import {HelperService} from '../../../../shared/services/helper.service';
 import {CuentaBancaria} from '../../../../shared/domain/cuentaBancaria';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-modal-deposito',
   templateUrl: './modal-deposito.component.html',
   styleUrls: ['./modal-deposito.component.css']
 })
-export class ModalDepositoComponent implements OnInit {
+export class ModalDepositoComponent implements OnInit, OnDestroy {
   @Input() clientes: Cliente[];
   @Input() cuentas: CuentaBancaria[];
   @Input() shouldSendApiRequest = true;
@@ -22,6 +23,7 @@ export class ModalDepositoComponent implements OnInit {
   enNuevo = false;
   modalTitle: string;
   deposito: Deposito = new Deposito();
+  private subscriptions: Subscription = new Subscription();
 
   static open() {
     (<any>$('#modalEditarDeposito')).modal('show');
@@ -133,7 +135,7 @@ export class ModalDepositoComponent implements OnInit {
       if (this.enNuevo) {
         this.enNuevo = false;
         if (this.shouldSendApiRequest) {
-          this.apiService.post('depositos', depositoAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.post('depositos', depositoAEnviar).subscribe(
             json => {
               if (!!json.cliente_id) {
                 json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
@@ -141,7 +143,7 @@ export class ModalDepositoComponent implements OnInit {
               this.eventNew.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventNew.emit(depositoAEnviar);
           f.form.reset();
@@ -149,7 +151,7 @@ export class ModalDepositoComponent implements OnInit {
 
       } else {
         if (this.shouldSendApiRequest) {
-          this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.put('depositos/' + depositoAEnviar.id, depositoAEnviar).subscribe(
             json => {
               if (!!json.cliente_id) {
                 json.cliente_nombre = this.clientes.find(x => x.id === json.cliente_id).nombre;
@@ -157,12 +159,16 @@ export class ModalDepositoComponent implements OnInit {
               this.eventEdit.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventEdit.emit(depositoAEnviar);
           f.form.reset();
         }
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

@@ -16,6 +16,7 @@ import {ComprobanteCompraRetencion} from '../../shared/domain/comprobanteCompraR
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-comprobantes-compra',
@@ -56,6 +57,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
   CCretencionesSeleccionado: ComprobanteCompraRetencion = new ComprobanteCompraRetencion;
   existe = false;
   existeComprobanteDatos = false;
+  private subscriptions: Subscription = new Subscription();
 
   // parametros filtrar comprobantes de compra
   parametroReporteFiltrarPorProveedor: Boolean;
@@ -134,7 +136,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     this.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
     this.myDatePickerOptions = options;
 
-    this.apiService.get('comprobantescompra') // TODO definir qué se va a mostrar en la pantalla cuando se carga por primera vez
+    this.subscriptions.add(this.apiService.get('comprobantescompra') // TODO definir qué se va a mostrar en la pantalla cuando se carga por primera vez
       .subscribe(json => {
         this.mostrarBarraCarga = false;
         this.mostrarTabla = true;
@@ -143,10 +145,10 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       },
         () => {
           this.mostrarBarraCarga = false;
-        });
+        }));
 
     // TODO: todos estos request a la api tendrían que hacerse si this.mostrarTabla===true (manejar asincronia)
-    this.apiService.get('proveedores')
+    this.subscriptions.add(this.apiService.get('proveedores')
       .subscribe(json => {
         this.proveedores = json;
         this.proveedores.forEach(
@@ -156,22 +158,22 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
             }
           }
         );
-      });
+      }));
 
-    this.apiService.get('periodosfiscales')
+    this.subscriptions.add(this.apiService.get('periodosfiscales')
       .subscribe(json => {
         this.periodos = json;
-      });
+      }));
 
-    this.apiService.get('tipocomprobantescompra')
+    this.subscriptions.add(this.apiService.get('tipocomprobantescompra')
       .subscribe(json => {
         this.tiposComprobanteCompra = json;
-      });
+      }));
 
-    this.apiService.get('tiporetenciones')
+    this.subscriptions.add(this.apiService.get('tiporetenciones')
       .subscribe(json => {
         this.tipoRetenciones = json;
-      });
+      }));
   }
 
   mostrarModalNuevo() {
@@ -243,7 +245,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       this.comprobantes.splice(index, 1);
     }
     this.recargarTabla();
-    this.apiService.delete('comprobantescompra/' + this.comprobanteSeleccionado.id).subscribe();
+    this.subscriptions.add(this.apiService.delete('comprobantescompra/' + this.comprobanteSeleccionado.id).subscribe());
     this.cerrar(null);
   }
 
@@ -257,18 +259,18 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       (<any>$('#modalEditar')).modal('hide');
       if (this.enNuevo) {
         this.enNuevo = false;
-        this.apiService.post('comprobantescompra', comprobanteAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.post('comprobantescompra', comprobanteAEnviar).subscribe(
           json => {
             this.comprobantes.push(json);
             this.recargarTabla();
           }
-        );
+        ));
       } else {
-        this.apiService.put('comprobantescompra/' + comprobanteAEnviar.id, comprobanteAEnviar).subscribe(
+        this.subscriptions.add(this.apiService.put('comprobantescompra/' + comprobanteAEnviar.id, comprobanteAEnviar).subscribe(
           json => {
             Object.assign(this.comprobanteCompraOriginal, json);
           }
-        );
+        ));
       }
     }
   }
@@ -426,6 +428,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols
@@ -480,7 +483,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       if (this.parametroReporteMontoMin > 0 && this.parametroReporteMontoMax < 1) {
         this.parametroReporteMontoMax = -1;
       }
-      this.apiService.get('comprobantescompra/filtrar', {
+      this.subscriptions.add(this.apiService.get('comprobantescompra/filtrar', {
         'proveedor': this.parametroReporteProveedor,
         'tipo': this.parametroReporteTipo,
         'periodo': this.parametroReportePeriodo,
@@ -490,7 +493,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
         .subscribe(json => {
           this.comprobantes = json;
           this.recargarTabla();
-        });
+        }));
       this.parametroReporteFiltrarPorMonto = false;
       this.parametroReporteMontoMax = null;
       this.parametroReporteMontoMin = null;
@@ -513,7 +516,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
     // TODO chequear si la performance de llamar a la API es buena o tiene mucha latencia
     if (!isNullOrUndefined(this.proveedorSeleccionado.id) && !isNullOrUndefined(this.tipoComprobanteCompraSeleccionado.id) &&
       !isNullOrUndefined(this.comprobanteSeleccionado.punto_venta) && !isNullOrUndefined(this.comprobanteSeleccionado.numero)) {
-      this.apiService.get('comprobantescompra/proveedor/' + this.proveedorSeleccionado.id).subscribe(
+      this.subscriptions.add(this.apiService.get('comprobantescompra/proveedor/' + this.proveedorSeleccionado.id).subscribe(
         json => {
           if (json === '') {
             this.existeComprobanteDatos = false;
@@ -530,7 +533,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
               this.existeComprobanteDatos = comprobante.id !== this.comprobanteSeleccionado.id;
             }
           }
-        });
+        }));
     }
   }
 }

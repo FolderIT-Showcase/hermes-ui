@@ -1,15 +1,16 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Articulo} from '../../../shared/domain/articulo';
 import {ApiService} from '../../../shared/services/api.service';
 import {Observable} from 'rxjs/Observable';
 import {isNullOrUndefined} from 'util';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-articulo-typeahead',
   templateUrl: './articuloTypeahead.component.html',
   styleUrls: ['./articuloTypeahead.component.css']
 })
-export class ArticuloTypeaheadComponent implements OnInit {
+export class ArticuloTypeaheadComponent implements OnDestroy {
   @Input() nombreArticulo: String;
   @Output() artSelected: EventEmitter<Articulo> = new EventEmitter<Articulo>();
   @Output() noResult: EventEmitter<Boolean> = new EventEmitter<Boolean>();
@@ -17,16 +18,15 @@ export class ArticuloTypeaheadComponent implements OnInit {
   articulo: Articulo = new Articulo;
   listaArticulos: Articulo[];
   typeaheadNoResults: boolean;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService) {
     this.articulos = Observable.create((observer: any) => {
-      this.apiService.get('articulos/nombre/' + this.nombreArticulo).subscribe( json => {
+      this.subscriptions.add(this.apiService.get('articulos/nombre/' + this.nombreArticulo).subscribe( json => {
         this.listaArticulos = json;
         observer.next(json);
-      });
+      }));
     });
-  }
-
-  ngOnInit() {
   }
 
   onArticuloChanged(articulo: Articulo) {
@@ -47,5 +47,9 @@ export class ArticuloTypeaheadComponent implements OnInit {
       && !this.typeaheadNoResults) {
       this.onArticuloChanged(this.listaArticulos[0]);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

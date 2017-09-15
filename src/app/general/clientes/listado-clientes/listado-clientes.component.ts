@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Localidad} from '../../../shared/domain/localidad';
 import {Provincia} from '../../../shared/domain/provincia';
 import {Vendedor} from '../../../shared/domain/vendedor';
 import {Zona} from '../../../shared/domain/zona';
 import {ApiService} from '../../../shared/services/api.service';
 import {AlertService} from '../../../shared/services/alert.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-listado-clientes',
   templateUrl: './listado-clientes.component.html',
   styleUrls: ['./listado-clientes.component.css']
 })
-export class ListadoClientesComponent implements OnInit {
+export class ListadoClientesComponent implements OnDestroy {
   parametroReporteFiltrarPorVendedor = false;
   parametroReporteVendedor: Number;
   parametroReporteFiltrarPorZona = false;
@@ -25,10 +26,9 @@ export class ListadoClientesComponent implements OnInit {
   provincias: Provincia[] = [];
   vendedores: Vendedor[] = [];
   zonas: Zona[] = [];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService, private alertService: AlertService) { }
-
-  ngOnInit() {}
 
   mostrarModalReporte() {
     this.parametroReporteFiltrarPorVendedor = false;
@@ -74,7 +74,7 @@ export class ListadoClientesComponent implements OnInit {
       this.parametroReporteLocalidad = 0;
     }
 
-    this.apiService.downloadPDF('clientes/reporte', {
+    this.subscriptions.add(this.apiService.downloadPDF('clientes/reporte', {
         'vendedor': this.parametroReporteVendedor,
         'zona': this.parametroReporteZona,
         'provincia': this.parametroReporteProvincia,
@@ -91,44 +91,46 @@ export class ListadoClientesComponent implements OnInit {
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   cargarProvincias() {
     if (this.provincias.length === 0) {
-      this.apiService.get('provincias').subscribe(
+      this.subscriptions.add(this.apiService.get('provincias').subscribe(
         json => {
           this.provincias = json;
         }
-      );
+      ));
     }
   }
 
   cargarLocalidades(provinciaId: number) {
-    this.apiService.get('provincias/' + provinciaId).subscribe(
+    this.subscriptions.add(this.apiService.get('provincias/' + provinciaId).subscribe(
       json => {
         this.localidades = json.localidades;
       }
-    );
+    ));
   }
 
   cargarVendedores() {
     if (this.vendedores.length === 0) {
-      this.apiService.get('vendedores').subscribe(
+      this.subscriptions.add(this.apiService.get('vendedores').subscribe(
         json => {
           this.vendedores = json;
         }
-      );
+      ));
     }
   }
 
   cargarZonas() {
     if (this.zonas.length === 0) {
-      this.apiService.get('zonas').subscribe(
+      this.subscriptions.add(this.apiService.get('zonas').subscribe(
         json => {
           this.zonas = json;
         }
-      );
+      ));
     }
+  }
+  ngOnDestroy(): void {
   }
 }

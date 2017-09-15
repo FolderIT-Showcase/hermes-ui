@@ -1,17 +1,18 @@
-import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../shared/services/api.service';
 import {Cliente} from '../../shared/domain/cliente';
 import {Banco} from '../../shared/domain/banco';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cartera-valores',
   templateUrl: './cartera-valores.component.html',
   styleUrls: ['./cartera-valores.component.css']
 })
-export class CarteraValoresComponent implements OnInit {
+export class CarteraValoresComponent implements OnInit, OnDestroy {
   medioPago = 0;
   mostrarTarjetas = false;
   mostrarCheques = false;
@@ -28,6 +29,7 @@ export class CarteraValoresComponent implements OnInit {
   banco = 0;
   numero = '';
   filter: any;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private navbarTitleService: NavbarTitleService,
@@ -89,21 +91,21 @@ export class CarteraValoresComponent implements OnInit {
 
   cargarClientes() {
     if (this.clientes.length === 0) {
-      this.apiService.get('clientes').subscribe(
+      this.subscriptions.add(this.apiService.get('clientes').subscribe(
         json => {
           this.clientes = json;
         }
-      );
+      ));
     }
   }
 
   cargarBancos() {
     if (this.bancos.length === 0) {
-      this.apiService.get('bancos').subscribe(
+      this.subscriptions.add(this.apiService.get('bancos').subscribe(
         json => {
           this.bancos = json;
         }
-      );
+      ));
     }
   }
 
@@ -114,5 +116,9 @@ export class CarteraValoresComponent implements OnInit {
       || ((this.fechaIngresoInicio.date.year === this.fechaIngresoFin.date.year) &&
         (this.fechaIngresoInicio.date.month === this.fechaIngresoFin.date.month)
         && this.fechaIngresoInicio.date.day > this.fechaIngresoFin.date.day);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

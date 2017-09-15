@@ -10,6 +10,7 @@ import {AlertService} from '../../../shared/services/alert.service';
 import {Observable} from 'rxjs/Observable';
 import {ModalDepositoComponent} from './modal-deposito/modal-deposito.component';
 import {HelperService} from '../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-depositos',
@@ -34,6 +35,8 @@ export class DepositosComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   mostrarBarraCarga = true;
   myDatePickerOptions: IMyDpOptions;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService) {}
 
@@ -66,7 +69,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
     const observableCheques = this.apiService.get('depositos/buscar', this.filter);
     const observableClientes = this.apiService.get('clientes');
     const zip = Observable.zip(observableCheques, observableClientes);
-    zip.subscribe(data => {
+    this.subscriptions.add(zip.subscribe(data => {
         this.depositos = data[0];
         this.clientes = data[1];
 
@@ -82,7 +85,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
       },
       () => {
         this.mostrarBarraCarga = false;
-      });
+      }));
     this.cargarCuentasBancarias();
 
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
@@ -102,7 +105,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
   }
 
   eliminar() {
-    this.apiService.delete('depositos/' + this.depositoSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('depositos/' + this.depositoSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.depositos.indexOf(this.depositoSeleccionado);
         if (index !== -1) {
@@ -112,7 +115,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   private recargarTabla() {
@@ -128,11 +131,11 @@ export class DepositosComponent implements OnInit, OnDestroy {
 
   cargarCuentasBancarias() {
     if (this.cuentas.length === 0) {
-      this.apiService.get('cuentasbancarias').subscribe(
+      this.subscriptions.add(this.apiService.get('cuentasbancarias').subscribe(
         json => {
           this.cuentas = json;
         }
-      );
+      ));
     }
   }
 
@@ -155,6 +158,7 @@ export class DepositosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

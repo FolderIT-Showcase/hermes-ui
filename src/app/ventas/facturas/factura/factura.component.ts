@@ -21,6 +21,7 @@ import {Router} from '@angular/router';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {TooltipConfig} from 'ngx-bootstrap/tooltip';
 import {HelperService} from '../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 export function getAlertConfig(): TooltipConfig {
   return Object.assign(new TooltipConfig(), {placement: 'left', container: 'body'});
@@ -79,20 +80,21 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   fecha: any;
   myDatePickerOptions: IMyDpOptions;
   submitted = false;
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private authenticationService: AuthenticationService,
               private router: Router) {
     this.clientes = Observable.create((observer: any) => {
-      this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
         observer.next(json);
-      });
+      }));
     });
 
     this.clientesCod = Observable.create((observer: any) => {
-      this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
         if (json === '') {
           this.listaClientes = [];
           observer.next([]);
@@ -100,7 +102,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
           this.listaClientes = [json];
           observer.next([json]);
         }
-      });
+      }));
     });
   }
 
@@ -218,9 +220,9 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
           day: day
         }
       };
-      this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
+      this.subscriptions.add(this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
         this.tipoComprobante = json;
-      });
+      }));
       this.items.push(new Item);
     }
 
@@ -235,7 +237,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cliente = event;
     this.clienteCodAsync = this.cliente.codigo;
     this.clienteAsync = this.cliente.nombre;
-    this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('tipocomprobantes/' + this.tipoFactura + '/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       let month = this.tipoComprobante.ultima_fecha.slice(5, 7);
       if (month[0] === '0') {
@@ -258,7 +260,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.myDatePickerOptions = options;
 
-      this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
+      this.subscriptions.add(this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         if (contador === '') {
           this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.factura.punto_venta, false);
         } else {
@@ -279,8 +281,8 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
             this.tabla.nativeElement.children[1].children[this.items.length - 1].children[0].children[0].children[0].children[0].focus();
           } , 100);
         }
-      });
-    });
+      }));
+    }));
   }
 
   onArticuloChanged(articulo: Articulo, item: Item) {
@@ -432,7 +434,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.factura.fecha =  HelperService.myDatePickerDateToString(this.fecha);
 
     if (this.nuevoOEditar === 'nuevo') {
-      this.apiService.post('comprobantes', this.factura).subscribe( (json) => {
+      this.subscriptions.add(this.apiService.post('comprobantes', this.factura).subscribe( (json) => {
         if (json.hasOwnProperty('error')) {
           this.alertService.error(json['error']);
         } else {
@@ -446,23 +448,23 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
             this.typeaheadNombreClienteElement.nativeElement.focus();
           }
         }
-      });
+      }));
     } else {
       this.change.emit(false);
-      this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( () => {
+      this.subscriptions.add(this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( () => {
         this.alertService.success('El comprobante se ha modificado con éxito', true);
         if (!isNullOrUndefined(this.routeAfter)) {
           this.router.navigate([this.routeAfter]).catch();
         }
-      });
+      }));
     }
   }
 
   buscarClientes() {
     this.busquedaClienteSeleccionado = null;
-    this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
       this.busquedaClientes = json;
-    });
+    }));
   }
 
   confirmarBusquedaCliente () {
@@ -482,22 +484,22 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   cargarMarcas() {
-    this.apiService.get('marcas').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('marcas').subscribe( json => {
       this.marcas = json;
-    });
+    }));
   }
 
   cargarRubros() {
-    this.apiService.get('rubros').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('rubros').subscribe( json => {
       this.rubros = json;
-    });
+    }));
   }
 
   cargarSubrubros() {
-    this.apiService.get('subrubros').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('subrubros').subscribe( json => {
       this.subrubros = json;
       this.subrubrosAMostrar = json;
-    });
+    }));
   }
 
   filterSubrubros() {
@@ -518,7 +520,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.busquedaArticuloSubrubroId === null) {
       this.busquedaArticuloSubrubroId = 0;
     }
-    this.apiService.get('articulos/buscar', {
+    this.subscriptions.add(this.apiService.get('articulos/buscar', {
         'marca': this.busquedaArticuloMarcaId,
         'rubro': this.busquedaArticuloRubroId,
         'subrubro': this.busquedaArticuloSubrubroId,
@@ -531,7 +533,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         art.subrubro_nombre = this.subrubros.find(x => x.id === art.subrubro_id).nombre;
       });
       this.busquedaArticulos = json;
-    });
+    }));
   }
 
   confirmarBusquedaArticulo() {
@@ -539,13 +541,13 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private cargarListasPrecios() {
-    this.apiService.get('listaprecios').subscribe(json => {
+    this.subscriptions.add(this.apiService.get('listaprecios').subscribe(json => {
       this.listasPrecios = json;
       if (!isNullOrUndefined(this.cliente) && ! isNullOrUndefined(this.cliente.lista_id)) {
         this.listaPreciosSeleccionada = this.listasPrecios.find(x => x.id === this.cliente.lista_id);
         this.listaAnterior = this.listaPreciosSeleccionada;
       }
-    });
+    }));
   }
 
   private obtenerParametros() {
@@ -744,6 +746,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-presupuestos',
@@ -24,6 +25,8 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   dtElement: DataTableDirective;
   modalTitle: string;
   mostrarTabla = false;
+  private subscriptions: Subscription = new Subscription();
+
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private router: Router,
@@ -54,7 +57,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
       ]
     };
     this.navbarTitleService.setTitle('Gestión de Presupuestos');
-    this.apiService.get('comprobantes/presupuestos')
+    this.subscriptions.add(this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
           this.presupuestos = json;
           this.mostrarBarraCarga = false;
@@ -63,7 +66,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
         },
         () => {
           this.mostrarBarraCarga = false;
-        });
+        }));
   }
 
   mostrarModalEliminar(presupuesto: Comprobante) {
@@ -71,7 +74,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   }
 
   eliminar() {
-    this.apiService.delete('comprobantes/' + this.presupuestoSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.apiService.delete('comprobantes/' + this.presupuestoSeleccionado.id).subscribe( json => {
       if (json === 'ok') {
         const index: number = this.presupuestos.indexOf(this.presupuestoSeleccionado);
         if (index !== -1) {
@@ -81,7 +84,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error(json['error']);
       }
-    });
+    }));
   }
 
   private recargarTabla() {
@@ -100,18 +103,18 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
     if (isNullOrUndefined(presupuesto.cliente.email)) {
       this.alertService.error('El cliente ' + presupuesto.cliente_nombre + ' no tiene un email asociado');
     } else {
-      this.apiService.get('comprobantes/presupuestos/mail/' + presupuesto.id).subscribe( json => {
+      this.subscriptions.add(this.apiService.get('comprobantes/presupuestos/mail/' + presupuesto.id).subscribe( json => {
         if (json === 'ok') {
           this.alertService.success('Se ha enviado correctamente el mail con el presupuesto a ' + presupuesto.cliente_nombre);
         } else {
           this.alertService.error('No se ha podido enviar el mail con el presupuesto a ' + presupuesto.cliente_nombre);
         }
-      });
+      }));
     }
   }
 
   imprimirPDF(presupuesto: Comprobante) {
-    this.apiService.downloadPDF('comprobantes/imprimir/' + presupuesto.id, {}).subscribe(
+    this.subscriptions.add(this.apiService.downloadPDF('comprobantes/imprimir/' + presupuesto.id, {}).subscribe(
       (res) => {
         const fileURL = URL.createObjectURL(res);
         try {
@@ -121,7 +124,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
           this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
         }
       }
-    );
+    ));
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
@@ -132,6 +135,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.ocultarModals();
+    this.subscriptions.unsubscribe();
   }
 
   // noinspection JSUnusedGlobalSymbols

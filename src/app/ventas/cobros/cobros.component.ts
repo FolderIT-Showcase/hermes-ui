@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {Cliente} from '../../shared/domain/cliente';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../shared/services/api.service';
@@ -22,13 +22,14 @@ import {FastAbmChequeComponent} from 'app/ventas/fast-abm-cheque/fast-abm-cheque
 import {FastAbmDepositoComponent} from '../fast-abm-deposito/fast-abm-deposito.component';
 import {FastAbmTarjetaComponent} from '../fast-abm-tarjeta/fast-abm-tarjeta.component';
 import {MedioPago} from 'app/shared/domain/medioPago';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cobros',
   templateUrl: './cobros.component.html',
   styleUrls: ['./cobros.component.css']
 })
-export class CobrosComponent implements OnInit, AfterViewInit {
+export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
   marginRedondeo = 10;
   depositos: Deposito[] = [];
   listaTiposTarjeta: TipoTarjeta[] = [];
@@ -72,20 +73,21 @@ export class CobrosComponent implements OnInit, AfterViewInit {
   totalEfectivo: string | number = 0;
   componentRef: any;
   mediosPago: MedioPago[] = [];
+  private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private navbarTitleService: NavbarTitleService,
               private resolver: ComponentFactoryResolver) {
     this.clientes = Observable.create((observer: any) => {
-      this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
         observer.next(json);
-      });
+      }));
     });
 
     this.clientesCod = Observable.create((observer: any) => {
-      this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
+      this.subscriptions.add(this.apiService.get('clientes/codigo/' + this.clienteCodAsync).subscribe(json => {
         if (json === '') {
           this.listaClientes = [];
           observer.next([]);
@@ -93,7 +95,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
           this.listaClientes = [json];
           observer.next([json]);
         }
-      });
+      }));
     });
   }
 
@@ -192,7 +194,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cliente = event;
     this.clienteCodAsync = this.cliente.codigo;
     this.clienteAsync = this.cliente.nombre;
-    this.apiService.get('cobros/comprobantes', {'cliente': this.cliente.id}).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('cobros/comprobantes', {'cliente': this.cliente.id}).subscribe( json => {
       this.comprobantes = json;
       this.comprobantes.forEach(reg => {
         reg.ptoventaynumero = ('000' + reg.punto_venta).slice(-4) + '-' + ('0000000' + reg.numero).slice(-8);
@@ -200,8 +202,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
       this.itemsCobro = [];
       this.mostrarModalComprobantes();
-    });
-    this.apiService.get('tipocomprobantes/' + 'recibo' + '/' + this.cliente.tipo_responsable).subscribe( json => {
+    }));
+    this.subscriptions.add(this.apiService.get('tipocomprobantes/' + 'recibo' + '/' + this.cliente.tipo_responsable).subscribe( json => {
       this.tipoComprobante = json;
       let month = this.tipoComprobante.ultima_fecha.slice(5, 7);
       if (month[0] === '0') {
@@ -224,7 +226,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
       }
       this.myDatePickerOptions = options;
 
-      this.apiService.get('contadores/' + this.cobro.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
+      this.subscriptions.add(this.apiService.get('contadores/' + this.cobro.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
         if (contador === '') {
           this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.cobro.punto_venta, false);
         } else {
@@ -236,8 +238,8 @@ export class CobrosComponent implements OnInit, AfterViewInit {
           //   this.tabla.nativeElement.children[1].children[this.items.length - 1].children[0].children[0].children[0].children[0].focus();
           // } , 100);
         }
-      });
-    });
+      }));
+    }));
   }
 
   private fechaMayor(primerFecha: IMyDate, segundaFecha: any): boolean {
@@ -279,9 +281,9 @@ export class CobrosComponent implements OnInit, AfterViewInit {
 
   buscarClientes() {
     this.busquedaClienteSeleccionado = null;
-    this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
+    this.subscriptions.add(this.apiService.get('clientes/buscar/' + this.busquedaCliente).subscribe( json => {
       this.busquedaClientes = json;
-    });
+    }));
   }
 
   confirmarBusquedaCliente () {
@@ -524,7 +526,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.componentRef.instance.data.bancos = this.listaBancos;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
     this.componentRef.instance.elements = this.cheques;
-    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event));
+    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event)));
     this.componentRef.instance.abrir();
   }
 
@@ -533,7 +535,7 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.componentRef.instance.data.tipos = this.listaTiposTarjeta;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
     this.componentRef.instance.elements = this.tarjetas;
-    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event));
+    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event)));
     this.componentRef.instance.abrir();
   }
 
@@ -542,32 +544,32 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.componentRef.instance.data.cuentas  = this.listaCuentas;
     this.componentRef.instance.data.cliente_id = this.cliente.id;
     this.componentRef.instance.elements = this.depositos;
-    this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditDeposito(event));
+    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditDeposito(event)));
     this.componentRef.instance.abrir();
   }
 
   cargarBancos() {
-    this.apiService.get('bancos').subscribe(json => {
+    this.subscriptions.add(this.apiService.get('bancos').subscribe(json => {
       this.listaBancos = json;
-    });
+    }));
   }
 
   cargarClientes() {
-    this.apiService.get('clientes').subscribe(json => {
+    this.subscriptions.add(this.apiService.get('clientes').subscribe(json => {
       this.allClientes = json;
-    });
+    }));
   }
 
   cargarTiposTarjeta() {
-    this.apiService.get('tipostarjeta').subscribe(json => {
+    this.subscriptions.add(this.apiService.get('tipostarjeta').subscribe(json => {
       this.listaTiposTarjeta = json;
-    });
+    }));
   }
 
   cargarCuentas() {
-    this.apiService.get('cuentasbancarias').subscribe(json => {
+    this.subscriptions.add(this.apiService.get('cuentasbancarias').subscribe(json => {
       this.listaCuentas = json;
-    });
+    }));
   }
 
   calcularSaldo() {
@@ -683,18 +685,22 @@ export class CobrosComponent implements OnInit, AfterViewInit {
     this.cobro.cobro_valores = cobro_valores;
     this.cobro.fecha = HelperService.myDatePickerDateToString(this.fecha);
 
-    this.apiService.post('cobros', this.cobro).subscribe( json => {
+    this.subscriptions.add(this.apiService.post('cobros', this.cobro).subscribe( json => {
       this.alertService.success('Se ha generado el cobro con éxito');
       this.cliente = null;
       this.inicializar();
     }, error => {
       this.alertService.error('No se ha podido generar el cobro');
-    });
+    }));
   }
 
   private cargarMediosPago() {
-    this.apiService.get('mediospago').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('mediospago').subscribe( json => {
       this.mediosPago = json;
-    });
+    }));
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }

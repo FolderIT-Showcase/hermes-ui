@@ -1,17 +1,18 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {Cliente} from '../../../../shared/domain/cliente';
 import {Banco} from '../../../../shared/domain/banco';
 import {Cheque} from '../../../../shared/domain/cheque';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../../../shared/services/api.service';
 import {HelperService} from '../../../../shared/services/helper.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-modal-cheque',
   templateUrl: './modal-cheque.component.html',
   styleUrls: ['./modal-cheque.component.css']
 })
-export class ModalChequeComponent implements OnInit {
+export class ModalChequeComponent implements OnInit, OnDestroy {
   @Input() clientes: Cliente[] = [];
   @Input() bancos: Banco[] = [];
   @Input() shouldSendApiRequest = true;
@@ -22,6 +23,7 @@ export class ModalChequeComponent implements OnInit {
   enNuevo = false;
   modalTitle: string;
   cheque: Cheque = new Cheque();
+  private subscriptions: Subscription = new Subscription();
 
   static open() {
     (<any>$('#modalEditar')).modal('show');
@@ -156,7 +158,7 @@ export class ModalChequeComponent implements OnInit {
       if (this.enNuevo) {
         this.enNuevo = false;
         if (this.shouldSendApiRequest) {
-          this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.post('chequesterceros', chequeAEnviar).subscribe(
             json => {
               json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
               if (!!json.cliente_id) {
@@ -165,7 +167,7 @@ export class ModalChequeComponent implements OnInit {
               this.eventNew.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventNew.emit(chequeAEnviar);
           f.form.reset();
@@ -173,7 +175,7 @@ export class ModalChequeComponent implements OnInit {
 
       } else {
         if (this.shouldSendApiRequest) {
-          this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
+          this.subscriptions.add(this.apiService.put('chequesterceros/' + chequeAEnviar.id, chequeAEnviar).subscribe(
             json => {
               json.banco_nombre = this.bancos.find(x => x.id === json.banco_id).nombre;
               if (!!json.cliente_id) {
@@ -182,12 +184,16 @@ export class ModalChequeComponent implements OnInit {
               this.eventEdit.emit(json);
               f.form.reset();
             }
-          );
+          ));
         } else {
           this.eventEdit.emit(chequeAEnviar);
           f.form.reset();
         }
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 }
