@@ -1,0 +1,8 @@
+$font-size-base: 13px;
+$form-group-margin-bottom: 5px;
+@import "assets/spacelab-theme/variables";
+
+$icon-font-path: "../node_modules/bootstrap-sass/assets/fonts/bootstrap/";
+@import "../node_modules/bootstrap-sass/assets/stylesheets/_bootstrap.scss";
+
+@import "assets/spacelab-theme/bootswatch";

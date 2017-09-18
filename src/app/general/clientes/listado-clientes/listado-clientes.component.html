@@ -1,0 +1,80 @@
+<div class="modal fade" id="modalReporte" tabindex="-1" role="dialog" aria-labelledby="modalReporte" #modalReporte>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title">Generar listado de clientes</h4>
+      </div>
+      <form class="form-horizontal">
+        <div class="modal-body">
+          <p>Filtros asociados a los clientes</p>
+          <div class="form-group row">
+            <div class="col-sm-7">
+              <div class="form-group row radio">
+                <div class="col-sm-6">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorVendedor" name="parametroReporteFiltrarPorVendedor">por Vendedor</label>
+                </div>
+
+                <div class="col-sm-6">
+                  <select title="Vendedor" [hidden]="!parametroReporteFiltrarPorVendedor" class="form-control" [ngModel]="parametroReporteVendedor | json" name="parametroReporteVendedor" (change)="onParametroReporteVendedorChanged($event.target['value'])">
+                    <option *ngFor="let vendedor of vendedores" [value]="vendedor.id | json">{{vendedor.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row radio">
+                <div class="col-sm-6">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorZona" name="parametroReporteFiltrarPorZona">por Zona</label>
+                </div>
+
+                <div class="col-sm-6">
+                  <select title="Zona" [hidden]="!parametroReporteFiltrarPorZona" class="form-control" [ngModel]="parametroReporteZona | json" name="parametroReporteZona" (change)="onParametroReporteZonaChanged($event.target['value'])">
+                    <option *ngFor="let zona of zonas" [value]="zona.id | json">{{zona.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row radio">
+                <div class="col-sm-6">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorProvincia" name="parametroReporteFiltrarPorProvincia">por Provincia</label>
+                </div>
+
+                <div class="col-sm-6">
+                  <select title="Provincia" [hidden]="!parametroReporteFiltrarPorProvincia" class="form-control" [ngModel]="parametroReporteProvincia | json" name="parametroReporteProvincia" (change)="onParametroReporteProvinciaChanged($event.target['value'])" >
+                    <option *ngIf="provincias.length === 0">Cargando...</option>
+                    <option *ngFor="let provincia of provincias" [value]= "provincia.id | json">{{provincia.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div [hidden]="parametroReporteProvincia === 0" class="form-group row radio">
+                <div class="col-sm-6">
+                  <label class="control-label"><input type="checkbox" [(ngModel)]="parametroReporteFiltrarPorLocalidad" name="parametroReporteFiltrarPorLocalidad">por Localidad</label>
+                </div>
+
+                <div class="col-sm-6">
+                  <select title="Localidad" [hidden]="!parametroReporteFiltrarPorLocalidad" class="form-control" [(ngModel)]="parametroReporteLocalidad" name="parametroReporteLocalidad">
+                    <option *ngFor="let localidad of localidades" [ngValue]="localidad.id">{{localidad.nombre}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-5">
+              <div class="radio">
+                <label><input type="radio" [(ngModel)]="parametroReporteSoloActivos" name="parametroReporteSoloActivos" [value]="1" >Solo Clientes Activos</label>
+              </div>
+              <div class="radio">
+                <label><input type="radio" [(ngModel)]="parametroReporteSoloActivos" name="parametroReporteSoloActivos" [value]="0" >Incluir Clientes dados de baja</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button (click)="generarReporteClientes()" data-dismiss="modal" class="btn btn-primary">Generar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

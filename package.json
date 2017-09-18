@@ -8,7 +8,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "bundle-report": "webpack-bundle-analyzer dist/stats.json"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +23,7 @@
     "@angular/router": "^4.0.0",
     "angular-datatables": "^4.0.0",
     "angular2-text-mask": "^8.0.1",
+    "bootstrap-sass": "^3.3.7",
     "core-js": "^2.4.1",
     "datatables.net": "^1.10.15",
     "datatables.net-bs": "^1.10.15",
@@ -35,7 +37,7 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.0",
+    "@angular/cli": "^1.4.1",
     "@angular/compiler-cli": "^4.0.0",
     "@types/datatables.net": "^1.10.1",
     "@types/jasmine": "2.5.38",
@@ -53,6 +55,7 @@
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0"
+    "typescript": "~2.2.0",
+    "webpack-bundle-analyzer": "^2.9.0"
   }
 }

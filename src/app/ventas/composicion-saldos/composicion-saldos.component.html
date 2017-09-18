@@ -1,0 +1,35 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row">
+    <label for="cliente" class="col-sm-1 control-label">Cliente:</label>
+    <div class="col-sm-3">
+      <select id="cliente" title="Cliente" class="form-control" [(ngModel)]="parametroReporteCliente" name="parametroReporteCliente">
+        <option [ngValue]="0">Todos</option>
+        <option *ngFor="let cliente of clientes" [value]="cliente.id">{{cliente.nombre}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="tipo" class="col-sm-1 control-label">Vendedor:</label>
+    <div class="col-sm-3">
+      <select id="tipo" title="Vendedor" class="form-control" [(ngModel)]="parametroReporteVendedor" name="parametroReporteVendedor">
+        <option [ngValue]="0">Todos</option>
+        <option *ngFor="let vendedor of vendedores" [value]="vendedor.id">{{vendedor.nombre}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="zona" class="col-sm-1 control-label">Zona:</label>
+    <div class="col-sm-3">
+      <select id="zona" title="Zona" class="form-control" [(ngModel)]="parametroReporteZona" name="parametroReporteZona">
+        <option [ngValue]="0">Todos</option>
+        <option *ngFor="let zona of zonas" [value]="zona.id">{{zona.nombre}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="pull-right">
+    <button class="btn btn-primary" (click)="generarReporte()">Imprimir</button>
+  </div>
+</form>
