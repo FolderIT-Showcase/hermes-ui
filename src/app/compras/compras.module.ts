@@ -8,6 +8,7 @@ import {SharedModule} from '../shared/shared.module';
 import {ComprasRoutingModule} from './compras.routing.module';
 import {ModalProveedorComponent} from './proveedores/modal-proveedor/modal-proveedor.component';
 import {ModalTipoRetencionComponent} from './tipo-retencion/modal-tipo-retencion/modal-tipo-retencion.component';
+import { OrdenesPagoComponent } from './ordenes-pago/ordenes-pago.component';
 
 const modals = [
   ModalProveedorComponent,
@@ -26,6 +27,7 @@ const modals = [
     ProveedoresComponent,
     TipoRetencionComponent,
     modals,
+    OrdenesPagoComponent,
   ],
   entryComponents: [
     modals

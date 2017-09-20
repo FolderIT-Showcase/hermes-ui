@@ -17,6 +17,10 @@
   color: white;
 }
 
+table.dataTable thead > tr > th.sorting_asc {
+  padding-right: 8px;
+}
+
 table.dataTable thead .sorting_asc:after {
   content: none;
 }

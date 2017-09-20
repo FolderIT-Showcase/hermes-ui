@@ -1,0 +1,309 @@
+<form class="form-horizontal" #f="ngForm">
+  <div class="form-group row">
+    <div class="col-sm-3">
+      <label for="ordenPago-proveedor" class="col-sm-5 required control-label">Proveedor</label>
+      <div class="col-sm-7 input-group" [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreProveedorNoResults === true
+      || (proveedorAsync.length < 3 && proveedorAsync.length > 0)}">
+        <input id="ordenPago-proveedor" [(ngModel)]="proveedorAsync" name="proveedorAsync"
+               [typeahead]="proveedores"
+               (typeaheadOnSelect)="onProveedorChanged($event.item)"
+               (typeaheadNoResults)="changeTypeaheadNombreProveedorNoResults($event)"
+               (typeaheadOnBlur)="typeaheadNombreProveedorOnBlur()"
+               typeaheadMinLength="3"
+               typeaheadOptionsLimit="7"
+               typeaheadOptionField="nombre"
+               class="form-control"
+               autocomplete="off"
+               placeholder="Proveedor"
+               #nombre="ngModel"
+               required
+               #typeaheadNombreProveedor>
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarProveedor"><i class="glyphicon glyphicon-search"></i></button>
+        </span>
+      </div>
+      <div [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
+      || typeaheadNombreProveedorNoResults === true
+      || (proveedorAsync.length < 3 && proveedorAsync.length > 0)}">
+        <div *ngIf="!nombre.valid && (!nombre.pristine || nombre.touched || submitted)" class="help-block">Ingrese un nombre</div>
+        <div *ngIf="typeaheadNombreProveedorNoResults === true" class="help-block">No se han encontrado resultados</div>
+        <div *ngIf="(proveedorAsync.length < 3 && proveedorAsync.length > 0)" class="help-block">Ingrese 3 letras para comenzar la búsqueda</div>
+      </div>
+    </div>
+
+    <div class="col-sm-9">
+      <div class="col-sm-3">
+        <label for="ordenPago-proveedor-cod" class="col-sm-5 required control-label">Código</label>
+        <div class="col-sm-7 input-group" [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoProveedorNoResults === true}">
+          <input id="ordenPago-proveedor-cod" [(ngModel)]="proveedorCodAsync" name="proveedorCodAsync"
+                 [typeahead]="proveedoresCod"
+                 (typeaheadOnSelect)="onProveedorChanged($event.item)"
+                 (typeaheadNoResults)="changeTypeaheadCodigoProveedorNoResults($event)"
+                 (typeaheadOnBlur)="typeaheadCodProveedorOnBlur()"
+                 typeaheadMinLength="1"
+                 typeaheadOptionsLimit="7"
+                 typeaheadOptionField="codigo"
+                 class="form-control"
+                 autocomplete="off"
+                 placeholder="Código"
+                 #codigo="ngModel"
+                 required>
+        </div>
+        <div [ngClass]="{'has-error': (!codigo.valid && (!codigo.pristine || codigo.touched || submitted))
+      || typeaheadCodigoProveedorNoResults === true}">
+          <div *ngIf="!codigo.valid && (!codigo.pristine || codigo.touched || submitted)" class="help-block">Ingrese un código</div>
+          <div *ngIf="typeaheadCodigoProveedorNoResults === true && codigo.valid" class="help-block">No se han encontrado resultados</div>
+        </div>
+      </div>
+      <!--<label for="ordenPago-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>-->
+      <!--<div class="col-sm-2">-->
+        <!--<input class="form-control" name="ordenPago-punto-venta" id="ordenPago-punto-venta" [ngModel]="ordenPago.punto_venta" readonly>-->
+      <!--</div>-->
+
+      <!--<label for="ordenPago-numero" class="col-sm-1 control-label">Número</label>-->
+      <!--<div class="col-sm-2">-->
+        <!--<input class="form-control" name="ordenPago-numero" id="ordenPago-numero" [(ngModel)]="ordenPago.numero" required placeholder="0" readonly>-->
+      <!--</div>-->
+
+      <label for="ordenPago-fecha" class="col-sm-1 control-label">Fecha</label>
+      <div class="col-sm-2">
+        <my-date-picker id="ordenPago-fecha" [(ngModel)]="fecha" name="ordenPago-fecha" [options]="myDatePickerOptions"></my-date-picker>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+
+    <div class="col-sm-3">
+      <button type="button" *ngIf="!!proveedor.id" (click)="mostrarModalComprobantes()" class="btn btn-default">Agregar items</button>
+    </div>
+  </div>
+
+  <table datatable id="table" [dtOptions]="dtOptions" class="row-border hover table" #tabla>
+    <thead>
+    <tr>
+      <th class="text-center">Comprobante</th>
+      <th class="text-center">Número</th>
+      <th class="text-center">Descripción</th>
+      <th class="text-center">Importe</th>
+      <th class="text-center">% Desc.</th>
+      <th class="text-center">Desc.</th>
+      <th class="text-center">Importe Total</th>
+      <th class="text-center">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of itemsOrdenPago; trackBy:customTrackBy; let i = index;">
+      <td class="text-center">{{item.comprobante.tipo_comp_compras.nombre}}</td>
+      <td class="text-center">{{item.comprobante.ptoventaynumero}}</td>
+      <td class="typeaheadcontainer">
+        <input class="typeaheadcontrol text-left" [(ngModel)]="item.descripcion" [name]="'item-descripcion' + i" (keydown.Enter)="onDescripcionEnterPressed(item)" title="descripción">
+      </td>
+
+      <td class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol text-right" [(ngModel)]="item.importe" [name]="'item-importe' + i" (ngModelChange)="onImporteChanged(item, $event)" (keydown.Enter)="onImporteEnterPressed(item)" placeholder="0,00" min="0" step="0.01">
+      </td>
+
+      <td class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol text-right" [(ngModel)]="item.porcentaje_descuento" [name]="'item-porcentaje-descuento' + i" (ngModelChange)="onPorcentajeDescuentoChanged(item, $event)" (keydown.Enter)="onPorcentajeDescuentoEnterPressed(item)" placeholder="0.00" [min]=0 step="1" [max]="100">
+      </td>
+
+      <td class="typeaheadcontainer">
+        <input type="number" class="typeaheadcontrol text-right" [(ngModel)]="item.descuento" [name]="'item-descuento' + i" (ngModelChange)="onDescuentoChanged(item, $event)" (keydown.Enter)="onDescuentoEnterPressed(item)" placeholder="0.00" [min]=0 step="1" [max]="item.importe">
+      </td>
+
+      <td class="typeaheadcontainer">
+        <input type="number" readonly tabindex="-1" class="typeaheadcontrol text-right" [(ngModel)]="item.importe_total" [name]="'item-importe-total' + i" placeholder="0.00" min="0" step="0.01">
+      </td>
+
+      <td class="text-center">
+        <button type="button" *ngIf="i === itemsOrdenPago.length - 1" (click)="mostrarModalComprobantes()" class="glyphicon glyphicon-plus green"></button>
+        <button type="button" *ngIf="!!item.comprobante" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
+      </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    <tr>
+      <td></td>
+      <td></td>
+      <td class="text-right">Totales del OrdenPago</td>
+      <td class="text-right">{{ordenPago.importe_sub}}</td>
+      <td></td>
+      <td class="text-right">{{ordenPago.descuentos}}</td>
+      <td class="text-right">{{ordenPago.importe}}</td>
+      <td></td>
+    </tr>
+    </tfoot>
+  </table>
+
+  <div class="pull-right">
+    <button type="button" (click)="mostrarModalMediosPago()" class="btn btn-success" [disabled]="!f.valid">Confirmar</button>
+  </div>
+</form>
+
+<div class="modal fade" id="modalBuscarProveedor" tabindex="-1" role="dialog" aria-labelledby="modalBuscarProveedor" #modalBuscarProveedor>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title">Buscar Proveedores</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" #fb="ngForm">
+          <div class="form-group row">
+            <label for="busqueda-proveedor" class="col-sm-2 required control-label">Búsqueda</label>
+            <div class="col-sm-6">
+              <input class="form-control" id="busqueda-proveedor" [(ngModel)]="busquedaProveedor" (input)="buscarProveedores()" name="busqueda-proveedor" placeholder="Búsqueda" required>
+            </div>
+          </div>
+
+          <table id="tabla-buscar-proveedores" class="row-border hover table">
+            <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>CUIT</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let proveedor of busquedaProveedores" class='clickable-row' (click)="busquedaProveedoreseleccionado = proveedor" [class.active]="proveedor == busquedaProveedoreseleccionado">
+              <td>{{ proveedor.codigo }}</td>
+              <td>{{ proveedor.nombre }}</td>
+              <td>{{ proveedor.cuit }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button (click)="confirmarBusquedaProveedor()" data-dismiss="modal" class="btn btn-primary" [disabled]="busquedaProveedoreseleccionado === null || !fb.valid">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalComprobantes" tabindex="-1" role="dialog" aria-labelledby="modalComprobantes" #modalComprobantes>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title">Seleccionar Comprobantes</h4>
+      </div>
+      <div class="modal-body" style="height: 450px;overflow-y: auto;">
+        <table id="tabla-articulos" class="row-border hover table">
+          <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Comprobante</th>
+            <th>Número</th>
+            <th>Importe</th>
+            <th>Saldo</th>
+            <th><input title="" type="checkbox" (click)="toggleAll($event.target['checked'])"></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let comprobante of comprobantesAMostrar" class='clickable-row'>
+            <td class="text-center">{{ comprobante.fecha }}</td>
+            <td class="text-center">{{ comprobante.tipo_comp_compras.nombre }}</td>
+            <td class="text-center">{{ comprobante.ptoventaynumero }}</td>
+            <td class="text-right">{{ comprobante.importe_total }}</td>
+            <td class="text-right">{{ comprobante.tipo_comp_compras.nombre === 'Anticipo'? 0 : comprobante.saldo }}</td>
+            <td class="text-center"><input title="" type="checkbox" id="lista-comprobante-enlista" [(ngModel)]="comprobante.en_lista" name="activo"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button (click)="agregarComprobantes()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalPuedeSalir" tabindex="-1" role="dialog" #modalPuedeSalir>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title">Salir</h4>
+      </div>
+      <div class="modal-body">
+        <p class="modal-title">Se perderán los cambios realizados si abandona la página, ¿está seguro de que desea continuar?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cancelar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button (click)="continuar()" data-dismiss="modal" class="btn btn-primary">Continuar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalMediosPago" tabindex="-1" role="dialog" aria-labelledby="modalMediosPago" #modalMediosPago>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title" id="exampleModalLabel">Seleccione los medios de pago</h4>
+      </div>
+      <form class="form-horizontal" #fm="ngForm">
+        <div class="modal-body">
+          <ng-container *ngFor="let medioPago of mediosPago">
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Efectivo'">
+              <label for="efectivo" class="col-sm-2 control-label">Efectivo</label>
+              <div class="col-sm-7">
+                <input type="number" class="form-control text-right" [(ngModel)]="totalEfectivo" (input)="calcularSaldo()" id="efectivo" name="efectivo">
+              </div>
+            </div>
+
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Cheque'">
+              <label for="cheque" class="col-sm-2 control-label">Cheque</label>
+              <div class="col-sm-7">
+                <input readonly class="form-control text-right" [ngModel]="totalCheques" id="cheque" name="cheque">
+              </div>
+              <button type="button" class="btn btn-default" (click)="abrirModalCheque()" aria-label="Agregar">Agregar</button>
+            </div>
+
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Tarjeta'">
+              <label for="tarjeta" class="col-sm-2 control-label">Tarjeta</label>
+              <div class="col-sm-7">
+                <input readonly class="form-control text-right" [ngModel]="totalTarjetas" id="tarjeta" name="tarjeta">
+              </div>
+              <button type="button" class="btn btn-default" (click)="abrirModalTarjeta()" aria-label="Agregar">Agregar</button>
+            </div>
+
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Depósito'">
+              <label for="deposito" class="col-sm-2 control-label">Depósito</label>
+              <div class="col-sm-7">
+                <input readonly class="form-control text-right" [ngModel]="totalDepositos" id="deposito" name="deposito">
+              </div>
+              <button type="button" class="btn btn-default" (click)="abrirModalDeposito()" aria-label="Agregar">Agregar</button>
+            </div>
+
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Redondeo'">
+              <label for="redondeo" class="col-sm-2 control-label">Redondeo</label>
+              <div class="col-sm-7">
+                <input class="form-control text-right" [(ngModel)]="redondeo" id="redondeo" name="redondeo">
+              </div>
+            </div>
+          </ng-container>
+          <div class="form-group row">
+            <label for="total" class="col-sm-2 control-label">Total</label>
+            <div class="col-sm-7">
+              <input readonly class="form-control text-right" [ngModel]="ordenPago.importe" id="total" name="total">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary" (click)="generarOrdenPago()" data-dismiss="modal">Aceptar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template #modalContainer></ng-template>

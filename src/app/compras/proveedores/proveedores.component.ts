@@ -1,5 +1,5 @@
 import { Component,  ViewChild } from '@angular/core';
-import { Proveedor } from 'app/shared/domain/proveedor';
+import { Proveedor } from '../../shared/domain/proveedor';
 import {ModalProveedorComponent} from './modal-proveedor/modal-proveedor.component';
 import {AbmComponent} from '../../shared/abm/abm.component';
 import {Observable} from 'rxjs/Observable';
