@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angula
 import {Cliente} from '../../../../shared/domain/cliente';
 import {Deposito} from '../../../../shared/domain/deposito';
 import {IMyDpOptions} from 'mydatepicker';
-import {ApiService} from 'app/shared/services/api.service';
+import {ApiService} from '../../../../shared/services/api.service';
 import {HelperService} from '../../../../shared/services/helper.service';
 import {CuentaBancaria} from '../../../../shared/domain/cuentaBancaria';
 import {Subscription} from 'rxjs/Subscription';

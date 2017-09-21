@@ -8,7 +8,6 @@ import {ItemOrdenPago} from '../../shared/domain/itemOrdenPago';
 import {OrdenPago} from '../../shared/domain/ordenPago';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
-import {Comprobante} from '../../shared/domain/comprobante';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subject} from 'rxjs/Subject';
@@ -224,19 +223,14 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
       }
       this.myDatePickerOptions = options;
 
-      this.subscriptions.add(this.apiService.get('contadores/' + this.ordenPago.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
-        if (contador === '') {
-          this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.ordenPago.punto_venta, false);
-        } else {
-          this.ordenPago.numero = +contador.ultimo_generado + 1;
-          this.ordenPago.numero = ('0000000' + this.ordenPago.numero).slice(-8);
-
-          // // Se selecciona el input de código de artículo
-          // setTimeout(() => {
-          //   this.tabla.nativeElement.children[1].children[this.items.length - 1].children[0].children[0].children[0].children[0].focus();
-          // } , 100);
-        }
-      }));
+      // this.subscriptions.add(this.apiService.get('contadores/' + this.ordenPago.punto_venta + '/' + this.tipoComprobante.id).subscribe( contador => {
+      //   if (contador === '') {
+      //     this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.ordenPago.punto_venta, false);
+      //   } else {
+      //     this.ordenPago.numero = +contador.ultimo_generado + 1;
+      //     this.ordenPago.numero = ('0000000' + this.ordenPago.numero).slice(-8);
+      //   }
+      // }));
     }));
   }
 
@@ -331,7 +325,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     const item = new ItemOrdenPago();
     item.comprobante = comprobante;
     if (comprobante.tipo_comp_compras.nombre !== 'Anticipo') {
-      item.comprobante_id = comprobante.id;
+      item.comprobante_compra_id = comprobante.id;
       item.importe = (+comprobante.saldo).toFixed(2);
     } else {
       item.importe = (0).toFixed(2);
@@ -683,12 +677,12 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ordenPago.orden_pago_valores = ordenPago_valores;
     this.ordenPago.fecha = HelperService.myDatePickerDateToString(this.fecha);
 
-    this.subscriptions.add(this.apiService.post('ordenPagos', this.ordenPago).subscribe( json => {
-      this.alertService.success('Se ha generado el ordenPago con éxito');
+    this.subscriptions.add(this.apiService.post('ordenespago', this.ordenPago).subscribe( json => {
+      this.alertService.success('Se ha generado la orden de pago con éxito');
       this.proveedor = null;
       this.inicializar();
     }, error => {
-      this.alertService.error('No se ha podido generar el ordenPago');
+      this.alertService.error('No se ha podido generar la orden de pago');
     }));
   }
 

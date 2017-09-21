@@ -1,5 +1,5 @@
 import {Component,  ViewChild} from '@angular/core';
-import { Vendedor } from 'app/shared/domain/vendedor';
+import { Vendedor } from '../../shared/domain/vendedor';
 import {ModalVendedorComponent} from './modal-vendedor/modal-vendedor.component';
 import {AbmComponent} from '../../shared/abm/abm.component';
 import {ApiService} from '../../shared/services/api.service';

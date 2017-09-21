@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import { Rubro } from 'app/shared/domain/rubro';
+import { Rubro } from '../../shared/domain/rubro';
 import {ModalRubroComponent} from './modal-rubro/modal-rubro.component';
 import {AbmComponent} from '../../shared/abm/abm.component';
 

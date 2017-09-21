@@ -1,10 +1,10 @@
 import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { User as Usuario} from 'app/shared/domain/user';
+import { User as Usuario} from '../../shared/domain/user';
 import { Subject } from 'rxjs/Subject';
 import { DataTableDirective } from 'angular-datatables';
 import { ApiService } from '../../shared/services/api.service';
 import { AlertService } from '../../shared/services/alert.service';
-import { Rubro } from 'app/shared/domain/rubro';
+import { Rubro } from '../../shared/domain/rubro';
 import {UserService} from '../../shared/services/user.service';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';

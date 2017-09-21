@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import { Comprobante } from 'app/shared/domain/comprobante';
+import { Comprobante } from '../../shared/domain/comprobante';
 import {Subject} from 'rxjs/Subject';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 

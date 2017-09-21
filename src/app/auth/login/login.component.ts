@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AuthenticationService} from '../../shared/services/authentication.service';
-import {AlertService} from 'app/shared/services/alert.service';
+import {AlertService} from '../../shared/services/alert.service';
 import {User} from '../../shared/domain/user';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 

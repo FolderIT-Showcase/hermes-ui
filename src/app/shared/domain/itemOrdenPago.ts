@@ -3,7 +3,7 @@ import {ComprobanteCompra} from './comprobanteCompra';
 export class ItemOrdenPago {
   id: number;
   orden_pago_id: number;
-  comprobante_id: number;
+  comprobante_compra_id: number;
   descripcion: string;
   importe: string | number;
   descuento: number | string;

@@ -2,7 +2,7 @@ import {
   AfterViewChecked, ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit,
   ViewChild
 } from '@angular/core';
-import { PeriodoFiscal } from 'app/shared/domain/periodoFiscal';
+import { PeriodoFiscal } from '../../shared/domain/periodoFiscal';
 import {ApiService} from '../../shared/services/api.service';
 import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';

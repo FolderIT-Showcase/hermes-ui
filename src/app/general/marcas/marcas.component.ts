@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import { Marca } from 'app/shared/domain/marca';
+import { Marca } from '../../shared/domain/marca';
 import {ModalMarcaComponent} from './modal-marca/modal-marca.component';
 import {AbmComponent} from '../../shared/abm/abm.component';
 

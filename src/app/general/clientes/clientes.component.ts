@@ -3,14 +3,14 @@ import {
   ViewChild
 } from '@angular/core';
 import {Subject} from 'rxjs/Subject';
-import {Cliente} from 'app/shared/domain/cliente';
+import {Cliente} from '../../shared/domain/cliente';
 import {ApiService} from '../../shared/services/api.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Localidad} from '../../shared/domain/localidad';
-import {Provincia} from 'app/shared/domain/provincia';
+import {Provincia} from '../../shared/domain/provincia';
 import { Domicilio } from '../../shared/domain/domicilio';
-import { Vendedor } from 'app/shared/domain/vendedor';
-import { Zona } from 'app/shared/domain/zona';
+import { Vendedor } from '../../shared/domain/vendedor';
+import { Zona } from '../../shared/domain/zona';
 import {ListaPrecios} from '../../shared/domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../shared/domain/tipoCategoriaCliente';
