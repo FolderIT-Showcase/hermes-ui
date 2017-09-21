@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {Cliente} from '../../shared/domain/cliente';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../shared/services/api.service';
@@ -486,15 +486,6 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
     // }
   }
 
-  canDeactivate() {
-    if (this.modificado) {
-      (<any>$('#modalPuedeSalir')).modal('show');
-      return this.puedeSalir;
-    } else {
-      return true;
-    }
-  }
-
   continuar() {
     this.puedeSalir.next(true);
   }
@@ -702,5 +693,26 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.ocultarModals();
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalBuscarCliente')).modal('hide');
+    (<any>$('#modalComprobantes')).modal('hide');
+    (<any>$('#modalMediosPago')).modal('hide');
+    if (!isNullOrUndefined(this.componentRef)) {
+      this.componentRef.instance.cerrar();
+    }
+  }
+
+  canDeactivate() {
+    if (this.modificado) {
+      (<any>$('#modalPuedeSalir')).modal('show');
+      return this.puedeSalir;
+    } else {
+      return true;
+    }
   }
 }

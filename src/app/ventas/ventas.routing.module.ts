@@ -1,6 +1,5 @@
 ﻿﻿import {RouterModule, Routes} from '@angular/router';
 import {ComposicionSaldosComponent} from './composicion-saldos/composicion-saldos.component';
-import {AuthGuard} from '../shared/guards/auth.guard';
 import {NgModule} from '@angular/core';
 import {DeactivateGuardService} from '../shared/services/deactivate-guard.service';
 import {FacturasComponent} from './facturas/facturas.component';
@@ -15,18 +14,18 @@ import {PresupuestosComponent} from './presupuestos/presupuestos.component';
 import {PresupuestoComponent} from './presupuestos/presupuesto/presupuesto.component';
 
 const routes: Routes = [
-  {path: 'facturas', component: FacturasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'facturas', component: FacturasComponent, canDeactivate: [DeactivateGuardService]},
     {path: 'presupuestos/presupuesto/:id', component: PresupuestoComponent,
-      canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'presupuestos', component: PresupuestosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'ctacteclientes', component: CtaCteClientesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'notadebito', component: NotaDebitoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'notacredito', component: NotaCreditoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'impresion', component: ImpresionComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'libroiva', component: LibroIvaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'resumenventas', component: ResumenVentasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'cobros', component: CobrosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-    {path: 'composicionsaldos', component: ComposicionSaldosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+      canDeactivate: [DeactivateGuardService]},
+    {path: 'presupuestos', component: PresupuestosComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'ctacteclientes', component: CtaCteClientesComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'notadebito', component: NotaDebitoComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'notacredito', component: NotaCreditoComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'impresion', component: ImpresionComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'libroiva', component: LibroIvaComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'resumenventas', component: ResumenVentasComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'cobros', component: CobrosComponent, canDeactivate: [DeactivateGuardService]},
+    {path: 'composicionsaldos', component: ComposicionSaldosComponent, canDeactivate: [DeactivateGuardService]},
 ];
 
 @NgModule({
