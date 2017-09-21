@@ -20,6 +20,8 @@ import {Deposito} from '../../shared/domain/deposito';
 import {MedioPago} from '../../shared/domain/medioPago';
 import {Subscription} from 'rxjs/Subscription';
 import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
+import {SeleccionChequesComponent} from './seleccion-cheques/seleccion-cheques.component';
+import {Cliente} from '../../shared/domain/cliente';
 
 @Component({
   selector: 'app-ordenes-pago',
@@ -27,6 +29,7 @@ import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
   styleUrls: ['./ordenes-pago.component.css']
 })
 export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
+  chequesTerceros: Cheque[];
   marginRedondeo = 10;
   depositos: Deposito[] = [];
   listaTiposTarjeta: TipoTarjeta[] = [];
@@ -60,11 +63,14 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
   modificado = false;
   puedeSalir: Subject<Boolean> = new Subject;
   listaBancos: Banco[] = [];
+  listaClientes: Cliente[] = [];
+  listaCheques: Cheque[] = [];
   allProveedores: Proveedor[] = [];
   redondeo: string | number = 0;
   listaCuentas: CuentaBancaria[] = [];
   tarjetas: Tarjeta[] = [];
   totalCheques: string | number = 0;
+  totalChequesTerceros: string | number = 0;
   totalTarjetas: string | number = 0;
   totalDepositos: string | number = 0;
   totalEfectivo: string | number = 0;
@@ -178,6 +184,8 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.modificado = false;
     this.navbarTitleService.setTitle('Orden de Pago');
     this.cargarBancos();
+    this.cargarClientes();
+    this.cargarCheques();
     this.cargarProveedores();
     this.cargarCuentas();
     this.cargarTiposTarjeta();
@@ -500,10 +508,12 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.totalEfectivo = +this.ordenPago.importe;
     this.totalTarjetas = (0).toFixed(2);
     this.totalCheques = (0).toFixed(2);
+    this.totalChequesTerceros = (0).toFixed(2);
     this.totalDepositos = (0).toFixed(2);
     this.tarjetas = [];
     this.depositos = [];
     this.cheques = [];
+    this.chequesTerceros = [];
     this.calcularSaldo();
   }
 
@@ -519,6 +529,15 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.componentRef.instance.data.proveedor_id = this.proveedor.id;
     this.componentRef.instance.elements = this.cheques;
     this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event)));
+    this.componentRef.instance.abrir();
+  }
+
+  abrirModalChequeTerceros() {
+    this.loadComponent(SeleccionChequesComponent);
+    this.componentRef.instance.bancos = this.listaBancos;
+    this.componentRef.instance.clientes = this.listaClientes;
+    this.componentRef.instance.cheques = this.listaCheques;
+    this.subscriptions.add(this.componentRef.instance.chequesSeleccionados.subscribe( (event) => this.handleEditChequesTerceros(event)));
     this.componentRef.instance.abrir();
   }
 
@@ -546,6 +565,18 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     }));
   }
 
+  cargarClientes() {
+    this.subscriptions.add(this.apiService.get('clientes').subscribe(json => {
+      this.listaClientes = json;
+    }));
+  }
+
+  cargarCheques() {
+    this.subscriptions.add(this.apiService.get('chequesterceros/buscar', {estado: 'I'}).subscribe(json => {
+      this.listaCheques = json;
+    }));
+  }
+
   cargarProveedores() {
     this.subscriptions.add(this.apiService.get('proveedores').subscribe(json => {
       this.allProveedores = json;
@@ -566,12 +597,13 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   calcularSaldo() {
     this.total = 0;
-    this.total = +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo;
+    this.total = +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo + +this.totalChequesTerceros;
     this.redondeo = +this.ordenPago.importe - +this.total;
     this.total = this.total.toFixed(2);
     this.redondeo = this.redondeo.toFixed(2);
     this.totalDepositos = (+this.totalDepositos).toFixed(2);
     this.totalCheques = (+this.totalCheques).toFixed(2);
+    this.totalChequesTerceros = (+this.totalChequesTerceros).toFixed(2);
     this.totalTarjetas = (+this.totalTarjetas).toFixed(2);
   }
 
@@ -617,6 +649,20 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calcularSaldo();
   }
 
+  handleEditChequesTerceros(chequesTerceros: Cheque[]) {
+    this.chequesTerceros = chequesTerceros;
+    this.totalEfectivo = (+this.totalEfectivo + +this.totalChequesTerceros).toFixed(2);
+    this.totalChequesTerceros = 0;
+    this.chequesTerceros.forEach(cheque => {
+      this.totalChequesTerceros = +this.totalChequesTerceros + +cheque.importe;
+    });
+    this.totalEfectivo = (+this.totalEfectivo - +this.totalChequesTerceros).toFixed(2);
+    if (+this.totalEfectivo < this.marginRedondeo) {
+      this.totalEfectivo = (0).toFixed(2);
+    }
+    this.calcularSaldo();
+  }
+
   generarOrdenPago() {
     this.ordenPago.proveedor_id = this.proveedor.id;
     this.ordenPago.items = this.itemsOrdenPago;
@@ -634,11 +680,11 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
           break;
 
         case 'Cheque':
-          if (+this.totalCheques !== 0) {
+          if (+this.totalChequesTerceros !== 0) {
             ordenPago_valores.push({
-              importe: this.totalCheques,
+              importe: this.totalChequesTerceros,
               medios_pago_id: medioPago.id,
-              cheques: this.cheques
+              cheques_terceros: this.chequesTerceros
             });
           }
           break;

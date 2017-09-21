@@ -19,9 +19,9 @@
                #nombre="ngModel"
                required
                #typeaheadNombreProveedor>
-        <span class="input-group-btn">
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarProveedor"><i class="glyphicon glyphicon-search"></i></button>
-        </span>
+        <!--<span class="input-group-btn">-->
+          <!--<button type="button" class="btn btn-default" data-toggle="modal" data-target="#modalBuscarProveedor"><i class="glyphicon glyphicon-search"></i></button>-->
+        <!--</span>-->
       </div>
       <div [ngClass]="{'has-error': (!nombre.valid && (!nombre.pristine || nombre.touched || submitted))
       || typeaheadNombreProveedorNoResults === true
@@ -128,7 +128,7 @@
     <tr>
       <td></td>
       <td></td>
-      <td class="text-right">Totales del OrdenPago</td>
+      <td class="text-right">Totales de la Orden de Pago</td>
       <td class="text-right">{{ordenPago.importe_sub}}</td>
       <td></td>
       <td class="text-right">{{ordenPago.descuentos}}</td>
@@ -260,11 +260,11 @@
             </div>
 
             <div class="form-group row" *ngIf="medioPago.nombre === 'Cheque'">
-              <label for="cheque" class="col-sm-2 control-label">Cheque</label>
+              <label for="chequeterceros" class="col-sm-2 control-label">Cheque Terceros</label>
               <div class="col-sm-7">
-                <input readonly class="form-control text-right" [ngModel]="totalCheques" id="cheque" name="cheque">
+                <input readonly class="form-control text-right" [ngModel]="totalChequesTerceros" id="chequeterceros" name="chequeterceros">
               </div>
-              <button type="button" class="btn btn-default" (click)="abrirModalCheque()" aria-label="Agregar">Agregar</button>
+              <button type="button" class="btn btn-default" (click)="abrirModalChequeTerceros()" aria-label="Agregar">Agregar</button>
             </div>
 
             <div class="form-group row" *ngIf="medioPago.nombre === 'Tarjeta'">

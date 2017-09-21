@@ -111,7 +111,6 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
         }
       ]
     };
-    setTimeout(() => { this.mostrarTabla = true; }, 350);
 
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 

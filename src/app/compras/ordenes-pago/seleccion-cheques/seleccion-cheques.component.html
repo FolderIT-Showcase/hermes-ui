@@ -1,0 +1,56 @@
+<div class="modal fade" id="modalSeleccionCheque" tabindex="-1" role="dialog" aria-labelledby="modalSeleccionCheque" #modalSeleccionCheque>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="cerrar(null)" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+        <h4 class="modal-title">Cheques de terceros</h4>
+      </div>
+      <div class="modal-body" style="height: 450px;overflow-y: auto;">
+        <div class="form-group form-horizontal row">
+          <label for="busqueda-cliente" class="col-sm-1 control-label">Cliente</label>
+          <div class="col-sm-3">
+            <select class="form-control" id="busqueda-cliente" [ngModel]="busquedaClienteId | json" (change)="onClienteChanged($event.target.value)" name="cliente">
+              <option value="0">Todos</option>
+              <option *ngFor="let cliente of clientes" [value]="cliente.id | json">{{cliente.nombre}}</option>
+            </select>
+          </div>
+
+          <label for="busqueda-banco" class="col-sm-1 control-label">Banco</label>
+          <div class="col-sm-3">
+            <select class="form-control" id="busqueda-banco" [ngModel]="busquedaBancoId | json" (change)="onBancoChanged($event.target.value)" name="banco">
+              <option value="0">Todos</option>
+              <option *ngFor="let banco of bancos" [value]="banco.id | json">{{banco.nombre}}</option>
+            </select>
+          </div>
+        </div>
+
+        <table id="tabla-cheques-terceros" class="row-border hover table">
+          <thead>
+          <tr>
+            <th style="width: 15%">Cliente</th>
+            <th style="width: 15%">Banco</th>
+            <th>Nro. Interno</th>
+            <th>Número</th>
+            <th>Importe</th>
+            <th><input title="" type="checkbox" (click)="toggleAll($event.target.checked)">En lista</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let cheque of chequesAMostrar" class='clickable-row'>
+            <td>{{ cheque.cliente_nombre }}</td>
+            <td>{{ cheque.banco_nombre }}</td>
+            <td>{{ cheque.nro_interno }}</td>
+            <td>{{ cheque.numero }}</td>
+            <td>{{ cheque.importe }}</td>
+            <td><input title="" type="checkbox" id="lista-item-enlista" [(ngModel)]="cheque.enlista" name="activo"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="cerrar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button (click)="aceptar()" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
