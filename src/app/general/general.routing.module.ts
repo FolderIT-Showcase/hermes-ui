@@ -1,7 +1,7 @@
 ﻿import {RouterModule, Routes} from '@angular/router';
 import {ClientesComponent} from './clientes/clientes.component';
 import {NgModule} from '@angular/core';
-import {DeactivateGuardService} from '../shared/services/deactivate-guard.service';
+import {DeactivateGuardService} from '../shared/guards/can-deactivate.guard';
 import {VendedoresComponent} from './vendedores/vendedores.component';
 import {ArticulosComponent} from './articulos/articulos.component';
 import {ZonasComponent} from './zonas/zonas.component';

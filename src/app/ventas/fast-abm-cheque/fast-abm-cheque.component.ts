@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {Cheque} from '../../shared/domain/cheque';
-import {FastAbmComponent} from '../../shared/fast-abm/fast-abm.component';
+import {FastAbmComponent} from '../../shared/components/fast-abm/fast-abm.component';
 import {isNullOrUndefined} from 'util';
 import {HelperService} from '../../shared/services/helper.service';
 

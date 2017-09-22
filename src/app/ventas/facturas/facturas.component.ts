@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import { Comprobante } from '../../shared/domain/comprobante';
-import {Subject} from 'rxjs/Subject';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
 
 @Component({
   selector: 'app-facturas',
@@ -10,7 +10,9 @@ import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 })
 export class FacturasComponent implements OnInit {
   factura: Comprobante = new Comprobante;
-  puedeSalir: Subject<Boolean> = new Subject;
+  @ViewChild('puedeSalir')
+  private puedeSalirElement: PuedeSalirComponent;
+
   modificado = false;
 
   constructor(private navbarTitleService: NavbarTitleService) {}
@@ -20,19 +22,6 @@ export class FacturasComponent implements OnInit {
   }
 
   canDeactivate() {
-    if (this.modificado) {
-      (<any>$('#modalPuedeSalir')).modal('show');
-      return this.puedeSalir;
-    } else {
-      return true;
-    }
-  }
-
-  continuar() {
-    this.puedeSalir.next(true);
-  }
-
-  cancelar() {
-    this.puedeSalir.next(false);
+    return this.puedeSalirElement.check();
   }
 }

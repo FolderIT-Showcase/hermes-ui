@@ -1,6 +1,6 @@
 import {Component, ViewChild } from '@angular/core';
 import { Zona } from '../../shared/domain/zona';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {ModalZonaComponent} from './modal-zona/modal-zona.component';
 
 @Component({

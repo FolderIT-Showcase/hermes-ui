@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Articulo } from '../../shared/domain/articulo';
 import { ApiService } from '../../shared/services/api.service';
 import {ModalArticuloComponent} from './modal-articulo/modal-articulo.component';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {Observable} from 'rxjs/Observable';
 
 @Component({

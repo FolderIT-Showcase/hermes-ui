@@ -1,7 +1,7 @@
 import {Component, ViewChild} from '@angular/core';
 import { Rubro } from '../../shared/domain/rubro';
 import {ModalRubroComponent} from './modal-rubro/modal-rubro.component';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 
 @Component({
   selector: 'app-rubros',

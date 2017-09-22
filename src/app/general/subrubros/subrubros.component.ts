@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import { Subrubro } from '../../shared/domain/subrubro';
 import { ApiService } from '../../shared/services/api.service';
 import {ModalSubrubroComponent} from './modal-subrubro/modal-subrubro.component';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {Observable} from 'rxjs/Observable';
 
 @Component({

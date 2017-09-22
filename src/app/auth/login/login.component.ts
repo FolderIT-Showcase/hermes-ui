@@ -25,6 +25,9 @@ export class LoginComponent implements OnInit {
     // reset login status
     this.authenticationService.logout();
     this.navbarTitleService.setTitle('');
+
+    // fix modales bloqueantes al volver ser routeado a login
+    (<any>$('.modal-backdrop')).remove();
   }
 
   onSubmit() {

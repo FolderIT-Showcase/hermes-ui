@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
-import {HelperService} from '../services/helper.service';
+import {HelperService} from '../../services/helper.service';
 
 @Component({
   selector: 'app-fast-abm',

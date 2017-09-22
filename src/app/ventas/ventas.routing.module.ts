@@ -1,7 +1,7 @@
 ﻿﻿import {RouterModule, Routes} from '@angular/router';
 import {ComposicionSaldosComponent} from './composicion-saldos/composicion-saldos.component';
 import {NgModule} from '@angular/core';
-import {DeactivateGuardService} from '../shared/services/deactivate-guard.service';
+import {DeactivateGuardService} from '../shared/guards/can-deactivate.guard';
 import {FacturasComponent} from './facturas/facturas.component';
 import {CobrosComponent} from './cobros/cobros.component';
 import {ResumenVentasComponent} from './resumen-ventas/resumen-ventas.component';

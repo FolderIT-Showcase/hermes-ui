@@ -22,6 +22,7 @@ import {Subscription} from 'rxjs/Subscription';
 import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
 import {SeleccionChequesComponent} from './seleccion-cheques/seleccion-cheques.component';
 import {Cliente} from '../../shared/domain/cliente';
+import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
 
 @Component({
   selector: 'app-ordenes-pago',
@@ -76,6 +77,8 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
   totalEfectivo: string | number = 0;
   componentRef: any;
   mediosPago: MedioPago[] = [];
+  @ViewChild('puedeSalir')
+  private puedeSalirElement: PuedeSalirComponent;
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
@@ -486,14 +489,6 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     // }
   }
 
-  continuar() {
-    this.puedeSalir.next(true);
-  }
-
-  cancelar() {
-    this.puedeSalir.next(false);
-  }
-
   mostrarModalMediosPago() {
     (<any>$('#modalMediosPago')).modal('show');
     this.totalEfectivo = +this.ordenPago.importe;
@@ -745,11 +740,6 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   canDeactivate() {
-    if (this.modificado) {
-      (<any>$('#modalPuedeSalir')).modal('show');
-      return this.puedeSalir;
-    } else {
-      return true;
-    }
+    return this.puedeSalirElement.check();
   }
 }

@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {Banco} from '../../shared/domain/banco';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {ModalBancoComponent} from './modal-banco/modal-banco.component';
 
 @Component({

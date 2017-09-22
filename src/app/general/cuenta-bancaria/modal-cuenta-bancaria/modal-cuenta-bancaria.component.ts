@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {ModalAbmComponent} from '../../../shared/abm/modal-abm/modal-abm.component';
+import {ModalAbmComponent} from '../../../shared/components/abm/modal-abm/modal-abm.component';
 import {CuentaBancaria} from '../../../shared/domain/cuentaBancaria';
 
 @Component({
   selector: 'app-modal-cuenta-bancaria',
-  templateUrl: '../../../shared/abm/modal-abm/modal-abm.component.html',
+  templateUrl: '../../../shared/components/abm/modal-abm/modal-abm.component.html',
   styleUrls: ['./modal-cuenta-bancaria.component.css']
 })
 export class ModalCuentaBancariaComponent extends ModalAbmComponent<CuentaBancaria> {

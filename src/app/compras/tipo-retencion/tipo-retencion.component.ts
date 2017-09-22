@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
 import {ModalTipoRetencionComponent} from './modal-tipo-retencion/modal-tipo-retencion.component';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {Observable} from 'rxjs/Observable';
 
 @Component({

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {Vendedor} from '../../../shared/domain/vendedor';
-import {ModalAbmComponent} from '../../../shared/abm/modal-abm/modal-abm.component';
+import {ModalAbmComponent} from '../../../shared/components/abm/modal-abm/modal-abm.component';
 
 @Component({
   selector: 'app-modal-vendedor',
-  templateUrl: '../../../shared/abm/modal-abm/modal-abm.component.html',
+  templateUrl: '../../../shared/components/abm/modal-abm/modal-abm.component.html',
   styleUrls: ['./modal-vendedor.component.css']
 })
 export class ModalVendedorComponent extends ModalAbmComponent<Vendedor> implements OnInit {

@@ -225,23 +225,7 @@
   </div>
 </div>
 
-<div class="modal fade" id="modalPuedeSalir" tabindex="-1" role="dialog" #modalPuedeSalir>
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" (click)="cancelar()" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
-        <h4 class="modal-title">Salir</h4>
-      </div>
-      <div class="modal-body">
-        <p class="modal-title">Se perderán los cambios realizados si abandona la página, ¿está seguro de que desea continuar?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" (click)="cancelar()" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-        <button (click)="continuar()" data-dismiss="modal" class="btn btn-primary">Continuar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-puede-salir [modificado]="modificado" #puedeSalir></app-puede-salir>
 
 <div class="modal fade" id="modalMediosPago" tabindex="-1" role="dialog" aria-labelledby="modalMediosPago" #modalMediosPago>
   <div class="modal-dialog" role="document">

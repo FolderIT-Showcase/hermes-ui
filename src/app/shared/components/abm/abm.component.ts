@@ -1,11 +1,11 @@
 import {Component, ComponentFactoryResolver, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {DataTableDirective} from 'angular-datatables';
-import {ApiService} from '../services/api.service';
-import {AlertService} from '../services/alert.service';
-import {NavbarTitleService} from '../services/navbar-title.service';
+import {ApiService} from '../../services/api.service';
+import {AlertService} from '../../services/alert.service';
+import {NavbarTitleService} from '../../services/navbar-title.service';
 import {ModalAbmComponent} from './modal-abm/modal-abm.component';
-import {HelperService} from '../services/helper.service';
+import {HelperService} from '../../services/helper.service';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
