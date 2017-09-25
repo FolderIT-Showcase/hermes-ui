@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {Cheque} from '../../shared/domain/cheque';
-import {FastAbmComponent} from '../../shared/components/fast-abm/fast-abm.component';
+import {Cheque} from '../../../shared/domain/cheque';
+import {FastAbmComponent} from '../../../shared/components/fast-abm/fast-abm.component';
 import {isNullOrUndefined} from 'util';
-import {HelperService} from '../../shared/services/helper.service';
+import {HelperService} from '../../../shared/services/helper.service';
 
 @Component({
   selector: 'app-fast-abm-cheque',
@@ -24,5 +24,14 @@ export class FastAbmChequeComponent extends FastAbmComponent<Cheque> {
       element.fecha_vencimiento = HelperService.myDatePickerDateToString(element.fecha_vencimiento);
     }
     element.importe = (+element.importe).toFixed(2);
+  }
+
+  editar(elementAEditar: Cheque) {
+    this.elementOriginal = elementAEditar;
+    this.enNuevo = false;
+    this.element = JSON.parse(JSON.stringify(elementAEditar));
+    if (!isNullOrUndefined(this.element.fecha_vencimiento)) {
+      this.element.fecha_vencimiento = HelperService.stringToMyDatePickerDate(this.element.fecha_vencimiento);
+    }
   }
 }

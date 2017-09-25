@@ -33,7 +33,7 @@ export class HelperService {
   static stringToMyDatePickerDate(fecha: string) {
     const arrayfecha = fecha.split('-');
     // return fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day;
-    return { date: { year: +arrayfecha[0], month: +arrayfecha[1] + 1, day: +arrayfecha[2]}};
+    return { date: { year: +arrayfecha[0], month: +arrayfecha[1], day: +arrayfecha[2]}};
   }
 
   static defaultDataTablesLanguage() {

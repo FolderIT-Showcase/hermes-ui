@@ -1,6 +1,6 @@
 import { Component} from '@angular/core';
-import {FastAbmComponent} from '../../shared/components/fast-abm/fast-abm.component';
-import {Deposito} from '../../shared/domain/deposito';
+import {FastAbmComponent} from '../../../shared/components/fast-abm/fast-abm.component';
+import {Deposito} from '../../../shared/domain/deposito';
 
 @Component({
   selector: 'app-fast-abm-deposito',

@@ -10,7 +10,8 @@ import {HelperService} from '../../../shared/services/helper.service';
   styleUrls: ['./fast-abm-cheque-propio.component.css']
 })
 export class FastAbmChequePropioComponent extends FastAbmComponent<ChequePropio> {
-  nombreElemento = 'Cheque';
+  nombreElemento = 'Cheque Propio';
+  pluralElemento = 'Cheques Propios';
   elementClass = ChequePropio;
   element = new ChequePropio();
 

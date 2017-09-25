@@ -88,9 +88,8 @@ export class FastAbmComponent<T> implements OnInit {
 
   cancelar(f: any) {
     this.elementOriginal = null;
-    this.element = new this.elementClass();
-    this.enNuevo = true;
     f.form.reset();
+    this.nuevo();
   }
 
   format(element) { return element; }
