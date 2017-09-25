@@ -35,17 +35,21 @@ export class FastAbmComponent<T> implements OnInit {
     FastAbmComponent.open();
   }
 
+  cerrar() {
+    FastAbmComponent.close();
+  }
+
   ngOnInit() {
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     this.pluralElemento = this.pluralElemento ? this.pluralElemento : this.nombreElemento + 's';
     this.elementsCopy = JSON.parse(JSON.stringify(this.elements));
+    this.nuevo();
   }
 
   aceptar() {
     this.eventEdit.emit(this.elementsCopy);
     FastAbmComponent.close();
   }
-
 
   editar(elementAEditar: T) {
     this.elementOriginal = elementAEditar;
@@ -71,8 +75,8 @@ export class FastAbmComponent<T> implements OnInit {
         Object.assign(this.elementOriginal, elementAEnviar);
       }
       this.elementOriginal = null;
-      this.enNuevo = true;
       f.form.reset();
+      this.nuevo();
     }
   }
 

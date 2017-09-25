@@ -251,12 +251,12 @@
               <button type="button" class="btn btn-default" (click)="abrirModalChequeTerceros()" aria-label="Agregar">Agregar</button>
             </div>
 
-            <div class="form-group row" *ngIf="medioPago.nombre === 'Tarjeta'">
-              <label for="tarjeta" class="col-sm-2 control-label">Tarjeta</label>
+            <div class="form-group row" *ngIf="medioPago.nombre === 'Cheque Propio'">
+              <label for="chequespropios" class="col-sm-2 control-label">Cheque Propio</label>
               <div class="col-sm-7">
-                <input readonly class="form-control text-right" [ngModel]="totalTarjetas" id="tarjeta" name="tarjeta">
+                <input readonly class="form-control text-right" [ngModel]="totalChequesPropios" id="chequespropios" name="chequespropios">
               </div>
-              <button type="button" class="btn btn-default" (click)="abrirModalTarjeta()" aria-label="Agregar">Agregar</button>
+              <button type="button" class="btn btn-default" (click)="abrirModalChequesPropios()" aria-label="Agregar">Agregar</button>
             </div>
 
             <div class="form-group row" *ngIf="medioPago.nombre === 'Depósito'">

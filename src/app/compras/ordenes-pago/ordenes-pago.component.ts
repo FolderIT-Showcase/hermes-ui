@@ -23,6 +23,8 @@ import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
 import {SeleccionChequesComponent} from './seleccion-cheques/seleccion-cheques.component';
 import {Cliente} from '../../shared/domain/cliente';
 import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
+import {FastAbmChequePropioComponent} from './fast-abm-cheque-propio/fast-abm-cheque-propio.component';
+import {ChequePropio} from '../../shared/domain/chequePropio';
 
 @Component({
   selector: 'app-ordenes-pago',
@@ -70,8 +72,9 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
   redondeo: string | number = 0;
   listaCuentas: CuentaBancaria[] = [];
   tarjetas: Tarjeta[] = [];
-  totalCheques: string | number = 0;
+  chequesPropios: ChequePropio[] = [];
   totalChequesTerceros: string | number = 0;
+  totalChequesPropios: string | number = 0;
   totalTarjetas: string | number = 0;
   totalDepositos: string | number = 0;
   totalEfectivo: string | number = 0;
@@ -176,7 +179,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.ordenPago = new OrdenPago;
     this.ordenPago.importe = 0;
     this.ordenPago.punto_venta = '0001';
-    this.totalCheques = 0;
+    this.totalChequesPropios = 0;
     this.totalTarjetas = 0;
     this.totalDepositos = 0;
     this.totalEfectivo = 0;
@@ -493,7 +496,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     (<any>$('#modalMediosPago')).modal('show');
     this.totalEfectivo = +this.ordenPago.importe;
     this.totalTarjetas = (0).toFixed(2);
-    this.totalCheques = (0).toFixed(2);
+    this.totalChequesPropios = (0).toFixed(2);
     this.totalChequesTerceros = (0).toFixed(2);
     this.totalDepositos = (0).toFixed(2);
     this.tarjetas = [];
@@ -509,21 +512,20 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.componentRef = this.container.createComponent(factory);
   }
 
-  abrirModalCheque() {
-    // this.loadComponent(FastAbmChequeComponent);
-    this.componentRef.instance.data.bancos = this.listaBancos;
-    this.componentRef.instance.data.proveedor_id = this.proveedor.id;
-    this.componentRef.instance.elements = this.cheques;
-    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditCheques(event)));
-    this.componentRef.instance.abrir();
-  }
-
   abrirModalChequeTerceros() {
     this.loadComponent(SeleccionChequesComponent);
-    this.componentRef.instance.bancos = this.listaBancos;
+    this.componentRef.instance.bancos  = this.listaBancos;
     this.componentRef.instance.clientes = this.listaClientes;
     this.componentRef.instance.cheques = this.listaCheques;
     this.subscriptions.add(this.componentRef.instance.chequesSeleccionados.subscribe( (event) => this.handleEditChequesTerceros(event)));
+    this.componentRef.instance.abrir();
+  }
+
+  abrirModalChequesPropios() {
+    this.loadComponent(FastAbmChequePropioComponent);
+    this.componentRef.instance.data.cuentas = this.listaCuentas;
+    this.componentRef.instance.elements = this.chequesPropios;
+    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditChequesPropios(event)));
     this.componentRef.instance.abrir();
   }
 
@@ -583,13 +585,13 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   calcularSaldo() {
     this.total = 0;
-    this.total = +this.totalCheques + +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo + +this.totalChequesTerceros;
+    this.total = +this.totalTarjetas + +this.totalDepositos + +this.totalEfectivo + +this.totalChequesTerceros + +this.totalChequesPropios;
     this.redondeo = +this.ordenPago.importe - +this.total;
     this.total = this.total.toFixed(2);
     this.redondeo = this.redondeo.toFixed(2);
     this.totalDepositos = (+this.totalDepositos).toFixed(2);
-    this.totalCheques = (+this.totalCheques).toFixed(2);
     this.totalChequesTerceros = (+this.totalChequesTerceros).toFixed(2);
+    this.totalChequesPropios = (+this.totalChequesPropios).toFixed(2);
     this.totalTarjetas = (+this.totalTarjetas).toFixed(2);
   }
 
@@ -607,6 +609,20 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.calcularSaldo();
   }
 
+  private handleEditChequesPropios(chequesPropios: ChequePropio[]) {
+    this.chequesPropios = chequesPropios;
+    this.totalEfectivo = (+this.totalEfectivo + +this.totalChequesPropios).toFixed(2);
+    this.totalChequesPropios = 0;
+    this.chequesPropios.forEach(chequePropio => {
+      this.totalChequesPropios = +this.totalChequesPropios + +chequePropio.importe;
+    });
+    this.totalEfectivo = (+this.totalEfectivo - +this.totalChequesPropios).toFixed(2);
+    if (+this.totalEfectivo < this.marginRedondeo) {
+      this.totalEfectivo = (0).toFixed(2);
+    }
+    this.calcularSaldo();
+  }
+
   private handleEditDeposito(depositos: Deposito[]) {
     this.depositos = depositos;
     this.totalEfectivo = (+this.totalEfectivo + +this.totalDepositos).toFixed(2);
@@ -615,20 +631,6 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
       this.totalDepositos = +this.totalDepositos + +deposito.importe;
     });
     this.totalEfectivo = (+this.totalEfectivo - +this.totalDepositos).toFixed(2);
-    if (+this.totalEfectivo < this.marginRedondeo) {
-      this.totalEfectivo = (0).toFixed(2);
-    }
-    this.calcularSaldo();
-  }
-
-  protected handleEditCheques(cheques: Cheque[]) {
-    this.cheques = cheques;
-    this.totalEfectivo = (+this.totalEfectivo + +this.totalCheques).toFixed(2);
-    this.totalCheques = 0;
-    this.cheques.forEach(cheque => {
-      this.totalCheques = +this.totalCheques + +cheque.importe;
-    });
-    this.totalEfectivo = (+this.totalEfectivo - +this.totalCheques).toFixed(2);
     if (+this.totalEfectivo < this.marginRedondeo) {
       this.totalEfectivo = (0).toFixed(2);
     }
@@ -671,6 +673,16 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
               importe: this.totalChequesTerceros,
               medios_pago_id: medioPago.id,
               cheques_terceros: this.chequesTerceros
+            });
+          }
+          break;
+
+        case 'Cheque Propio':
+          if (+this.totalChequesPropios !== 0) {
+            ordenPago_valores.push({
+              importe: this.totalChequesPropios,
+              medios_pago_id: medioPago.id,
+              cheques_propios: this.chequesPropios
             });
           }
           break;

@@ -1,5 +1,4 @@
 ﻿import {DeactivateGuardService} from '../shared/guards/can-deactivate.guard';
-
 ﻿import {RouterModule, Routes} from '@angular/router';
 import {OrdenesPagoComponent} from './ordenes-pago/ordenes-pago.component';
 import {NgModule} from '@angular/core';
