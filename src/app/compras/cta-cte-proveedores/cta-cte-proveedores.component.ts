@@ -14,6 +14,8 @@ import {ComprobanteCompraRetencion} from '../../shared/domain/comprobanteCompraR
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
+import {OrdenPago} from '../../shared/domain/ordenPago';
+import {ItemOrdenPago} from '../../shared/domain/itemOrdenPago';
 
 @Component({
   selector: 'app-cta-cte-proveedores',
@@ -21,7 +23,6 @@ import {Subscription} from 'rxjs/Subscription';
   styleUrls: ['./cta-cte-proveedores.component.css']
 })
 export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDestroy {
-
   proveedorCtaCteSeleccionado: Proveedor;
   fechaInicioCtaCte: any;
   fechaFinCtaCte: any;
@@ -31,8 +32,8 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
   registrosCtaCte: CtaCteProveedor[];
   proveedoresCtaCte: Proveedor[];
   listaProveedores: Proveedor[];
-  comprobante: ComprobanteCompra = new ComprobanteCompra;
-  ctaCteProveedorSeleccionada: CtaCteProveedor;
+  comprobante: ComprobanteCompra | OrdenPago;
+  ctaCteProveedorSeleccionada: CtaCteProveedor = new CtaCteProveedor();
   iva = 0.21;
   saldo = 0.00;
   verComprPeriodo = '';
@@ -231,6 +232,11 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
         this.registrosCtaCte = json;
         this.saldo = 0.0;
         this.registrosCtaCte.forEach( reg => {
+          if (!isNullOrUndefined(reg.comprobante_compras)) {
+            reg.ptoventaynumero = ('000' + reg.comprobante_compras.punto_venta).slice(-4) + '-' + ('0000000' + reg.comprobante_compras.numero).slice(-8);
+          } else if (!isNullOrUndefined(reg.orden_pago)) {
+            reg.ptoventaynumero = '0';
+          }
           this.saldo += +reg.debe;
           this.saldo -= +reg.haber;
           reg.saldo = this.saldo.toFixed(2);
@@ -242,20 +248,65 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
 
   mostrarModalVer(ctaCteProveedor: CtaCteProveedor) {
     this.ctaCteProveedorSeleccionada = ctaCteProveedor;
-    this.subscriptions.add(this.apiService.get('comprobantescompra/' + ctaCteProveedor.comprobante_compras_id).subscribe( json => {
-      this.comprobante = json;
-      this.verComprProveedorTipoResp = this.tipos_responsable.find(x => x.clave === this.comprobante.proveedor_tipo_resp).nombre;
-      this.verComprTipo = this.comprobante.tipo_comp_compras.nombre;
-      this.verComprPuntoVenta = ('0000' + this.comprobante.punto_venta).slice(-4);
-      this.verComprNumero = ('00000000' + this.comprobante.numero).slice(-8);
-      this.verComprPeriodo = ('0' + this.comprobante.periodo.mes).slice(-2) + '/' + this.comprobante.periodo.anio;
-      this.verCompCCI = this.comprobante.comprobante_compra_importes;
-      this.verCompRetenciones = this.comprobante.comprobante_compra_retenciones;
-      this.verCompRetenciones.forEach(x => {
-        x.tipoRetencion = this.verCompTipoRetencion.find(t => t.id === x.retencion_id);
-      });
-      (<any>$('#modalVer')).modal('show');
-    }));
+    if (!isNullOrUndefined(ctaCteProveedor.comprobante_compras_id)) {
+      this.subscriptions.add(this.apiService.get('comprobantescompra/' + ctaCteProveedor.comprobante_compras_id).subscribe((json: ComprobanteCompra) => {
+        this.comprobante = json;
+        this.verComprProveedorTipoResp = this.tipos_responsable.find(x => x.clave === this.comprobante.proveedor_tipo_resp).nombre;
+        this.verComprTipo = this.comprobante.tipo_comp_compras.nombre;
+        this.verComprPuntoVenta = ('0000' + this.comprobante.punto_venta).slice(-4);
+        this.verComprNumero = ('00000000' + this.comprobante.numero).slice(-8);
+        this.verComprPeriodo = ('0' + this.comprobante.periodo.mes).slice(-2) + '/' + this.comprobante.periodo.anio;
+        this.verCompCCI = this.comprobante.comprobante_compra_importes;
+        this.verCompRetenciones = this.comprobante.comprobante_compra_retenciones;
+        this.verCompRetenciones.forEach(x => {
+          x.tipoRetencion = this.verCompTipoRetencion.find(t => t.id === x.retencion_id);
+        });
+        (<any>$('#modalVer')).modal('show');
+      }));
+    } else {
+      this.subscriptions.add(this.apiService.get('ordenespago/' + ctaCteProveedor.orden_pago_id).subscribe( (json: OrdenPago) => {
+        this.comprobante = json;
+        this.comprobante.tipo_comp_compras = ctaCteProveedor.tipo_comp_compras;
+        this.verComprTipo = ctaCteProveedor.tipo_comp_compras.nombre;
+        // this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
+        // this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
+        this.comprobante.importe_total = this.comprobante.importe;
+        this.comprobante.orden_pago_items.forEach((item: ItemOrdenPago) => {
+          if (!item.anticipo) {
+            item.ptoventaynumero = ('000' + item.comprobante_compra.punto_venta).slice(-4) + '-' + ('0000000' + item.comprobante_compra.numero).slice(-8);
+          }
+        });
+        const flatOrdenPagoValores = [];
+        this.comprobante.orden_pago_valores.forEach(valor => {
+          valor.nombre = valor.medio_pago.nombre;
+          switch (valor.nombre) {
+            case 'Depósito':
+              valor.depositos.forEach( deposito => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + deposito.cuenta.banco.nombre;
+                newValor.numero = deposito.numero;
+                newValor.importe = deposito.importe;
+                flatOrdenPagoValores.push(newValor);
+              });
+              break;
+            case 'Cheque Propio':
+              valor.cheques_propios.forEach( cheque => {
+                const newValor: any = {};
+                newValor.nombre = valor.nombre + ' - ' + cheque.cuenta_bancaria.banco.nombre;
+                newValor.numero = cheque.numero;
+                newValor.fecha = cheque.fecha_vencimiento;
+                newValor.importe = cheque.importe;
+                flatOrdenPagoValores.push(newValor);
+              });
+              break;
+            default:
+              flatOrdenPagoValores.push(valor);
+          }
+        });
+        this.comprobante.orden_pago_valores = flatOrdenPagoValores;
+        (<any>$('#modalVer')).modal('show');
+      }));
+    }
   }
 
   imprimirReporteCtaCte() {

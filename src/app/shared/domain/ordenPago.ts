@@ -1,5 +1,6 @@
 import {TipoComprobante} from './tipocomprobante';
 import {ItemOrdenPago} from './itemOrdenPago';
+import {TipoComprobanteCompra} from './tipoComprobanteCompra';
 
 export class OrdenPago {
   id: number;
@@ -15,8 +16,9 @@ export class OrdenPago {
   orden_pago_valores: any;
   ptoventaynumero: string;
   proveedor_nombre: string;
-  tipo_comprobante: TipoComprobante;
+  tipo_comp_compras: TipoComprobanteCompra;
   importe_total;
   importe_neto;
   importe_iva;
+  proveedor_tipo_resp;
 }

@@ -218,7 +218,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         this.comprobante = json;
         this.comprobante.numero = ('000000' + this.comprobante.numero).slice(-8);
         this.comprobante.punto_venta = ('000' + this.comprobante.punto_venta).slice(-4);
-       this.comprobante.items.forEach(item => {
+        this.comprobante.items.forEach(item => {
           item.nombre = item.articulo.nombre;
           item.codigo = item.articulo.codigo;
           item.porcentaje_descuento = '0.00';

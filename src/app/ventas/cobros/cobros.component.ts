@@ -697,6 +697,7 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
     (<any>$('#modalBuscarCliente')).modal('hide');
     (<any>$('#modalComprobantes')).modal('hide');
     (<any>$('#modalMediosPago')).modal('hide');
+    (<any>$('.modal-backdrop')).remove();
     if (!isNullOrUndefined(this.componentRef)) {
       this.componentRef.instance.cerrar();
     }

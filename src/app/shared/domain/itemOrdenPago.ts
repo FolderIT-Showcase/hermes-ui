@@ -9,7 +9,7 @@ export class ItemOrdenPago {
   descuento: number | string;
   porcentaje_descuento: number | string;
   importe_total: number | string;
-  comprobante: ComprobanteCompra;
+  comprobante_compra: ComprobanteCompra;
   ptoventaynumero: string;
   tipoPtoVtaYNumero: string;
   anticipo: boolean;

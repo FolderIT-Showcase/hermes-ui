@@ -304,7 +304,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private mostrarModalComprobantes() {
     this.comprobantesAMostrar = this.comprobantes.filter(reg => {
-      return !this.itemsOrdenPago.find(item => item.comprobante.id === reg.id);
+      return !this.itemsOrdenPago.find(item => item.comprobante_compra.id === reg.id);
     });
     const anticipo = new ComprobanteCompra();
     anticipo.saldo = 999999999;
@@ -337,7 +337,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   agregarItem(comprobante: ComprobanteCompra) {
     const item = new ItemOrdenPago();
-    item.comprobante = comprobante;
+    item.comprobante_compra = comprobante;
     if (comprobante.tipo_comp_compras.nombre !== 'Anticipo') {
       item.comprobante_compra_id = comprobante.id;
       item.importe = (+comprobante.saldo).toFixed(2);
@@ -383,11 +383,11 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
   onImporteChanged(item: ItemOrdenPago, value) {
     item.importe = +value;
     item.importe = parseFloat(item.importe.toString());
-    if (+item.importe > +item.comprobante.saldo) {
-      item.importe = +item.comprobante.saldo;
+    if (+item.importe > +item.comprobante_compra.saldo) {
+      item.importe = +item.comprobante_compra.saldo;
       const index = this.itemsOrdenPago.indexOf(item);
       if (index !== -1) {
-        this.tabla.nativeElement.children[2].children[index].children[3].children[0].value = item.comprobante.saldo;
+        this.tabla.nativeElement.children[2].children[index].children[3].children[0].value = item.comprobante_compra.saldo;
       }
     }
     if (+item.importe < 0) {
@@ -746,6 +746,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     (<any>$('#modalBuscarProveedor')).modal('hide');
     (<any>$('#modalComprobantes')).modal('hide');
     (<any>$('#modalMediosPago')).modal('hide');
+    (<any>$('.modal-backdrop')).remove();
     if (!isNullOrUndefined(this.componentRef)) {
       this.componentRef.instance.cerrar();
     }

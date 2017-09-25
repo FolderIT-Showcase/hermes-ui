@@ -96,8 +96,8 @@
     </thead>
     <tbody>
     <tr *ngFor="let item of itemsOrdenPago; trackBy:customTrackBy; let i = index;">
-      <td class="text-center">{{item.comprobante.tipo_comp_compras.nombre}}</td>
-      <td class="text-center">{{item.comprobante.ptoventaynumero}}</td>
+      <td class="text-center">{{item.comprobante_compra.tipo_comp_compras.nombre}}</td>
+      <td class="text-center">{{item.comprobante_compra.ptoventaynumero}}</td>
       <td class="typeaheadcontainer">
         <input class="typeaheadcontrol text-left" [(ngModel)]="item.descripcion" [name]="'item-descripcion' + i" (keydown.Enter)="onDescripcionEnterPressed(item)" title="descripción">
       </td>
@@ -120,7 +120,7 @@
 
       <td class="text-center">
         <button type="button" *ngIf="i === itemsOrdenPago.length - 1" (click)="mostrarModalComprobantes()" class="glyphicon glyphicon-plus green"></button>
-        <button type="button" *ngIf="!!item.comprobante" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
+        <button type="button" *ngIf="!!item.comprobante_compra" (click)="quitarItem(item)" class="glyphicon glyphicon-remove red"></button>
       </td>
     </tr>
     </tbody>

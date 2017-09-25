@@ -39,11 +39,11 @@
 
         <div [hidden]="!fechaSeleccionadaCtaCte" class="col-sm-8" style="padding-left: 0; padding-right: 0">
           <div  class="col-sm-5">
-            <my-date-picker id="cta-cte-fecha-inicio" [(ngModel)]="fechaInicioCtaCte" name="fecha-inicio" [options]="myDatePickerOptions"></my-date-picker>
+            <my-date-picker id="cta-cte-fecha-inicio" [(ngModel)]="fechaInicioCtaCte" [name]="'fecha-inicio'" [options]="myDatePickerOptions"></my-date-picker>
           </div>
 
           <div class="col-sm-5">
-            <my-date-picker id="cta-cte-fecha-fin" [(ngModel)]="fechaFinCtaCte" name="fecha-fin" [options]="myDatePickerOptions"></my-date-picker>
+            <my-date-picker id="cta-cte-fecha-fin" [(ngModel)]="fechaFinCtaCte" [name]="'fecha-fin'" [options]="myDatePickerOptions"></my-date-picker>
           </div>
         </div>
         <div *ngIf="(rangoFechaInvalido() && fechaSeleccionadaCtaCte)" class="help-block col-sm-12">La fecha de inicio no puede ser posterior a la fecha de fin</div>
@@ -69,7 +69,7 @@
     <tr *ngFor="let reg of registrosCtaCte">
       <td class="text-center" width="15%">{{reg.fecha}}</td>
       <td width="18%">{{reg.tipo_comp_compras.nombre}}</td>
-      <td class="text-center" width="12%">{{('0000'+ (reg.comprobante_compras.punto_venta).toString()).slice(-4)}}-{{('00000000'+ (reg.comprobante_compras.numero).toString()).slice(-8)}}</td>
+      <td class="text-center" width="12%">{{reg.ptoventaynumero}}</td>
       <td class="text-right" width="15%">$ {{reg.debe | number: '1.2-2'}}</td>
       <td class="text-right" width="15%">$ {{reg.haber | number: '1.2-2'}}</td>
       <td class="text-right" width="15%">$ {{reg.saldo | number: '1.2-2'}}</td>
@@ -104,7 +104,7 @@
       </div>
       <form class="form-horizontal" #f="ngForm">
         <div class="modal-body">
-          <div class="form-group row">
+<!--          <div class="form-group row">
             <div class="col-sm-12">
               <label for="comprobante-proveedor-nombre" class="col-sm-2 control-label">Proveedor</label>
               <div class="col-sm-3">
@@ -121,7 +121,7 @@
                 <input class="form-control" name="comprobante-proveedor-cuit" id="comprobante-proveedor-cuit" [ngModel]="comprobante.proveedor_cuit" readonly>
               </div>
             </div>
-          </div>
+          </div>-->
 
           <div class="form-group row">
             <div class="col-sm-12">
@@ -152,13 +152,13 @@
 
               <label for="comprobante-fecha" class="col-sm-1 control-label">Fecha</label>
               <div class="col-sm-3">
-                <input class="form-control" name="comprobante-fecha" id="comprobante-fecha" [ngModel]="comprobante.fecha | date:'yyyy-MM-dd'" (ngModelChange)="comprobante.fecha = $event" readonly>
+                <input class="form-control" name="comprobante-fecha" id="comprobante-fecha" [ngModel]="comprobante.fecha | date:'yyyy-MM-dd'"  (ngModelChange)="comprobante.fecha = $event" readonly>
               </div>
             </div>
           </div>
 
           <!--TODO mostrar otra cosa si es nota de crédito o débito-->
-          <div style="height: 150px;overflow-y: auto;">
+          <div style="height: 150px;overflow-y: auto;" *ngIf="ctaCteProveedorSeleccionada.comprobante_compras_id">
             <table id="tablemodal" class="row-border hover table" >
               <thead>
               <tr>
@@ -184,6 +184,53 @@
               </tbody>
             </table>
           </div>
+
+          <ng-container *ngIf="ctaCteProveedorSeleccionada.orden_pago_id">
+            <h4>Valores</h4>
+            <div style="height: 110px;overflow-y: auto;" >
+              <table id="tablemodalordenpago" class="row-border hover table" >
+                <thead>
+                <tr>
+                  <th class="text-center">Valor</th>
+                  <th class="text-center">Número</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Importe</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of comprobante.orden_pago_valores">
+                  <td class="text-left">{{item.nombre}}</td>
+                  <td class="text-center">{{item.numero}}</td>
+                  <td class="text-center">{{item.fecha}}</td>
+                  <td class="text-right">{{item.importe | number:'1.2-2'}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h4>Comprobantes</h4>
+            <div style="height: 110px;overflow-y: auto;">
+              <table id="tablemodalordenpagoitems" class="row-border hover table" >
+                <thead>
+                <tr>
+                  <th class="text-center">Tipo</th>
+                  <th class="text-center">Número</th>
+                  <th class="text-center">Fecha</th>
+                  <th class="text-center">Importe Pagado</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let item of comprobante.orden_pago_items">
+                  <td class="text-left">{{item.anticipo? 'Anticipo' : item.comprobante_compra.tipo_comp_compras.nombre}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.ptoventaynumero}}</td>
+                  <td class="text-center">{{item.anticipo? '' : item.comprobante_compra.fecha}}</td>
+                  <td class="text-right">{{item.importe_total | number:'1.2-2'}}</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </ng-container>
+
           <div class="form-group row" [hidden]="!regexTipoA.test(comprobante.tipo_comp_compras.codigo)">
             <label for="comprobante-subtotal" class="col-sm-2  col-sm-offset-8 control-label">Subtotal</label>
             <div class="col-sm-2">
