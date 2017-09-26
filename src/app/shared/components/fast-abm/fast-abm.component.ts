@@ -13,6 +13,7 @@ export class FastAbmComponent<T> implements OnInit {
   @Input() tableHeader: TemplateRef<any>;
   @Input() tableBody: TemplateRef<any>;
   @Input() elements: any[] = [];
+  @Input() cobro = true;
   @Output() eventEdit = new EventEmitter<any>();
   element: T;
   elementOriginal: T;

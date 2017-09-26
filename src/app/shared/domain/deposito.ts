@@ -1,6 +1,7 @@
 export class Deposito {
   id: number;
   cliente_id: number;
+  proveedor_id: number;
   cliente_nombre: string;
   cuenta_id: number;
   cuenta_numero: string;

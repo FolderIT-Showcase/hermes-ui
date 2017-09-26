@@ -16,6 +16,7 @@ import {TextMaskModule} from 'angular2-text-mask';
 import {UniquePipe} from './pipes/unique.pipe';
 import {AsyncValidatorDirective} from './async.validator';
 import { PuedeSalirComponent } from './components/puede-salir/puede-salir.component';
+import {FastAbmDepositoComponent} from './components/fast-abm-deposito/fast-abm-deposito.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { PuedeSalirComponent } from './components/puede-salir/puede-salir.compon
     ProgressBarComponent,
     UniquePipe,
     PuedeSalirComponent,
+    FastAbmDepositoComponent,
   ],
   exports: [
     AsyncValidatorDirective,
@@ -61,6 +63,10 @@ import { PuedeSalirComponent } from './components/puede-salir/puede-salir.compon
     ProgressBarComponent,
     UniquePipe,
     PuedeSalirComponent,
+    FastAbmDepositoComponent,
+  ],
+  entryComponents: [
+    FastAbmDepositoComponent
   ]
 })
 export class SharedModule { }

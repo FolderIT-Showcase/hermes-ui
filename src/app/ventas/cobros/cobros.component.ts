@@ -19,7 +19,7 @@ import {CuentaBancaria} from '../../shared/domain/cuentaBancaria';
 import {Tarjeta} from '../../shared/domain/tarjeta';
 import {Deposito} from '../../shared/domain/deposito';
 import {FastAbmChequeComponent} from './fast-abm-cheque/fast-abm-cheque.component';
-import {FastAbmDepositoComponent} from './fast-abm-deposito/fast-abm-deposito.component';
+import {FastAbmDepositoComponent} from '../../shared/components/fast-abm-deposito/fast-abm-deposito.component';
 import {FastAbmTarjetaComponent} from './fast-abm-tarjeta/fast-abm-tarjeta.component';
 import {MedioPago} from '../../shared/domain/medioPago';
 import {Subscription} from 'rxjs/Subscription';

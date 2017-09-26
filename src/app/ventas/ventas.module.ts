@@ -14,7 +14,6 @@ import {ResumenVentasComponent} from './resumen-ventas/resumen-ventas.component'
 import {ArticuloTypeaheadComponent} from './facturas/typeahead/articuloTypeahead.component';
 import {ArticuloCodigoTypeaheadComponent} from './facturas/typeahead/articuloCodigoTypeahead.component';
 import {FastAbmChequeComponent} from './cobros/fast-abm-cheque/fast-abm-cheque.component';
-import {FastAbmDepositoComponent} from './cobros/fast-abm-deposito/fast-abm-deposito.component';
 import {FastAbmTarjetaComponent} from './cobros/fast-abm-tarjeta/fast-abm-tarjeta.component';
 import {NotaComponent} from './nota-credito/nota/nota.component';
 import {SharedModule} from '../shared/shared.module';
@@ -22,7 +21,6 @@ import {VentasRoutingModule} from './ventas.routing.module';
 
 const modals = [
   FastAbmTarjetaComponent,
-  FastAbmDepositoComponent,
   FastAbmChequeComponent
 ];
 

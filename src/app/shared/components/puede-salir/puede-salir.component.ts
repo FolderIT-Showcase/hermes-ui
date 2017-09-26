@@ -1,4 +1,4 @@
-import {Component, Input, OnDestroy} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 
 @Component({
@@ -6,7 +6,7 @@ import {Subject} from 'rxjs/Subject';
   templateUrl: './puede-salir.component.html',
   styleUrls: ['./puede-salir.component.css']
 })
-export class PuedeSalirComponent implements OnDestroy {
+export class PuedeSalirComponent implements OnInit, OnDestroy {
   @Input() modificado: boolean;
   puedeSalir: Subject<Boolean> = new Subject;
 
@@ -16,6 +16,12 @@ export class PuedeSalirComponent implements OnDestroy {
 
   static close() {
     (<any>$('#modalPuedeSalir')).modal('hide');
+  }
+
+  ngOnInit() {
+    (<any>$('#modalPuedeSalir')).on('hidden.bs.modal', () => {
+      this.puedeSalir.next(false);
+    });
   }
 
   check() {
@@ -37,6 +43,6 @@ export class PuedeSalirComponent implements OnDestroy {
 
   ngOnDestroy() {
     PuedeSalirComponent.close();
-    this.puedeSalir.unsubscribe();
+    this.puedeSalir.complete();
   }
 }

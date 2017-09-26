@@ -10,16 +10,16 @@
           <form class="form-horizontal" #ff="ngForm">
             <div>
               <div class="form-group row">
-                <label for="deposito-cuenta" class="col-sm-4 required control-label">Cuenta Bancaria</label>
+                <label for="deposito-cuenta" class="col-sm-4 control-label" [ngClass]="{required: cobro || element.tipo === 'T'}">Cuenta Bancaria</label>
                 <div class="col-sm-8 has-feedback"
                      [ngClass]="{'has-error': !cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted),
-            'has-success': cuenta.valid}">
+            'has-success': cuenta.valid && (cobro || element.tipo === 'T')}">
                   <div class="select-style">
-                    <select class="form-control" id="deposito-cuenta" [(ngModel)]="element.cuenta_id" name="cuenta" #cuenta="ngModel" required >
+                    <select class="form-control" id="deposito-cuenta" [(ngModel)]="element.cuenta_id" name="cuenta" #cuenta="ngModel" [required]="cobro || element.tipo === 'T'" >
                       <option *ngFor="let cuenta of data.cuentas" [ngValue]="cuenta.id">{{cuenta.numero}}</option>
                     </select>
                   </div>
-                  <span *ngIf="cuenta.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
+                  <span *ngIf="cuenta.valid  && (cobro || element.tipo === 'T')" class="glyphicon glyphicon-ok form-control-feedback"></span>
                   <span *ngIf="cuenta.errors !== null && (!cuenta.pristine || cuenta.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <div *ngIf="!cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted)" class="help-block">Seleccione una cuenta bancaria</div>
                 </div>

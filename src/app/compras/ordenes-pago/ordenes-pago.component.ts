@@ -25,6 +25,7 @@ import {Cliente} from '../../shared/domain/cliente';
 import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
 import {FastAbmChequePropioComponent} from './fast-abm-cheque-propio/fast-abm-cheque-propio.component';
 import {ChequePropio} from '../../shared/domain/chequePropio';
+import {FastAbmDepositoComponent} from '../../shared/components/fast-abm-deposito/fast-abm-deposito.component';
 
 @Component({
   selector: 'app-ordenes-pago',
@@ -529,17 +530,9 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.componentRef.instance.abrir();
   }
 
-  abrirModalTarjeta() {
-    // this.loadComponent(FastAbmTarjetaComponent);
-    this.componentRef.instance.data.tipos = this.listaTiposTarjeta;
-    this.componentRef.instance.data.proveedor_id = this.proveedor.id;
-    this.componentRef.instance.elements = this.tarjetas;
-    this.subscriptions.add(this.componentRef.instance.eventEdit.subscribe( (event) => this.handleEditTarjeta(event)));
-    this.componentRef.instance.abrir();
-  }
-
   abrirModalDeposito() {
-    // this.loadComponent(FastAbmDepositoComponent);
+    this.loadComponent(FastAbmDepositoComponent);
+    this.componentRef.instance.cobro = false;
     this.componentRef.instance.data.cuentas  = this.listaCuentas;
     this.componentRef.instance.data.proveedor_id = this.proveedor.id;
     this.componentRef.instance.elements = this.depositos;
@@ -593,20 +586,6 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.totalChequesTerceros = (+this.totalChequesTerceros).toFixed(2);
     this.totalChequesPropios = (+this.totalChequesPropios).toFixed(2);
     this.totalTarjetas = (+this.totalTarjetas).toFixed(2);
-  }
-
-  private handleEditTarjeta(tarjetas: Tarjeta[]) {
-    this.tarjetas = tarjetas;
-    this.totalEfectivo = (+this.totalEfectivo + +this.totalTarjetas).toFixed(2);
-    this.totalTarjetas = 0;
-    this.tarjetas.forEach(tarjeta => {
-      this.totalTarjetas = +this.totalTarjetas + +tarjeta.importe;
-    });
-    this.totalEfectivo = (+this.totalEfectivo - +this.totalTarjetas).toFixed(2);
-    if (+this.totalEfectivo < this.marginRedondeo) {
-      this.totalEfectivo = (0).toFixed(2);
-    }
-    this.calcularSaldo();
   }
 
   private handleEditChequesPropios(chequesPropios: ChequePropio[]) {
