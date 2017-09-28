@@ -4,5 +4,3 @@ export class Banco {
   id: number;
   @Required @MaxLength(50) nombre: string;
 }
-
-
