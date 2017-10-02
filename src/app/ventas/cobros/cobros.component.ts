@@ -9,7 +9,7 @@ import {Cobro} from '../../shared/domain/cobro';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
 import {Comprobante} from '../../shared/domain/comprobante';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subject} from 'rxjs/Subject';
 import {Banco} from '../../shared/domain/banco';
@@ -80,7 +80,7 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private resolver: ComponentFactoryResolver) {
     this.clientes = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
@@ -182,7 +182,7 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
     this.depositos = [];
     this.submitted = false;
     this.modificado = false;
-    this.navbarTitleService.setTitle('Cobro');
+    this.titleService.setTitle('Cobro');
     this.cargarBancos();
     this.cargarClientes();
     this.cargarCuentas();

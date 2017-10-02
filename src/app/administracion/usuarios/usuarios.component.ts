@@ -6,7 +6,7 @@ import { ApiService } from '../../shared/services/api.service';
 import { AlertService } from '../../shared/services/alert.service';
 import { Rubro } from '../../shared/domain/rubro';
 import {UserService} from '../../shared/services/user.service';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Rol} from '../../shared/domain/rol';
 import {Subscription} from 'rxjs/Subscription';
@@ -39,7 +39,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
               private alertService: AlertService,
               private userService: UserService,
               private changeDetectionRef: ChangeDetectorRef,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -65,7 +65,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de Usuarios');
+    this.titleService.setTitle('Gestión de Usuarios');
     this.cargarUsuarios();
     this.cargarRoles();
   }

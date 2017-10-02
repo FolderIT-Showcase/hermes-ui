@@ -8,7 +8,7 @@ import {Subject} from 'rxjs/Subject';
 import {isNullOrUndefined} from 'util';
 import {AlertService} from '../../shared/services/alert.service';
 import {DataTableDirective} from 'angular-datatables';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -46,7 +46,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -81,7 +81,7 @@ export class PeriodosFiscalesComponent implements OnInit, AfterViewChecked, OnDe
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de Períodos Fiscales');
+    this.titleService.setTitle('Gestión de Períodos Fiscales');
     this.meses = [
       {clave: 1, nombre: 'Enero'},
       {clave: 2, nombre: 'Febrero'},

@@ -11,7 +11,7 @@ import {ApiService} from './shared/services/api.service';
 import { NavbarComponent } from './shared/components/navbar/navbar.component';
 import { SidebarComponent } from './shared/components/sidebar/sidebar.component';
 import {DeactivateGuardService} from './shared/guards/can-deactivate.guard';
-import {NavbarTitleService} from './shared/services/navbar-title.service';
+import {TitleService} from './shared/services/title.service';
 import {HelperService} from './shared/services/helper.service';
 import {ValidatorsService} from './shared/services/validators.service';
 import {SharedModule} from './shared/shared.module';
@@ -38,7 +38,7 @@ import {ImpresionService} from './shared/services/impresion.service';
     ApiService,
     DeactivateGuardService,
     ImpresionService,
-    NavbarTitleService,
+    TitleService,
     HelperService,
     ValidatorsService,
     { provide: LOCALE_ID, useValue: 'es-AR' }

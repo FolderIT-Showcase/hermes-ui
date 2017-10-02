@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import { Comprobante } from '../../shared/domain/comprobante';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
 
 @Component({
@@ -15,10 +15,10 @@ export class FacturasComponent implements OnInit {
 
   modificado = false;
 
-  constructor(private navbarTitleService: NavbarTitleService) {}
+  constructor(private titleService: TitleService) {}
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Factura');
+    this.titleService.setTitle('Factura');
   }
 
   canDeactivate() {

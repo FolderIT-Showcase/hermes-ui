@@ -3,7 +3,7 @@ import {ApiService} from '../../shared/services/api.service';
 import {Comprobante} from '../../shared/domain/comprobante';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {IMyDpOptions} from 'mydatepicker';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {DataTableDirective} from 'angular-datatables';
 import {Subject} from 'rxjs/Subject';
 import {HelperService} from '../../shared/services/helper.service';
@@ -37,7 +37,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) {}
 
   ngOnInit() {
@@ -92,7 +92,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
         'width': '10%'
       }]
     };
-    this.navbarTitleService.setTitle('Impresión de Comprobantes');
+    this.titleService.setTitle('Impresión de Comprobantes');
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.fechaSeleccionada = false;

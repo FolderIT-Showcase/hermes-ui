@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ApiService} from '../../shared/services/api.service';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ImpresionService} from '../../shared/services/impresion.service';
 
@@ -18,11 +18,11 @@ export class LibroIvaComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Libro de IVA Compras/Ventas');
+    this.titleService.setTitle('Libro de IVA Compras/Ventas');
   }
 
   imprimir(f: any) {

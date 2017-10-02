@@ -1,5 +1,5 @@
 import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../shared/services/api.service';
 import {Cliente} from '../../shared/domain/cliente';
@@ -32,11 +32,11 @@ export class CarteraValoresComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Cartera de Valores');
+    this.titleService.setTitle('Cartera de Valores');
 
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     this.cargarClientes();

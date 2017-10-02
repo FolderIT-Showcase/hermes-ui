@@ -14,7 +14,7 @@ import { Zona } from '../../shared/domain/zona';
 import {ListaPrecios} from '../../shared/domain/listaPrecios';
 import {isNullOrUndefined} from 'util';
 import {TipoCategoriaCliente} from '../../shared/domain/tipoCategoriaCliente';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {ListadoClientesComponent} from './listado-clientes/listado-clientes.component';
 import {Subscription} from 'rxjs/Subscription';
@@ -54,7 +54,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService) {}
 
   ngAfterViewChecked() {
 // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -92,7 +92,7 @@ export class ClientesComponent implements OnInit, AfterViewChecked, OnDestroy {
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de Clientes');
+    this.titleService.setTitle('Gestión de Clientes');
     this.tipos_responsable = [
       {clave: 'RI', nombre: 'Responsable Inscripto'},
       {clave: 'NR', nombre: 'No Responsable'},

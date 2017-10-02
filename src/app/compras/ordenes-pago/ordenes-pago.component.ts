@@ -8,7 +8,7 @@ import {ItemOrdenPago} from '../../shared/domain/itemOrdenPago';
 import {OrdenPago} from '../../shared/domain/ordenPago';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subject} from 'rxjs/Subject';
 import {Banco} from '../../shared/domain/banco';
@@ -87,7 +87,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private resolver: ComponentFactoryResolver) {
     this.proveedores = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('proveedores/nombre/' + this.proveedorAsync).subscribe(json => {
@@ -189,7 +189,7 @@ export class OrdenesPagoComponent implements OnInit, AfterViewInit, OnDestroy {
     this.depositos = [];
     this.submitted = false;
     this.modificado = false;
-    this.navbarTitleService.setTitle('Orden de Pago');
+    this.titleService.setTitle('Orden de Pago');
     this.cargarBancos();
     this.cargarClientes();
     this.cargarCheques();

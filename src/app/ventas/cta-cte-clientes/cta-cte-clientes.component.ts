@@ -7,7 +7,7 @@ import {Comprobante} from '../../shared/domain/comprobante';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Cobro} from '../../shared/domain/cobro';
 import {Subscription} from 'rxjs/Subscription';
@@ -41,7 +41,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   ctaCteClienteSeleccionada: CtaCteCliente = new CtaCteCliente();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) {
     this.comprobante = new Comprobante;
     this.comprobante.tipo_comprobante = new TipoComprobante;
@@ -114,7 +114,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
         'width': '10%'
       } ]
     };
-    this.navbarTitleService.setTitle('Cuentas Corrientes de Clientes');
+    this.titleService.setTitle('Cuentas Corrientes de Clientes');
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.clienteCtaCteSeleccionado = new Cliente;

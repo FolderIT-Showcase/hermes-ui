@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {AuthenticationService} from '../../shared/services/authentication.service';
 import {AlertService} from '../../shared/services/alert.service';
 import {User} from '../../shared/domain/user';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 
 @Component({
   selector: 'app-login',
@@ -18,13 +18,13 @@ export class LoginComponent implements OnInit {
   constructor(private router: Router,
               private authenticationService: AuthenticationService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {
+              private titleService: TitleService) {
   }
 
   ngOnInit() {
     // reset login status
     this.authenticationService.logout();
-    this.navbarTitleService.setTitle('');
+    this.titleService.setTitle('Iniciar Sesión');
 
     // fix modales bloqueantes al volver ser routeado a login
     (<any>$('.modal-backdrop')).remove();

@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {AlertService} from '../../shared/services/alert.service';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {ApiService} from '../../shared/services/api.service';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -24,12 +24,12 @@ export class RecuperarPasswordComponent implements OnInit, OnDestroy {
   constructor(private router: Router,
               private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {
+              private titleService: TitleService) {
   }
 
   ngOnInit() {
     // reset login status
-    this.navbarTitleService.setTitle('');
+    this.titleService.setTitle('Recuperar Contraseña');
   }
 
   enviarCodigo(f1: HTMLFormElement) {

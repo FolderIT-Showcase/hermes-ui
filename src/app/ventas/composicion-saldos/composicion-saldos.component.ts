@@ -3,7 +3,7 @@ import {Zona} from '../../shared/domain/zona';
 import {Vendedor} from '../../shared/domain/vendedor';
 import {ApiService} from '../../shared/services/api.service';
 import {Cliente} from '../../shared/domain/cliente';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {Subscription} from 'rxjs/Subscription';
 import {ImpresionService} from '../../shared/services/impresion.service';
 
@@ -22,11 +22,11 @@ export class ComposicionSaldosComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Imprimir Reporte Composición de Saldos');
+    this.titleService.setTitle('Imprimir Reporte Composición de Saldos');
     this.cargarVendedores();
     this.cargarZonas();
     this.cargarClientes();

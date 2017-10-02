@@ -10,7 +10,7 @@ import {ItemListaPrecios} from '../../shared/domain/itemListaPrecios';
 import {Subrubro} from '../../shared/domain/subrubro';
 import {Rubro} from '../../shared/domain/rubro';
 import {Marca} from '../../shared/domain/marca';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -59,7 +59,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -97,7 +97,7 @@ export class ListaPreciosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de Listas de Precios');
+    this.titleService.setTitle('Gestión de Listas de Precios');
     this.subscriptions.add(this.apiService.get('listaprecios')
       .subscribe(json => {
           this.listasPrecios = json;

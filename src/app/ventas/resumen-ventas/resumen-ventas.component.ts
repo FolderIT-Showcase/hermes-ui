@@ -1,6 +1,6 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {ApiService} from '../../shared/services/api.service';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {HelperService} from '../../shared/services/helper.service';
@@ -22,11 +22,11 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Imprimir Reportes Resumen de Ventas');
+    this.titleService.setTitle('Imprimir Reportes Resumen de Ventas');
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     const date = new Date();

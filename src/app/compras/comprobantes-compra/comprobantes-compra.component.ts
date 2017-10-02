@@ -14,7 +14,7 @@ import {IMyDpOptions} from 'mydatepicker';
 import {ComprobanteCompraImportes} from '../../shared/domain/comprobanteCompraImportes';
 import {ComprobanteCompraRetencion} from '../../shared/domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -72,7 +72,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
 
   constructor(private apiService: ApiService,
               private cdRef: ChangeDetectorRef,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService) {}
 
   ngAfterViewChecked() {
     // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -123,7 +123,7 @@ export class ComprobantesCompraComponent implements OnInit, AfterViewChecked, On
       {clave: 'PE', nombre: 'Proveedor del Exterior'},
       {clave: 'CE', nombre: 'Cliente del Exterior'}
     ];
-    this.navbarTitleService.setTitle('Gestión de Comprobantes de Compra');
+    this.titleService.setTitle('Gestión de Comprobantes de Compra');
 
     const options = JSON.parse(JSON.stringify(this.myDatePickerOptions));
     const today = new Date();

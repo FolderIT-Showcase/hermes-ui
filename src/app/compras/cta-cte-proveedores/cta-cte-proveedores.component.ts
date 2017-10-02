@@ -7,7 +7,7 @@ import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
 import {TipoComprobanteCompra} from '../../shared/domain/tipoComprobanteCompra';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {ComprobanteCompraImportes} from '../../shared/domain/comprobanteCompraImportes';
 import {ComprobanteCompraRetencion} from '../../shared/domain/comprobanteCompraRetencion';
 import {TipoRetencion} from '../../shared/domain/tipoRetencion';
@@ -54,7 +54,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private impresionService: ImpresionService) {
     this.comprobante = new ComprobanteCompra;
     this.comprobante.tipo_comp_compras = new TipoComprobanteCompra;
@@ -126,7 +126,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
         'width': '10%'
       } ]
     };
-    this.navbarTitleService.setTitle('Cuentas Corrientes de Proveedores');
+    this.titleService.setTitle('Cuentas Corrientes de Proveedores');
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     this.tipos_responsable = [
