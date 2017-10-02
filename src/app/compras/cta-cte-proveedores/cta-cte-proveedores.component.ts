@@ -5,7 +5,6 @@ import {ApiService} from '../../shared/services/api.service';
 import {Observable} from 'rxjs/Observable';
 import {ComprobanteCompra} from '../../shared/domain/comprobanteCompra';
 import {TipoComprobanteCompra} from '../../shared/domain/tipoComprobanteCompra';
-import {AlertService} from '../../shared/services/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
@@ -16,6 +15,7 @@ import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
 import {OrdenPago} from '../../shared/domain/ordenPago';
 import {ItemOrdenPago} from '../../shared/domain/itemOrdenPago';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-cta-cte-proveedores',
@@ -54,8 +54,8 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {
+              private navbarTitleService: NavbarTitleService,
+              private impresionService: ImpresionService) {
     this.comprobante = new ComprobanteCompra;
     this.comprobante.tipo_comp_compras = new TipoComprobanteCompra;
   }
@@ -327,13 +327,7 @@ export class CtaCteProveedoresComponent implements OnInit, AfterViewInit, OnDest
       }
     ).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

@@ -5,13 +5,13 @@ import {ApiService} from '../../shared/services/api.service';
 import {Observable} from 'rxjs/Observable';
 import {Comprobante} from '../../shared/domain/comprobante';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
-import {AlertService} from '../../shared/services/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Cobro} from '../../shared/domain/cobro';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-cta-cte-clientes',
@@ -41,8 +41,8 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
   ctaCteClienteSeleccionada: CtaCteCliente = new CtaCteCliente();
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {
+              private navbarTitleService: NavbarTitleService,
+              private impresionService: ImpresionService) {
     this.comprobante = new Comprobante;
     this.comprobante.tipo_comprobante = new TipoComprobante;
     this.comprobante.importe_total = 0;
@@ -200,13 +200,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
       }
     ).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }
@@ -309,13 +303,7 @@ export class CtaCteClientesComponent implements OnInit, AfterViewInit, OnDestroy
     }
     this.subscriptions.add(obs.subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

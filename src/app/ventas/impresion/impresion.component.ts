@@ -2,7 +2,6 @@ import {AfterViewInit, Component, HostListener, OnDestroy, OnInit, ViewChild} fr
 import {ApiService} from '../../shared/services/api.service';
 import {Comprobante} from '../../shared/domain/comprobante';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
-import {AlertService} from '../../shared/services/alert.service';
 import {IMyDpOptions} from 'mydatepicker';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {DataTableDirective} from 'angular-datatables';
@@ -12,6 +11,7 @@ import {Cliente} from '../../shared/domain/cliente';
 import {isNullOrUndefined} from 'util';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-impresion',
@@ -37,8 +37,8 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) {}
+              private navbarTitleService: NavbarTitleService,
+              private impresionService: ImpresionService) {}
 
   ngOnInit() {
     this.dtOptions = {
@@ -168,13 +168,7 @@ export class ImpresionComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.subscriptions.add(observable.subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

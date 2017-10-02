@@ -2,10 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Zona} from '../../shared/domain/zona';
 import {Vendedor} from '../../shared/domain/vendedor';
 import {ApiService} from '../../shared/services/api.service';
-import {AlertService} from '../../shared/services/alert.service';
 import {Cliente} from '../../shared/domain/cliente';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-composicion-saldos',
@@ -22,8 +22,8 @@ export class ComposicionSaldosComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) { }
+              private navbarTitleService: NavbarTitleService,
+              private impresionService: ImpresionService) { }
 
   ngOnInit() {
     this.navbarTitleService.setTitle('Imprimir Reporte Composición de Saldos');
@@ -40,13 +40,7 @@ export class ComposicionSaldosComponent implements OnInit, OnDestroy {
       }
     ).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

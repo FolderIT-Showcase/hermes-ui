@@ -1,8 +1,8 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ApiService} from '../../shared/services/api.service';
-import {AlertService} from '../../shared/services/alert.service';
 import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-libro-iva',
@@ -17,7 +17,9 @@ export class LibroIvaComponent implements OnInit, OnDestroy {
   primerpagina = 1;
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private apiService: ApiService, private alertService: AlertService, private navbarTitleService: NavbarTitleService) { }
+  constructor(private apiService: ApiService,
+              private navbarTitleService: NavbarTitleService,
+              private impresionService: ImpresionService) { }
 
   ngOnInit() {
     this.navbarTitleService.setTitle('Libro de IVA Compras/Ventas');
@@ -33,13 +35,7 @@ export class LibroIvaComponent implements OnInit, OnDestroy {
           'periodo_year': this.periodo.substr(3, 4),
         }).subscribe(
           (res) => {
-            const fileURL = URL.createObjectURL(res);
-            try {
-              const win = window.open(fileURL, '_blank');
-              win.print();
-            } catch (e) {
-              this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-            }
+            this.impresionService.imprimir(res);
           }
         ));
     }
