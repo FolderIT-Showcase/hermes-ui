@@ -27,7 +27,6 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   rubros: Rubro[] = [];
   dtTrigger: Subject<any> = new Subject();
   usuarioSeleccionado: Usuario = new Usuario();
-  parametrosSeleccionado: ParametroUsuario = new ParametroUsuario();
   @ViewChild(DataTableDirective)
   dtElement: DataTableDirective;
   modalTitle: string;
@@ -77,19 +76,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   }
 
   mostrarModalParametros(usuario: Usuario) {
-    this.modalTitle = 'Editar Parametros';
+    this.modalTitle = 'Editar Parámetros';
     this.enNuevo = false;
     this.usuarioOriginal = usuario;
     this.usuarioSeleccionado = JSON.parse(JSON.stringify(usuario));
-    this.subscriptions.add(this.userService.getParametros(this.usuarioSeleccionado.id).subscribe(
-      param => {
-        Object.assign(this.parametrosSeleccionado, param);
-      },
-      error => {
-        this.handleError(error);
-      }
-    ));
-
     this.changeDetectionRef.detectChanges();
   }
 
@@ -153,8 +143,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       this.submitted = false;
       const parametroAEnviar = new ParametroUsuario();
       parametroAEnviar.user_id = this.usuarioSeleccionado.id;
-      Object.assign(parametroAEnviar, this.parametrosSeleccionado);
-      this.parametrosSeleccionado = new ParametroUsuario();
+      Object.assign(parametroAEnviar, this.usuarioSeleccionado.parametros);
       (<any>$('#modalParametros')).modal('hide');
       setTimeout(() => {
         this.cerrar();
@@ -163,7 +152,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
       this.subscriptions.add(this.userService.updateParametros(parametroAEnviar).subscribe(
         param => {
-
+          this.usuarioOriginal.parametros = param;
         },
         error => {
           this.handleError(error);

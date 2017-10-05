@@ -1,3 +1,5 @@
+import {ParametroUsuario} from "./parametroUsuario";
+
 export class User {
   id: number;
   email: string;
@@ -11,4 +13,5 @@ export class User {
   token?: string;
   rol_a_mostrar: string;
   rol_id;
+  parametros: ParametroUsuario = new ParametroUsuario();
 }

@@ -15,9 +15,9 @@
     <td>{{ usuario.email }}</td>
     <td>{{ usuario.rol_a_mostrar }}</td>
     <td>
-      <button (click)="mostrarModalEditar(usuario)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalParametros(usuario)" data-toggle="modal" data-target="#modalParametros"
-              class="glyphicon glyphicon-book green"></button>
+              class="glyphicon glyphicon-book blue"></button>
+      <button (click)="mostrarModalEditar(usuario)" data-toggle="modal" data-target="#modalEditar" class="glyphicon glyphicon-pencil blue"></button >
       <button (click)="mostrarModalEliminar(usuario)" data-toggle="modal" data-target="#modalEliminar" class="glyphicon glyphicon-remove red"></button >
     </td>
   </tr>
@@ -160,23 +160,17 @@
             <input title="" style="display:none" type="password" name="fakepasswordremembered"/>
 
             <div class="form-group row">
-              <label for="usuario-punto-venta" class="col-sm-2 required control-label">Punto de venta</label>
-              <div class="col-sm-10 has-feedback"
-                   [ngClass]="{'has-error': !punto_venta.valid && (!punto_venta.pristine || punto_venta.touched || submitted),
-            'has-success': rol.valid}">
+              <label for="usuario-punto-venta" class="col-sm-2 control-label">Punto de venta</label>
+              <div class="col-sm-10 has-feedback">
                 <div class="select-style">
-                  <select class="form-control" id="usuario-punto-venta" [(ngModel)]="parametrosSeleccionado.punto_venta"
+                  <select class="form-control" id="usuario-punto-venta"
+                          [(ngModel)]="usuarioSeleccionado.parametros.punto_venta"
                           name="punto_venta" #punto_venta="ngModel">
+                    <option value=''></option>
                     <option *ngFor="let punto_venta of puntos_ventas" [ngValue]="punto_venta.id">
                       {{formatoFactura(punto_venta)}}
                     </option>
                   </select>
-                </div>
-                <span *ngIf="rol.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
-                <span *ngIf="rol.errors !== null && (!rol.pristine || rol.touched || submitted)"
-                      class="glyphicon glyphicon-remove form-control-feedback"></span>
-                <div *ngIf="!rol.valid && (!rol.pristine || rol.touched || submitted)" class="help-block">Seleccione un
-                  punto de venta
                 </div>
               </div>
             </div>
