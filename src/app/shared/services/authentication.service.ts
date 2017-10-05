@@ -4,6 +4,7 @@ import {ApiService} from './api.service';
 import {User} from '../domain/user';
 import {isNullOrUndefined} from 'util';
 import {Parametro} from '../domain/parametro';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class AuthenticationService {
@@ -11,6 +12,7 @@ export class AuthenticationService {
   private currentUser: User;
   private currentParameters$: EventEmitter<Parametro[]>;
   private currentParameters: Parametro[];
+  private currentUserParameters: any;
 
   constructor(private api: ApiService) {
     this.currentUser$ = new EventEmitter();
@@ -66,5 +68,12 @@ export class AuthenticationService {
       this.currentParameters = JSON.parse(localStorage.getItem('currentParameters'));
     }
     return this.currentParameters;
+  }
+
+  getCurrentUserParameters() {
+    if (!isNullOrUndefined(this.currentUserParameters)) {
+      return Observable.of(this.currentUserParameters);
+    }
+    return this.api.get(`usuarios/${this.currentUser.id}/parametros`);
   }
 }

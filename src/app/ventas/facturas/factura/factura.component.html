@@ -40,7 +40,10 @@
 
       <label for="factura-punto-venta" class="col-sm-1 control-label">Pto. vta.</label>
       <div class="col-sm-2">
-        <input class="form-control" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" readonly>
+        <select class="form-control" name="factura-punto-venta" id="factura-punto-venta" [ngModel]="factura.punto_venta" required #ptoventa="ngModel" (change)="onPuntoVentaChanged($event.target['value'])">
+          <option *ngFor="let pto_venta of puntosVenta" [value]="pto_venta.id">{{pto_venta.id}}</option>
+        </select>
+        <div *ngIf="!ptoventa.valid && (!ptoventa.pristine || ptoventa.touched || submitted)" class="help-block">Seleccione un punto de venta</div>
       </div>
 
       <label for="factura-numero" class="col-sm-1 control-label">Número</label>

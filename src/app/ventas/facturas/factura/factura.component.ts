@@ -1,5 +1,5 @@
 import {
-  AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output,
+  AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output,
   ViewChild
 } from '@angular/core';
 import { Cliente } from '../../../shared/domain/cliente';
@@ -22,6 +22,7 @@ import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {TooltipConfig} from 'ngx-bootstrap/tooltip';
 import {HelperService} from '../../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
+import {PuntoVenta} from '../../../shared/domain/puntoVenta';
 
 export function getAlertConfig(): TooltipConfig {
   return Object.assign(new TooltipConfig(), {placement: 'left', container: 'body'});
@@ -81,11 +82,13 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
   myDatePickerOptions: IMyDpOptions;
   submitted = false;
   private subscriptions: Subscription = new Subscription();
+  puntosVenta: PuntoVenta[] = [];
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private authenticationService: AuthenticationService,
-              private router: Router) {
+              private router: Router,
+              private cdRef: ChangeDetectorRef) {
     this.clientes = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -199,8 +202,14 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
       this.cliente = new Cliente;
       this.factura = new Comprobante;
       this.factura.importe_total = 0;
-      this.factura.punto_venta = '0001';
       this.factura.anulado = false;
+      this.subscriptions.add(
+        this.authenticationService.getCurrentUserParameters().subscribe( params => {
+          if (!isNullOrUndefined(params.punto_venta)) {
+            params.punto_venta = ('0000' + params.punto_venta).slice(-4);
+            this.factura.punto_venta = params.punto_venta;
+          }
+      }));
     } else {
       Object.assign(this.items, this.factura.items);
       this.clienteCodAsync = this.cliente.codigo;
@@ -227,6 +236,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.cargarListasPrecios();
+    this.cargarPuntosVenta();
     this.obtenerParametros();
   }
 
@@ -283,6 +293,22 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }));
     }));
+  }
+
+  onPuntoVentaChanged(value: string) {
+    this.factura.punto_venta = value;
+    if (!isNullOrUndefined(this.factura.punto_venta) && !isNullOrUndefined(this.cliente.id)) {
+      this.subscriptions.add(
+        this.apiService.get('contadores/' + this.factura.punto_venta + '/' + this.tipoComprobante.id).subscribe(contador => {
+          if (contador === '') {
+            this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.factura.punto_venta, false);
+          } else {
+            this.factura.numero = +contador.ultimo_generado + 1;
+            this.factura.numero = ('0000000' + this.factura.numero).slice(-8);
+          }
+        })
+      );
+    }
   }
 
   onArticuloChanged(articulo: Articulo, item: Item) {
@@ -733,6 +759,19 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     if (index === this.items.length - 1) {
       this.agregarNuevo(item);
     }
+  }
+
+  cargarPuntosVenta() {
+    this.subscriptions.add(this.apiService.get('puntosventa/habilitados').subscribe((json: PuntoVenta[]) => {
+      this.puntosVenta = json;
+      this.puntosVenta.forEach( pto_venta => {
+        pto_venta.id = ('0000' + pto_venta.id).slice(-4);
+      });
+      if (isNullOrUndefined(this.factura.punto_venta)) {
+        this.factura.punto_venta = this.puntosVenta[0].id;
+        this.cdRef.detectChanges();
+      }
+    }));
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
