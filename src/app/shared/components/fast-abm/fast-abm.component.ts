@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, TemplateRef} from '@angular/core';
-import {HelperService} from '../services/helper.service';
+import {HelperService} from '../../services/helper.service';
 
 @Component({
   selector: 'app-fast-abm',
@@ -13,6 +13,7 @@ export class FastAbmComponent<T> implements OnInit {
   @Input() tableHeader: TemplateRef<any>;
   @Input() tableBody: TemplateRef<any>;
   @Input() elements: any[] = [];
+  @Input() cobro = true;
   @Output() eventEdit = new EventEmitter<any>();
   element: T;
   elementOriginal: T;
@@ -35,17 +36,21 @@ export class FastAbmComponent<T> implements OnInit {
     FastAbmComponent.open();
   }
 
+  cerrar() {
+    FastAbmComponent.close();
+  }
+
   ngOnInit() {
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     this.pluralElemento = this.pluralElemento ? this.pluralElemento : this.nombreElemento + 's';
     this.elementsCopy = JSON.parse(JSON.stringify(this.elements));
+    this.nuevo();
   }
 
   aceptar() {
     this.eventEdit.emit(this.elementsCopy);
     FastAbmComponent.close();
   }
-
 
   editar(elementAEditar: T) {
     this.elementOriginal = elementAEditar;
@@ -71,8 +76,8 @@ export class FastAbmComponent<T> implements OnInit {
         Object.assign(this.elementOriginal, elementAEnviar);
       }
       this.elementOriginal = null;
-      this.enNuevo = true;
       f.form.reset();
+      this.nuevo();
     }
   }
 
@@ -84,9 +89,8 @@ export class FastAbmComponent<T> implements OnInit {
 
   cancelar(f: any) {
     this.elementOriginal = null;
-    this.element = new this.elementClass();
-    this.enNuevo = true;
     f.form.reset();
+    this.nuevo();
   }
 
   format(element) { return element; }

@@ -1,8 +1,7 @@
 ﻿import {RouterModule, Routes} from '@angular/router';
 import {ClientesComponent} from './clientes/clientes.component';
-import {AuthGuard} from '../shared/guards/auth.guard';
 import {NgModule} from '@angular/core';
-import {DeactivateGuardService} from '../shared/services/deactivate-guard.service';
+import {DeactivateGuardService} from '../shared/guards/can-deactivate.guard';
 import {VendedoresComponent} from './vendedores/vendedores.component';
 import {ArticulosComponent} from './articulos/articulos.component';
 import {ZonasComponent} from './zonas/zonas.component';
@@ -16,18 +15,18 @@ import {TipoTarjetaComponent} from './tipo-tarjeta/tipo-tarjeta.component';
 import {CarteraValoresComponent} from './cartera-valores/cartera-valores.component';
 
 const routes: Routes = [
-  {path: 'articulos', component: ArticulosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'bancos', component: BancoComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'carteravalores', component: CarteraValoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'clientes', component: ClientesComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'cuentasbancarias', component: CuentaBancariaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'listaprecios', component: ListaPreciosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'marcas', component: MarcasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'rubros', component: RubrosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'subrubros', component: SubrubrosComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'tipostarjeta', component: TipoTarjetaComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'vendedores', component: VendedoresComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
-  {path: 'zonas', component: ZonasComponent, canActivate: [AuthGuard], canDeactivate: [DeactivateGuardService]},
+  {path: 'articulos', component: ArticulosComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'bancos', component: BancoComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'carteravalores', component: CarteraValoresComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'clientes', component: ClientesComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'cuentasbancarias', component: CuentaBancariaComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'listaprecios', component: ListaPreciosComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'marcas', component: MarcasComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'rubros', component: RubrosComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'subrubros', component: SubrubrosComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'tipostarjeta', component: TipoTarjetaComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'vendedores', component: VendedoresComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'zonas', component: ZonasComponent, canDeactivate: [DeactivateGuardService]},
 
   // otherwise redirect to home
   {path: '**', redirectTo: ''}

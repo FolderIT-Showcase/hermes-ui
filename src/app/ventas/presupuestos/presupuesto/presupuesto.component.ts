@@ -1,10 +1,11 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Comprobante} from '../../../shared/domain/comprobante';
 import {ActivatedRoute} from '@angular/router';
 import {ApiService} from '../../../shared/services/api.service';
 import {Subject} from 'rxjs/Subject';
-import {NavbarTitleService} from '../../../shared/services/navbar-title.service';
+import {TitleService} from '../../../shared/services/title.service';
 import {Subscription} from 'rxjs/Subscription';
+import {PuedeSalirComponent} from '../../../shared/components/puede-salir/puede-salir.component';
 
 @Component({
   selector: 'app-presupuesto',
@@ -17,11 +18,13 @@ export class PresupuestoComponent implements OnInit, OnDestroy {
   nuevoOEditar: string;
   puedeSalir: Subject<Boolean> = new Subject;
   modificado = false;
+  @ViewChild('puedeSalir')
+  private puedeSalirElement: PuedeSalirComponent;
   private subscriptions: Subscription = new Subscription();
 
   constructor(private route: ActivatedRoute,
               private apiService: ApiService,
-              private navbarTitleService: NavbarTitleService) { }
+              private titleService: TitleService) { }
 
   ngOnInit() {
     const id = +this.route.snapshot.params['id'];
@@ -43,24 +46,11 @@ export class PresupuestoComponent implements OnInit, OnDestroy {
       this.nuevoOEditar = 'nuevo';
       this.mostrarComponenteFactura = true;
     }
-    this.navbarTitleService.setTitle('Presupuesto');
+    this.titleService.setTitle('Presupuesto');
   }
 
   canDeactivate() {
-    if (this.modificado) {
-      (<any>$('#modalPuedeSalir')).modal('show');
-      return this.puedeSalir;
-    } else {
-      return true;
-    }
-  }
-
-  continuar() {
-    this.puedeSalir.next(true);
-  }
-
-  cancelar() {
-    this.puedeSalir.next(false);
+    return this.puedeSalirElement.check();
   }
 
   ngOnDestroy(): void {

@@ -24,4 +24,5 @@ export class ComprobanteCompra {
   tipo_comp_compras: TipoComprobanteCompra;
   comprobante_compra_importes: ComprobanteCompraImportes;
   comprobante_compra_retenciones: ComprobanteCompraRetencion[];
+  en_lista: boolean;
 }

@@ -4,8 +4,8 @@ import {Provincia} from '../../../shared/domain/provincia';
 import {Vendedor} from '../../../shared/domain/vendedor';
 import {Zona} from '../../../shared/domain/zona';
 import {ApiService} from '../../../shared/services/api.service';
-import {AlertService} from '../../../shared/services/alert.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-listado-clientes',
@@ -28,7 +28,8 @@ export class ListadoClientesComponent implements OnDestroy {
   zonas: Zona[] = [];
   private subscriptions: Subscription = new Subscription();
 
-  constructor(private apiService: ApiService, private alertService: AlertService) { }
+  constructor(private apiService: ApiService,
+              private impresionService: ImpresionService) { }
 
   mostrarModalReporte() {
     this.parametroReporteFiltrarPorVendedor = false;
@@ -83,13 +84,7 @@ export class ListadoClientesComponent implements OnDestroy {
       }
     ).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

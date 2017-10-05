@@ -1,5 +1,5 @@
 import {AfterViewChecked, Component} from '@angular/core';
-import {ModalAbmComponent} from '../../../shared/abm/modal-abm/modal-abm.component';
+import {ModalAbmComponent} from '../../../shared/components/abm/modal-abm/modal-abm.component';
 import {Proveedor} from '../../../shared/domain/proveedor';
 
 @Component({

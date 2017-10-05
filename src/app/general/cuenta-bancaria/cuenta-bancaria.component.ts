@@ -2,7 +2,7 @@ import {Component, ViewChild} from '@angular/core';
 import {CuentaBancaria} from '../../shared/domain/cuentaBancaria';
 import {ApiService} from '../../shared/services/api.service';
 import {ModalCuentaBancariaComponent} from './modal-cuenta-bancaria/modal-cuenta-bancaria.component';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {Observable} from 'rxjs/Observable';
 
 @Component({

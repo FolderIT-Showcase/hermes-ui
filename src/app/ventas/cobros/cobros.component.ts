@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ComponentFactoryResolver, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {Cliente} from '../../shared/domain/cliente';
 import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {ApiService} from '../../shared/services/api.service';
@@ -9,7 +9,7 @@ import {Cobro} from '../../shared/domain/cobro';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {isNullOrUndefined} from 'util';
 import {Comprobante} from '../../shared/domain/comprobante';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subject} from 'rxjs/Subject';
 import {Banco} from '../../shared/domain/banco';
@@ -18,11 +18,12 @@ import {TipoTarjeta} from '../../shared/domain/tipoTarjeta';
 import {CuentaBancaria} from '../../shared/domain/cuentaBancaria';
 import {Tarjeta} from '../../shared/domain/tarjeta';
 import {Deposito} from '../../shared/domain/deposito';
-import {FastAbmChequeComponent} from 'app/ventas/fast-abm-cheque/fast-abm-cheque.component';
-import {FastAbmDepositoComponent} from '../fast-abm-deposito/fast-abm-deposito.component';
-import {FastAbmTarjetaComponent} from '../fast-abm-tarjeta/fast-abm-tarjeta.component';
-import {MedioPago} from 'app/shared/domain/medioPago';
+import {FastAbmChequeComponent} from './fast-abm-cheque/fast-abm-cheque.component';
+import {FastAbmDepositoComponent} from '../../shared/components/fast-abm-deposito/fast-abm-deposito.component';
+import {FastAbmTarjetaComponent} from './fast-abm-tarjeta/fast-abm-tarjeta.component';
+import {MedioPago} from '../../shared/domain/medioPago';
 import {Subscription} from 'rxjs/Subscription';
+import {PuedeSalirComponent} from '../../shared/components/puede-salir/puede-salir.component';
 
 @Component({
   selector: 'app-cobros',
@@ -73,11 +74,13 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
   totalEfectivo: string | number = 0;
   componentRef: any;
   mediosPago: MedioPago[] = [];
+  @ViewChild('puedeSalir')
+  private puedeSalirElement: PuedeSalirComponent;
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private resolver: ComponentFactoryResolver) {
     this.clientes = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
@@ -179,7 +182,7 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
     this.depositos = [];
     this.submitted = false;
     this.modificado = false;
-    this.navbarTitleService.setTitle('Cobro');
+    this.titleService.setTitle('Cobro');
     this.cargarBancos();
     this.cargarClientes();
     this.cargarCuentas();
@@ -486,23 +489,6 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
     // }
   }
 
-  canDeactivate() {
-    if (this.modificado) {
-      (<any>$('#modalPuedeSalir')).modal('show');
-      return this.puedeSalir;
-    } else {
-      return true;
-    }
-  }
-
-  continuar() {
-    this.puedeSalir.next(true);
-  }
-
-  cancelar() {
-    this.puedeSalir.next(false);
-  }
-
   mostrarModalMediosPago() {
     (<any>$('#modalMediosPago')).modal('show');
     this.totalEfectivo = +this.cobro.importe;
@@ -702,5 +688,22 @@ export class CobrosComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
+    this.ocultarModals();
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalBuscarCliente')).modal('hide');
+    (<any>$('#modalComprobantes')).modal('hide');
+    (<any>$('#modalMediosPago')).modal('hide');
+    (<any>$('.modal-backdrop')).remove();
+    if (!isNullOrUndefined(this.componentRef)) {
+      this.componentRef.instance.cerrar();
+    }
+  }
+
+  canDeactivate() {
+    return this.puedeSalirElement.check();
   }
 }

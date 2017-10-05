@@ -1,11 +1,11 @@
 import {Component, ComponentFactoryResolver, HostListener, Input, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef} from '@angular/core';
 import {Subject} from 'rxjs/Subject';
 import {DataTableDirective} from 'angular-datatables';
-import {ApiService} from '../services/api.service';
-import {AlertService} from '../services/alert.service';
-import {NavbarTitleService} from '../services/navbar-title.service';
+import {ApiService} from '../../services/api.service';
+import {AlertService} from '../../services/alert.service';
+import {TitleService} from '../../services/title.service';
 import {ModalAbmComponent} from './modal-abm/modal-abm.component';
-import {HelperService} from '../services/helper.service';
+import {HelperService} from '../../services/helper.service';
 import {Observable} from 'rxjs/Observable';
 import {Subscription} from 'rxjs/Subscription';
 
@@ -49,7 +49,7 @@ export class AbmComponent implements OnInit, OnDestroy {
 
   constructor(private apiService: ApiService,
               private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService,
+              private titleService: TitleService,
               private resolver: ComponentFactoryResolver) {
     this.beforeElementLoad = (data) => Observable.of(data);
     this.beforeElementNew = (element, data) => Observable.of(element);
@@ -86,7 +86,7 @@ export class AbmComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de ' + this.pluralElemento);
+    this.titleService.setTitle('Gestión de ' + this.pluralElemento);
     const observable1 = this.apiService.get(this.path);
     const observable2 = this.beforeElementLoad(this.data);
     this.subscriptions.add(Observable.zip(observable1, observable2).subscribe( result => {

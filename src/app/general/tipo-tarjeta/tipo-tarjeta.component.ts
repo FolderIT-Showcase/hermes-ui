@@ -1,6 +1,6 @@
 import {Component, ViewChild} from '@angular/core';
 import {TipoTarjeta} from '../../shared/domain/tipoTarjeta';
-import {AbmComponent} from '../../shared/abm/abm.component';
+import {AbmComponent} from '../../shared/components/abm/abm.component';
 import {ModalTipoTarjetaComponent} from './modal-tipo-tarjeta/modal-tipo-tarjeta.component';
 
 @Component({

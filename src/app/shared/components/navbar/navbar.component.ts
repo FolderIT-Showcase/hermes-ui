@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {AuthenticationService} from '../services/authentication.service';
-import {User} from '../domain/user';
+import {AuthenticationService} from '../../services/authentication.service';
+import {User} from '../../domain/user';
 import {Router} from '@angular/router';
-import {NavbarTitleService} from '../services/navbar-title.service';
+import {TitleService} from '../../services/title.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,14 +15,14 @@ export class NavbarComponent implements OnInit {
 
   constructor(private router: Router,
               private authenticationService: AuthenticationService,
-              private navbarTitleService: NavbarTitleService) {
+              private titleService: TitleService) {
     authenticationService.currentUser$.subscribe(user => this.onCurrentUserChanged(user));
-    navbarTitleService.title$.subscribe( title => this.onTitleChanged(title));
+    titleService.title$.subscribe( title => this.onTitleChanged(title));
   }
 
   ngOnInit() {
     this.usuarioLogeado = this.authenticationService.getCurrentUser();
-    this.titulo_navbar = this.navbarTitleService.getTitle();
+    this.titulo_navbar = this.titleService.getTitle();
   }
 
   private onCurrentUserChanged(user: User) {

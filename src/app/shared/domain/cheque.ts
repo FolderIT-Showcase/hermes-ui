@@ -16,4 +16,5 @@ export class Cheque {
   destinatario: string;
   estado: string;
   descripcion: string;
+  enlista: boolean;
 }

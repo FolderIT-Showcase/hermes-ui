@@ -6,9 +6,10 @@ import { AlertService } from '../../shared/services/alert.service';
 import {Comprobante} from '../../shared/domain/comprobante';
 import {Router} from '@angular/router';
 import {isNullOrUndefined} from 'util';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-presupuestos',
@@ -30,7 +31,8 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   constructor(private apiService: ApiService,
               private alertService: AlertService,
               private router: Router,
-              private navbarTitleService: NavbarTitleService) {}
+              private titleService: TitleService,
+              private impresionService: ImpresionService) {}
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -56,7 +58,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
         }
       ]
     };
-    this.navbarTitleService.setTitle('Gestión de Presupuestos');
+    this.titleService.setTitle('Gestión de Presupuestos');
     this.subscriptions.add(this.apiService.get('comprobantes/presupuestos')
       .subscribe(json => {
           this.presupuestos = json;
@@ -116,13 +118,7 @@ export class PresupuestosComponent implements OnInit, OnDestroy {
   imprimirPDF(presupuesto: Comprobante) {
     this.subscriptions.add(this.apiService.downloadPDF('comprobantes/imprimir/' + presupuesto.id, {}).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

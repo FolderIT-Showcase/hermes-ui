@@ -15,7 +15,7 @@
                      [ngClass]="{'has-error': !cuenta.valid && (!cuenta.pristine || cuenta.touched || submitted),
             'has-success': cuenta.valid}">
                   <div class="select-style">
-                    <select class="form-control" id="deposito-cuenta" [(ngModel)]="element.cuenta_id" name="cuenta" #cuenta="ngModel" required >
+                    <select class="form-control" id="deposito-cuenta" [(ngModel)]="element.cuenta_bancaria_id" name="cuenta" #cuenta="ngModel" required >
                       <option *ngFor="let cuenta of data.cuentas" [ngValue]="cuenta.id">{{cuenta.numero}}</option>
                     </select>
                   </div>
@@ -26,18 +26,18 @@
               </div>
 
               <div class="form-group row">
-                <label for="deposito-numero" class="col-sm-4 control-label">Número</label>
-                <div class="col-sm-8">
-                  <input class="form-control" id="deposito-numero" [(ngModel)]="element.numero" name="numero" #numero="ngModel" [maxLength]="20" placeholder="Número">
+                <label for="cheque-numero" class="col-sm-4 control-label">Número</label>
+                <div class="col-sm-8 has-feedback">
+                  <input class="form-control" id="cheque-numero" [(ngModel)]="element.numero" name="numero" #numero="ngModel" [maxLength]="20" placeholder="Número">
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="deposito-importe" class="col-sm-4 required control-label">Importe</label>
+                <label for="cheque-importe" class="col-sm-4 required control-label">Importe</label>
                 <div class="col-sm-8 has-feedback"
                      [ngClass]="{'has-error': !importe.valid && (!importe.pristine || importe.touched || submitted),
             'has-success': importe.valid}">
-                  <input type="number" class="form-control text-right" id="deposito-importe" [(ngModel)]="element.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
+                  <input type="number" class="form-control text-right" id="cheque-importe" [(ngModel)]="element.importe" name="importe" #importe="ngModel" required min="0" step="0.01" pattern="^\d{1,14}([\.\,]\d{1,2})?$" placeholder="0.00">
                   <span *ngIf="importe.valid" class="glyphicon glyphicon-ok form-control-feedback"></span>
                   <span *ngIf="importe.errors !== null && (!importe.pristine || importe.touched || submitted)" class="glyphicon glyphicon-remove form-control-feedback"></span>
                   <div *ngIf="importe.errors !== null && importe.errors.required != null && (!importe.pristine || importe.touched || submitted)" class="help-block">Ingrese un importe</div>
@@ -46,21 +46,23 @@
               </div>
 
               <div class="form-group row">
-                <label for="deposito-tipo" class="col-sm-4 control-label">Tipo</label>
+                <label for="cheque-fechaemision" class="col-sm-4 control-label">Fecha Emisión</label>
                 <div class="col-sm-8">
-                  <div class="select-style">
-                    <select class="form-control" id="deposito-tipo" [(ngModel)]="element.tipo" name="tipo" #tipo="ngModel" >
-                      <option [ngValue]="'D'">Depósito</option>
-                      <option [ngValue]="'T'">Transferencia</option>
-                    </select>
-                  </div>
+                  <my-date-picker id="cheque-fechaemision" [(ngModel)]="element.fecha_emision" [options]="myDatePickerOptions" [name]="'fechaemision'"></my-date-picker>
                 </div>
               </div>
 
               <div class="form-group row">
-                <label for="deposito-descripcion" class="col-sm-4 control-label">Descripción</label>
+                <label for="cheque-fechavencimiento" class="col-sm-4 control-label">Fecha Venc.</label>
                 <div class="col-sm-8">
-                  <input class="form-control" id="deposito-descripcion" [(ngModel)]="element.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="500" placeholder="Descripción">
+                  <my-date-picker id="cheque-fechavencimiento" [(ngModel)]="element.fecha_vencimiento" [options]="myDatePickerOptions" [name]="'fechavencimiento'"></my-date-picker>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label for="cheque-descripcion" class="col-sm-4 control-label">Descripción</label>
+                <div class="col-sm-8 has-feedback">
+                  <input class="form-control" id="cheque-descripcion" [(ngModel)]="element.descripcion" name="descripcion" #descripcion="ngModel" [maxLength]="100" placeholder="Descripción">
                 </div>
               </div>
             </div>

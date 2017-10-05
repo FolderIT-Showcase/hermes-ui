@@ -8,16 +8,21 @@ import {SharedModule} from '../shared/shared.module';
 import {ComprasRoutingModule} from './compras.routing.module';
 import {ModalProveedorComponent} from './proveedores/modal-proveedor/modal-proveedor.component';
 import {ModalTipoRetencionComponent} from './tipo-retencion/modal-tipo-retencion/modal-tipo-retencion.component';
+import { OrdenesPagoComponent } from './ordenes-pago/ordenes-pago.component';
+import { SeleccionChequesComponent } from './ordenes-pago/seleccion-cheques/seleccion-cheques.component';
+import {FastAbmChequePropioComponent} from './ordenes-pago/fast-abm-cheque-propio/fast-abm-cheque-propio.component';
 
 const modals = [
   ModalProveedorComponent,
-  ModalTipoRetencionComponent
+  ModalTipoRetencionComponent,
+  SeleccionChequesComponent,
+  FastAbmChequePropioComponent,
 ];
 
 @NgModule({
   imports: [
     SharedModule,
-    ComprasRoutingModule
+    ComprasRoutingModule,
   ],
   declarations: [
     ComprobantesCompraComponent,
@@ -26,6 +31,9 @@ const modals = [
     ProveedoresComponent,
     TipoRetencionComponent,
     modals,
+    OrdenesPagoComponent,
+    SeleccionChequesComponent,
+    FastAbmChequePropioComponent,
   ],
   entryComponents: [
     modals

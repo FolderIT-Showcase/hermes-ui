@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
+import {TitleService} from '../../shared/services/title.service';
 
 @Component({
   selector: 'app-nota-credito',
@@ -8,10 +8,10 @@ import {NavbarTitleService} from '../../shared/services/navbar-title.service';
 })
 export class NotaCreditoComponent implements OnInit {
 
-  constructor(private navbarTitleService: NavbarTitleService) { }
+  constructor(private titleService: TitleService) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Nota de Crédito');
+    this.titleService.setTitle('Nota de Crédito');
   }
 
 }

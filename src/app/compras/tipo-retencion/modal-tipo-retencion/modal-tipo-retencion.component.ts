@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {ModalAbmComponent} from '../../../shared/abm/modal-abm/modal-abm.component';
+import {ModalAbmComponent} from '../../../shared/components/abm/modal-abm/modal-abm.component';
 import {TipoRetencion} from '../../../shared/domain/tipoRetencion';
 
 @Component({
   selector: 'app-modal-tipo-retencion',
-  templateUrl: '../../../shared/abm/modal-abm/modal-abm.component.html',
+  templateUrl: '../../../shared/components/abm/modal-abm/modal-abm.component.html',
   styleUrls: ['./modal-tipo-retencion.component.css']
 })
 export class ModalTipoRetencionComponent extends ModalAbmComponent<TipoRetencion> {

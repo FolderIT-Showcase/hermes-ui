@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {ModalAbmComponent} from '../../../shared/abm/modal-abm/modal-abm.component';
+import {ModalAbmComponent} from '../../../shared/components/abm/modal-abm/modal-abm.component';
 import {Subrubro} from '../../../shared/domain/subrubro';
 
 @Component({
   selector: 'app-modal-subrubro',
-  templateUrl: '../../../shared/abm/modal-abm/modal-abm.component.html',
+  templateUrl: '../../../shared/components/abm/modal-abm/modal-abm.component.html',
   styleUrls: ['./modal-subrubro.component.css']
 })
 export class ModalSubrubroComponent extends ModalAbmComponent<Subrubro> {

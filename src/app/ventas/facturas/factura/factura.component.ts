@@ -2,11 +2,11 @@ import {
   AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output,
   ViewChild
 } from '@angular/core';
-import { Cliente } from 'app/shared/domain/cliente';
-import { TipoComprobante } from 'app/shared/domain/tipocomprobante';
-import { Comprobante } from 'app/shared/domain/comprobante';
-import { Item } from 'app/shared/domain/item';
-import { Articulo } from 'app/shared/domain/articulo';
+import { Cliente } from '../../../shared/domain/cliente';
+import { TipoComprobante } from '../../../shared/domain/tipocomprobante';
+import { Comprobante } from '../../../shared/domain/comprobante';
+import { Item } from '../../../shared/domain/item';
+import { Articulo } from '../../../shared/domain/articulo';
 import { Observable } from 'rxjs/Observable';
 import { ApiService } from '../../../shared/services/api.service';
 import { AlertService } from '../../../shared/services/alert.service';

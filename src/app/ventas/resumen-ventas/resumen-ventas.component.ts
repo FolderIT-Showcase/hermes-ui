@@ -1,11 +1,11 @@
 import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {IMyDpOptions} from 'mydatepicker';
-import {NavbarTitleService} from '../../shared/services/navbar-title.service';
-import {AlertService} from '../../shared/services/alert.service';
+import {TitleService} from '../../shared/services/title.service';
 import {ApiService} from '../../shared/services/api.service';
 import {TipoComprobante} from '../../shared/domain/tipocomprobante';
 import {HelperService} from '../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
+import {ImpresionService} from '../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-resumen-ventas',
@@ -22,11 +22,11 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription = new Subscription();
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService,
-              private navbarTitleService: NavbarTitleService) { }
+              private titleService: TitleService,
+              private impresionService: ImpresionService) { }
 
   ngOnInit() {
-    this.navbarTitleService.setTitle('Imprimir Reportes Resumen de Ventas');
+    this.titleService.setTitle('Imprimir Reportes Resumen de Ventas');
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
 
     const date = new Date();
@@ -84,13 +84,7 @@ export class ResumenVentasComponent implements OnInit, OnDestroy {
       }
     ).subscribe(
       (res) => {
-        const fileURL = URL.createObjectURL(res);
-        try {
-          const win = window.open(fileURL, '_blank');
-          win.print();
-        } catch (e) {
-          this.alertService.error('Debe permitir las ventanas emergentes para poder imprimir este documento');
-        }
+        this.impresionService.imprimir(res);
       }
     ));
   }

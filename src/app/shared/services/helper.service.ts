@@ -30,6 +30,12 @@ export class HelperService {
     return fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day;
   }
 
+  static stringToMyDatePickerDate(fecha: string) {
+    const arrayfecha = fecha.split('-');
+    // return fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day;
+    return { date: { year: +arrayfecha[0], month: +arrayfecha[1], day: +arrayfecha[2]}};
+  }
+
   static defaultDataTablesLanguage() {
     return {
       'processing':     'Procesando...',

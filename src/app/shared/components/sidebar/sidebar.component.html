@@ -67,12 +67,13 @@
       </ul>
 
       <li data-toggle="collapse" data-target="#compras"
-          [class.active]="rlaproveedores.isActive || rlaperiodosfiscales.isActive || rlacomprobantescompras.isActive" class="collapsed">
+          [class.active]="rlaproveedores.isActive || rlaperiodosfiscales.isActive || rlacomprobantescompras.isActive || rlaordenpago.isActive" class="collapsed">
         <a class="dropdown-toggle"><i class="fa fa-shopping-cart fa-lg"></i> Compras<span class="arrow"></span></a>
       </li>
       <ul id="compras" class="sub-menu collapse" role="menu">
         <li [routerLinkActive]="['active']" [routerLink]="['/compras/proveedores']" #rlaproveedores="routerLinkActive"><a><i class="fa fa-industry"></i> Proveedores</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/compras/comprobantescompra']" #rlacomprobantescompras="routerLinkActive"><a><i class="fa fa-file-o"></i> Cbtes. Compras</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/compras/ordenpago']" #rlaordenpago="routerLinkActive"><a><i class="fa fa-file"></i> Órdenes Pago</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/compras/ctacteproveedores']" #rlactacteproveedores="routerLinkActive"><a><i class="fa fa-list-ol"></i> Cuenta Corriente</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/compras/periodosfiscales']" #rlaperiodosfiscales="routerLinkActive"><a><i class="fa fa-calendar"></i> Periodos Fiscales</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/compras/tiporetenciones']" #rlatiporetenciones="routerLinkActive"><a><i class="fa fa-money"></i> Tipo Retenciones</a></li>
