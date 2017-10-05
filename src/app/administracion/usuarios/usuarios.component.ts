@@ -1,15 +1,17 @@
 import {ChangeDetectorRef, Component, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import { User as Usuario} from '../../shared/domain/user';
-import { Subject } from 'rxjs/Subject';
-import { DataTableDirective } from 'angular-datatables';
-import { ApiService } from '../../shared/services/api.service';
-import { AlertService } from '../../shared/services/alert.service';
-import { Rubro } from '../../shared/domain/rubro';
+import {User as Usuario} from '../../shared/domain/user';
+import {Subject} from 'rxjs/Subject';
+import {DataTableDirective} from 'angular-datatables';
+import {ApiService} from '../../shared/services/api.service';
+import {AlertService} from '../../shared/services/alert.service';
+import {Rubro} from '../../shared/domain/rubro';
 import {UserService} from '../../shared/services/user.service';
 import {TitleService} from '../../shared/services/title.service';
 import {HelperService} from '../../shared/services/helper.service';
 import {Rol} from '../../shared/domain/rol';
 import {Subscription} from 'rxjs/Subscription';
+import {ParametroUsuario} from '../../shared/domain/parametroUsuario';
+import {PuntoVenta} from '../../shared/domain/puntoVenta';
 
 @Component({
   selector: 'app-usuarios',
@@ -31,6 +33,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   mostrarTabla = false;
   submitted = false;
   roles: Rol[] = [];
+  puntos_ventas: PuntoVenta[];
   mostrarBarraCarga = true;
   passwordNoCoincide = false;
   private subscriptions: Subscription = new Subscription();
@@ -39,7 +42,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
               private alertService: AlertService,
               private userService: UserService,
               private changeDetectionRef: ChangeDetectorRef,
-              private titleService: TitleService) {}
+              private titleService: TitleService) {
+  }
 
   ngOnInit(): void {
     this.dtOptions = {
@@ -48,11 +52,11 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       pageLength: 13,
       scrollY: '70vh',
       language: HelperService.defaultDataTablesLanguage(),
-      columnDefs: [ {
+      columnDefs: [{
         'targets': -1,
         'searchable': false,
         'orderable': false
-      } ],
+      }],
       dom: 'Bfrtip',
       buttons: [
         {
@@ -68,11 +72,19 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.titleService.setTitle('Gestión de Usuarios');
     this.cargarUsuarios();
     this.cargarRoles();
+    this.cargarPuntosVenta();
+  }
+
+  mostrarModalParametros(usuario: Usuario) {
+    this.modalTitle = 'Editar Parámetros';
+    this.enNuevo = false;
+    this.usuarioOriginal = usuario;
+    this.usuarioSeleccionado = JSON.parse(JSON.stringify(usuario));
+    this.changeDetectionRef.detectChanges();
   }
 
   mostrarModalEditar(usuario: Usuario) {
     this.modalTitle = 'Editar Usuario';
-    this.enNuevo = false;
     this.usuarioOriginal = usuario;
     this.usuarioSeleccionado = JSON.parse(JSON.stringify(usuario));
 
@@ -90,7 +102,10 @@ export class UsuariosComponent implements OnInit, OnDestroy {
       (<any>$('#modalEditar')).modal('hide');
       const usuarioAEnviar = new Usuario();
       Object.assign(usuarioAEnviar, this.usuarioSeleccionado);
-      setTimeout(() => { this.cerrar(); f.form.reset(); }, 100);
+      setTimeout(() => {
+        this.cerrar();
+        f.form.reset();
+      }, 100);
 
       if (this.enNuevo) {
         this.enNuevo = false;
@@ -122,6 +137,30 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }
   }
 
+  editarParametros(f: any) {
+    this.submitted = true;
+    if (f.valid) {
+      this.submitted = false;
+      const parametroAEnviar = new ParametroUsuario();
+      parametroAEnviar.user_id = this.usuarioSeleccionado.id;
+      Object.assign(parametroAEnviar, this.usuarioSeleccionado.parametros);
+      (<any>$('#modalParametros')).modal('hide');
+      setTimeout(() => {
+        this.cerrar();
+        f.form.reset();
+      }, 100);
+
+      this.subscriptions.add(this.userService.updateParametros(parametroAEnviar).subscribe(
+        param => {
+          this.usuarioOriginal.parametros = param;
+        },
+        error => {
+          this.handleError(error);
+        }
+      ));
+    }
+  }
+
   private handleError(error) {
     let mensaje = '';
     const json = error.json()['error'];
@@ -147,7 +186,7 @@ export class UsuariosComponent implements OnInit, OnDestroy {
 
   eliminar() {
     this.submitted = false;
-    this.subscriptions.add(this.userService.delete(this.usuarioSeleccionado.id).subscribe( json => {
+    this.subscriptions.add(this.userService.delete(this.usuarioSeleccionado.id).subscribe(json => {
       if (json === 'ok') {
         const index: number = this.usuarios.indexOf(this.usuarioSeleccionado);
         if (index !== -1) {
@@ -160,40 +199,43 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private recargarTabla() {
-    // this.mostrarTabla = false;
-    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
-      // Destroy the table first
-      dtInstance.destroy();
-      // Call the dtTrigger to rerender again
-      this.dtTrigger.next();
-      setTimeout(() => { this.mostrarTabla = true; }, 350);
-    });
-  }
-
   cargarUsuarios() {
     this.subscriptions.add(this.userService.getAll()
       .subscribe(json => {
-        json.forEach( user => {
-          if (user.roles[0] !== undefined) {
-            user.rol_a_mostrar = user.roles[0].display_name;
-            user.rol_id = user.roles[0].id;
-          }
-        });
-        this.usuarios = json;
+          json.forEach(user => {
+            if (user.roles[0] !== undefined) {
+              user.rol_a_mostrar = user.roles[0].display_name;
+              user.rol_id = user.roles[0].id;
+            }
+          });
+          this.usuarios = json;
           this.mostrarBarraCarga = false;
           this.mostrarTabla = true;
           this.dtTrigger.next();
         },
         () => {
           this.mostrarBarraCarga = false;
-      }));
+        }));
   }
 
   cargarRoles() {
-    this.subscriptions.add(this.apiService.get('roles').subscribe( json => {
+    this.subscriptions.add(this.apiService.get('roles').subscribe(json => {
       this.roles = json;
     }));
+  }
+
+  cargarPuntosVenta() {
+    this.subscriptions.add(this.apiService.get('puntosventa/habilitados').subscribe(json => {
+      this.puntos_ventas = json;
+    }));
+  }
+
+  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
+  @HostListener('window:popstate', ['$event'])
+  ocultarModals() {
+    (<any>$('#modalEditar')).modal('hide');
+    (<any>$('#modalParametros')).modal('hide');
+    (<any>$('#modalEliminar')).modal('hide');
   }
 
   onPasswordChange(event) {
@@ -206,11 +248,8 @@ export class UsuariosComponent implements OnInit, OnDestroy {
     this.passwordNoCoincide = this.usuarioSeleccionado.password !== this.usuarioSeleccionado.repassword;
   }
 
-  // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean
-  @HostListener('window:popstate', ['$event'])
-  ocultarModals() {
-    (<any>$('#modalEditar')).modal('hide');
-    (<any>$('#modalEliminar')).modal('hide');
+  formatoFactura(puntoVenta: PuntoVenta): string {
+    return this.pad(puntoVenta.id, 4);
   }
 
   ngOnDestroy() {
@@ -222,5 +261,26 @@ export class UsuariosComponent implements OnInit, OnDestroy {
   canDeactivate() {
     this.ocultarModals();
     return true;
+  }
+
+  pad(num, size): string {
+    let s = num + '';
+    while (s.length < size) {
+      s = '0' + s;
+    }
+    return s;
+  }
+
+  private recargarTabla() {
+    // this.mostrarTabla = false;
+    this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
+      // Destroy the table first
+      dtInstance.destroy();
+      // Call the dtTrigger to rerender again
+      this.dtTrigger.next();
+      setTimeout(() => {
+        this.mostrarTabla = true;
+      }, 350);
+    });
   }
 }

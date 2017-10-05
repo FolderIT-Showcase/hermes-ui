@@ -2,6 +2,7 @@
 
 import {User} from '../domain/user';
 import {ApiService} from './api.service';
+import {ParametroUsuario} from '../domain/parametroUsuario';
 
 @Injectable()
 export class UserService {
@@ -28,4 +29,11 @@ export class UserService {
     return this.api.delete('usuarios/' + id);
   }
 
+  getParametros(id: number) {
+    return this.api.get('usuarios/' + id + '/parametros');
+  }
+
+  updateParametros(parametroUsuario: ParametroUsuario) {
+    return this.api.post('usuarios/' + parametroUsuario.user_id + '/parametros', parametroUsuario);
+  }
 }
