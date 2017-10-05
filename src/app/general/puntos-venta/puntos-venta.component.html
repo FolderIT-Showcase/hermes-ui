@@ -1,0 +1,25 @@
+<ng-template #tableHeader>
+  <th>Número</th>
+  <th>Descripcion</th>
+  <th>Habilitado</th>
+  <th>Tipo de Impresión</th>
+  <th style="width:10%">Acciones</th>
+</ng-template>
+
+<ng-template #tableBody let-element="element">
+  <td>{{ element.id }}</td>
+  <td>{{ element.descripcion }}</td>
+  <td>{{ element.habilitado? 'Sí' : 'No' }}</td>
+  <td>{{ element.tipo_impresion == 'IMP'? 'Impresión Común' :
+    element.tipo_impresion == 'IF'? 'Impresora Fiscal' :
+    'Facturación Electrónica'}}</td>
+</ng-template>
+
+<app-abm
+  [nombreElemento]="'Punto de Venta'"
+  [pluralElemento]="'Puntos de Venta'"
+  [path]="'puntosventa'"
+  [elementClass]="puntoVenta"
+  [tableHeader]="tableHeader"
+  [tableBody]="tableBody"
+  [modalComponent]="modal"></app-abm>

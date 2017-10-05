@@ -4,7 +4,7 @@
       <li data-toggle="collapse" data-target="#general"
           [class.active]="rlaclientes.isActive || rlavendedores.isActive || rlazonas.isActive ||
                 rlaarticulos.isActive || rlarubros.isActive || rlasubrubros.isActive || rlamarcas.isActive ||
-                rlalistaprecios.isActive || rlabancos.isActive || rlacuentasbancarias.isActive || rlatipostarjeta.isActive || rlacarteravalores.isActive" class="collapsed">
+                rlalistaprecios.isActive || rlabancos.isActive || rlacuentasbancarias.isActive || rlatipostarjeta.isActive || rlacarteravalores.isActive || rlapuntosventa.isActive" class="collapsed">
         <a class="dropdown-toggle" ><i class="fa fa-folder-open fa-lg"></i> General<span class="arrow"></span></a>
       </li>
       <ul class="sub-menu collapse" id="general" role="menu">
@@ -40,6 +40,7 @@
 
         <li [routerLinkActive]="['active']" [routerLink]="['/general/listaprecios']" #rlalistaprecios="routerLinkActive"><a><i class="glyphicon glyphicon-list-alt"></i> Lista de Precios</a></li>
         <li [routerLinkActive]="['active']" [routerLink]="['/general/carteravalores']" #rlacarteravalores="routerLinkActive"><a><i class="fa fa-suitcase"></i> Cartera de Valores</a></li>
+        <li [routerLinkActive]="['active']" [routerLink]="['/general/puntosventa']" #rlapuntosventa="routerLinkActive"><a><i class="fa fa-building"></i> Puntos de Venta</a></li>
       </ul>
 
       <li data-toggle="collapse" data-target="#ventas"

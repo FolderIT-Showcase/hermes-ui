@@ -31,6 +31,8 @@ import {ModalChequeComponent} from './cartera-valores/cheques/modal-cheque/modal
 import {ModalTarjetaComponent} from './cartera-valores/tarjetas/modal-tarjeta/modal-tarjeta.component';
 import {ModalClienteComponent} from './clientes/modal-cliente/modal-cliente.component';
 import {ListadoClientesComponent} from './clientes/listado-clientes/listado-clientes.component';
+import { PuntosVentaComponent } from './puntos-venta/puntos-venta.component';
+import { ModalPuntoVentaComponent } from './puntos-venta/modal-punto-venta/modal-punto-venta.component';
 
 const modals = [
   ModalArticuloComponent,
@@ -45,7 +47,8 @@ const modals = [
   ModalZonaComponent,
   ModalChequeComponent,
   ModalTarjetaComponent,
-  ModalClienteComponent
+  ModalClienteComponent,
+  ModalPuntoVentaComponent
 ];
 
 @NgModule({
@@ -70,7 +73,8 @@ const modals = [
     TipoTarjetaComponent,
     VendedoresComponent,
     TarjetasComponent,
-    ZonasComponent
+    ZonasComponent,
+    PuntosVentaComponent
   ],
   providers: [
     DecimalPipe
