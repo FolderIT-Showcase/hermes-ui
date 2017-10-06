@@ -23,6 +23,7 @@ import {TooltipConfig} from 'ngx-bootstrap/tooltip';
 import {HelperService} from '../../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
 import {PuntoVenta} from '../../../shared/domain/puntoVenta';
+import {ImpresionService} from '../../../shared/services/impresion.service';
 
 export function getAlertConfig(): TooltipConfig {
   return Object.assign(new TooltipConfig(), {placement: 'left', container: 'body'});
@@ -88,7 +89,8 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
               private alertService: AlertService,
               private authenticationService: AuthenticationService,
               private router: Router,
-              private cdRef: ChangeDetectorRef) {
+              private cdRef: ChangeDetectorRef,
+              private impresionService: ImpresionService) {
     this.clientes = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -209,7 +211,7 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
             params.punto_venta = ('0000' + params.punto_venta).slice(-4);
             this.factura.punto_venta = params.punto_venta;
           }
-      }));
+        }));
     } else {
       Object.assign(this.items, this.factura.items);
       this.clienteCodAsync = this.cliente.codigo;
@@ -460,21 +462,35 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.factura.fecha =  HelperService.myDatePickerDateToString(this.fecha);
 
     if (this.nuevoOEditar === 'nuevo') {
-      this.subscriptions.add(this.apiService.post('comprobantes', this.factura).subscribe( (json) => {
-        if (json.hasOwnProperty('error')) {
-          this.alertService.error(json['error']);
-        } else {
-          this.change.emit(false);
-          this.alertService.success('El comprobante se ha generado con éxito');
-          if (!isNullOrUndefined(this.routeAfter)) {
-            this.router.navigate([this.routeAfter]).catch();
+      const puntoVenta = this.puntosVenta.find(x => x.id === this.factura.punto_venta);
+      let obs: Observable<any>;
+      switch (puntoVenta.tipo_impresion) {
+        case 'IMP':
+          obs = this.imprimirFactura();
+          break;
+        case 'FE':
+        case 'IF':
+        default:
+          obs = this.postFactura();
+          break;
+      }
+
+      this.subscriptions.add(
+        obs.subscribe( (json) => {
+          if (json.hasOwnProperty('error')) {
+            this.alertService.error(json['error']);
           } else {
-            this.cliente = null;
-            this.inicializar();
-            this.typeaheadNombreClienteElement.nativeElement.focus();
+            this.change.emit(false);
+            this.alertService.success('El comprobante se ha generado con éxito');
+            if (!isNullOrUndefined(this.routeAfter)) {
+              this.router.navigate([this.routeAfter]).catch();
+            } else {
+              this.cliente = null;
+              this.inicializar();
+              this.typeaheadNombreClienteElement.nativeElement.focus();
+            }
           }
-        }
-      }));
+        }));
     } else {
       this.change.emit(false);
       this.subscriptions.add(this.apiService.put('comprobantes/' + this.factura.id, this.factura).subscribe( () => {
@@ -484,6 +500,15 @@ export class FacturaComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       }));
     }
+  }
+
+  postFactura(): Observable<Comprobante> {
+    return this.apiService.post('comprobantes', this.factura);
+  }
+
+  imprimirFactura() {
+    return this.apiService.postDownloadPDF('comprobantes', this.factura)
+      .do(pdf => this.impresionService.imprimir(pdf));
   }
 
   buscarClientes() {

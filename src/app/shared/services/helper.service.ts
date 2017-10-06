@@ -27,7 +27,7 @@ export class HelperService {
   }
 
   static myDatePickerDateToString(fecha: any) {
-    return fecha.date.year + '-' + fecha.date.month + '-' + fecha.date.day;
+    return `${fecha.date.year}-${('0' + fecha.date.month).slice(-2)}-${('0' + fecha.date.day).slice(-2)}`;
   }
 
   static stringToMyDatePickerDate(fecha: string) {

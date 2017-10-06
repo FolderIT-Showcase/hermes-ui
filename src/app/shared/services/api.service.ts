@@ -183,6 +183,29 @@ export class ApiService {
         });
   }
 
+  public postDownloadPDF(path: string, body): Observable<any> {
+    const user: User = JSON.parse(localStorage.getItem('currentUser'));
+    const headers = new Headers({
+      'Accept': 'application/pdf',
+      'Authorization':  'Bearer ' + user.token,
+    });
+    return this.http
+      .post(
+        `${this.baseURL}${path}`,
+        JSON.stringify(body),
+        {headers: headers, responseType: ResponseContentType.Blob})
+      .map(this.checkForError)
+      .catch( err => {
+        this.check401(err);
+        this.check403(err);
+        return Observable.throw(err);
+      })
+      .map(
+        (res) => {
+          return new Blob([res.blob()], { type: 'application/pdf' });
+        });
+  }
+
   private check401(err) {
     if (err.status === 401) {
       this.router.navigate(['/login']);
