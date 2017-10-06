@@ -34,6 +34,6 @@ export class UserService {
   }
 
   updateParametros(parametroUsuario: ParametroUsuario) {
-    return this.api.post('usuarios/' + parametroUsuario.user_id + '/parametros', parametroUsuario);
+    return this.api.put('usuarios/' + parametroUsuario.user_id + '/parametros', parametroUsuario);
   }
 }
