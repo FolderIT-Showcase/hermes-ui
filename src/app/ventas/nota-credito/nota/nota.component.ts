@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostListener, Input, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {TipoComprobante} from '../../../shared/domain/tipocomprobante';
 import {Cliente} from '../../../shared/domain/cliente';
 import {ApiService} from '../../../shared/services/api.service';
@@ -9,6 +9,9 @@ import {IMyDate, IMyDpOptions} from 'mydatepicker';
 import {isNullOrUndefined} from 'util';
 import {HelperService} from '../../../shared/services/helper.service';
 import {Subscription} from 'rxjs/Subscription';
+import {PuntoVenta} from '../../../shared/domain/puntoVenta';
+import {AuthenticationService} from '../../../shared/services/authentication.service';
+import {ImpresionService} from '../../../shared/services/impresion.service';
 
 @Component({
   selector: 'app-nota',
@@ -39,9 +42,13 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
   typeaheadCodigoClienteNoResults: boolean;
   submitted = false;
   private subscriptions: Subscription = new Subscription();
+  puntosVenta: PuntoVenta[] = [];
 
   constructor(private apiService: ApiService,
-              private alertService: AlertService, ) {
+              private alertService: AlertService,
+              private authenticationService: AuthenticationService,
+              private cdRef: ChangeDetectorRef,
+              private impresionService: ImpresionService ) {
     this.clientes = Observable.create((observer: any) => {
       this.subscriptions.add(this.apiService.get('clientes/nombre/' + this.clienteAsync).subscribe(json => {
         this.listaClientes = json;
@@ -75,6 +82,14 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.myDatePickerOptions = HelperService.defaultDatePickerOptions();
     const today = new Date();
     this.fecha =  { date: { year: today.getFullYear(), month: today.getMonth() + 1, day: today.getDate()}};
+    this.subscriptions.add(
+      this.authenticationService.getCurrentUserParameters().subscribe( params => {
+        if (!isNullOrUndefined(params.punto_venta)) {
+          params.punto_venta = ('0000' + params.punto_venta).slice(-4);
+          this.nota.punto_venta = params.punto_venta;
+        }
+      }));
+    this.cargarPuntosVenta();
   }
 
   ngAfterViewInit(): void {
@@ -134,9 +149,23 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
     this.nota.lista_id = this.cliente.lista_id;
     this.nota.items = [];
 
-    this.nota.fecha =  this.fecha.date.year + '-' + this.fecha.date.month + '-' + this.fecha.date.day;
+    this.nota.fecha =  HelperService.myDatePickerDateToString(this.fecha);
 
-    this.subscriptions.add(this.apiService.post('comprobantes', this.nota).subscribe( json => {
+    const puntoVenta = this.puntosVenta.find(x => x.id === this.nota.punto_venta);
+    let obs: Observable<any>;
+    switch (puntoVenta.tipo_impresion) {
+      case 'IMP':
+        obs = this.imprimirNota();
+        break;
+      case 'FE':
+      case 'IF':
+      default:
+        obs = this.postNota();
+        break;
+    }
+
+    this.subscriptions.add(
+      obs.subscribe( json => {
       if (json.hasOwnProperty('error')) {
         this.alertService.error(json['error']);
       } else {
@@ -145,6 +174,31 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
         this.typeaheadNombreClienteElement.nativeElement.focus();
       }
     }));
+  }
+
+  postNota(): Observable<Comprobante> {
+    return this.apiService.post('comprobantes', this.nota);
+  }
+
+  imprimirNota() {
+    return this.apiService.postDownloadPDF('comprobantes', this.nota)
+      .do(pdf => this.impresionService.imprimir(pdf));
+  }
+
+  onPuntoVentaChanged(value: string) {
+    this.nota.punto_venta = value;
+    if (!isNullOrUndefined(this.nota.punto_venta) && !isNullOrUndefined(this.cliente.id)) {
+      this.subscriptions.add(
+        this.apiService.get('contadores/' + this.nota.punto_venta + '/' + this.tipoComprobante.id).subscribe(contador => {
+          if (contador === '') {
+            this.alertService.error('No está definido el Contador para el Punto de Venta ' + this.nota.punto_venta, false);
+          } else {
+            this.nota.numero = +contador.ultimo_generado + 1;
+            this.nota.numero = ('0000000' + this.nota.numero).slice(-8);
+          }
+        })
+      );
+    }
   }
 
   buscarClientes() {
@@ -220,6 +274,19 @@ export class NotaComponent implements OnInit, AfterViewInit, OnDestroy {
       || ((primerFecha.year === segundaFecha.date.year) &&
         (primerFecha.month === segundaFecha.date.month)
         && primerFecha.day > segundaFecha.date.day);
+  }
+
+  cargarPuntosVenta() {
+    this.subscriptions.add(this.apiService.get('puntosventa/habilitados').subscribe((json: PuntoVenta[]) => {
+      this.puntosVenta = json;
+      this.puntosVenta.forEach( pto_venta => {
+        pto_venta.id = ('0000' + pto_venta.id).slice(-4);
+      });
+      if (isNullOrUndefined(this.nota.punto_venta)) {
+        this.nota.punto_venta = this.puntosVenta[0].id;
+        this.cdRef.detectChanges();
+      }
+    }));
   }
 
   // Fix para modales que quedan abiertos, pero ocultos al cambiar de página y la bloquean

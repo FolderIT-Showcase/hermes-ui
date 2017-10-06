@@ -56,4 +56,9 @@ export class PresupuestoComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
+
+  onModificadoChanged(nuevoEstado: boolean) {
+    this.modificado = nuevoEstado;
+    this.puedeSalirElement.modificado = this.modificado;
+  }
 }

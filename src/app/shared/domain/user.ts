@@ -1,4 +1,4 @@
-import {ParametroUsuario} from "./parametroUsuario";
+import {ParametroUsuario} from './parametroUsuario';
 
 export class User {
   id: number;

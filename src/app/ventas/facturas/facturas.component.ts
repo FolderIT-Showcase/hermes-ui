@@ -24,4 +24,9 @@ export class FacturasComponent implements OnInit {
   canDeactivate() {
     return this.puedeSalirElement.check();
   }
+
+  onModificadoChanged(nuevoEstado: boolean) {
+    this.modificado = nuevoEstado;
+    this.puedeSalirElement.modificado = this.modificado;
+  }
 }

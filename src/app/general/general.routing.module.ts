@@ -13,6 +13,7 @@ import {BancoComponent} from './banco/banco.component';
 import {CuentaBancariaComponent} from './cuenta-bancaria/cuenta-bancaria.component';
 import {TipoTarjetaComponent} from './tipo-tarjeta/tipo-tarjeta.component';
 import {CarteraValoresComponent} from './cartera-valores/cartera-valores.component';
+import {PuntosVentaComponent} from './puntos-venta/puntos-venta.component';
 
 const routes: Routes = [
   {path: 'articulos', component: ArticulosComponent, canDeactivate: [DeactivateGuardService]},
@@ -22,6 +23,7 @@ const routes: Routes = [
   {path: 'cuentasbancarias', component: CuentaBancariaComponent, canDeactivate: [DeactivateGuardService]},
   {path: 'listaprecios', component: ListaPreciosComponent, canDeactivate: [DeactivateGuardService]},
   {path: 'marcas', component: MarcasComponent, canDeactivate: [DeactivateGuardService]},
+  {path: 'puntosventa', component: PuntosVentaComponent, canDeactivate: [DeactivateGuardService]},
   {path: 'rubros', component: RubrosComponent, canDeactivate: [DeactivateGuardService]},
   {path: 'subrubros', component: SubrubrosComponent, canDeactivate: [DeactivateGuardService]},
   {path: 'tipostarjeta', component: TipoTarjetaComponent, canDeactivate: [DeactivateGuardService]},
